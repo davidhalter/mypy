@@ -48,6 +48,8 @@ class A(Generic[t]): pass
 x = 0 # type: A[y]
 [out]
 main:4: error: Name "y" is not defined
+-- zuban-diff
+main:4: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
 
 [case testInvalidNumberOfGenericArgsInTypeDecl]
 from typing import TypeVar, Generic
@@ -283,7 +285,7 @@ main:4: error: Name "n" is not defined
 import typing
 import m.n
 [out]
-main:2: error: Cannot find implementation or library stub for module named "m.n"
+--zuban-diff main:2: error: Cannot find implementation or library stub for module named "m.n"
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:2: error: Cannot find implementation or library stub for module named "m"
 
@@ -292,9 +294,13 @@ import typing
 from m.n import x
 from a.b import *
 [out]
-main:2: error: Cannot find implementation or library stub for module named "m.n"
+--zuban-diff main:2: error: Cannot find implementation or library stub for module named "m.n"
+main:2: error: Cannot find implementation or library stub for module named "m"
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
-main:3: error: Cannot find implementation or library stub for module named "a.b"
+--zuban-diff main:3: error: Cannot find implementation or library stub for module named "a.b"
+main:3: error: Cannot find implementation or library stub for module named "a"
+--zuban-diff
+main:3: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 
 [case testErrorInImportedModule]
 import m
@@ -322,7 +328,7 @@ m.n.x
 [file m/n.py]
 x = 1
 [out]
-main:2: error: Cannot find implementation or library stub for module named "m.n"
+-- zuban-diff main:2: error: Cannot find implementation or library stub for module named "m.n"
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:2: error: Cannot find implementation or library stub for module named "m"
 

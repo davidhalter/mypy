@@ -439,15 +439,18 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 S = TypeVar('S')
 class A(Generic[T, S]): pass
-A[int]()  # E: Type application has too few types (2 expected)
-A[int, str, int]() # E: Type application has too many types (2 expected)
+-- zuban-diff A[int]()  # E: Type application has too few types (2 expected)
+-- zuban-diff A[int, str, int]() # E: Type application has too many types (2 expected)
+A[int]()  # E: "A" expects 2 type arguments, but 1 given
+A[int, str, int]() # E: "A" expects 2 type arguments, but 3 given
 [out]
 
 [case testInvalidTypeApplicationType]
 a = None # type: A
 class A: pass
 a[A]()  # E: Value of type "A" is not indexable
-A[A]()  # E: The type "Type[A]" is not generic and not indexable
+-- zuban-diff A[A]()  # E: The type "Type[A]" is not generic and not indexable
+A[A]()  # E: "A" expects no type arguments, but 1 given
 [out]
 
 [case testTypeApplicationArgTypes]
@@ -523,15 +526,19 @@ IntIntNode = Node[int, int]
 SameNode = Node[T, T]
 
 n = Node(1, 1) # type: IntIntNode
-n1 = Node(1, 'a') # type: IntIntNode # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
+-- zuban-diff n1 = Node(1, 'a') # type: IntIntNode # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
+n1 = Node(1, 'a') # type: IntIntNode # E: Incompatible types in assignment (expression has type "Node[int, str]", variable has type "Node[int, int]")
 
 m = Node(1, 1) # type: IntNode
-m1 = Node('x', 1) # type: IntNode # E: Argument 1 to "Node" has incompatible type "str"; expected "int"
-m2 = Node(1, 1) # type: IntNode[str] # E: Argument 2 to "Node" has incompatible type "int"; expected "str"
+-- zuban-diff m1 = Node('x', 1) # type: IntNode # E: Argument 1 to "Node" has incompatible type "str"; expected "int"
+m1 = Node('x', 1) # type: IntNode # E: Incompatible types in assignment (expression has type "Node[str, int]", variable has type "Node[int, Any]")
+-- zuban-diff m2 = Node(1, 1) # type: IntNode[str] # E: Argument 2 to "Node" has incompatible type "int"; expected "str"
+m2 = Node(1, 1) # type: IntNode[str] # E: Incompatible types in assignment (expression has type "Node[int, int]", variable has type "Node[int, str]")
 
 s = Node(1, 1) # type: SameNode[int]
 reveal_type(s) # N: Revealed type is "__main__.Node[builtins.int, builtins.int]"
-s1 = Node(1, 'x') # type: SameNode[int] # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
+-- zuban-diff s1 = Node(1, 'x') # type: SameNode[int] # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
+s1 = Node(1, 'x') # type: SameNode[int] # E: Incompatible types in assignment (expression has type "Node[int, str]", variable has type "Node[int, int]")
 
 [out]
 
@@ -716,7 +723,8 @@ L[int]().append(Node((1, 1)))
 L[int]().append(5) # E: Argument 1 to "append" of "list" has incompatible type "int"; expected "Node[Tuple[int, int]]"
 
 x = D((1, 1)) # type: D[int]
-y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[int, int]"
+-- zuban-diff: y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[int, int]"
+y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[T, T]"
 
 def f(x: T) -> D[T]:
     return D((x, x))
@@ -800,7 +808,8 @@ reveal_type(x) # N: Revealed type is "builtins.int"
 def f2(x: IntTP[T]) -> IntTP[T]:
     return x
 
-f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, <nothing>]"
+-- zuban-diff f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, <nothing>]"
+f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, T]"
 reveal_type(f2((1, 'x'))) # N: Revealed type is "Tuple[builtins.int, builtins.str*]"
 
 [builtins fixtures/for.pyi]
@@ -965,8 +974,10 @@ y: U
 reveal_type(x)  # N: Revealed type is "Union[builtins.int, None]"
 reveal_type(y)  # N: Revealed type is "builtins.int"
 
-U[int]  # E: Type application targets a non-generic function or class
-O[int]  # E: Bad number of arguments for type alias, expected: 0, given: 1  # E: Type application is only supported for generic classes
+-- zuban-diff U[int]  # E: Type application targets a non-generic function or class
+U[int]  # E: "int" expects no type arguments, but 1 given
+-- zuban-diff O[int]  # E: Bad number of arguments for type alias, expected: 0, given: 1  # E: Type application is only supported for generic classes
+O[int]  # E: Type application is only supported for generic classes
 [out]
 
 [case testAliasesInClassBodyNormalVsSubscripted]
@@ -1025,13 +1036,15 @@ CA = Callable[[T], int]
 TA = Tuple[T, int]
 UA = Union[T, int]
 
-cs = CA + 1 # E: Unsupported left operand type for + ("object")
+-- zuban-diff cs = CA + 1 # E: Unsupported left operand type for + ("object")
+cs = CA + 1 # E: Unsupported left operand type for + ("Callable[[T], int]")
 reveal_type(cs) # N: Revealed type is "Any"
 
 ts = TA() # E: "object" not callable
 reveal_type(ts) # N: Revealed type is "Any"
 
-us = UA.x # E: "object" has no attribute "x"
+-- zuban-diff us = UA.x # E: "object" has no attribute "x"
+us = UA.x # E: "TypeAlias" has no attribute "x"
 reveal_type(us) # N: Revealed type is "Any"
 
 xx = CA[str] + 1  # E: Type application is only supported for generic classes
@@ -1319,7 +1332,8 @@ T = TypeVar('T')
 def f(x: T) -> Iterable[T]: pass
 
 a, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
-b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+-- zuban-diff b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str") # E: Incompatible types in assignment (expression has type "int", variable has type "str")
 a, a = f(a)
 b, b = f(b)
 [builtins fixtures/for.pyi]
