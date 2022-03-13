@@ -493,7 +493,8 @@ x = 3
 ==
 ==
 ==
-a.py:3: error: "object" has no attribute "whatever"
+-- zuban-diff a.py:3: error: "object" has no attribute "whatever"
+a.py:3: error: Module has no attribute "whatever"
 
 [case testAddedIgnoreWithMissingImports]
 import a
@@ -1602,7 +1603,8 @@ class C:
 [out]
 main:7: error: "A" has no attribute "x"
 ==
-main:3: error: Name "m.C" is not defined
+-- zuban-diff main:3: error: Name "m.C" is not defined
+main:3: error: Module has no attribute "C"
 
 [case testBaseClassOfNestedClassDeleted]
 import m
@@ -1620,7 +1622,8 @@ class C:
 [out]
 main:8: error: "B" has no attribute "x"
 ==
-main:4: error: Name "m.C" is not defined
+-- zuban-diff main:4: error: Name "m.C" is not defined
+main:4: error: Module has no attribute "C"
 
 [case testImportQualifiedModuleName]
 import a
@@ -2678,7 +2681,8 @@ from typing import Generic, TypeVar
 T = TypeVar('T')
 class C(Generic[T]): pass
 [out]
-main:4: error: "object" has no attribute "C"
+-- zuban-diff main:4: error: "object" has no attribute "C"
+main:4: error: Module has no attribute "C"
 ==
 main:4: error: Need type annotation for "x"
 
@@ -3702,7 +3706,8 @@ x: a.A = {str(): int()}
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:2: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+-- zuban-diff b.py:2: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+b.py:2: error: Incompatible types in assignment (expression has type "dict[str, int]", variable has type "dict[str, str]")
 
 [case testAliasFineGenericFunc]
 import b
@@ -3720,7 +3725,8 @@ f({str(): int()})
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+-- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+b.py:4: error: Argument 1 to "f" has incompatible type "dict[str, int]"; expected "dict[str, str]"
 
 [case testAliasFineForwardMod]
 import b
@@ -3805,7 +3811,8 @@ x: aa.B = {'first': {str(): int()}}
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:3: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+-- zuban-diff b.py:3: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+b.py:3: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
 
 [case testAliasFineNestedFunc]
 import b
@@ -3827,7 +3834,8 @@ def f(x: aa.B):
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+-- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+b.py:4: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
 
 [case testAliasFineNestedFuncDirect]
 import b
@@ -3849,7 +3857,8 @@ def f(x: aa.E[str, aa.a.A]):
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+-- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
+b.py:4: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
 
 [case testAliasFineNonGenericToGeneric]
 import b
@@ -3916,7 +3925,8 @@ A = int
 import a
 x: a.A
 [out]
-b.py:2: error: Name "a.A" is not defined
+-- zuban-diff b.py:2: error: Name "a.A" is not defined
+b.py:2: error: Module has no attribute "A"
 ==
 
 [case testAliasFineDeleted]
@@ -3929,7 +3939,8 @@ import a
 x: a.A
 [out]
 ==
-b.py:2: error: Name "a.A" is not defined
+-- zuban-diff b.py:2: error: Name "a.A" is not defined
+b.py:2: error: Module has no attribute "A"
 
 [case testAliasFineClassToAlias]
 import b
@@ -3975,7 +3986,8 @@ def f(x: A[int]):
 [builtins fixtures/dict.pyi]
 [out]
 ==
-b.py:4: error: Name "a.B" is not defined
+-- zuban-diff b.py:4: error: Name "a.B" is not defined
+b.py:4: error: Module has no attribute "B"
 
 [case testAliasFineTargetDeleted]
 import c
@@ -3992,7 +4004,8 @@ def f(x: b.B):
     pass
 [out]
 ==
-c.py:2: error: Name "b.B" is not defined
+-- zuban-diff c.py:2: error: Name "b.B" is not defined
+c.py:2: error: Module has no attribute "B"
 
 [case testAliasFineClassInFunction]
 import b
@@ -7331,7 +7344,8 @@ def g() -> Tuple[str, str]: pass
 [builtins fixtures/tuple.pyi]
 [out]
 ==
-main:5: error: Incompatible return value type (got "List[str]", expected "List[int]")
+-- zuban-diff main:5: error: Incompatible return value type (got "List[str]", expected "List[int]")
+main:5: error: Incompatible return value type (got "list[str]", expected "list[int]")
 
 [case testUnpackInExpression1-only_when_nocache]
 from typing import Tuple, List
@@ -7355,7 +7369,8 @@ def t() -> Tuple[str]: ...
 [out]
 ==
 main:5: error: Incompatible return value type (got "Tuple[int, str]", expected "Tuple[int, int]")
-main:8: error: List item 1 has incompatible type "Tuple[str]"; expected "int"
+-- zuban-diff main:8: error: List item 1 has incompatible type "Tuple[str]"; expected "int"
+main:8: error: Incompatible return value type (got "list[int | str]", expected "list[int]")
 
 [case testUnpackInExpression2-only_when_nocache]
 from typing import Set
@@ -7375,7 +7390,8 @@ def t() -> Tuple[str]: pass
 [builtins fixtures/set.pyi]
 [out]
 ==
-main:5: error: Argument 2 to <set> has incompatible type "*Tuple[str]"; expected "int"
+-- zuban-diff main:5: error: Argument 2 to <set> has incompatible type "*Tuple[str]"; expected "int"
+main:5: error: Incompatible return value type (got "set[int | str]", expected "set[int]")
 
 [case testUnpackInExpression3-only_when_nocache]
 from typing import Dict
