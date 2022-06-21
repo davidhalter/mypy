@@ -747,7 +747,8 @@ UNode = Union[int, Node[T]]
 
 class C(TupledNode): ... # Same as TupledNode[Any]
 class D(TupledNode[T]): ...
-class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode"
+-- zuban-diff class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode"
+class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode[T]"
 
 reveal_type(D((1, 1))) # N: Revealed type is "__main__.D[builtins.int]"
 [builtins fixtures/list.pyi]
@@ -977,7 +978,7 @@ reveal_type(y)  # N: Revealed type is "builtins.int"
 -- zuban-diff U[int]  # E: Type application targets a non-generic function or class
 U[int]  # E: "int" expects no type arguments, but 1 given
 -- zuban-diff O[int]  # E: Bad number of arguments for type alias, expected: 0, given: 1  # E: Type application is only supported for generic classes
-O[int]  # E: Type application is only supported for generic classes
+O[int]  # E: "int" expects no type arguments, but 1 given
 [out]
 
 [case testAliasesInClassBodyNormalVsSubscripted]

@@ -778,6 +778,14 @@ class A(Generic[t]):
                                   # N: (Hint: Use "s" in function signature to bind "s" inside a function)
     a = 0 # type: A[t]
 [out]
+-- zuban diff -- wtf why are these no raised
+main:7: error: Incompatible types in assignment (expression has type "int", variable has type "A[s]")
+-- zuban diff
+main:8: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
+-- zuban diff
+main:11: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
+-- zuban diff
+main:14: error: Incompatible types in assignment (expression has type "int", variable has type "A[t]")
 
 [case testTestExtendPrimitives]
 class C(bool): pass # E: "bool" is not a valid base class
@@ -794,8 +802,10 @@ class A(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 
 [case testCyclicInheritance2]
 
-class A(B): pass # E: Cannot resolve name "B" (possible cyclic definition)
-class B(A): pass
+-- zuban-diff class A(B): pass # E: Cannot resolve name "B" (possible cyclic definition)
+-- zuban-diff class B(A): pass
+class A(B): pass
+class B(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 [out]
 
 [case testAssignToTypeDef]

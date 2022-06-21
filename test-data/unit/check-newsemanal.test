@@ -434,23 +434,29 @@ def main() -> None:
             x  # E: Name "x" is not defined
 
 [case testNewAnalyzerCyclicDefinitions]
-gx = gy  # E: Cannot resolve name "gy" (possible cyclic definition)
-gy = gx
+-- zuban-diff gx = gy  # E: Cannot resolve name "gy" (possible cyclic definition)
+-- zuban-diff gy = gx
+gx = gy
+gy = gx   # E: Cannot resolve name "gy" (possible cyclic definition)
 def main() -> None:
     class C:
         def meth(self) -> None:
-            lx = ly  # E: Cannot resolve name "ly" (possible cyclic definition)
-            ly = lx
+--zuban-diff             lx = ly  # E: Cannot resolve name "ly" (possible cyclic definition)
+--zuban-diff             ly = lx
+            lx = ly
+            ly = lx  # E: Cannot resolve name "ly" (possible cyclic definition)
 
 [case testNewAnalyzerCyclicDefinitionCrossModule]
 import b
 [file a.py]
 import b
-x = b.x  # E: Cannot resolve attribute "x" (possible cyclic definition) \
-         # E: Module has no attribute "x"
+--zuban-diff x = b.x  # E: Cannot resolve attribute "x" (possible cyclic definition) \
+--zuban-diff          # E: Module has no attribute "x"
+x = b.x
 [file b.py]
 import a
-x = a.x
+--zuban-diff x = a.x
+x = a.x  # E: Cannot resolve name "x" (possible cyclic definition)
 [builtins fixtures/module.pyi]
 
 [case testNewAnalyzerMutuallyRecursiveOverloadedFunctions]
@@ -542,9 +548,11 @@ from typing import TypeVar, Generic
 c: C[int]
 c2: C[int, str] # E: "C" expects 1 type argument, but 2 given
 c3: C
-c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
+--zuban-diff c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
+c = C('') # E: Incompatible types in assignment (expression has type "C[str]", variable has type "C[int]")
 reveal_type(c.get()) # N: Revealed type is "builtins.int"
-reveal_type(c2) # N: Revealed type is "__main__.C[Any]"
+--zuban-diff reveal_type(c2) # N: Revealed type is "__main__.C[Any]"
+reveal_type(c2) # N: Revealed type is "__main__.C[int]"
 reveal_type(c3) # N: Revealed type is "__main__.C[Any]"
 
 T = TypeVar('T')
@@ -570,7 +578,8 @@ T = TypeVar('T')
 
 c: C[int]
 reveal_type(c) # N: Revealed type is "__main__.C[builtins.int]"
-c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
+--zuban-diff c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
+c = C('') # E: Incompatible types in assignment (expression has type "C[str]", variable has type "C[int]")
 reveal_type(c.get()) # N: Revealed type is "builtins.int"
 
 [case testNewAnalyzerTypeAlias]
@@ -1555,7 +1564,8 @@ class C(List[A]): pass
 [file b.py]
 from a import f
 class D: ...
-reveal_type(f)  # N: Revealed type is "def (x: builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
+--zuban-diff reveal_type(f)  # N: Revealed type is "def (x: builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
+reveal_type(f)  # N: Revealed type is "def (builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
 [builtins fixtures/list.pyi]
 
 [case testNewAnalyzerAliasToNotReadyDirectBaseFunction]
@@ -1843,8 +1853,10 @@ def func(x: List[C[T]]) -> T:
 x: A
 A = List[C[int, str]]  # E: "C" expects 1 type argument, but 2 given
 
-reveal_type(x)  # N: Revealed type is "builtins.list[__main__.C[Any]]"
-reveal_type(func(x))  # N: Revealed type is "Any"
+--zuban-diff reveal_type(x)  # N: Revealed type is "builtins.list[__main__.C[Any]]"
+--zuban-diff reveal_type(func(x))  # N: Revealed type is "Any"
+reveal_type(x)  # N: Revealed type is "builtins.list[__main__.C[int]]"
+reveal_type(func(x))  # N: Revealed type is "int"
 
 class C(Generic[T]):
     ...
@@ -2565,11 +2577,15 @@ x: c.C
 from p.c import B
 
 [out]
+-- zuban-diff It looks like mypy confuses something here.
+p/u.pyi:1: error: Module "p" has no attribute "c"
 
 [case testNewSemanticAnalyzerQualifiedFunctionAsType]
 import m
 
-x: m.C.a.b # E: Name "m.C.a.b" is not defined
+--zuban-diff x: m.C.a.b # E: Name "m.C.a.b" is not defined
+x: m.C.a.b # E: Function "m.C" is not valid as a type \
+           # N: Perhaps you need "Callable[...]" or a callback protocol?
 
 [file m.py]
 def C(): pass
