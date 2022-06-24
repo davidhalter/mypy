@@ -925,6 +925,8 @@ import typing
 None.x = 1 # type: int
 [out]
 main:2: error: Type cannot be declared in assignment to non-self attribute
+--zuban-diff
+main:2: error: "None" has no attribute "x"
 
 [case testNonSelfMemberAssignmentWithTypeDeclarationInMethod]
 import typing
@@ -998,6 +1000,8 @@ a[1] = None # type: int # E: Unexpected type declaration
 a.x = None # type: int \
     # E: Type cannot be declared in assignment to non-self attribute
 [out]
+--zuban-diff
+main:3: error: "int" has no attribute "x"
 
 [case testInvalidLvalueWithExplicitType3]
 a = 1
