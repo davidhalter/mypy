@@ -298,8 +298,6 @@ main:2: error: Cannot find implementation or library stub for module named "m"
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 --zuban-diff main:3: error: Cannot find implementation or library stub for module named "a.b"
 main:3: error: Cannot find implementation or library stub for module named "a"
---zuban-diff
-main:3: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 
 [case testErrorInImportedModule]
 import m
