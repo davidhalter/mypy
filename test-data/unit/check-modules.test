@@ -134,7 +134,8 @@ class C:
     from m import f  # E: Unsupported class scoped import
     f()
     # ideally, the following should error:
-    f(C)
+--zuban-diff     f(C)
+    f(C)  # E: Too many arguments for "f"
 [file m.py]
 def f() -> None: pass
 [out]
@@ -246,6 +247,8 @@ None + ''
 main:1: error: Cannot find implementation or library stub for module named "nonexistent"
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "another"
+-- zuban-diff
+main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:2: error: Unsupported left operand type for + ("None")
 
 [case testTypeCheckWithUnknownModule5]
@@ -288,6 +291,8 @@ bar()
 main:1: error: Cannot find implementation or library stub for module named "xyz"
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "bar"
+--zuban-diff
+main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 
 [case testAccessingUnknownModule3]
 import xyz as z
@@ -1532,7 +1537,8 @@ def do_something(dic: Row) -> None:
 def do_another() -> Row:
     return {}
 
-do_something({'good': 'bad'}) # E: Dict entry 0 has incompatible type "str": "str"; expected "str": "int"
+--zuban-diff do_something({'good': 'bad'}) # E: Dict entry 0 has incompatible type "str": "str"; expected "str": "int"
+do_something({'good': 'bad'}) # E: Argument 1 to "do_something" has incompatible type "dict[str, str]"; expected "dict[str, int]"
 reveal_type(do_another()) # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
 
 [file ex2a.py]
@@ -1720,7 +1726,8 @@ import types
 import m
 
 def takes_module(x: types.ModuleType):
-    reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+--zuban-diff     reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+    reveal_type(x.__file__)  # N: Revealed type is "builtins.str | None"
 
 n = m
 takes_module(m)
@@ -1768,7 +1775,8 @@ else:
     x = n
 
 x.a  # E: Module has no attribute "a"
-reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+--zuban-diff reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+reveal_type(x.__file__)  # N: Revealed type is "builtins.str | None"
 
 [file m.py]
 a = 'foo'
@@ -2200,6 +2208,8 @@ import c
 [out]
 -- TODO: it would be better for this to be in the other order
 tmp/b.py:1: error: Cannot find implementation or library stub for module named "c"
+--zuban-diff
+tmp/b.py:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "c"
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 

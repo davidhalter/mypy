@@ -725,7 +725,8 @@ y = 1
 [case testImportScope4]
 import typing
 class A:
-    from x import *
+--zuban-diff     from x import *
+    from x import *  # E: Unsupported class scoped import
     y
 y # E: Name "y" is not defined
 [file x.py]

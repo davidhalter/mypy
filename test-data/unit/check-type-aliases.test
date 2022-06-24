@@ -629,8 +629,7 @@ reveal_type(x)  # N: Revealed type is "__main__.C"
 
 [case testOverrideByIdemAliasCorrectTypeImported]
 from other import C as B
-C = B
-x: C
+x: B
 reveal_type(x)  # N: Revealed type is "other.C"
 [file other.py]
 class C:
