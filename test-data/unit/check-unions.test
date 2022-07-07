@@ -201,7 +201,8 @@ else:
 [case testUnionSimplificationSpecialCases]
 from typing import Any, TypeVar, Union
 
-class C(Any): pass
+--zuban-diff class C(Any): pass
+class C(Any): pass  # E: Invalid base class "Any"
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -221,7 +222,8 @@ reveal_type(u(a, a))  # N: Revealed type is "Any"
 [case testUnionSimplificationSpecialCase2]
 from typing import Any, TypeVar, Union
 
-class C(Any): pass
+--zuban-diff class C(Any): pass
+class C(Any): pass  # E: Invalid base class "Any"
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -234,7 +236,8 @@ def f(x: T) -> None:
 [case testUnionSimplificationSpecialCase3]
 from typing import Any, TypeVar, Generic, Union
 
-class C(Any): pass
+--zuban-diff class C(Any): pass
+class C(Any): pass  # E: Invalid base class "Any"
 
 V = TypeVar('V')
 T = TypeVar('T')
@@ -249,7 +252,8 @@ def f(x: M[C]) -> None:
 [case testUnionSimplificationSpecialCases2]
 from typing import Any, TypeVar, Union
 
-class C(Any): pass
+--zuban-diff class C(Any): pass
+class C(Any): pass  # E: Invalid base class "Any"
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -288,7 +292,8 @@ reveal_type(u('', 1))  # N: Revealed type is "Union[builtins.int, builtins.str]"
 [case testUnionSimplificationWithDuplicateItems]
 from typing import Any, TypeVar, Union
 
-class C(Any): pass
+--zuban-diff class C(Any): pass
+class C(Any): pass  # E: Invalid base class "Any"
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -356,13 +361,16 @@ t_a = None  # type: Type[Any]
 reveal_type(u(t_o, t_o)) # N: Revealed type is "Type[builtins.object]"
 reveal_type(u(t_s, t_s)) # N: Revealed type is "Type[builtins.str]"
 reveal_type(u(t_a, t_a)) # N: Revealed type is "Type[Any]"
-reveal_type(u(type, type)) # N: Revealed type is "def (x: builtins.object) -> builtins.type"
+--zuban-diff reveal_type(u(type, type)) # N: Revealed type is "def (x: builtins.object) -> builtins.type"
+reveal_type(u(type, type)) # N: Revealed type is "Type[Any]"
 
 # One type, other non-type
 reveal_type(u(t_s, 1)) # N: Revealed type is "Union[builtins.int, Type[builtins.str]]"
 reveal_type(u(1, t_s)) # N: Revealed type is "Union[Type[builtins.str], builtins.int]"
-reveal_type(u(type, 1)) # N: Revealed type is "Union[builtins.int, def (x: builtins.object) -> builtins.type]"
-reveal_type(u(1, type)) # N: Revealed type is "Union[def (x: builtins.object) -> builtins.type, builtins.int]"
+--zuban-diff reveal_type(u(type, 1)) # N: Revealed type is "Union[builtins.int, def (x: builtins.object) -> builtins.type]"
+reveal_type(u(type, 1)) # N: Revealed type is "Union[builtins.int, Type[Any]]"
+--zuban-diff reveal_type(u(1, type)) # N: Revealed type is "Union[def (x: builtins.object) -> builtins.type, builtins.int]"
+reveal_type(u(1, type)) # N: Revealed type is "Union[Type[Any], builtins.int]"
 reveal_type(u(t_a, 1)) # N: Revealed type is "Union[builtins.int, Type[Any]]"
 reveal_type(u(1, t_a)) # N: Revealed type is "Union[Type[Any], builtins.int]"
 reveal_type(u(t_o, 1)) # N: Revealed type is "Union[builtins.int, Type[builtins.object]]"

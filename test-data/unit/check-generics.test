@@ -1038,7 +1038,7 @@ TA = Tuple[T, int]
 UA = Union[T, int]
 
 -- zuban-diff cs = CA + 1 # E: Unsupported left operand type for + ("object")
-cs = CA + 1 # E: Unsupported left operand type for + ("Callable[[T], int]")
+cs = CA + 1 # E: Unsupported left operand type for + ("Type[Callable[[T], int]]")
 reveal_type(cs) # N: Revealed type is "Any"
 
 ts = TA() # E: "object" not callable

@@ -1054,9 +1054,12 @@ class A(metaclass=f): pass # E: Invalid metaclass "f"
 
 [case testInvalidTypevarArguments]
 from typing import TypeVar
-a = TypeVar()       # E: Too few arguments for TypeVar()
-b = TypeVar(x='b')  # E: TypeVar() expects a string literal as first argument
-c = TypeVar(1)      # E: TypeVar() expects a string literal as first argument
+--zuban-diff a = TypeVar()       # E: Too few arguments for TypeVar()
+a = TypeVar()       # E: Missing positional argument "name" in call to "TypeVar"
+--zuban-diff b = TypeVar(x='b')  # E: TypeVar() expects a string literal as first argument
+b = TypeVar(x='b')  # E: Missing positional argument "name" in call to "TypeVar"
+--zuban-diff c = TypeVar(1)      # E: TypeVar() expects a string literal as first argument
+c = TypeVar(1)      # E: Argument 1 to "TypeVar" has incompatible type "int"; expected "str"
 d = TypeVar('D')    # E: String argument 1 "D" to TypeVar(...) does not match variable name "d"
 e = TypeVar('e', int, str, x=1)   # E: Unexpected argument to "TypeVar()": "x"
 f = TypeVar('f', (int, str), int) # E: Type expected
@@ -1064,7 +1067,8 @@ g = TypeVar('g', int)             # E: TypeVar cannot have only a single constra
 h = TypeVar('h', x=(int, str))    # E: Unexpected argument to "TypeVar()": "x"
 i = TypeVar('i', bound=1)         # E: TypeVar "bound" must be a type
 j = TypeVar('j', covariant=None)  # E: TypeVar "covariant" may only be a literal bool
-k = TypeVar('k', contravariant=1) # E: TypeVar "contravariant" may only be a literal bool
+-- zuban-diff k = TypeVar('k', contravariant=1) # E: TypeVar "contravariant" may only be a literal bool
+k = TypeVar('k', contravariant=1) # E: Argument "contravariant" to "TypeVar" has incompatible type "int"; expected "bool"
 [out]
 
 [case testMoreInvalidTypevarArguments]
