@@ -2368,7 +2368,8 @@ class A: ...
 [case testNewAnalyzerApplicationForward4]
 from typing import Generic, TypeVar
 
-x = C[A]()  # E: Value of type variable "T" of "C" cannot be "A"
+--zuban-diff x = C[A]()  # E: Value of type variable "T" of "C" cannot be "A"
+x = C[A]()  # E: Type argument "A" of "C" must be a subtype of "D"
 reveal_type(x)  # N: Revealed type is "__main__.C[__main__.A]"
 
 T = TypeVar('T', bound='D')

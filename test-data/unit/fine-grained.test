@@ -4952,8 +4952,10 @@ T = TypeVar('T', int, str)
 U = TypeVar('U', int, str)
 [out]
 ==
-main:3: error: Value of type variable "submod.T" of "D" cannot be "S"
-main:3: error: Value of type variable "submod.U" of "D" cannot be "I"
+--zuban-diff main:3: error: Value of type variable "submod.T" of "D" cannot be "S"
+main:3: error: Value of type variable "T" of "D" cannot be "S"
+--zuban-diff main:3: error: Value of type variable "submod.U" of "D" cannot be "I"
+main:3: error: Value of type variable "U" of "D" cannot be "I"
 
 [case testTypeVarBoundRuntime]
 from mod import I, S, D
@@ -4974,8 +4976,10 @@ from typing import TypeVar
 T = TypeVar('T')
 U = TypeVar('U')
 [out]
-main:3: error: Value of type variable "submod.T" of "D" cannot be "S"
-main:3: error: Value of type variable "submod.U" of "D" cannot be "I"
+--zuban-diff main:3: error: Value of type variable "submod.T" of "D" cannot be "S"
+main:3: error: Type argument "S" of "D" must be a subtype of "int"
+--zuban-diff main:3: error: Value of type variable "submod.U" of "D" cannot be "I"
+main:3: error: Type argument "I" of "D" must be a subtype of "int"
 ==
 
 [case testGenericFineCallableNormal]
