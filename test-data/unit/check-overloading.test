@@ -60,10 +60,12 @@ class B: pass
 
 [case testOverloadNeedsImplementation]
 from typing import overload, Any
-@overload  # E: An overloaded function outside a stub file must have an implementation
+--zuban-diff @overload  # E: An overloaded function outside a stub file must have an implementation
+@overload
 def f(x: 'A') -> 'B': ...
 @overload
-def f(x: 'B') -> 'A': ...
+--zuban-diff def f(x: 'B') -> 'A': ...
+def f(x: 'B') -> 'A': ...  # E: An overloaded function outside a stub file must have an implementation
 
 reveal_type(f(A())) # N: Revealed type is "__main__.B"
 reveal_type(f(B())) # N: Revealed type is "__main__.A"
@@ -74,8 +76,10 @@ class B: pass
 
 [case testSingleOverloadNoImplementation]
 from typing import overload, Any
-@overload  # E: Single overload definition, multiple required
-def f(x: 'A') -> 'B': ...
+--zuban-diff @overload  # E: Single overload definition, multiple required
+@overload
+--zuban-diff def f(x: 'A') -> 'B': ...
+def f(x: 'A') -> 'B': ... # E: Single overload definition, multiple required
 
 class A: pass
 class B: pass
@@ -597,8 +601,10 @@ a = A(a)
 a = A(b)
 a = A(object()) # E: No overload variant of "A" matches argument type "object" \
                 # N: Possible overload variants: \
-                # N:     def __init__(self, a: A) -> A \
-                # N:     def __init__(self, b: B) -> A
+--zuban-diff                 # N:     def __init__(self, a: A) -> A \
+                # N:     def __init__(self, a: A) \
+--zuban-diff                 # N:     def __init__(self, b: B) -> A
+                # N:     def __init__(self, b: B)
 
 class A:
   @overload
@@ -1500,7 +1506,8 @@ from typing import overload
 def f(a: int) -> None: pass
 def f(a: int) -> None: pass
 [out]
-tmp/foo.pyi:2: error: Single overload definition, multiple required
+--zuban-diff tmp/foo.pyi:2: error: Single overload definition, multiple required
+tmp/foo.pyi:3: error: Single overload definition, multiple required
 tmp/foo.pyi:4: error: An implementation for an overloaded function is not allowed in a stub file
 
 [case testSingleOverload2]
@@ -4962,8 +4969,10 @@ x: Any
 reveal_type(attr(x)) # N: Revealed type is "Any"
 attr("hi", 1)  # E: No overload variant of "attr" matches argument types "str", "int" \
                # N: Possible overload variants: \
-               # N:     def [T in (int, float)] attr(default: T = ..., blah: int = ...) -> T \
-               # N:     def attr(default: Any = ...) -> int
+--zuban-diff               # N:     def [T in (int, float)] attr(default: T = ..., blah: int = ...) -> T \
+               # N:     def [T in (int, float)] attr(default: T, blah: int) -> T \
+--zuban-diff                # N:     def attr(default: Any = ...) -> int
+               # N:     def attr(default: Any) -> int
 [file lib.pyi]
 from typing import overload, Any, TypeVar
 
@@ -4985,8 +4994,10 @@ x: Any
 reveal_type(attr(x)) # N: Revealed type is "Any"
 attr("hi", 1)  # E: No overload variant of "attr" matches argument types "str", "int" \
                # N: Possible overload variants: \
-               # N:     def [T <: int] attr(default: T = ..., blah: int = ...) -> T \
-               # N:     def attr(default: Any = ...) -> int
+--zuban-diff                # N:     def [T <: int] attr(default: T = ..., blah: int = ...) -> T \
+               # N:     def [T <: int] attr(default: T, blah: int) -> T \
+--zuban-diff                # N:     def attr(default: Any = ...) -> int
+               # N:     def attr(default: Any) -> int
 [file lib.pyi]
 from typing import overload, TypeVar, Any
 

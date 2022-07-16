@@ -1563,8 +1563,7 @@ class C(List[A]): pass
 [file b.py]
 from a import f
 class D: ...
---zuban-diff reveal_type(f)  # N: Revealed type is "def (x: builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
-reveal_type(f)  # N: Revealed type is "def (builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
+reveal_type(f)  # N: Revealed type is "def (x: builtins.list[a.C]) -> builtins.list[builtins.list[a.C]]"
 [builtins fixtures/list.pyi]
 
 [case testNewAnalyzerAliasToNotReadyDirectBaseFunction]
@@ -2642,8 +2641,8 @@ class C:
 class X: pass
 class C:
     X = X
-    reveal_type(X)  # N: Revealed type is "def () -> __main__.X"
-reveal_type(C.X)  # N: Revealed type is "def () -> __main__.X"
+    reveal_type(X)  # N: Revealed type is "Type[__main__.X]"
+reveal_type(C.X)  # N: Revealed type is "Type[__main__.X]"
 
 [case testNewAnalyzerShadowOuterDefinitionBasedOnOrderTwoPasses]
 c: C  # Force second semantic analysis pass

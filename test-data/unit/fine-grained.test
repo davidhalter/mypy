@@ -2138,11 +2138,14 @@ def f(x: int) -> None: ...
 def f(x: object) -> None:
 	pass
 [out]
-a.py:2: error: An overloaded function outside a stub file must have an implementation
+--zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
+a.py:5: error: An overloaded function outside a stub file must have an implementation
 ==
-a.py:2: error: An overloaded function outside a stub file must have an implementation
+--zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
+a.py:5: error: An overloaded function outside a stub file must have an implementation
 ==
-a.py:2: error: An overloaded function outside a stub file must have an implementation
+--zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
+a.py:5: error: An overloaded function outside a stub file must have an implementation
 ==
 
 [case testPreviousErrorInDecoratedMethodSemanalPass3]
@@ -8626,8 +8629,10 @@ def func(x): pass
 B = func
 [out]
 ==
-main:5: error: Variable "a.A" is not valid as a type
-main:5: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+--zuban-diff main:5: error: Variable "a.A" is not valid as a type
+--zuban-diff main:5: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+main:5: error: Function "b.func" is not valid as a type
+main:5: note: Perhaps you need "Callable[...]" or a callback protocol?
 
 [case testLiteralFineGrainedVarConversion]
 import mod
