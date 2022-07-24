@@ -1647,8 +1647,8 @@ g1(f)
 def g2(f: Callable[[int], int]) -> None: pass
 g2(f)
 def g3(f: Callable[[object], object]) -> None: pass
-g3(f) # E: Argument 1 to "g3" has incompatible type "Callable[[T], T]"; \
-           expected "Callable[[object], object]"
+-- zuban-diff g3(f) # E: Argument 1 to "g3" has incompatible type "Callable[[T], T]"; expected "Callable[[object], object]"
+g3(f) # E: Argument 1 to "g3" has incompatible type "Callable[[Arg(T, 'x')], T]"; expected "Callable[[object], object]"
 
 [case testSubtypingWithGenericFunctionUsingTypevarWithValues2]
 from typing import TypeVar, Callable
