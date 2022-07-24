@@ -1217,7 +1217,8 @@ from foo import *
 [file foo.pyi]
 from typing import overload
 @overload
-def f(x: int) -> int: pass
+--zuban-diff def f(x: int) -> int: pass
+def f(x: int) -> int: pass # E: Overloaded function signatures 1 and 2 overlap with incompatible return types
 @overload
 def f(y: int) -> str: pass
 f(x=1)() # E: "int" not callable
