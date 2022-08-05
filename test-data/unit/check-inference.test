@@ -139,7 +139,8 @@ def f() -> None:
 import typing
 def f() -> None:
     a = g
-    a(B()) # E: Argument 1 has incompatible type "B"; expected "A"
+--zuban-diff    a(B()) # E: Argument 1 has incompatible type "B"; expected "A"
+    a(B()) # E: Argument 1 to "g" has incompatible type "B"; expected "A"
     a(A())
 
 def g(a: 'A') -> None: pass
@@ -152,7 +153,8 @@ class B: pass
 import typing
 def f() -> None:
     a = A
-    a(A()) # E: Too many arguments
+--zuban-diff    a(A()) # E: Too many arguments
+    a(A()) # E: Too many arguments for "A"
     a()
     t = a # type: type
 
@@ -402,10 +404,13 @@ b = None # type: B
 c = None # type: Tuple[A, object]
 
 if int():
-    b = id(a) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
-    a = id(b) # E: Incompatible types in assignment (expression has type "B", variable has type "A")
+--zuban-diff     b = id(a) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+    b = id(a) # E: Argument 1 to "id" has incompatible type "A"; expected "B"
+--zuban-diff     a = id(b) # E: Incompatible types in assignment (expression has type "B", variable has type "A")
+    a = id(b) # E: Argument 1 to "id" has incompatible type "B"; expected "A"
 if int():
-    a = id(c) # E: Incompatible types in assignment (expression has type "Tuple[A, object]", variable has type "A")
+--zuban-diff    a = id(c) # E: Incompatible types in assignment (expression has type "Tuple[A, object]", variable has type "A")
+    a = id(c) # E: Argument 1 to "id" has incompatible type "tuple[A, object]"; expected "A"
 
 if int():
     a = id(a)
@@ -426,7 +431,8 @@ def f() -> None:
     b = None # type: int
     c = None # type: str
     if int():
-        b = a(c) # E: Incompatible types in assignment (expression has type "str", variable has type "int")
+--zuban-diff        b = a(c) # E: Incompatible types in assignment (expression has type "str", variable has type "int")
+        b = a(c) # E: Argument 1 to "id" has incompatible type "str"; expected "int"
         b = a(b)
         c = a(c)
 def id(x: T) -> T:
@@ -459,9 +465,11 @@ a = None # type: A
 b = None # type: B
 
 if int():
-    b = f(a, b) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+--zuban-diff     b = f(a, b) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+    b = f(a, b) # E: Argument 1 to "f" has incompatible type "A"; expected "B"
 if int():
-    b = f(b, a) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+--zuban-diff     b = f(b, a) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+    b = f(b, a) # E: Argument 2 to "f" has incompatible type "A"; expected "B"
 if int():
     a = f(a, b)
 if int():
