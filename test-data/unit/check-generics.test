@@ -526,19 +526,15 @@ IntIntNode = Node[int, int]
 SameNode = Node[T, T]
 
 n = Node(1, 1) # type: IntIntNode
--- zuban-diff n1 = Node(1, 'a') # type: IntIntNode # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
-n1 = Node(1, 'a') # type: IntIntNode # E: Incompatible types in assignment (expression has type "Node[int, str]", variable has type "Node[int, int]")
+n1 = Node(1, 'a') # type: IntIntNode # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
 
 m = Node(1, 1) # type: IntNode
--- zuban-diff m1 = Node('x', 1) # type: IntNode # E: Argument 1 to "Node" has incompatible type "str"; expected "int"
-m1 = Node('x', 1) # type: IntNode # E: Incompatible types in assignment (expression has type "Node[str, int]", variable has type "Node[int, Any]")
--- zuban-diff m2 = Node(1, 1) # type: IntNode[str] # E: Argument 2 to "Node" has incompatible type "int"; expected "str"
-m2 = Node(1, 1) # type: IntNode[str] # E: Incompatible types in assignment (expression has type "Node[int, int]", variable has type "Node[int, str]")
+m1 = Node('x', 1) # type: IntNode # E: Argument 1 to "Node" has incompatible type "str"; expected "int"
+m2 = Node(1, 1) # type: IntNode[str] # E: Argument 2 to "Node" has incompatible type "int"; expected "str"
 
 s = Node(1, 1) # type: SameNode[int]
 reveal_type(s) # N: Revealed type is "__main__.Node[builtins.int, builtins.int]"
--- zuban-diff s1 = Node(1, 'x') # type: SameNode[int] # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
-s1 = Node(1, 'x') # type: SameNode[int] # E: Incompatible types in assignment (expression has type "Node[int, str]", variable has type "Node[int, int]")
+s1 = Node(1, 'x') # type: SameNode[int] # E: Argument 2 to "Node" has incompatible type "str"; expected "int"
 
 [out]
 
@@ -723,8 +719,7 @@ L[int]().append(Node((1, 1)))
 L[int]().append(5) # E: Argument 1 to "append" of "list" has incompatible type "int"; expected "Node[Tuple[int, int]]"
 
 x = D((1, 1)) # type: D[int]
--- zuban-diff: y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[int, int]"
-y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[T, T]"
+y = D(5) # type: D[int] # E: Argument 1 to "D" has incompatible type "int"; expected "Tuple[int, int]"
 
 def f(x: T) -> D[T]:
     return D((x, x))
@@ -1445,8 +1440,10 @@ def f(a: List[T]) -> T: pass
 a, b = None, None # type: (A, B)
 
 if int():
-    b = f([a]) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
-    a = f([b]) # E: Incompatible types in assignment (expression has type "B", variable has type "A")
+--zuban-diff     b = f([a]) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
+    b = f([a]) # E: Argument 1 to "f" has incompatible type "list[A]"; expected "list[B]"
+--zuban-diff     a = f([b]) # E: Incompatible types in assignment (expression has type "B", variable has type "A")
+    a = f([b]) # E: Argument 1 to "f" has incompatible type "list[B]"; expected "list[A]"
 if int():
     a = f(b)   # E: Incompatible types in assignment (expression has type "B", variable has type "A")
 

@@ -548,8 +548,7 @@ from typing import TypeVar, Generic
 c: C[int]
 c2: C[int, str] # E: "C" expects 1 type argument, but 2 given
 c3: C
---zuban-diff c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
-c = C('') # E: Incompatible types in assignment (expression has type "C[str]", variable has type "C[int]")
+--c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
 reveal_type(c.get()) # N: Revealed type is "builtins.int"
 reveal_type(c2) # N: Revealed type is "__main__.C[Any]"
 reveal_type(c3) # N: Revealed type is "__main__.C[Any]"
@@ -577,8 +576,7 @@ T = TypeVar('T')
 
 c: C[int]
 reveal_type(c) # N: Revealed type is "__main__.C[builtins.int]"
---zuban-diff c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
-c = C('') # E: Incompatible types in assignment (expression has type "C[str]", variable has type "C[int]")
+c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
 reveal_type(c.get()) # N: Revealed type is "builtins.int"
 
 [case testNewAnalyzerTypeAlias]
