@@ -804,8 +804,7 @@ reveal_type(x) # N: Revealed type is "builtins.int"
 def f2(x: IntTP[T]) -> IntTP[T]:
     return x
 
--- zuban-diff f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, <nothing>]"
-f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, T]"
+f2((1, 2, 3)) # E: Argument 1 to "f2" has incompatible type "Tuple[int, int, int]"; expected "Tuple[int, <nothing>]"
 reveal_type(f2((1, 'x'))) # N: Revealed type is "Tuple[builtins.int, builtins.str]"
 
 [builtins fixtures/for.pyi]
