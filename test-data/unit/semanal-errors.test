@@ -61,7 +61,7 @@ y = 0 # type: A[A]
 [out]
 main:5: error: "B" expects 1 type argument, but 2 given
 --zuban-diff
-main:5: error: Incompatible types in assignment (expression has type "int", variable has type "B[Any]")
+main:5: error: Incompatible types in assignment (expression has type "int", variable has type "B[A]")
 main:6: error: "A" expects no type arguments, but 1 given
 --zuban-diff
 main:6: error: Incompatible types in assignment (expression has type "int", variable has type "A")

@@ -550,7 +550,8 @@ c2: C[int, str] # E: "C" expects 1 type argument, but 2 given
 c3: C
 --c = C('') # E: Argument 1 to "C" has incompatible type "str"; expected "int"
 reveal_type(c.get()) # N: Revealed type is "builtins.int"
-reveal_type(c2) # N: Revealed type is "__main__.C[Any]"
+--zuban-diff reveal_type(c2) # N: Revealed type is "__main__.C[Any]"
+reveal_type(c2) # N: Revealed type is "__main__.C[int]"
 reveal_type(c3) # N: Revealed type is "__main__.C[Any]"
 
 T = TypeVar('T')
