@@ -459,8 +459,10 @@ def g(x: T) -> T: pass
 c1(g(''))
 c2(g(1))
 c3(g(''))
-c2(g(''))  # E: Argument 1 to "c2" has incompatible type "str"; expected "int"
-c3(g(1))   # E: Argument 1 to "c3" has incompatible type "int"; expected "str"
+--zuban-diff c2(g(''))  # E: Argument 1 to "c2" has incompatible type "str"; expected "int"
+c2(g(''))  # E: Argument 1 to "g" has incompatible type "str"; expected "int"
+--zuban-diff c3(g(1))   # E: Argument 1 to "c3" has incompatible type "int"; expected "str"
+c3(g(1))   # E: Argument 1 to "g" has incompatible type "int"; expected "str"
 
 [case testTypeVarWithValueInferredFromObjectReturnTypeContext2]
 from typing import TypeVar

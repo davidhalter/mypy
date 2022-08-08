@@ -373,7 +373,8 @@ ao = None # type: List[object]
 a = None # type: A
 def f(): a, aa, ao # Prevent redefinition
 
-a = [] # E: Incompatible types in assignment (expression has type "List[<nothing>]", variable has type "A")
+--zuban-diff a = [] # E: Incompatible types in assignment (expression has type "List[<nothing>]", variable has type "A")
+a = [] # E: Incompatible types in assignment (expression has type "List[Any]", variable has type "A")
 
 aa = []
 ao = []
