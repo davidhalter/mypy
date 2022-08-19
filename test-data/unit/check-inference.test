@@ -564,9 +564,11 @@ a = None # type: A
 o = None # type: object
 
 if int():
-    a = f(o)    # E: Incompatible types in assignment (expression has type "object", variable has type "A")
+--zuban-diff     a = f(o)    # E: Incompatible types in assignment (expression has type "object", variable has type "A")
+    a = f(o)    # E: Argument 1 to "f" has incompatible type "object"; expected "A"
 if int():
-    a = g(a, o) # E: Incompatible types in assignment (expression has type "object", variable has type "A")
+--zuban-diff     a = g(a, o) # E: Incompatible types in assignment (expression has type "object", variable has type "A")
+    a = g(a, o) # E: Argument 2 to "g" has incompatible type "object"; expected "A"
 
 if int():
     o = f()
