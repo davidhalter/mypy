@@ -108,15 +108,13 @@ if int():
 
 def l(x) -> None: ...
 def r(__, *, x) -> None: ...
---zuban-diff r = l # E: Incompatible types in assignment (expression has type "Callable[[Any], None]", variable has type "Callable[[Any, NamedArg(Any, 'x')], None]")
-r = l # E: Incompatible types in assignment (expression has type "Callable[[Arg(Any, 'x')], None]", variable has type "Callable[[Arg(Any, '__'), NamedArg(Any, 'x')], None]")
+r = l # E: Incompatible types in assignment (expression has type "Callable[[Any], None]", variable has type "Callable[[Any, NamedArg(Any, 'x')], None]")
 
 [case testSubtypingFunctionsRequiredLeftArgNotPresent]
 
 def l(x, y) -> None: ...
 def r(x) -> None: ...
---zuban-diff r = l # E: Incompatible types in assignment (expression has type "Callable[[Any, Any], None]", variable has type "Callable[[Any], None]")
-r = l # E: Incompatible types in assignment (expression has type "Callable[[Arg(Any, 'x'), Arg(Any, 'y')], None]", variable has type "Callable[[Arg(Any, 'x')], None]")
+r = l # E: Incompatible types in assignment (expression has type "Callable[[Any, Any], None]", variable has type "Callable[[Any], None]")
 
 [case testSubtypingFunctionsImplicitNames]
 from typing import Any
@@ -2162,8 +2160,7 @@ def h(x): pass
 def j(y) -> Any: pass
 f = h
 f = j # E: Incompatible types in assignment (expression has type "Callable[[Arg(Any, 'y')], Any]", variable has type "Callable[[Arg(Any, 'x')], Any]")
---zuban-diff f = g # E: Incompatible types in assignment (expression has type "Callable[[Any, Any], Any]", variable has type "Callable[[Any], Any]")
-f = g # E: Incompatible types in assignment (expression has type "Callable[[Arg(Any, 'x'), Arg(Any, 'y')], Any]", variable has type "Callable[[Arg(Any, 'x')], Any]")
+f = g # E: Incompatible types in assignment (expression has type "Callable[[Any, Any], Any]", variable has type "Callable[[Any], Any]")
 
 [case testRedefineFunction2]
 def f() -> None: pass
