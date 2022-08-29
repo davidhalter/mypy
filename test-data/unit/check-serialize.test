@@ -710,7 +710,8 @@ def f() -> None: pass
 def f(x: int) -> None: pass
 [builtins fixtures/tuple.pyi]
 [out2]
-tmp/a.py:5: error: Incompatible types in assignment (expression has type overloaded function, variable has type "type")
+--zuban-diff tmp/a.py:5: error: Incompatible types in assignment (expression has type overloaded function, variable has type "type")
+tmp/a.py:5: error: Incompatible types in assignment (expression has type "overloaded function", variable has type "type")
 
 [case testSerializeNamedTupleInMethod4]
 from ntcrash import C

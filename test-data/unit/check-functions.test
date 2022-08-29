@@ -362,7 +362,8 @@ g = None # type: Callable[[B], B]
 h = None # type: Callable[[A], AA]
 
 if int():
-    h = i  # E: Incompatible types in assignment (expression has type overloaded function, variable has type "Callable[[A], AA]")
+--zuban-diff     h = i  # E: Incompatible types in assignment (expression has type overloaded function, variable has type "Callable[[A], AA]")
+    h = i  # E: Incompatible types in assignment (expression has type "overloaded function", variable has type "Callable[[A], AA]")
 if int():
     f = j
 
@@ -409,7 +410,8 @@ if int():
 if int():
     b = f(c)  # E: Incompatible types in assignment (expression has type "C", variable has type "B")
 if int():
-    g4 = f    # E: Incompatible types in assignment (expression has type overloaded function, variable has type "Callable[[A], B]")
+--zuban-diff     g4 = f    # E: Incompatible types in assignment (expression has type overloaded function, variable has type "Callable[[A], B]")
+    g4 = f    # E: Incompatible types in assignment (expression has type "overloaded function", variable has type "Callable[[A], B]")
 
 if int():
     g1 = f

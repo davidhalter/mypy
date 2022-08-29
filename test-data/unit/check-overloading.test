@@ -623,7 +623,8 @@ o = None # type: object
 a = None # type: A
 
 if int():
-    a = f # E: Incompatible types in assignment (expression has type overloaded function, variable has type "A")
+--zuban-diff     a = f # E: Incompatible types in assignment (expression has type overloaded function, variable has type "A")
+    a = f # E: Incompatible types in assignment (expression has type "overloaded function", variable has type "A")
 if int():
     o = f
 
