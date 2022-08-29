@@ -661,8 +661,11 @@ class A:
     g = f
 a = None # type: A
 a.g(object())
-a.g(a, a) # E: Too many arguments
-a.g()     # E: Too few arguments
+--zuban-diff a.g(a, a) # E: Too many arguments
+a.g(a, a) # E: Too many arguments for "f" of "A"
+--zuban-diff a.g()     # E: Too few arguments
+a.g()     # E: Missing positional argument "x" in call to "f" of "A"
+
 
 [case testMethodAsDataAttributeInGenericClass]
 from typing import TypeVar, Generic
@@ -673,7 +676,9 @@ class A(Generic[t]):
     g = f
 a = None # type: A[B]
 a.g(B())
-a.g(a)   # E: Argument 1 has incompatible type "A[B]"; expected "B"
+--zuban-diff a.g(a)   # E: Argument 1 has incompatible type "A[B]"; expected "B"
+a.g(a)   # E: Argument 1 to "f" of "A" has incompatible type "A[B]"; expected "B"
+
 
 [case testInvalidMethodAsDataAttributeInGenericClass]
 from typing import Any, TypeVar, Generic, Callable
