@@ -320,7 +320,8 @@ def f(x: 'A') -> 'A': ...
 @overload
 def f(x: 'B') -> 'B': ...
 
-def f(x: Union[T, B]) -> T:  # E: Overloaded function implementation cannot satisfy signature 2 due to inconsistencies in how they use type variables
+--zuban-diff def f(x: Union[T, B]) -> T:  # E: Overloaded function implementation cannot satisfy signature 2 due to inconsistencies in how they use type variables
+def f(x: Union[T, B]) -> T:  # E: Overloaded function implementation cannot produce return type of signature 2
     ...
 
 reveal_type(f(A())) # N: Revealed type is "__main__.A"
