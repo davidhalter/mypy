@@ -4973,10 +4973,8 @@ x: Any
 reveal_type(attr(x)) # N: Revealed type is "Any"
 attr("hi", 1)  # E: No overload variant of "attr" matches argument types "str", "int" \
                # N: Possible overload variants: \
---zuban-diff               # N:     def [T in (int, float)] attr(default: T = ..., blah: int = ...) -> T \
-               # N:     def [T in (int, float)] attr(default: T, blah: int) -> T \
---zuban-diff                # N:     def attr(default: Any = ...) -> int
-               # N:     def attr(default: Any) -> int
+               # N:     def [T in (int, float)] attr(default: T = ..., blah: int = ...) -> T \
+               # N:     def attr(default: Any = ...) -> int
 [file lib.pyi]
 from typing import overload, Any, TypeVar
 
@@ -4998,10 +4996,8 @@ x: Any
 reveal_type(attr(x)) # N: Revealed type is "Any"
 attr("hi", 1)  # E: No overload variant of "attr" matches argument types "str", "int" \
                # N: Possible overload variants: \
---zuban-diff                # N:     def [T <: int] attr(default: T = ..., blah: int = ...) -> T \
-               # N:     def [T <: int] attr(default: T, blah: int) -> T \
---zuban-diff                # N:     def attr(default: Any = ...) -> int
-               # N:     def attr(default: Any) -> int
+               # N:     def [T <: int] attr(default: T = ..., blah: int = ...) -> T \
+               # N:     def attr(default: Any = ...) -> int
 [file lib.pyi]
 from typing import overload, TypeVar, Any
 
