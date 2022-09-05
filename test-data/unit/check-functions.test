@@ -1759,7 +1759,8 @@ from typing import Callable
 
 def Arg(x, y): pass
 
-F = Callable[[Arg(int, 'x')], int]  # E: Invalid argument constructor "__main__.Arg"
+--zuban-diff F = Callable[[Arg(int, 'x')], int]  # E: Invalid argument constructor "__main__.Arg"
+F = Callable[[Arg(int, 'x')], int]  # E: Invalid type comment or annotation
 
 [case testCallableParsingFromExpr]
 
@@ -1772,20 +1773,25 @@ def WrongArg(x, y): return y
 # and a consequence of Callable being set to an int in the test stub.  We can't set it to
 # something else sensible, because other tests require the stub not have anything
 # that looks like a function call.
-F = Callable[[WrongArg(int, 'x')], int] # E: Invalid argument constructor "__main__.WrongArg"
+--zuban-diff F = Callable[[WrongArg(int, 'x')], int] # E: Invalid argument constructor "__main__.WrongArg"
+F = Callable[[WrongArg(int, 'x')], int] # E: Invalid type comment or annotation
 G = Callable[[Arg(1, 'x')], int] # E: Invalid type: try using Literal[1] instead?
-H = Callable[[VarArg(int, 'x')], int] # E: VarArg arguments should not have names
+--zuban-diff H = Callable[[VarArg(int, 'x')], int] # E: VarArg arguments should not have names
+H = Callable[[VarArg(int, 'x')], int] # E: Too many arguments for "VarArg"
 I = Callable[[VarArg(int)], int] # ok
 J = Callable[[VarArg(), KwArg()], int] # ok
 K = Callable[[VarArg(), int], int] # E: Required positional args may not appear after default, named or var args
 L = Callable[[Arg(name='x', type=int)], int] # ok
 # I have commented out the following test because I don't know how to expect the "defined here" note part of the error.
-# M = Callable[[Arg(gnome='x', type=int)], int]   E: Invalid type alias: expression is not a valid type   E: Unexpected keyword argument "gnome" for "Arg"
+--zuban-diff # M = Callable[[Arg(gnome='x', type=int)], int]   E: Invalid type alias: expression is not a valid type   E: Unexpected keyword argument "gnome" for "Arg"
 N = Callable[[Arg(name=None, type=int)], int] # ok
-O = Callable[[List[Arg(int)]], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: Type expected within [...] # E: The type "Type[List[Any]]" is not generic and not indexable
+--zuban-diff O = Callable[[List[Arg(int)]], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: Type expected within [...] # E: The type "Type[List[Any]]" is not generic and not indexable
+O = Callable[[List[Arg(int)]], int]  # E: Invalid type
 P = Callable[[mypy_extensions.VarArg(int)], int] # ok
-Q = Callable[[Arg(int, type=int)], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "type"
-R = Callable[[Arg(int, 'x', name='y')], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "name"
+--zuban-diff Q = Callable[[Arg(int, type=int)], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "type"
+Q = Callable[[Arg(int, type=int)], int]  # E: "Arg" gets multiple values for keyword argument "type"
+--zuban-diff R = Callable[[Arg(int, 'x', name='y')], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "name"
+R = Callable[[Arg(int, 'x', name='y')], int]  # E: Unexpected keyword argument "name" for "Arg"
 
 [builtins fixtures/dict.pyi]
 
@@ -1795,13 +1801,16 @@ from mypy_extensions import Arg, VarArg, KwArg
 
 def WrongArg(x, y): return y
 
-def b(f: Callable[[Arg(1, 'x')], int]): pass # Invalid type. Try using Literal[1] instead?
+--zuban-diff def b(f: Callable[[Arg(1, 'x')], int]): pass # Invalid type. Try using Literal[1] instead?
+def b(f: Callable[[Arg(1, 'x')], int]): pass # E: Invalid type: Try using Literal[1] instead?
 def d(f: Callable[[VarArg(int)], int]): pass # ok
 def e(f: Callable[[VarArg(), KwArg()], int]): pass # ok
 def g(f: Callable[[Arg(name='x', type=int)], int]): pass # ok
-def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass  # E: Unexpected argument "gnome" for argument constructor
+--zuban-diff def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass  # E: Unexpected argument "gnome" for argument constructor
+def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass  # E: Unexpected keyword argument "gnome" for "Arg"
 def i(f: Callable[[Arg(name=None, type=int)], int]): pass # ok
-def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: "Arg" gets multiple values for keyword argument "name"
+--zuban-diff def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: "Arg" gets multiple values for keyword argument "name"
+def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: Unexpected keyword argument "name" for "Arg"
 def k(f: Callable[[Arg(int, type=int)], int]): pass # E: "Arg" gets multiple values for keyword argument "type"
 
 [builtins fixtures/dict.pyi]
@@ -1812,7 +1821,8 @@ from mypy_extensions import Arg, VarArg as VARG, KwArg
 import mypy_extensions as ext
 
 def WrongArg(x, y): return y
-def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid argument constructor "__main__.WrongArg"
+--zuban-diff def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid argument constructor "__main__.WrongArg"
+def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid type comment or annotation
 def b(f: Callable[[BadArg(int, 'x')], int]): pass # E: Name "BadArg" is not defined
 def d(f: Callable[[ext.VarArg(int)], int]): pass # ok
 def e(f: Callable[[VARG(), ext.KwArg()], int]): pass # ok
@@ -1825,7 +1835,8 @@ def f2(*args, **kwargs) -> int: pass
 d(f1)
 e(f2)
 d(f2)
-e(f1)  # E: Argument 1 to "e" has incompatible type "Callable[[VarArg(Any)], int]"; expected "Callable[[VarArg(Any), KwArg(Any)], int]"
+--zuban-diff e(f1)  # E: Argument 1 to "e" has incompatible type "Callable[[VarArg(Any)], int]"; expected "Callable[[VarArg(Any), KwArg(Any)], int]"
+e(f1)  # E: Argument 1 to "e" has incompatible type "Callable[[VarArg(Any)], int]"; expected "Callable[[Any, Any], int]"
 
 [builtins fixtures/dict.pyi]
 
@@ -1838,7 +1849,8 @@ def b(f: Callable[[Arg(1, 'x')], int]): pass # E: Invalid type: try using Litera
 [case testCallableTooManyVarArg]
 from typing import Callable
 from mypy_extensions import VarArg
-def c(f: Callable[[VarArg(int, 'x')], int]): pass # E: VarArg arguments should not have names
+--zuban-diff def c(f: Callable[[VarArg(int, 'x')], int]): pass # E: VarArg arguments should not have names
+def c(f: Callable[[VarArg(int, 'x')], int]): pass # E: Too many arguments for "VarArg"
 [builtins fixtures/dict.pyi]
 
 [case testCallableFastParseGood]
@@ -1853,7 +1865,8 @@ def i(f: Callable[[Arg(name=None, type=int)], int]): pass # ok
 [case testCallableFastParseBadArgArgName]
 from typing import Callable
 from mypy_extensions import Arg
-def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass # E: Unexpected argument "gnome" for argument constructor
+--zuban-diff def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass # E: Unexpected argument "gnome" for argument constructor
+def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass # E: Unexpected keyword argument "gnome" for "Arg"
 [builtins fixtures/dict.pyi]
 
 [case testCallableKindsOrdering]
@@ -1872,7 +1885,8 @@ def k(f: Callable[[KwArg(), NamedArg(Any, 'x')], int]): pass # E: A **kwargs arg
 from typing import Callable
 from mypy_extensions import Arg, VarArg, KwArg, DefaultArg
 
-def f(f: Callable[[Arg(int, 'x'), int, Arg(int, 'x')], int]): pass # E: Duplicate argument "x" in Callable
+--zuban-diff def f(f: Callable[[Arg(int, 'x'), int, Arg(int, 'x')], int]): pass # E: Duplicate argument "x" in Callable
+def f(f: Callable[[Arg(int, 'x'), Arg(int, 'x')], int]): pass # E: Duplicate argument "x" in Callable
 
 [builtins fixtures/dict.pyi]
 
