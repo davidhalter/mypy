@@ -1784,6 +1784,7 @@ K = Callable[[VarArg(), int], int] # E: Required positional args may not appear 
 L = Callable[[Arg(name='x', type=int)], int] # ok
 # I have commented out the following test because I don't know how to expect the "defined here" note part of the error.
 --zuban-diff # M = Callable[[Arg(gnome='x', type=int)], int]   E: Invalid type alias: expression is not a valid type   E: Unexpected keyword argument "gnome" for "Arg"
+M = Callable[[Arg(gnome='x', type=int)], int] # E: Unexpected keyword argument "gnome" for "Arg"
 N = Callable[[Arg(name=None, type=int)], int] # ok
 --zuban-diff O = Callable[[List[Arg(int)]], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: Type expected within [...] # E: The type "Type[List[Any]]" is not generic and not indexable
 O = Callable[[List[Arg(int)]], int]  # E: Invalid type
