@@ -1791,7 +1791,7 @@ P = Callable[[mypy_extensions.VarArg(int)], int] # ok
 --zuban-diff Q = Callable[[Arg(int, type=int)], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "type"
 Q = Callable[[Arg(int, type=int)], int]  # E: "Arg" gets multiple values for keyword argument "type"
 --zuban-diff R = Callable[[Arg(int, 'x', name='y')], int]  # E: Invalid type alias: expression is not a valid type  # E: Value of type "int" is not indexable  # E: "Arg" gets multiple values for keyword argument "name"
-R = Callable[[Arg(int, 'x', name='y')], int]  # E: Unexpected keyword argument "name" for "Arg"
+R = Callable[[Arg(int, 'x', name='y')], int]  # E: "Arg" gets multiple values for keyword argument "name"
 
 [builtins fixtures/dict.pyi]
 
@@ -1809,8 +1809,7 @@ def g(f: Callable[[Arg(name='x', type=int)], int]): pass # ok
 --zuban-diff def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass  # E: Unexpected argument "gnome" for argument constructor
 def h(f: Callable[[Arg(gnome='x', type=int)], int]): pass  # E: Unexpected keyword argument "gnome" for "Arg"
 def i(f: Callable[[Arg(name=None, type=int)], int]): pass # ok
---zuban-diff def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: "Arg" gets multiple values for keyword argument "name"
-def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: Unexpected keyword argument "name" for "Arg"
+def j(f: Callable[[Arg(int, 'x', name='y')], int]): pass # E: "Arg" gets multiple values for keyword argument "name"
 def k(f: Callable[[Arg(int, type=int)], int]): pass # E: "Arg" gets multiple values for keyword argument "type"
 
 [builtins fixtures/dict.pyi]
