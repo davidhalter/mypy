@@ -6517,7 +6517,8 @@ def foo(a): ...
 
 foo(a=1)
 [out]
-main:9: error: No overload variant of "foo" matches argument type "int"
+--zuban-diff main:9: error: No overload variant of "foo" matches argument type "int"
+main:9: error: No overload variant of "foo" matches argument type "a=int"
 main:9: note: Possible overload variants:
 main:9: note:     def foo(int, /) -> Any
 main:9: note:     def foo(a: str) -> Any
