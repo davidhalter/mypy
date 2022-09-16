@@ -859,6 +859,8 @@ from typing import cast
 cast(str, *None) # E: "cast" must be called with 2 positional arguments
 cast(str, target=None) # E: "cast" must be called with 2 positional arguments
 [out]
+--zuban-diff
+main:2: error: "None" object is not iterable
 
 [case testInvalidAssertType]
 from typing import assert_type

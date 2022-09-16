@@ -12,8 +12,7 @@ U = Union[int, str]
 def f(x: U) -> None: pass
 f(1)
 f('')
---zuban-diff f(()) # E: Argument 1 to "f" has incompatible type "Tuple[]"; expected "Union[int, str]"
-f(()) # E: Argument 1 to "f" has incompatible type "Tuple[Any, ...]"; expected "Union[int, str]"
+f(()) # E: Argument 1 to "f" has incompatible type "Tuple[]"; expected "Union[int, str]"
 [targets __main__, __main__.f]
 [builtins fixtures/tuple.pyi]
 
@@ -65,8 +64,7 @@ from _m import U
 def f(x: U) -> None: pass
 f(1)
 f('x')
--- zuban-diff f(()) # E: Argument 1 to "f" has incompatible type "Tuple[]"; expected "Union[int, str]"
-f(()) # E: Argument 1 to "f" has incompatible type "tuple[Any, ...]"; expected "int | str"
+f(()) # E: Argument 1 to "f" has incompatible type "Tuple[]"; expected "Union[int, str]"
 [file _m.py]
 from typing import Union
 U = Union[int, str]

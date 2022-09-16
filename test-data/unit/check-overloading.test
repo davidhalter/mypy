@@ -1211,13 +1211,15 @@ from typing import overload
 def f(x: int, y: str) -> int: pass
 @overload
 def f(*x: str) -> str: pass
-f(*(1,))() # E: No overload variant of "f" matches argument type "Tuple[int]" \
+--zuban-diff f(*(1,))() # E: No overload variant of "f" matches argument type "Tuple[int]" \
+f(*(1,))() # E: No overload variant of "f" matches argument type "*Tuple[int]" \
            # N: Possible overload variants: \
            # N:     def f(x: int, y: str) -> int \
            # N:     def f(*x: str) -> str
 f(*('',))() # E: "str" not callable
 f(*(1, ''))() # E: "int" not callable
-f(*(1, '', 1))() # E: No overload variant of "f" matches argument type "Tuple[int, str, int]" \
+--zuban-diff f(*(1, '', 1))() # E: No overload variant of "f" matches argument type "Tuple[int, str, int]" \
+f(*(1, '', 1))() # E: No overload variant of "f" matches argument type "*Tuple[int, str, int]" \
                  # N: Possible overload variants: \
                  # N:     def f(x: int, y: str) -> int \
                  # N:     def f(*x: str) -> str
