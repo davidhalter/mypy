@@ -282,8 +282,10 @@ class CC(C): pass
 
 a = None # type: A
 
-f(*None)
-f(*a)    # E: List or tuple expected as variadic arguments
+--zuban-diff f(*None)
+f(*None) # E: "None" object is not iterable
+--zuban-diff f(*a)    # E: List or tuple expected as variadic arguments
+f(*a)    # E: "A" object is not iterable
 f(*(a,))
 
 def f(a: 'A') -> None:
@@ -324,6 +326,8 @@ main:5: error: Argument 1 to "f" has incompatible type "B"; expected "A"
 main:6: error: Argument 2 to "f" has incompatible type "A"; expected "B"
 main:7: error: Argument 3 to "f" has incompatible type "*List[A]"; expected "B"
 main:8: error: Argument 1 to "f" has incompatible type "B"; expected "A"
+main:9: error: Argument 1 to "g" has incompatible type "*List[B]"; expected "A"
+--zuban-diff
 main:9: error: Argument 1 to "g" has incompatible type "*List[B]"; expected "A"
 
 [case testCallingVarArgsFunctionWithTupleVarArgs]
@@ -770,7 +774,8 @@ bar(*good1)
 bar(*good2)
 bar(*good3)
 bar(*bad1)  # E: Argument 1 to "bar" has incompatible type "*I[str]"; expected "float"
-bar(*bad2)  # E: List or tuple expected as variadic arguments
+--zuban-diff bar(*bad2)  # E: List or tuple expected as variadic arguments
+bar(*bad2)  # E: "Bad[float]" object is not iterable
 [builtins fixtures/dict.pyi]
 
 -- Keyword arguments unpacking
