@@ -2507,7 +2507,8 @@ x: List[int]
 reveal_type(foo(*x))  # N: Revealed type is "__main__.C"
 
 y: List[str]
-foo(*y)  # E: No overload variant of "foo" matches argument type "List[str]" \
+--zuban-diff foo(*y)  # E: No overload variant of "foo" matches argument type "List[str]" \
+foo(*y)  # E: No overload variant of "foo" matches argument type "*List[str]" \
          # N: Possible overload variants: \
          # N:     def foo(x: int) -> A \
          # N:     def foo(x: int, y: int) -> B \
