@@ -345,7 +345,8 @@ from typing import Mapping
 class MappingSubclass(Mapping[str, str]): pass
 def f(**kwargs: 'A') -> None: pass
 d = None # type: MappingSubclass
-f(**d)
+--zuban-diff f(**d)
+f(**d)  # E: Argument 1 to "f" has incompatible type "**MappingSubclass"; expected "A"
 class A: pass
 [builtins fixtures/dict.pyi]
 
