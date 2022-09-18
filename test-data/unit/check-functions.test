@@ -190,7 +190,8 @@ if int():
 if int():
     ee_var = specific_1
 if int():
-    ee_def = specific_1
+--zuban-diff     ee_def = specific_1
+    ee_def = specific_1 # E: Incompatible types in assignment (expression has type "Callable[[int, str], None]", variable has type "Callable[[VarArg(Any), KwArg(Any)], None]")
 
 [builtins fixtures/dict.pyi]
 
