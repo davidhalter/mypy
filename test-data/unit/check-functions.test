@@ -1820,7 +1820,8 @@ def f2(*args, **kwargs) -> int: pass
 d(f1)
 e(f2)
 d(f2)
-e(f1)
+--zuban-diff e(f1)
+e(f1) # E: Argument 1 to "e" has incompatible type "Callable[[VarArg(Any)], int]"; expected "Callable[[VarArg(Any), KwArg(Any)], int]"
 
 [builtins fixtures/dict.pyi]
 
