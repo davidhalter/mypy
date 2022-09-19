@@ -512,7 +512,8 @@ def foo(x: Both, y: Both = ...) -> Both:  # E: Incompatible default for argument
 def bar(x: int, y: int = ...) -> int: ...
 @overload
 def bar(x: str, y: str = ...) -> str: ...
-def bar(x: Both, y: Both = ...) -> Both:
+--zuban-diff def bar(x: Both, y: Both = ...) -> Both:
+def bar(x: Both, y: Both = ...) -> Both: # E: Incompatible default for argument "y" (default has type "ellipsis", argument has type "Union[int, str]")
     raise NotImplementedError
 [builtins fixtures/exception.pyi]
 [out]
