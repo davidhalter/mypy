@@ -879,10 +879,12 @@ def fun2(v: Vec[T], scale: T) -> Vec[T]:
 reveal_type(fun1([(1, 1)])) # N: Revealed type is "builtins.int"
 --zuban-diff fun1(1) # E: Argument 1 to "fun1" has incompatible type "int"; expected "List[Tuple[bool, bool]]"
 fun1(1) # E: Argument 1 to "fun1" has incompatible type "int"; expected "List[Tuple[<nothing>, <nothing>]]"
-fun1([(1, 'x')]) # E: Cannot infer type argument 1 of "fun1"
+--zuban-diff fun1([(1, 'x')]) # E: Cannot infer type argument 1 of "fun1"
+fun1([(1, 'x')]) # E: List item 0 has incompatible type "tuple[int, str]"; expected "tuple[int, int]"
 
 reveal_type(fun2([(1, 1)], 1)) # N: Revealed type is "builtins.list[Tuple[builtins.int, builtins.int]]"
-fun2([('x', 'x')], 'x') # E: Value of type variable "T" of "fun2" cannot be "str"
+--zuban-diff fun2([('x', 'x')], 'x') # E: Value of type variable "T" of "fun2" cannot be "str"
+fun2([('x', 'x')], 'x') # E: List item 0 has incompatible type "tuple[str, str]"; expected "tuple[<nothing>, <nothing>]"
 
 [builtins fixtures/list.pyi]
 
