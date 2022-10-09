@@ -141,6 +141,7 @@ from mypy.types import (
     StarType,
     TupleType,
     Type,
+    TypeAliasType,
     TypedDictType,
     TypeOfAny,
     TypeType,
@@ -195,10 +196,12 @@ class TooManyUnions(Exception):
     """
 
 
-def allow_fast_container_literal(t: ProperType) -> bool:
+def allow_fast_container_literal(t: Type) -> bool:
+    if isinstance(t, TypeAliasType) and t.is_recursive:
+        return False
+    t = get_proper_type(t)
     return isinstance(t, Instance) or (
-        isinstance(t, TupleType)
-        and all(allow_fast_container_literal(get_proper_type(it)) for it in t.items)
+        isinstance(t, TupleType) and all(allow_fast_container_literal(it) for it in t.items)
     )
 
 
@@ -821,10 +824,11 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                     lvalue_type=item_expected_type,
                     rvalue=item_value,
                     context=item_value,
-                    msg=message_registry.INCOMPATIBLE_TYPES.value,
+                    msg=ErrorMessage(
+                        message_registry.INCOMPATIBLE_TYPES.value, code=codes.TYPEDDICT_ITEM
+                    ),
                     lvalue_name=f'TypedDict item "{item_name}"',
                     rvalue_name="expression",
-                    code=codes.TYPEDDICT_ITEM,
                 )
 
         return orig_ret_type
@@ -1505,7 +1509,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             res = type_object_type(item.type, self.named_type)
             if isinstance(res, CallableType):
                 res = res.copy_modified(from_type_type=True)
-            expanded = get_proper_type(expand_type_by_instance(res, item))
+            expanded = expand_type_by_instance(res, item)
             if isinstance(expanded, CallableType):
                 # Callee of the form Type[...] should never be generic, only
                 # proper class objects can be.
@@ -3723,6 +3727,11 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         )
         target_type = expr.type
         if not is_same_type(source_type, target_type):
+            if not self.chk.in_checked_function():
+                self.msg.note(
+                    '"assert_type" expects everything to be "Any" in unchecked functions',
+                    expr.expr,
+                )
             self.msg.assert_type_fail(source_type, target_type, expr)
         return source_type
 
@@ -4597,7 +4606,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         #
         # TODO: Always create a union or at least in more cases?
         if isinstance(get_proper_type(self.type_context[-1]), UnionType):
-            res = make_simplified_union([if_type, full_context_else_type])
+            res: Type = make_simplified_union([if_type, full_context_else_type])
         else:
             res = join.join_types(if_type, else_type)
 

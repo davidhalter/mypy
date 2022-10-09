@@ -582,20 +582,18 @@ class MessageBuilder:
                     )
                     return codes.INDEX
                 else:
-                    msg = "{} (expression has type {}, target has type {})"
                     arg_type_str, callee_type_str = format_type_distinctly(
                         arg_type, callee.arg_types[n - 1]
                     )
-                    self.fail(
-                        msg.format(
-                            message_registry.INCOMPATIBLE_TYPES_IN_ASSIGNMENT,
-                            arg_type_str,
-                            callee_type_str,
-                        ),
-                        context,
-                        code=codes.ASSIGNMENT,
+                    info = (
+                        f" (expression has type {arg_type_str}, "
+                        f"target has type {callee_type_str})"
                     )
-                    return codes.ASSIGNMENT
+                    error_msg = (
+                        message_registry.INCOMPATIBLE_TYPES_IN_ASSIGNMENT.with_additional_msg(info)
+                    )
+                    self.fail(error_msg.value, context, code=error_msg.code)
+                    return error_msg.code
 
             target = f"to {name} "
 
@@ -793,8 +791,8 @@ class MessageBuilder:
             if names:
                 missing_arguments = '"' + '", "'.join(names) + '"'
                 self.note(
-                    f'This may be because "{original_caller_type.name}" has arguments '
-                    f"named: {missing_arguments}",
+                    f'This is likely because "{original_caller_type.name}" has named arguments: '
+                    f"{missing_arguments}. Consider marking them positional-only",
                     context,
                     code=code,
                 )
@@ -1216,6 +1214,9 @@ class MessageBuilder:
     def undefined_in_superclass(self, member: str, context: Context) -> None:
         self.fail(f'"{member}" undefined in superclass', context)
 
+    def variable_may_be_undefined(self, name: str, context: Context) -> None:
+        self.fail(f'Name "{name}" may be undefined', context, code=codes.PARTIALLY_DEFINED)
+
     def first_argument_for_super_must_be_type(self, actual: Type, context: Context) -> None:
         actual = get_proper_type(actual)
         if isinstance(actual, Instance):
@@ -1228,6 +1229,14 @@ class MessageBuilder:
             f'Argument 1 for "super" must be a type object; got {type_str}',
             context,
             code=codes.ARG_TYPE,
+        )
+
+    def unsafe_super(self, method: str, cls: str, ctx: Context) -> None:
+        self.fail(
+            'Call to abstract method "{}" of "{}" with trivial body'
+            " via super() is unsafe".format(method, cls),
+            ctx,
+            code=codes.SAFE_SUPER,
         )
 
     def too_few_string_formatting_arguments(self, context: Context) -> None:
@@ -1301,8 +1310,17 @@ class MessageBuilder:
             context,
         )
 
-    def incompatible_conditional_function_def(self, defn: FuncDef) -> None:
+    def incompatible_conditional_function_def(
+        self, defn: FuncDef, old_type: FunctionLike, new_type: FunctionLike
+    ) -> None:
         self.fail("All conditional function variants must have identical signatures", defn)
+        if isinstance(old_type, (CallableType, Overloaded)) and isinstance(
+            new_type, (CallableType, Overloaded)
+        ):
+            self.note("Original:", defn)
+            self.pretty_callable_or_overload(old_type, defn, offset=4)
+            self.note("Redefinition:", defn)
+            self.pretty_callable_or_overload(new_type, defn, offset=4)
 
     def cannot_instantiate_abstract_class(
         self, class_name: str, abstract_attributes: dict[str, bool], context: Context
@@ -1323,15 +1341,16 @@ class MessageBuilder:
             return
         if len(attrs_with_none) == 1:
             note = (
-                "The following method was marked implicitly abstract because it has an empty "
-                "function body: {}. If it is not meant to be abstract, explicitly return None."
+                f"{attrs_with_none[0]} is implicitly abstract because it has an empty function "
+                "body. If it is not meant to be abstract, explicitly `return` or `return None`."
             )
         else:
             note = (
                 "The following methods were marked implicitly abstract because they have empty "
-                "function bodies: {}. If they are not meant to be abstract, explicitly return None."
+                f"function bodies: {format_string_list(attrs_with_none)}. "
+                "If they are not meant to be abstract, explicitly `return` or `return None`."
             )
-        self.note(note.format(format_string_list(attrs_with_none)), context, code=codes.ABSTRACT)
+        self.note(note, context, code=codes.ABSTRACT)
 
     def base_class_definitions_incompatible(
         self, name: str, base1: TypeInfo, base2: TypeInfo, context: Context
@@ -1729,7 +1748,9 @@ class MessageBuilder:
 
     def concrete_only_call(self, typ: Type, context: Context) -> None:
         self.fail(
-            f"Only concrete class can be given where {format_type(typ)} is expected", context
+            f"Only concrete class can be given where {format_type(typ)} is expected",
+            context,
+            code=codes.TYPE_ABSTRACT,
         )
 
     def cannot_use_function_with_type(

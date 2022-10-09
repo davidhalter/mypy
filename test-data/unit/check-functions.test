@@ -469,6 +469,7 @@ if int():
 
 
 [case testCallingFunctionsWithDefaultArgumentValues]
+# flags: --implicit-optional --no-strict-optional
 
 a, b = None, None # type: (A, B)
 if int():
@@ -1404,7 +1405,11 @@ x = None # type: Any
 if x:
     def f(x: int) -> None: pass
 else:
-    def f(x): pass # E: All conditional function variants must have identical signatures
+    def f(x): pass # E: All conditional function variants must have identical signatures \
+                   # N: Original: \
+                   # N:     def f(x: int) -> None \
+                   # N: Redefinition: \
+                   # N:     def f(x: Any) -> Any
 
 [case testIncompatibleConditionalFunctionDefinition2]
 from typing import Any
@@ -1412,7 +1417,11 @@ x = None # type: Any
 if x:
     def f(x: int) -> None: pass
 else:
-    def f(y: int) -> None: pass # E: All conditional function variants must have identical signatures
+    def f(y: int) -> None: pass # E: All conditional function variants must have identical signatures \
+                                # N: Original: \
+                                # N:     def f(x: int) -> None \
+                                # N: Redefinition: \
+                                # N:     def f(y: int) -> None
 
 [case testIncompatibleConditionalFunctionDefinition3]
 from typing import Any
@@ -1420,7 +1429,11 @@ x = None # type: Any
 if x:
     def f(x: int) -> None: pass
 else:
-    def f(x: int = 0) -> None: pass # E: All conditional function variants must have identical signatures
+    def f(x: int = 0) -> None: pass # E: All conditional function variants must have identical signatures \
+                                    # N: Original: \
+                                    # N:     def f(x: int) -> None \
+                                    # N: Redefinition: \
+                                    # N:     def f(x: int = ...) -> None
 
 [case testConditionalFunctionDefinitionUsingDecorator1]
 from typing import Callable
@@ -1478,14 +1491,22 @@ from typing import Any
 def f(x: str) -> None: pass
 x = None # type: Any
 if x:
-    def f(x: int) -> None: pass # E: All conditional function variants must have identical signatures
+    def f(x: int) -> None: pass # E: All conditional function variants must have identical signatures \
+                                # N: Original: \
+                                # N:     def f(x: str) -> None \
+                                # N: Redefinition: \
+                                # N:     def f(x: int) -> None
 
 [case testConditionalRedefinitionOfAnUnconditionalFunctionDefinition2]
 from typing import Any
 def f(x: int) -> None: pass # N: "f" defined here
 x = None # type: Any
 if x:
-    def f(y: int) -> None: pass # E: All conditional function variants must have identical signatures
+    def f(y: int) -> None: pass # E: All conditional function variants must have identical signatures \
+                                # N: Original: \
+                                # N:     def f(x: int) -> None \
+                                # N: Redefinition: \
+                                # N:     def f(y: int) -> None
 f(x=1) # The first definition takes precedence.
 f(y=1) # E: Unexpected keyword argument "y" for "f"
 
@@ -1652,7 +1673,11 @@ class A:
     if x:
         def f(self, x: int) -> None: pass
     else:
-        def f(self, x): pass # E: All conditional function variants must have identical signatures
+        def f(self, x): pass # E: All conditional function variants must have identical signatures \
+                             # N: Original: \
+                             # N:     def f(self: A, x: int) -> None \
+                             # N: Redefinition: \
+                             # N:     def f(self: A, x: Any) -> Any
 [out]
 
 [case testConditionalFunctionDefinitionInTry]
