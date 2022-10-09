@@ -114,7 +114,8 @@ C = Type[C]
 # flags: --enable-recursive-aliases
 import lib
 x: lib.A
-reveal_type(x)  # N: Revealed type is "builtins.list[builtins.list[...]]"
+--zuban-diff reveal_type(x)  # N: Revealed type is "builtins.list[builtins.list[...]]"
+reveal_type(x)  # N: Revealed type is "builtins.list[builtins.list[A]]"
 
 [file lib.pyi]
 from typing import List
