@@ -437,14 +437,14 @@ def main() -> None:
 -- zuban-diff gx = gy  # E: Cannot resolve name "gy" (possible cyclic definition)
 -- zuban-diff gy = gx
 gx = gy
-gy = gx   # E: Cannot resolve name "gy" (possible cyclic definition)
+gy = gx   # E: Cannot resolve name "gx" (possible cyclic definition)
 def main() -> None:
     class C:
         def meth(self) -> None:
 --zuban-diff             lx = ly  # E: Cannot resolve name "ly" (possible cyclic definition)
 --zuban-diff             ly = lx
             lx = ly
-            ly = lx  # E: Cannot resolve name "ly" (possible cyclic definition)
+            ly = lx  # E: Cannot resolve name "lx" (possible cyclic definition)
 
 [case testNewAnalyzerCyclicDefinitionCrossModule]
 import b
@@ -456,7 +456,7 @@ x = b.x
 [file b.py]
 import a
 --zuban-diff x = a.x
-x = a.x  # E: Cannot resolve name "x" (possible cyclic definition)
+x = a.x  # E: Cannot resolve name "a.x" (possible cyclic definition)
 [builtins fixtures/module.pyi]
 
 [case testNewAnalyzerMutuallyRecursiveOverloadedFunctions]
