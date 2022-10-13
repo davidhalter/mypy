@@ -377,7 +377,8 @@ from typing import Optional, Sequence
 
 A = Sequence[Optional[A]]
 x: A
-y: str = x[0]  # E: Incompatible types in assignment (expression has type "Optional[A]", variable has type "str")
+--zuban-diff y: str = x[0]  # E: Incompatible types in assignment (expression has type "Optional[A]", variable has type "str")
+y: str = x[0]  # E: Incompatible types in assignment (expression has type "Optional[Sequence[Optional[A]]]", variable has type "str")
 
 [case testRecursiveAliasesProhibitBadAliases]
 from typing import Union, Type, List, TypeVar
