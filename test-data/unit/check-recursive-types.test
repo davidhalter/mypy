@@ -296,8 +296,10 @@ a = [[b]]  # OK
 b = aa  # E: Incompatible types in assignment (expression has type "Nested[A]", variable has type "B")
 
 def join(a: T, b: T) -> T: ...
-reveal_type(join(a, b))  # N: Revealed type is "typing.Sequence[Union[__main__.A, typing.Sequence[Union[__main__.A, ...]]]]"
-reveal_type(join(b, a))  # N: Revealed type is "typing.Sequence[Union[__main__.A, typing.Sequence[Union[__main__.A, ...]]]]"
+--zuban-diff reveal_type(join(a, b))  # N: Revealed type is "typing.Sequence[Union[__main__.A, typing.Sequence[Union[__main__.A, ...]]]]"
+reveal_type(join(a, b))  # N: Revealed type is "Nested[__main__.A]"
+--zuban-diff reveal_type(join(b, a))  # N: Revealed type is "typing.Sequence[Union[__main__.A, typing.Sequence[Union[__main__.A, ...]]]]"
+reveal_type(join(b, a))  # N: Revealed type is "Nested[__main__.A]"
 [builtins fixtures/isinstancelist.pyi]
 
 [case testRecursiveAliasWithRecursiveInstanceInference]
