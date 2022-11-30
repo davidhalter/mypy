@@ -333,7 +333,8 @@ class C(Generic[P]):
 
 c: C[Any]
 reveal_type(c)  # N: Revealed type is "__main__.C[Any]"
-reveal_type(c.m)  # N: Revealed type is "def (*args: Any, **kwargs: Any) -> builtins.int"
+--zuban-diff reveal_type(c.m)  # N: Revealed type is "def (*args: Any, **kwargs: Any) -> builtins.int"
+reveal_type(c.m)  # N: Revealed type is "def (*Any, **Any) -> builtins.int"
 c.m(4, 6, y='x')
 c = c
 
