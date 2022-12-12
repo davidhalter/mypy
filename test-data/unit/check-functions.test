@@ -924,8 +924,10 @@ f(None) # E: Too many arguments for "f"
 from typing import Any, Callable
 def dec1(f: Callable[[Any], None]) -> Callable[[], None]: pass
 def dec2(f: Callable[[Any, Any], None]) -> Callable[[Any], None]: pass
-@dec1 # E: Argument 1 to "dec2" has incompatible type "Callable[[Any], Any]"; expected "Callable[[Any, Any], None]"
-@dec2
+--zuban-diff @dec1 # E: Argument 1 to "dec2" has incompatible type "Callable[[Any], Any]"; expected "Callable[[Any, Any], None]"
+--zuban-diff @dec2
+@dec1
+@dec2 # E: Argument 1 to "dec2" has incompatible type "Callable[[Any], Any]"; expected "Callable[[Any, Any], None]"
 def f(x): pass
 
 [case testInvalidDecorator2]
