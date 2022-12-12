@@ -132,8 +132,10 @@ def deco(fun): ...
 @overload
 def f(x: 'A') -> 'B': ...
 
-@deco  # E: The implementation for an overloaded function must come last
-def f(x: Any) -> Any:
+--zuban-diff @deco  # E: The implementation for an overloaded function must come last
+--zuban-diff def f(x: Any) -> Any:
+@deco
+def f(x: Any) -> Any:  # E: The implementation for an overloaded function must come last
     pass
 
 @overload
