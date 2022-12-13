@@ -1066,7 +1066,7 @@ ts = TA() # E: "object" not callable
 reveal_type(ts) # N: Revealed type is "Any"
 
 -- zuban-diff us = UA.x # E: "object" has no attribute "x"
-us = UA.x # E: "TypeAlias" has no attribute "x"
+us = UA.x # E: "Type[T | int]" has no attribute "x"
 reveal_type(us) # N: Revealed type is "Any"
 
 xx = CA[str] + 1  # E: Type application is only supported for generic classes
