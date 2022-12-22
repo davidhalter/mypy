@@ -887,7 +887,7 @@ def f(a: T, b: S) -> None:
     c = lambda x: x  # type: Callable[[T], S]
 [out]
 main:5: error: Incompatible types in assignment (expression has type "Callable[[T], T]", variable has type "Callable[[T], S]")
-main:5: error: Incompatible return value type (got "T", expected "S")
+--zuban-diff main:5: error: Incompatible return value type (got "T", expected "S")
 
 [case testLambdaInGenericClass]
 from typing import TypeVar, Callable, Generic
@@ -898,7 +898,7 @@ class A(Generic[T]):
         c = lambda x: x  # type: Callable[[T], S]
 [out]
 main:6: error: Incompatible types in assignment (expression has type "Callable[[T], T]", variable has type "Callable[[T], S]")
-main:6: error: Incompatible return value type (got "T", expected "S")
+--zuban-diff main:6: error: Incompatible return value type (got "T", expected "S")
 
 [case testRevealTypeContext]
 from typing import TypeVar, Callable, Generic
