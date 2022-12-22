@@ -855,7 +855,8 @@ def use_cb(arg: T, cb: C2[T]) -> Node[T]:
 
 use_cb(1, 1) # E: Argument 2 to "use_cb" has incompatible type "int"; expected "Callable[[int, int], Node[int]]"
 my_cb = None # type: C2[int]
-use_cb('x', my_cb) # E: Argument 2 to "use_cb" has incompatible type "Callable[[int, int], Node[int]]"; expected "Callable[[str, str], Node[str]]"
+--zuban-diff use_cb('x', my_cb) # E: Argument 2 to "use_cb" has incompatible type "Callable[[int, int], Node[int]]"; expected "Callable[[str, str], Node[str]]"
+use_cb('x', my_cb) # E: Cannot infer type argument 1 of "use_cb"
 reveal_type(use_cb(1, my_cb)) # N: Revealed type is "__main__.Node[builtins.int]"
 [builtins fixtures/tuple.pyi]
 
