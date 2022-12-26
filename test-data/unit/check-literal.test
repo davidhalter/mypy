@@ -343,7 +343,8 @@ x: Foo[3]
 reveal_type(x)   # N: Revealed type is "Literal[3]"
 
 y: Foo["hello"]
-reveal_type(y)   # N: Revealed type is "Literal['hello']"
+--zuban-diff reveal_type(y)   # N: Revealed type is "Literal['hello']"
+reveal_type(y)   # N: Revealed type is "Literal["hello"]"
 [builtins fixtures/tuple.pyi]
 [out]
 
