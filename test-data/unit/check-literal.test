@@ -379,7 +379,8 @@ y: Foo[Foo]     # E: Literal[...] must have at least one parameter
 NotAType = 3
 def f() -> NotAType['also' + 'not' + 'a' + 'type']: ... # E: Variable "__main__.NotAType" is not valid as a type \
                                                         # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases \
-                                                        # E: Invalid type comment or annotation
+--zuban-diff                                                         # E: Invalid type comment or annotation
+--zuban-diff 
 
 # Note: this makes us re-inspect the type (e.g. via '_patch_indirect_dependencies'
 # in build.py) so we can confirm the RawExpressionType did not leak out.
