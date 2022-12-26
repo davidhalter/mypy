@@ -614,7 +614,8 @@ d: {1, 2, 3}                    # E: Invalid type comment or annotation
 from typing_extensions import Literal
 a: (1, 2, 3)                    # E: Syntax error in type annotation \
                                 # N: Suggestion: Use Tuple[T1, ..., Tn] instead of (T1, ..., Tn)
-b: Literal[[1, 2, 3]]           # E: Parameter 1 of Literal[...] is invalid
+--zuban-diff b: Literal[[1, 2, 3]]           # E: Parameter 1 of Literal[...] is invalid
+b: Literal[[1, 2, 3]]           # E: Invalid type: Literal[...] cannot contain arbitrary expressions
 c: [1, 2, 3]                    # E: Bracketed expression "[...]" is not valid as a type \
                                 # N: Did you mean "List[...]"?
 [builtins fixtures/tuple.pyi]
@@ -623,10 +624,12 @@ c: [1, 2, 3]                    # E: Bracketed expression "[...]" is not valid a
 [case testLiteralDisallowCollectionsTypeAlias]
 
 from typing_extensions import Literal
-at = Literal[{"a": 1, "b": 2}]  # E: Invalid type alias: expression is not a valid type
+--zuban-diff at = Literal[{"a": 1, "b": 2}]  # E: Invalid type alias: expression is not a valid type
+at = Literal[{"a": 1, "b": 2}]  # E: Invalid type: Literal[...] cannot contain arbitrary expressions
 bt = {"a": 1, "b": 2}
-a: at                           # E: Variable "__main__.at" is not valid as a type \
-                                # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+--zuban-diff a: at                           # E: Variable "__main__.at" is not valid as a type \
+--zuban-diff                                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+a: at
 b: bt                           # E: Variable "__main__.bt" is not valid as a type \
                                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 [builtins fixtures/dict.pyi]
@@ -635,10 +638,12 @@ b: bt                           # E: Variable "__main__.bt" is not valid as a ty
 [case testLiteralDisallowCollectionsTypeAlias2]
 
 from typing_extensions import Literal
-at = Literal[{1, 2, 3}]         # E: Invalid type alias: expression is not a valid type
+--zuban-diff at = Literal[{1, 2, 3}]         # E: Invalid type alias: expression is not a valid type
+at = Literal[{1, 2, 3}]         # E: Invalid type: Literal[...] cannot contain arbitrary expressions
 bt = {1, 2, 3}
-a: at                           # E: Variable "__main__.at" is not valid as a type \
-                                # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+--zuban-diff a: at                           # E: Variable "__main__.at" is not valid as a type \
+--zuban-diff                                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+a: at
 b: bt                           # E: Variable "__main__.bt" is not valid as a type \
                                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 [builtins fixtures/set.pyi]
