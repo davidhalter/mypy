@@ -366,7 +366,8 @@ Bar = Foo[4]
 [case testLiteralRenamingImportNameConfusion]
 from typing_extensions import Literal as Foo
 
-x: Foo["Foo"]
+--zuban-diff x: Foo["Foo"]
+x: Foo['Foo']
 reveal_type(x)  # N: Revealed type is "Literal['Foo']"
 
 y: Foo[Foo]     # E: Literal[...] must have at least one parameter
