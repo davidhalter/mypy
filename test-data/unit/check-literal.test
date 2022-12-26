@@ -543,7 +543,8 @@ from missing_module import BadAlias     # E: Cannot find implementation or libra
                                         # N: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 
 a: Literal[Any]                         # E: Parameter 1 of Literal[...] cannot be of type "Any"
-b: Literal[BadAlias]                    # E: Parameter 1 of Literal[...] cannot be of type "Any"
+--zuban-diff b: Literal[BadAlias]                    # E: Parameter 1 of Literal[...] cannot be of type "Any"
+b: Literal[BadAlias]
 
 reveal_type(a)                          # N: Revealed type is "Any"
 reveal_type(b)                          # N: Revealed type is "Any"
