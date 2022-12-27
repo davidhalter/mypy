@@ -742,7 +742,8 @@ a: "Foo"
 reveal_type(a)      # N: Revealed type is "__main__.Foo"
 
 b: Literal["Foo"]
-reveal_type(b)      # N: Revealed type is "Literal['Foo']"
+--zuban-diff reveal_type(b)      # N: Revealed type is "Literal['Foo']"
+reveal_type(b)      # N: Revealed type is "Literal["Foo"]"
 
 c: "Literal[Foo]"   # E: Parameter 1 of Literal[...] is invalid
 
@@ -760,7 +761,8 @@ a: "Foo"
 reveal_type(a)      # N: Revealed type is "Literal[5]"
 
 b: Literal["Foo"]
-reveal_type(b)      # N: Revealed type is "Literal['Foo']"
+--zuban-diff reveal_type(b)      # N: Revealed type is "Literal['Foo']"
+reveal_type(b)      # N: Revealed type is "Literal["Foo"]"
 
 c: "Literal[Foo]"
 reveal_type(c)      # N: Revealed type is "Literal[5]"
@@ -785,7 +787,8 @@ b = None  # type: "Foo"
 reveal_type(b)      # N: Revealed type is "__main__.Foo"
 
 c = None  # type: Literal["Foo"]
-reveal_type(c)      # N: Revealed type is "Literal['Foo']"
+--zuban-diff reveal_type(c)      # N: Revealed type is "Literal['Foo']"
+reveal_type(c)      # N: Revealed type is "Literal["Foo"]"
 
 d = None  # type: Literal[Foo]   # E: Parameter 1 of Literal[...] is invalid
 
