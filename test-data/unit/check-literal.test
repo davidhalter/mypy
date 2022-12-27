@@ -403,7 +403,8 @@ b1: Literal[0x2a]
 c1: Literal[-300]
 
 reveal_type(a1)  # N: Revealed type is "Literal[4]"
-reveal_type(b1)  # N: Revealed type is "Literal[42]"
+--zuban-diff reveal_type(b1)  # N: Revealed type is "Literal[42]"
+reveal_type(b1)  # N: Revealed type is "Literal[0x2a]"
 reveal_type(c1)  # N: Revealed type is "Literal[-300]"
 
 a2t = Literal[4]
@@ -414,7 +415,8 @@ b2: b2t
 c2: c2t
 
 reveal_type(a2)  # N: Revealed type is "Literal[4]"
-reveal_type(b2)  # N: Revealed type is "Literal[42]"
+--zuban-diff reveal_type(b2)  # N: Revealed type is "Literal[42]"
+reveal_type(b2)  # N: Revealed type is "Literal[0x2a]"
 reveal_type(c2)  # N: Revealed type is "Literal[-300]"
 
 def f1(x: Literal[4]) -> Literal[4]: pass
@@ -422,7 +424,8 @@ def f2(x: Literal[0x2a]) -> Literal[0x2a]: pass
 def f3(x: Literal[-300]) -> Literal[-300]: pass
 
 reveal_type(f1)  # N: Revealed type is "def (x: Literal[4]) -> Literal[4]"
-reveal_type(f2)  # N: Revealed type is "def (x: Literal[42]) -> Literal[42]"
+--zuban-diff reveal_type(f2)  # N: Revealed type is "def (x: Literal[42]) -> Literal[42]"
+reveal_type(f2)  # N: Revealed type is "def (x: Literal[0x2a]) -> Literal[0x2a]"
 reveal_type(f3)  # N: Revealed type is "def (x: Literal[-300]) -> Literal[-300]"
 [builtins fixtures/tuple.pyi]
 [out]
