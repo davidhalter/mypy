@@ -685,8 +685,10 @@ c: Literal[1, "b", True, None]
 d: Literal[1, 1, 1]
 e: Literal[None, None, None]
 reveal_type(a)   # N: Revealed type is "Union[Literal[1], Literal[2], Literal[3]]"
-reveal_type(b)   # N: Revealed type is "Union[Literal['a'], Literal['b'], Literal['c']]"
-reveal_type(c)   # N: Revealed type is "Union[Literal[1], Literal['b'], Literal[True], None]"
+--zuban-diff reveal_type(b)   # N: Revealed type is "Union[Literal['a'], Literal['b'], Literal['c']]"
+--zuban-diff reveal_type(c)   # N: Revealed type is "Union[Literal[1], Literal['b'], Literal[True], None]"
+reveal_type(b)   # N: Revealed type is "Union[Literal["a"], Literal["b"], Literal["c"]]"
+reveal_type(c)   # N: Revealed type is "Union[Literal[1], Literal["b"], Literal[True], None]"
 
 # Note: I was thinking these should be simplified, but it seems like
 # mypy doesn't simplify unions with duplicate values with other types.
@@ -700,9 +702,11 @@ from typing_extensions import Literal
 # Unfortunately, it seems like typed_ast is unable to distinguish this from
 # Literal[1, 2, 3]. So we treat the two as being equivalent for now.
 a: Literal[1, 2, 3]
-b: Literal[(1, 2, 3)]
+--zuban-diff b: Literal[(1, 2, 3)]
+b: Literal[(1, 2, 3)]  # E: Invalid type: Literal[...] cannot contain arbitrary expressions
 reveal_type(a)  # N: Revealed type is "Union[Literal[1], Literal[2], Literal[3]]"
-reveal_type(b)  # N: Revealed type is "Union[Literal[1], Literal[2], Literal[3]]"
+--zuban-diff reveal_type(b)  # N: Revealed type is "Union[Literal[1], Literal[2], Literal[3]]"
+reveal_type(b)  # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
 [out]
 

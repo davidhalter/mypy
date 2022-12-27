@@ -8930,11 +8930,14 @@ from typing_extensions import Literal
 def bar() -> Literal[b"foo"]: pass
 [builtins fixtures/tuple.pyi]
 [out]
-main:2: note: Revealed type is "Literal['foo']"
+--zuban-diff main:2: note: Revealed type is "Literal['foo']"
+main:2: note: Revealed type is "Literal["foo"]"
 ==
-main:2: note: Revealed type is "Literal['foo']"
+--zuban-diff main:2: note: Revealed type is "Literal['foo']"
+main:2: note: Revealed type is "Literal[u"foo"]"
 ==
-main:2: note: Revealed type is "Literal[b'foo']"
+--zuban-diff main:2: note: Revealed type is "Literal[b'foo']"
+main:2: note: Revealed type is "Literal[b"foo"]"
 
 [case testReprocessModuleTopLevelWhileMethodDefinesAttr]
 import a
