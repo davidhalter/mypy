@@ -715,7 +715,8 @@ reveal_type(b)  # N: Revealed type is "Any"
 
 from typing_extensions import Literal
 a: Literal[Literal[3], 4, Literal["foo"]]
-reveal_type(a)  # N: Revealed type is "Union[Literal[3], Literal[4], Literal['foo']]"
+--zuban-diff reveal_type(a)  # N: Revealed type is "Union[Literal[3], Literal[4], Literal['foo']]"
+reveal_type(a)  # N: Revealed type is "Union[Literal[3], Literal[4], Literal["foo"]]"
 
 alias_for_literal = Literal[5]
 b: Literal[alias_for_literal]
@@ -723,12 +724,14 @@ reveal_type(b)  # N: Revealed type is "Literal[5]"
 
 another_alias = Literal[1, None]
 c: Literal[alias_for_literal, another_alias, "r"]
-reveal_type(c)  # N: Revealed type is "Union[Literal[5], Literal[1], None, Literal['r']]"
+--zuban-diff reveal_type(c)  # N: Revealed type is "Union[Literal[5], Literal[1], None, Literal['r']]"
+reveal_type(c)  # N: Revealed type is "Union[Literal[5], Literal[1], None, Literal["r"]]"
 
 basic_mode = Literal["r", "w", "a"]
 basic_with_plus = Literal["r+", "w+", "a+"]
 combined: Literal[basic_mode, basic_with_plus]
-reveal_type(combined)  # N: Revealed type is "Union[Literal['r'], Literal['w'], Literal['a'], Literal['r+'], Literal['w+'], Literal['a+']]"
+--zuban-diff reveal_type(combined)  # N: Revealed type is "Union[Literal['r'], Literal['w'], Literal['a'], Literal['r+'], Literal['w+'], Literal['a+']]"
+reveal_type(combined)  # N: Revealed type is "Union[Literal["r"], Literal["w"], Literal["a"], Literal["r+"], Literal["w+"], Literal["a+"]]"
 [builtins fixtures/tuple.pyi]
 [out]
 
