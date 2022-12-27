@@ -461,10 +461,13 @@ c: Literal['  foo bar  ']
 d: Literal["foo"]
 e: Literal['foo']
 
-reveal_type(a)  # N: Revealed type is "Literal['']"
-reveal_type(b)  # N: Revealed type is "Literal['  foo bar  ']"
+--zuban-diff reveal_type(a)  # N: Revealed type is "Literal['']"
+reveal_type(a)  # N: Revealed type is "Literal[""]"
+--zuban-diff reveal_type(b)  # N: Revealed type is "Literal['  foo bar  ']"
+reveal_type(b)  # N: Revealed type is "Literal["  foo bar  "]"
 reveal_type(c)  # N: Revealed type is "Literal['  foo bar  ']"
-reveal_type(d)  # N: Revealed type is "Literal['foo']"
+--zuban-diff reveal_type(d)  # N: Revealed type is "Literal['foo']"
+reveal_type(d)  # N: Revealed type is "Literal["foo"]"
 reveal_type(e)  # N: Revealed type is "Literal['foo']"
 
 def f1(x: Literal[""]) -> Literal[""]: pass
@@ -473,10 +476,13 @@ def f3(x: Literal['  foo bar  ']) -> Literal['  foo bar  ']: pass
 def f4(x: Literal["foo"]) -> Literal["foo"]: pass
 def f5(x: Literal['foo']) -> Literal['foo']: pass
 
-reveal_type(f1)  # N: Revealed type is "def (x: Literal['']) -> Literal['']"
-reveal_type(f2)  # N: Revealed type is "def (x: Literal['  foo bar  ']) -> Literal['  foo bar  ']"
+--zuban-diff reveal_type(f1)  # N: Revealed type is "def (x: Literal['']) -> Literal['']"
+reveal_type(f1)  # N: Revealed type is "def (x: Literal[""]) -> Literal[""]"
+--zuban-diff reveal_type(f2)  # N: Revealed type is "def (x: Literal['  foo bar  ']) -> Literal['  foo bar  ']"
+reveal_type(f2)  # N: Revealed type is "def (x: Literal["  foo bar  "]) -> Literal["  foo bar  "]"
 reveal_type(f3)  # N: Revealed type is "def (x: Literal['  foo bar  ']) -> Literal['  foo bar  ']"
-reveal_type(f4)  # N: Revealed type is "def (x: Literal['foo']) -> Literal['foo']"
+--zuban-diff reveal_type(f4)  # N: Revealed type is "def (x: Literal['foo']) -> Literal['foo']"
+reveal_type(f4)  # N: Revealed type is "def (x: Literal["foo"]) -> Literal["foo"]"
 reveal_type(f5)  # N: Revealed type is "def (x: Literal['foo']) -> Literal['foo']"
 [builtins fixtures/tuple.pyi]
 [out]
