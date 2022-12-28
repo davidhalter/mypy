@@ -1029,7 +1029,8 @@ none3: None = None
 reveal_type(int1)   # N: Revealed type is "Literal[1]"
 reveal_type(int2)   # N: Revealed type is "builtins.int"
 reveal_type(int3)   # N: Revealed type is "builtins.int"
-reveal_type(str1)   # N: Revealed type is "Literal['foo']"
+--zuban-diff reveal_type(str1)   # N: Revealed type is "Literal['foo']"
+reveal_type(str1)   # N: Revealed type is "Literal["foo"]"
 reveal_type(str2)   # N: Revealed type is "builtins.str"
 reveal_type(str3)   # N: Revealed type is "builtins.str"
 reveal_type(bool1)  # N: Revealed type is "Literal[True]"
@@ -1056,13 +1057,17 @@ c = True
 d = None
 
 w = a  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[1]")
-x = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal['foo']")
+--zuban-diff x = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal['foo']")
+x = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal["foo"]")
 y = c  # E: Incompatible types in assignment (expression has type "bool", variable has type "Literal[True]")
 z = d  # This is ok: Literal[None] and None are equivalent.
 
-combined = a  # E: Incompatible types in assignment (expression has type "int", variable has type "Optional[Literal[1, 'foo', True]]")
-combined = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Optional[Literal[1, 'foo', True]]")
-combined = c  # E: Incompatible types in assignment (expression has type "bool", variable has type "Optional[Literal[1, 'foo', True]]")
+--zuban-diff combined = a  # E: Incompatible types in assignment (expression has type "int", variable has type "Optional[Literal[1, 'foo', True]]")
+--zuban-diff combined = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Optional[Literal[1, 'foo', True]]")
+--zuban-diff combined = c  # E: Incompatible types in assignment (expression has type "bool", variable has type "Optional[Literal[1, 'foo', True]]")
+combined = a  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[1, "foo", True] | None")
+combined = b  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal[1, "foo", True] | None")
+combined = c  # E: Incompatible types in assignment (expression has type "bool", variable has type "Literal[1, "foo", True] | None")
 combined = d  # Also ok, for similar reasons.
 
 e: Literal[1] = 1
@@ -1086,11 +1091,13 @@ combined = h
 from typing_extensions import Literal
 
 a: Literal[1] = 2           # E: Incompatible types in assignment (expression has type "Literal[2]", variable has type "Literal[1]")
-b: Literal["foo"] = "bar"   # E: Incompatible types in assignment (expression has type "Literal['bar']", variable has type "Literal['foo']")
+--zuban-diff b: Literal["foo"] = "bar"   # E: Incompatible types in assignment (expression has type "Literal['bar']", variable has type "Literal['foo']")
+b: Literal["foo"] = "bar"   # E: Incompatible types in assignment (expression has type "Literal["bar"]", variable has type "Literal["foo"]")
 c: Literal[True] = False    # E: Incompatible types in assignment (expression has type "Literal[False]", variable has type "Literal[True]")
 
 d: Literal[1, 2] = 3                # E: Incompatible types in assignment (expression has type "Literal[3]", variable has type "Literal[1, 2]")
-e: Literal["foo", "bar"] = "baz"    # E: Incompatible types in assignment (expression has type "Literal['baz']", variable has type "Literal['foo', 'bar']")
+--zuban-diff e: Literal["foo", "bar"] = "baz"    # E: Incompatible types in assignment (expression has type "Literal['baz']", variable has type "Literal['foo', 'bar']")
+e: Literal["foo", "bar"] = "baz"    # E: Incompatible types in assignment (expression has type "Literal["baz"]", variable has type "Literal["foo", "bar"]")
 f: Literal[True, 4] = False         # E: Incompatible types in assignment (expression has type "Literal[False]", variable has type "Literal[True, 4]")
 
 [builtins fixtures/primitives.pyi]
