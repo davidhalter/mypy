@@ -1122,10 +1122,12 @@ f_int_lit(i2) # E: Argument 1 to "f_int_lit" has incompatible type "Literal[2]";
 s1: Literal["foo"]
 s2: Literal["bar"]
 f_str_lit("foo")
-f_str_lit("bar")  # E: Argument 1 to "f_str_lit" has incompatible type "Literal['bar']"; expected "Literal['foo']"
+--zuban-diff f_str_lit("bar")  # E: Argument 1 to "f_str_lit" has incompatible type "Literal['bar']"; expected "Literal['foo']"
+f_str_lit("bar")  # E: Argument 1 to "f_str_lit" has incompatible type "Literal["bar"]"; expected "Literal["foo"]"
 f_str("baz")
 f_str_lit(s1)
-f_str_lit(s2)     # E: Argument 1 to "f_str_lit" has incompatible type "Literal['bar']"; expected "Literal['foo']"
+--zuban-diff f_str_lit(s2)     # E: Argument 1 to "f_str_lit" has incompatible type "Literal['bar']"; expected "Literal['foo']"
+f_str_lit(s2)     # E: Argument 1 to "f_str_lit" has incompatible type "Literal["bar"]"; expected "Literal["foo"]"
 
 b1: Literal[True]
 b2: Literal[False]
@@ -1493,7 +1495,8 @@ if int():
     b = a * b
     b = b * a
 
-    c = c.strip()  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal['foo']")
+--zuban-diff     c = c.strip()  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal['foo']")
+    c = c.strip()  # E: Incompatible types in assignment (expression has type "str", variable has type "Literal["foo"]")
 [builtins fixtures/ops.pyi]
 [out]
 
@@ -1532,9 +1535,12 @@ import typing_extensions as indirect
 
 Alias = Literal[3]
 
-class Bad1(Literal[3]): pass            # E: Invalid base class "Literal"
-class Bad2(Renamed[3]): pass            # E: Invalid base class "Renamed"
-class Bad3(indirect.Literal[3]): pass   # E: Invalid base class "indirect.Literal"
+--zuban-diff class Bad1(Literal[3]): pass            # E: Invalid base class "Literal"
+--zuban-diff class Bad2(Renamed[3]): pass            # E: Invalid base class "Renamed"
+--zuban-diff class Bad3(indirect.Literal[3]): pass   # E: Invalid base class "indirect.Literal"
+class Bad1(Literal[3]): pass            # E: Invalid base class "Literal[3]"
+class Bad2(Renamed[3]): pass            # E: Invalid base class "Renamed[3]"
+class Bad3(indirect.Literal[3]): pass   # E: Invalid base class "indirect.Literal[3]"
 class Bad4(Alias): pass                 # E: Invalid base class "Alias"
 [builtins fixtures/tuple.pyi]
 [out]
@@ -1612,6 +1618,9 @@ b: Union[int, Literal['foo']] = identity('bar')  # E: Argument 1 to "identity" h
 [case testLiteralAndGenericsNoMatch]
 from typing import TypeVar, Union, List
 from typing_extensions import Literal
+
+--zuban-diff 
+T = TypeVar('T')
 
 def identity(x: T) -> T:
     return x
