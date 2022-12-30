@@ -152,24 +152,25 @@ reveal_type(expr_com_6)  # N: Revealed type is "Literal['"foo"']"
 [case testLiteralMixingUnicodeAndBytesPython3]
 from typing_extensions import Literal
 
-a_ann: Literal[u"foo"]
-b_ann: Literal["foo"]
-c_ann: Literal[b"foo"]
+--zuban-diff -> changed all literals from " to '
+a_ann: Literal[u'foo']
+b_ann: Literal['foo']
+c_ann: Literal[b'foo']
 
-a_hint = u"foo"  # type: Literal[u"foo"]
-b_hint = "foo"   # type: Literal["foo"]
-c_hint = b"foo"  # type: Literal[b"foo"]
+a_hint = u"foo"  # type: Literal[u'foo']
+b_hint = "foo"   # type: Literal['foo']
+c_hint = b"foo"  # type: Literal[b'foo']
 
-AAlias = Literal[u"foo"]
-BAlias = Literal["foo"]
-CAlias = Literal[b"foo"]
+AAlias = Literal[u'foo']
+BAlias = Literal['foo']
+CAlias = Literal[b'foo']
 a_alias: AAlias
 b_alias: BAlias
 c_alias: CAlias
 
-def accepts_str_1(x: Literal[u"foo"]) -> None: pass
-def accepts_str_2(x: Literal["foo"]) -> None: pass
-def accepts_bytes(x: Literal[b"foo"]) -> None: pass
+def accepts_str_1(x: Literal[u'foo']) -> None: pass
+def accepts_str_2(x: Literal['foo']) -> None: pass
+def accepts_bytes(x: Literal[b'foo']) -> None: pass
 
 reveal_type(a_ann)      # N: Revealed type is "Literal['foo']"
 reveal_type(b_ann)      # N: Revealed type is "Literal['foo']"
