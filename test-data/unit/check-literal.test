@@ -525,8 +525,10 @@ reveal_type(a)
 reveal_type(b)
 [builtins fixtures/tuple.pyi]
 [out skip-path-normalization]
-main:6: note: Revealed type is "Literal['foo\\nbar']"
-main:7: note: Revealed type is "Literal['foo\nbar']"
+--zuban-diff main:6: note: Revealed type is "Literal['foo\\nbar']"
+main:6: note: Revealed type is "Literal[r"foo\nbar"]"
+--zuban-diff main:7: note: Revealed type is "Literal['foo\nbar']"
+main:7: note: Revealed type is "Literal["foo\nbar"]"
 
 [case testLiteralBasicNoneUsage]
 # Note: Literal[None] and None are equivalent
