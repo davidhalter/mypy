@@ -313,32 +313,50 @@ c3 = blah  # type: Literal["¬b ∧ λ(p)"]
 d3 = blah  # type: Literal["\U0001F600"]
 e3 = blah  # type: Literal["😀"]
 
-reveal_type(a1)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(b1)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(c1)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
-reveal_type(d1)  # N: Revealed type is "Literal['😀']"
-reveal_type(e1)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(a1)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(b1)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(c1)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
+--zuban-diff reveal_type(d1)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(e1)  # N: Revealed type is "Literal['😀']"
+reveal_type(a1)  # N: Revealed type is "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]"
+reveal_type(b1)  # N: Revealed type is "Literal["\x00¬b ∧ λ(p)"]"
+reveal_type(c1)  # N: Revealed type is "Literal["¬b ∧ λ(p)"]"
+reveal_type(d1)  # N: Revealed type is "Literal["\U0001F600"]"
+reveal_type(e1)  # N: Revealed type is "Literal["😀"]"
 
-reveal_type(a2)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(b2)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(c2)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
-reveal_type(d2)  # N: Revealed type is "Literal['😀']"
-reveal_type(e2)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(a2)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(b2)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(c2)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
+--zuban-diff reveal_type(d2)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(e2)  # N: Revealed type is "Literal['😀']"
+reveal_type(a2)  # N: Revealed type is "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]"
+reveal_type(b2)  # N: Revealed type is "Literal["\x00¬b ∧ λ(p)"]"
+reveal_type(c2)  # N: Revealed type is "Literal["¬b ∧ λ(p)"]"
+reveal_type(d2)  # N: Revealed type is "Literal["\U0001F600"]"
+reveal_type(e2)  # N: Revealed type is "Literal["😀"]"
 
-reveal_type(a3)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(b3)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
-reveal_type(c3)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
-reveal_type(d3)  # N: Revealed type is "Literal['😀']"
-reveal_type(e3)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(a3)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(b3)  # N: Revealed type is "Literal['\x00¬b ∧ λ(p)']"
+--zuban-diff reveal_type(c3)  # N: Revealed type is "Literal['¬b ∧ λ(p)']"
+--zuban-diff reveal_type(d3)  # N: Revealed type is "Literal['😀']"
+--zuban-diff reveal_type(e3)  # N: Revealed type is "Literal['😀']"
+reveal_type(a3)  # N: Revealed type is "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]"
+reveal_type(b3)  # N: Revealed type is "Literal["\x00¬b ∧ λ(p)"]"
+reveal_type(c3)  # N: Revealed type is "Literal["¬b ∧ λ(p)"]"
+reveal_type(d3)  # N: Revealed type is "Literal["\U0001F600"]"
+reveal_type(e3)  # N: Revealed type is "Literal["😀"]"
 
 a1 = b1
-a1 = c1  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+--zuban-diff a1 = c1  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+a1 = c1  # E: Incompatible types in assignment (expression has type "Literal["¬b ∧ λ(p)"]", variable has type "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]")
 a1 = a2
 a1 = b2
-a1 = c2  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+--zuban-diff a1 = c2  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+a1 = c2  # E: Incompatible types in assignment (expression has type "Literal["¬b ∧ λ(p)"]", variable has type "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]")
 a1 = a3
 a1 = b3
-a1 = c3  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+--zuban-diff a1 = c3  # E: Incompatible types in assignment (expression has type "Literal['¬b ∧ λ(p)']", variable has type "Literal['\x00¬b ∧ λ(p)']")
+a1 = c3  # E: Incompatible types in assignment (expression has type "Literal["¬b ∧ λ(p)"]", variable has type "Literal["\x00\xAC\x62 \u2227 \u03bb(p)"]")
 [builtins fixtures/tuple.pyi]
 
 [out skip-path-normalization]
