@@ -256,9 +256,12 @@ a_str_wrapper_alias: AStrWrapperAlias
 b_str_wrapper_alias: BStrWrapperAlias
 c_str_wrapper_alias: CStrWrapperAlias
 
-ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]
-BBytesWrapperAlias = Wrap[b"Literal['foo']"]
-CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]
+--zuban-diff ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]
+--zuban-diff BBytesWrapperAlias = Wrap[b"Literal['foo']"]
+--zuban-diff CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]
+ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]  # E: Invalid type comment or annotation
+BBytesWrapperAlias = Wrap[b"Literal['foo']"]  # E: Invalid type comment or annotation
+CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]  # E: Invalid type comment or annotation
 a_bytes_wrapper_alias: ABytesWrapperAlias
 b_bytes_wrapper_alias: BBytesWrapperAlias
 c_bytes_wrapper_alias: CBytesWrapperAlias
@@ -273,9 +276,12 @@ reveal_type(a_str_wrapper_alias)      # N: Revealed type is "__main__.Wrap[Liter
 reveal_type(b_str_wrapper_alias)      # N: Revealed type is "__main__.Wrap[Literal['foo']]"
 reveal_type(c_str_wrapper_alias)      # N: Revealed type is "__main__.Wrap[Literal[b'foo']]"
 
-reveal_type(a_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal['foo']]"
-reveal_type(b_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal['foo']]"
-reveal_type(c_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal[b'foo']]"
+--zuban-diff reveal_type(a_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal['foo']]"
+--zuban-diff reveal_type(b_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal['foo']]"
+--zuban-diff reveal_type(c_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Literal[b'foo']]"
+reveal_type(a_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Any]"
+reveal_type(b_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Any]"
+reveal_type(c_bytes_wrapper_alias)    # N: Revealed type is "__main__.Wrap[Any]"
 [builtins fixtures/tuple.pyi]
 [out]
 
