@@ -445,7 +445,10 @@ b = None # type: B
 o = None # type: object
 def f(): aao, aab # Prevent redefinition
 
-aao = [[o], ab] # E: List item 1 has incompatible type "List[B]"; expected "List[object]"
+--zuban-diff aao = [[o], ab] # E: List item 1 has incompatible type "List[B]"; expected "List[object]"
+aao = [[o], ab] # E: List item 1 has incompatible type "List[B]"; expected "List[object]" \
+                # N: "List" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+                # N: Consider using "Sequence" instead, which is covariant
 aab = [[], [o]] # E: List item 0 has incompatible type "object"; expected "B"
 
 aao = [[None], [b], [], [o]]
