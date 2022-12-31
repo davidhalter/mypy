@@ -8936,8 +8936,7 @@ main:2: note: Revealed type is "Literal["foo"]"
 --zuban-diff main:2: note: Revealed type is "Literal['foo']"
 main:2: note: Revealed type is "Literal["foo"]"
 ==
---zuban-diff main:2: note: Revealed type is "Literal[b'foo']"
-main:2: note: Revealed type is "Literal[b"foo"]"
+main:2: note: Revealed type is "Literal[b'foo']"
 
 [case testReprocessModuleTopLevelWhileMethodDefinesAttr]
 import a
