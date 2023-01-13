@@ -653,9 +653,28 @@ try:
     from m import f, g # E: Incompatible import of "g" (imported name has type "Callable[[Any, Any], Any]", local name has type "Callable[[Any], Any]")
 except:
     pass
+
+import m as f  # E: Incompatible import of "f" (imported name has type "object", local name has type "Callable[[Any], Any]")
+
 [file m.py]
 def f(x): pass
 def g(x, y): pass
+
+[case testRedefineTypeViaImport]
+from typing import Type
+import mod
+
+X: Type[mod.A]
+Y: Type[mod.B]
+from mod import B as X
+from mod import A as Y  # E: Incompatible import of "Y" (imported name has type "Type[A]", local name has type "Type[B]")
+
+import mod as X  # E: Incompatible import of "X" (imported name has type "object", local name has type "Type[A]")
+
+[file mod.py]
+class A: ...
+class B(A): ...
+
 
 [case testImportVariableAndAssignNone]
 try:
@@ -1331,13 +1350,13 @@ import a
 import b
 def f() -> int:
     return b.x
-y = 0 + 0
+y = 0 + int()
 [file b.py]
 import a
 def g() -> int:
     reveal_type(a.y)
     return a.y
-x = 1 + 1
+x = 1 + int()
 [out]
 tmp/b.py:3: note: Revealed type is "builtins.int"
 
@@ -1348,12 +1367,12 @@ import b
 def f() -> int:
     reveal_type(b.x)
     return b.x
-y = 0 + 0
+y = 0 + int()
 [file b.py]
 import a
 def g() -> int:
     return a.y
-x = 1 + 1
+x = 1 + int()
 [out]
 tmp/a.py:3: note: Revealed type is "builtins.int"
 
@@ -1368,7 +1387,7 @@ class C:
         self.x2 = b.b
 [file b.py]
 import a
-b = 1 + 1
+b = 1 + int()
 [out]
 tmp/a.py:4: error: Cannot determine type of "x2"
 
@@ -1381,7 +1400,7 @@ def f() -> None:
     a + ''
 [file b.py]
 import a
-x = 1 + 1
+x = 1 + int()
 [out]
 tmp/a.py:4: error: Unsupported operand types for + ("int" and "str")
 
@@ -1394,7 +1413,7 @@ def f() -> None:
     a + ''
 [file b.py]
 import a
-x = 1 + 1
+x = 1 + int()
 [out]
 tmp/a.py:4: error: Unsupported operand types for + ("int" and "str")
 
@@ -1407,7 +1426,7 @@ def g() -> None:
 @b.deco
 def f(a: str) -> int: pass
 reveal_type(f)
-x = 1 + 1
+x = 1 + int()
 [file b.py]
 from typing import Callable, TypeVar
 import a
@@ -1799,7 +1818,7 @@ from stub import C
 c = C()
 reveal_type(c.x)  # N: Revealed type is "builtins.int"
 it: Iterable[int]
-reveal_type(it)  # N: Revealed type is "Any"
+reveal_type(it)  # N: Revealed type is "typing.Iterable[builtins.int]"
 
 [file stub.pyi]
 from typing import Iterable
@@ -2857,7 +2876,7 @@ aaaaa: int
 
 [case testModuleAttributeThreeSuggestions]
 import m
-m.aaaaa # E: Module has no attribute "aaaaa"; maybe "aabaa", "aaaba", or "aaaab"?
+m.aaaaa # E: Module has no attribute "aaaaa"; maybe "aaaab", "aaaba", or "aabaa"?
 
 [file m.py]
 aaaab: int
