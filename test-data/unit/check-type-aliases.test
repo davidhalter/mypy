@@ -696,8 +696,9 @@ class MyClass: ...
 [case testInvalidPep613]
 from typing_extensions import TypeAlias
 
-x: TypeAlias = list(int)  # E: Invalid type alias: expression is not a valid type \
-                          # E: Too many arguments for "list"
+x: TypeAlias = list(int)  # E: Invalid type alias: expression is not a valid type
+--zuban-diff                           # E: Too many arguments for "list"
+--zuban-diff 
 a: x
 [builtins fixtures/tuple.pyi]
 
