@@ -73,7 +73,9 @@ reveal_type(x)  # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
 
 [case testAnnotatedNoImport]
-x: Annotated[int, ...]  # E: Name "Annotated" is not defined
+x: Annotated[int, ...]  # E: Name "Annotated" is not defined \
+--zuban-diff
+                        # N: Did you forget to import it from "typing"? (Suggestion: "from typing import Annotated")
 reveal_type(x)  # N: Revealed type is "Any"
 
 [case testAnnotatedDifferentName]
