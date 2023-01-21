@@ -124,7 +124,8 @@ class Meta:
     ...
 
 x = Annotated[int, Meta()]
-reveal_type(x)  # N: Revealed type is "def () -> builtins.int"
+--zuban-diff reveal_type(x)  # N: Revealed type is "def () -> builtins.int"
+reveal_type(x)  # N: Revealed type is "Type[int]"
 [builtins fixtures/tuple.pyi]
 
 [case testAnnotatedStringLiteralInFunc]
