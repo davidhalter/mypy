@@ -652,9 +652,11 @@ def f(x: Optional[int]) -> Optional[str]: ...
 def f(x): return x
 
 reveal_type(f(1)) # N: Revealed type is "builtins.str"
-reveal_type(f(None)) # N: Revealed type is "Union[builtins.str, None]"
+--zuban-diff reveal_type(f(None)) # N: Revealed type is "Union[builtins.str, None]"
+reveal_type(f(None)) # N: Revealed type is "Optional[builtins.str]"
 x: Optional[int]
-reveal_type(f(x)) # N: Revealed type is "Union[builtins.str, None]"
+--zuban-diff reveal_type(f(x)) # N: Revealed type is "Union[builtins.str, None]"
+reveal_type(f(x)) # N: Revealed type is "Optional[builtins.str]"
 
 [case testUnionTruthinessTracking]
 from typing import Optional, Any
