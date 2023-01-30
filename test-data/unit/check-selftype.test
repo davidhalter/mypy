@@ -36,7 +36,8 @@ f(B.copy(B()))
 # f(B.copy(A()))
 
 def g(a: B) -> None: pass
-g(A.copy(A()))  # E: Argument 1 to "g" has incompatible type "A"; expected "B"
+--zuban-diff g(A.copy(A()))  # E: Argument 1 to "g" has incompatible type "A"; expected "B"
+g(A.copy(A()))  # E: Argument 1 to "copy" has incompatible type "A"; expected "B"
 g(A.copy(B()))
 g(B.copy(B()))
 
@@ -715,6 +716,8 @@ yy = PFallBackAny(t)  # OK
 [file lib.pyi]
 from typing import TypeVar, Generic, overload, Tuple, Any
 from typing_extensions import Literal
+--zuban-diff 
+T = TypeVar("T")
 
 class PFallBack(Generic[T]):
     @overload
@@ -1214,7 +1217,8 @@ class Sub(Base):
     def __init__(self, item=None):
         ...
 
-reveal_type(Sub)  # N: Revealed type is "Overload(def (item: builtins.int) -> __main__.Sub, def () -> __main__.Sub)"
+--zuban-diff reveal_type(Sub)  # N: Revealed type is "Overload(def (item: builtins.int) -> __main__.Sub, def () -> __main__.Sub)"
+reveal_type(Sub)  # N: Revealed type is "Type[__main__.Sub]"
 
 [case testSelfTypeBadTypeIgnoredInConstructorAbstract]
 from abc import abstractmethod
