@@ -1142,7 +1142,8 @@ class A:
 class A: pass
 [out]
 ==
-main:5: error: "B" has no attribute "x"
+--zuban-diff main:5: error: "B" has no attribute "x"
+main:5: error: "Self" has no attribute "x"
 
 [case testTestSignatureOfInheritedMethod]
 import m
@@ -1176,6 +1177,8 @@ class C: pass
 class B: pass
 [out]
 ==
+--zuban-diff main:4: error: "A" has no attribute "g"
+--zuban-diff main:5: error: "A" has no attribute "x"
 main:4: error: "A" has no attribute "g"
 main:5: error: "A" has no attribute "x"
 
@@ -1198,8 +1201,10 @@ class C:
 class B: pass
 [out]
 ==
-main:4: error: "A" has no attribute "g"
-main:5: error: "A" has no attribute "x"
+--zuban-diff main:4: error: "A" has no attribute "g"
+--zuban-diff main:5: error: "A" has no attribute "x"
+main:4: error: "Self" has no attribute "g"
+main:5: error: "Self" has no attribute "x"
 
 [case testChangeInPackage]
 import m.n
@@ -1606,7 +1611,8 @@ class C:
     def g(self) -> None: pass
 [file m.py.2]
 [out]
-main:7: error: "A" has no attribute "x"
+--zuban-diff main:7: error: "A" has no attribute "x"
+main:7: error: "Self" has no attribute "x"
 ==
 main:3: error: Name "m.C" is not defined
 
@@ -1624,7 +1630,8 @@ class C:
     def g(self) -> None: pass
 [file m.py.2]
 [out]
-main:8: error: "B" has no attribute "x"
+--zuban-diff main:8: error: "B" has no attribute "x"
+main:8: error: "Self" has no attribute "x"
 ==
 main:4: error: Name "m.C" is not defined
 
