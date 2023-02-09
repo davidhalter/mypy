@@ -620,7 +620,8 @@ a = A()
 reveal_type(a.n())  # N: Revealed type is "builtins.int"
 reveal_type(A.n(a))  # N: Revealed type is "builtins.int"
 --zuban-diff A.n()  # E: Too few arguments
-A.n()  # E: Missing positional argument "self" in call to "m"
+--zuban-diff A.n()  # E: Missing positional argument "self" in call to "m"
+A.n()  # E: Missing positional argument "self" in call to "m" of "A"
 
 [case testOverloadedMethodAsDataAttribute]
 from foo import *
