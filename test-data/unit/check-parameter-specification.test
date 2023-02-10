@@ -1319,8 +1319,9 @@ def wrong_constructor(a: bool) -> SomeClass:
     return SomeClass("a")
 
 func(SomeClass, constructor)
-func(SomeClass, wrong_constructor)  # E: Argument 1 to "func" has incompatible type "Type[SomeClass]"; expected "Callable[[VarArg(<nothing>), KwArg(<nothing>)], SomeClass]" \
-				    # E: Argument 2 to "func" has incompatible type "Callable[[bool], SomeClass]"; expected "Callable[[VarArg(<nothing>), KwArg(<nothing>)], SomeClass]"
+--zuban-diff func(SomeClass, wrong_constructor)  # E: Argument 1 to "func" has incompatible type "Type[SomeClass]"; expected "Callable[[VarArg(<nothing>), KwArg(<nothing>)], SomeClass]" \
+--zuban-diff 				    # E: Argument 2 to "func" has incompatible type "Callable[[bool], SomeClass]"; expected "Callable[[VarArg(<nothing>), KwArg(<nothing>)], SomeClass]"
+func(SomeClass, wrong_constructor)  # E: Argument 2 to "func" has incompatible type "Callable[[bool], SomeClass]"; expected "Callable[[str], SomeClass]"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecInTypeAliasBasic]
