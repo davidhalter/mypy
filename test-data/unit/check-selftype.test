@@ -1484,7 +1484,8 @@ class C:
     def foo(self, other: Union[Self, int]) -> Union[Self, int]:
         return other
 class D(C): ...
-reveal_type(D().foo)  # N: Revealed type is "Overload(def (other: __main__.D) -> __main__.D, def (other: builtins.int) -> builtins.int)"
+--zuban-diff reveal_type(D().foo)  # N: Revealed type is "Overload(def (other: __main__.D) -> __main__.D, def (other: builtins.int) -> builtins.int)"
+reveal_type(D().foo)  # N: Revealed type is "Overload(def (other: Self) -> Self, def (other: builtins.int) -> builtins.int)"
 
 [case testTypingSelfNestedInAlias]
 from typing import Generic, Self, TypeVar, List, Tuple
