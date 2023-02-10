@@ -10200,7 +10200,8 @@ def test() -> None:
     d.meth(42)
 [out]
 ==
-m.py:4: error: Argument 1 to "meth" of "C" has incompatible type "int"; expected "D"
+--zuban-diff m.py:4: error: Argument 1 to "meth" of "C" has incompatible type "int"; expected "D"
+m.py:4: error: Argument 1 to "meth" of "C" has incompatible type "int"; expected "Self"
 
 [case testNoNestedDefinitionCrash]
 import m
