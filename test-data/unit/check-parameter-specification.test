@@ -1350,7 +1350,8 @@ P = ParamSpec("P")
 C = Callable[Concatenate[int, P], int]
 def f(n: C[P]) -> C[P]: ...
 
-@f  # E: Argument 1 to "f" has incompatible type "Callable[[], int]"; expected "Callable[[int], int]"
+--zuban-diff @f  # E: Argument 1 to "f" has incompatible type "Callable[[], int]"; expected "Callable[[int], int]"
+@f  # E: Argument 1 to "f" has incompatible type "Callable[[], int]"; expected "Callable[[int, <nothing>], int]"
 def bad() -> int: ...
 
 @f
@@ -1361,11 +1362,12 @@ def bar2(x: int, y: str) -> int: ...
 reveal_type(bar2)  # N: Revealed type is "def (builtins.int, y: builtins.str) -> builtins.int"
 
 @f  # E: Argument 1 to "f" has incompatible type "Callable[[int], str]"; expected "Callable[[int], int]" \
-    # N: This is likely because "foo" has named arguments: "x". Consider marking them positional-only
+--zuban-diff    # N: This is likely because "foo" has named arguments: "x". Consider marking them positional-only
 def foo(x: int) -> str: ...
 
-@f  # E: Argument 1 to "f" has incompatible type "Callable[[str, int], int]"; expected "Callable[[int, int], int]" \
-    # N: This is likely because "foo2" has named arguments: "x". Consider marking them positional-only
+--zuban-diff @f  # E: Argument 1 to "f" has incompatible type "Callable[[str, int], int]"; expected "Callable[[int, int], int]" \
+--zuban-diff    # N: This is likely because "foo2" has named arguments: "x". Consider marking them positional-only
+@f  # E: Argument 1 to "f" has incompatible type "Callable[[str, int], int]"; expected "Callable[[int, <nothing>], int]"
 def foo2(x: str, y: int) -> int: ...
 
 x: C[[int, str]]
