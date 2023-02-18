@@ -1179,8 +1179,8 @@ class B: pass
 ==
 --zuban-diff main:4: error: "A" has no attribute "g"
 --zuban-diff main:5: error: "A" has no attribute "x"
-main:4: error: "A" has no attribute "g"
-main:5: error: "A" has no attribute "x"
+main:4: error: "Self" has no attribute "g"
+main:5: error: "Self" has no attribute "x"
 
 [case testRemoveBaseClass2]
 import m
