@@ -1561,8 +1561,14 @@ class C(Generic[T]):
 
 reveal_type(C.F(17).foo())      # N: Revealed type is "builtins.int"
 reveal_type(C("").F(17).foo())  # N: Revealed type is "builtins.int"
-reveal_type(C.F)                # N: Revealed type is "def [K] (k: K`1) -> __main__.C.F[K`1]"
-reveal_type(C("").F)            # N: Revealed type is "def [K] (k: K`6) -> __main__.C.F[K`6]"
+--zuban-diff reveal_type(C.F)                # N: Revealed type is "def [K] (k: K`1) -> __main__.C.F[K`1]"
+--zuban-diff reveal_type(C("").F)            # N: Revealed type is "def [K] (k: K`6) -> __main__.C.F[K`6]"
+reveal_type(C.F)                # N: Revealed type is "Type[__main__.C.F[Any]]"
+reveal_type(C("").F)            # N: Revealed type is "Type[__main__.C.F[Any]]"
+--zuban-diff 
+--zuban-diff 
+reveal_type(C.F(3))             # N: Revealed type is "__main__.C.F[int]"
+reveal_type(C("").F(3))         # N: Revealed type is "__main__.C.F[int]"
 
 
 -- Callable subtyping with generic functions
