@@ -1111,7 +1111,8 @@ class A:
 [case testForwardReferenceToDynamicallyTypedClassMethod]
 def f(self) -> None:
     A.x(1).y
-    A.x() # E: Missing positional argument "a" in call to "x"
+--zuban-diff     A.x() # E: Missing positional argument "a" in call to "x"
+    A.x() # E: Missing positional argument "a" in call to "x" of "A"
 
 class A:
     @classmethod
