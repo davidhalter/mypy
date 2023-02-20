@@ -2270,7 +2270,9 @@ reveal_type(b)  # N: Revealed type is "__main__.B"
 
 def g(t: Type[Maker[T]]) -> T:
     if bool():
-        return t.x
+--zuban-diff Probably a mypy bug related to https://github.com/python/mypy/issues/11537
+--zuban-diff         return t.x
+        return t.x  # E: Access to generic instance variables via class is ambiguous
     return t.get()
 bb = g(B)
 reveal_type(bb)  # N: Revealed type is "__main__.B"
