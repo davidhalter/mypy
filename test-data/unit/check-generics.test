@@ -2209,7 +2209,9 @@ class C(Generic[T]):
     x: T
     @classmethod
     def get(cls) -> T:
-        return cls.x  # OK
+--zuban-diff Mypy issue related: 9456 strikes again
+--zuban-diff         return cls.x  # OK
+        return cls.x  # E: Access to generic instance variables via class is ambiguous
 
 x = C.x  # E: Access to generic instance variables via class is ambiguous
 reveal_type(x)  # N: Revealed type is "Any"
