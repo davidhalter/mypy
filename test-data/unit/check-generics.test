@@ -2162,7 +2162,7 @@ class C(Generic[T]):
     @classmethod
     def meth(cls) -> None:
 --zuban-diff         cls.x  # E: Access to generic instance variables via class is ambiguous
-        cls.x  # E: "Type[C[T]]" has no attribute "x"
+        cls.x  # E: "Type[Self]" has no attribute "x"
 [builtins fixtures/classmethod.pyi]
 
 [case testGenericClassMethodUnboundOnClassNonMatchingIdNonGeneric]
