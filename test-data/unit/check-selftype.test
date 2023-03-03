@@ -1414,9 +1414,7 @@ reveal_type(bad)  # N: Revealed type is "def (Any) -> Any"
 def func() -> None:
     var: Self  # E: Self type is only allowed in annotations within class definition
 
-class C(Self): ...  # E: Self type is only allowed in annotations within class definition \
---zuban-diff 
-                    # E: Invalid base class "Self"
+class C(Self): ...  # E: Self type is only allowed in annotations within class definition
 
 [case testTypingSelfInvalidArgs]
 from typing import Self, List

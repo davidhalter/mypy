@@ -223,8 +223,7 @@ else:
 [case testUnionSimplificationSpecialCases]
 from typing import Any, TypeVar, Union
 
---zuban-diff class C(Any): pass
-class C(Any): pass  # E: Invalid base class "Any"
+class C(Any): pass
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -244,8 +243,7 @@ reveal_type(u(a, a))  # N: Revealed type is "Any"
 [case testUnionSimplificationSpecialCase2]
 from typing import Any, TypeVar, Union
 
---zuban-diff class C(Any): pass
-class C(Any): pass  # E: Invalid base class "Any"
+class C(Any): pass
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -258,8 +256,7 @@ def f(x: T) -> None:
 [case testUnionSimplificationSpecialCase3]
 from typing import Any, TypeVar, Generic, Union
 
---zuban-diff class C(Any): pass
-class C(Any): pass  # E: Invalid base class "Any"
+class C(Any): pass
 
 V = TypeVar('V')
 T = TypeVar('T')
@@ -274,8 +271,7 @@ def f(x: M[C]) -> None:
 [case testUnionSimplificationSpecialCases2]
 from typing import Any, TypeVar, Union
 
---zuban-diff class C(Any): pass
-class C(Any): pass  # E: Invalid base class "Any"
+class C(Any): pass
 
 T = TypeVar('T')
 S = TypeVar('S')
@@ -314,8 +310,7 @@ reveal_type(u('', 1))  # N: Revealed type is "Union[builtins.int, builtins.str]"
 [case testUnionSimplificationWithDuplicateItems]
 from typing import Any, TypeVar, Union
 
---zuban-diff class C(Any): pass
-class C(Any): pass  # E: Invalid base class "Any"
+class C(Any): pass
 
 T = TypeVar('T')
 S = TypeVar('S')

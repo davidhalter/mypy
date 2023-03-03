@@ -1471,9 +1471,7 @@ TP2: int = ParamSpec('TP2')  # E: Cannot declare the type of a TypeVar or simila
 # https://github.com/python/mypy/issues/11808
 from typing_extensions import Annotated
 # Next line should not crash:
-class A(Annotated): pass  # E: Annotated[...] must have exactly one type argument and at least one annotation \
---zuban-diff
-                          # E: Invalid base class "Annotated"
+class A(Annotated): pass  # E: Annotated[...] must have exactly one type argument and at least one annotation
 
 [case testInvalidUnpackTypes]
 from typing_extensions import Unpack
