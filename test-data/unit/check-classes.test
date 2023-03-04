@@ -2546,7 +2546,9 @@ def len(x: Iterable[T]) -> int: ...
 
 x = [1.1, 2.2, 3.3]
 reveal_type(sum(x))  # N: Revealed type is "Union[builtins.float, builtins.int]"
-reveal_type(sum(x) / len(x))  # N: Revealed type is "Union[builtins.float, builtins.int]"
+--zuban-diff reveal_type(sum(x) / len(x))  # N: Revealed type is "Union[builtins.float, builtins.int]"
+--zuban-diff fixtures/floatdict.pyi is wrong here.
+reveal_type(sum(x) / len(x))  # N: Revealed type is "builtins.float"
 [builtins fixtures/floatdict.pyi]
 
 [case testOperatorWithEmptyListAndSum]
