@@ -345,7 +345,7 @@ if int():
     a = A # E: Incompatible types in assignment (expression has type "Type[A]", variable has type "A")
 if int():
 --zuban-diff     t = f # E: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "type")
-    t = f # E: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "Type[object]")
+    t = f # E: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "Type[Any]")
 if int():
     t = A
 
