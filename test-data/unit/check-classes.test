@@ -1288,8 +1288,11 @@ A().f('') # E: Argument 1 to "f" of "A" has incompatible type "str"; expected "i
 
 [case testBuiltinClassMethod]
 import typing
-int.from_bytes(b'', '')
-int.from_bytes('', '') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "bytes"
+--zuban-diff int.from_bytes(b'', '')
+--zuban-diff int.from_bytes('', '') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "bytes"
+--zuban-diff fixtures/classmethod.pyi was wrong.
+int.from_bytes(b'', 'little')
+int.from_bytes('', 'little') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "bytes"
 [builtins fixtures/classmethod.pyi]
 
 [case testAssignClassMethodOnClass]
