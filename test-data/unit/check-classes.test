@@ -104,8 +104,10 @@ class A:
         self.f()
 class B: pass
 [out]
-main:4: error: Incompatible types in assignment (expression has type "A", variable has type "B")
-main:5: error: "A" has no attribute "g"
+--zuban-diff main:4: error: Incompatible types in assignment (expression has type "A", variable has type "B")
+main:4: error: Incompatible types in assignment (expression has type "Self", variable has type "B")
+--zuban-diff main:5: error: "A" has no attribute "g"
+main:5: error: "Self" has no attribute "g"
 
 [case testAssignToMethodViaInstance]
 import typing
@@ -1172,12 +1174,16 @@ class Foo:
         name = 'Bar'
     meta = Meta
 
-reveal_type(Foo.Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
-reveal_type(Foo.meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+--zuban-diff reveal_type(Foo.Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+--zuban-diff reveal_type(Foo.meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+reveal_type(Foo.Meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
+reveal_type(Foo.meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
 reveal_type(Foo.Meta.name)  # N: Revealed type is "builtins.str"
 reveal_type(Foo.meta.name)  # N: Revealed type is "builtins.str"
-reveal_type(Foo().Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
-reveal_type(Foo().meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+--zuban-diff reveal_type(Foo().Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+--zuban-diff reveal_type(Foo().meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+reveal_type(Foo().Meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
+reveal_type(Foo().meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
 reveal_type(Foo().meta.name)  # N: Revealed type is "builtins.str"
 reveal_type(Foo().Meta.name)  # N: Revealed type is "builtins.str"
 
@@ -1313,7 +1319,8 @@ class C:
     cls(1)      # E: Too many arguments for "C"
     cls.bar()
     cls.bar(1)  # E: Too many arguments for "bar" of "C"
-    cls.bozo()  # E: "Type[C]" has no attribute "bozo"
+--zuban-diff     cls.bozo()  # E: "Type[C]" has no attribute "bozo"
+    cls.bozo()  # E: "Type[Self]" has no attribute "bozo"
 [builtins fixtures/classmethod.pyi]
 [out]
 
@@ -3184,7 +3191,8 @@ class B:
     a_any = SameA
     a_int = SameA[int]
 
-reveal_type(B().a_any) # N: Revealed type is "def () -> __main__.A[Any, Any]"
+--zuban-diff reveal_type(B().a_any) # N: Revealed type is "def () -> __main__.A[Any, Any]"
+reveal_type(B().a_any) # N: Revealed type is "Type[__main__.A[Any, Any]]"
 reveal_type(B().a_int()) # N: Revealed type is "__main__.A[builtins.int, builtins.int]"
 
 class C:
