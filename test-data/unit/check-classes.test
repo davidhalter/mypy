@@ -1798,7 +1798,8 @@ def f(some_class: Type[A]):
     A.f = D(20)
     A.f = D('some string')
 [out]
-main:11: error: Argument 1 to "D" has incompatible type "str"; expected "int"
+--zuban-diff main:11: error: Argument 1 to "D" has incompatible type "str"; expected "int"
+main:11: error: Incompatible types in assignment (expression has type "D[str]", variable has type "D[int]")
 
 [case testDescriptorUncallableDunderSet]
 class D:
