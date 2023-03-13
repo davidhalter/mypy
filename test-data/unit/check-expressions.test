@@ -1157,8 +1157,9 @@ if int():
     f = lambda: ''.x # E: "str" has no attribute "x"
 if int():
     f = lambda: '' \
-        # E: Incompatible types in assignment (expression has type "Callable[[], str]", variable has type "Callable[[], int]") \
-        # E: Incompatible return value type (got "str", expected "int")
+        # E: Incompatible types in assignment (expression has type "Callable[[], str]", variable has type "Callable[[], int]")
+--zuban-diff        # E: Incompatible return value type (got "str", expected "int")
+--zuban-diff 
 
 [case testVoidLambda]
 import typing
