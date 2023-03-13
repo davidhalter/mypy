@@ -1467,7 +1467,8 @@ s = None  # type: str
 s = A() + 1
 A() + (A() + 1)
 [out]
-main:7: error: Argument 1 has incompatible type "str"; expected "int"
+--zuban-diff main:7: error: Argument 1 has incompatible type "str"; expected "int"
+main:7: error: Unsupported operand types for + ("A" and "str")
 
 [case testIndexedLvalueWithSubtypes]
 
