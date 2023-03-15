@@ -1383,7 +1383,8 @@ from typing import Union
 reveal_type(1 if bool() else 2) # N: Revealed type is "builtins.int"
 reveal_type(1 if bool() else '') # N: Revealed type is "builtins.object"
 x: Union[int, str] = reveal_type(1 if bool() else '') \
-    # N: Revealed type is "Union[Literal[1]?, Literal['']?]"
+--zuban-diff     # N: Revealed type is "Union[Literal[1]?, Literal['']?]"
+    # N: Revealed type is "Union[int, str]"
 class A:
     pass
 class B(A):
