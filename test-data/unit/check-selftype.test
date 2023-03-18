@@ -209,6 +209,30 @@ class J(A[int]):
 
 [builtins fixtures/tuple.pyi]
 
+[case testSelfTypeOverrideCompatibilityGeneric]
+from typing import TypeVar, Generic, overload
+
+T = TypeVar("T", str, int, None)
+
+class A(Generic[T]):
+    @overload
+    def f(self, s: T) -> T: ...
+    @overload
+    def f(self: A[str], s: bytes) -> str: ...
+    def f(self, s: object): ...
+
+class B(A[int]):
+    def f(self, s: int) -> int: ...
+
+class C(A[None]):
+    def f(self, s: int) -> int: ...  # E: Signature of "f" incompatible with supertype "A" \
+                                     # N:      Superclass:            \
+                                     # N:          @overload          \
+                                     # N:          def f(self, s: None) -> None \
+                                     # N:      Subclass:              \
+                                     # N:          def f(self, s: int) -> int
+[builtins fixtures/tuple.pyi]
+
 [case testSelfTypeOverrideCompatibilityTypeVar-xfail]
 from typing import overload, TypeVar, Union
 
@@ -429,7 +453,7 @@ class C:
 [case testSelfTypeNew]
 from typing import TypeVar, Type
 
-T = TypeVar('T', bound=A)
+T = TypeVar('T', bound='A')
 class A:
     def __new__(cls: Type[T]) -> T:
         return cls()
@@ -1002,7 +1026,7 @@ reveal_type(ab.x)  # N: Revealed type is "builtins.int"
 from typing import Generic, List, Optional, TypeVar, Any
 
 Q = TypeVar("Q")
-T = TypeVar("T", bound=Super[Any])
+T = TypeVar("T", bound='Super[Any]')
 
 class Super(Generic[Q]):
     @classmethod
@@ -1161,7 +1185,7 @@ from typing import Optional, Type, TypeVar, overload, Union
 
 Id = int
 
-A = TypeVar("A", bound=AClass)
+A = TypeVar("A", bound='AClass')
 
 class AClass:
     @overload
@@ -1637,13 +1661,13 @@ class C:
 from typing import Self, Type
 
 class C:
-    def copy(self: Self) -> Self:  # E: Redundant Self annotation on method first argument
+    def copy(self: Self) -> Self:  # E: Redundant "Self" annotation for the first method argument
         d: Defer
         class Defer: ...
         return self
 
     @classmethod
-    def g(cls: Type[Self]) -> Self:  # E: Redundant Self annotation on method first argument
+    def g(cls: Type[Self]) -> Self:  # E: Redundant "Self" annotation for the first method argument
         d: DeferAgain
         class DeferAgain: ...
         return cls()
@@ -1692,7 +1716,7 @@ class This: ...
 [case testTypingSelfAttrOldVsNewStyle]
 from typing import Self, TypeVar
 
-T = TypeVar("T", bound=C)
+T = TypeVar("T", bound='C')
 class C:
     x: Self
     def foo(self: T) -> T:
@@ -1795,3 +1819,23 @@ class C(B, Generic[T]):
         inst = super().copy()
         reveal_type(inst)  # N: Revealed type is "Self`0"
         return inst
+
+[case testTypingSelfWithValuesExpansion]
+from typing import Self, Generic, TypeVar
+
+class A: pass
+class B: pass
+T = TypeVar("T", A, B)
+
+class C(Generic[T]):
+    val: T
+    def foo(self, x: T) -> None: ...
+    def bar(self, x: T) -> Self:
+        reveal_type(self.foo)  # N: Revealed type is "def (x: __main__.A)" \
+                               # N: Revealed type is "def (x: __main__.B)"
+        self.foo(x)
+        return self
+    def baz(self: Self, x: T) -> None:
+        reveal_type(self.val)  # N: Revealed type is "__main__.A" \
+                               # N: Revealed type is "__main__.B"
+        self.val = x

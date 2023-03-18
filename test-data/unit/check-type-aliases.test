@@ -207,7 +207,7 @@ B = Callable[[B], int] # E: Cannot resolve name "B" (possible cyclic definition)
 C = Type[C] # E: Cannot resolve name "C" (possible cyclic definition)
 
 [case testRecursiveAliasesErrors2]
-# flags: --disable-recursive-aliases
+# flags: --disable-recursive-aliases --disable-error-code=used-before-def
 # Recursive aliases are not supported yet.
 from typing import Type, Callable, Union
 
@@ -225,6 +225,7 @@ main:7: error: Cannot resolve name "C" (possible cyclic definition)
 main:9: note: Revealed type is "Union[Any, builtins.int]"
 
 [case testDoubleForwardAlias]
+# flags: --disable-error-code=used-before-def
 from typing import List
 x: A
 A = List[B]
@@ -234,6 +235,7 @@ reveal_type(x) # N: Revealed type is "builtins.list[builtins.list[builtins.int]]
 [out]
 
 [case testDoubleForwardAliasWithNamedTuple]
+# flags: --disable-error-code=used-before-def
 from typing import List, NamedTuple
 x: A
 A = List[B]
@@ -255,6 +257,7 @@ if isinstance(x, list):
 [out]
 
 [case testForwardRefToTypeVar]
+# flags: --disable-error-code=used-before-def
 
 from typing import TypeVar, List
 reveal_type(a)  # N: Revealed type is "builtins.list[builtins.int]"
@@ -445,7 +448,7 @@ A = Union[None]
 [case testAliasToClassMethod]
 from typing import TypeVar, Generic, Union, Type
 
-T = TypeVar('T', bound=C)
+T = TypeVar('T', bound='C')
 
 MYPY = False
 if MYPY:
@@ -1026,3 +1029,18 @@ RHSAlias3: type = tuple[int, ...]
 WrongTypeElement = str | tuple[float, 1]  # E: Invalid type: try using Literal[1] instead?
 WrongEllipsis = str | tuple[float, float, ...]  # E: Unexpected "..."
 [builtins fixtures/tuple.pyi]
+
+[case testCompiledNoCrashOnSingleItemUnion]
+# flags: --no-strict-optional
+from typing import Callable, Union, Generic, TypeVar
+
+Alias = Callable[[], int]
+
+T = TypeVar("T")
+class C(Generic[T]):
+    attr: Union[Alias, None] = None
+
+    @classmethod
+    def test(cls) -> None:
+        cls.attr
+[builtins fixtures/classmethod.pyi]
