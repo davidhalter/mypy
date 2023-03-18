@@ -915,10 +915,11 @@ A() < B()
 B() < A()
 B() < B()
 A() < object() # E: Unsupported operand types for < ("A" and "object")
-B() < object() # E: No overload variant of "__lt__" of "B" matches argument type "object" \
-               # N: Possible overload variants: \
-               # N:     def __lt__(self, B, /) -> int \
-               # N:     def __lt__(self, A, /) -> int
+--zuban-diff B() < object() # E: No overload variant of "__lt__" of "B" matches argument type "object" \
+--zuban-diff                # N: Possible overload variants: \
+--zuban-diff                # N:     def __lt__(self, B, /) -> int \
+--zuban-diff                # N:     def __lt__(self, A, /) -> int
+B() < object() # E: Unsupported operand types for < ("B" and "object")
 
 [case testOverloadedForwardMethodAndCallingReverseMethod]
 from foo import *
@@ -934,10 +935,11 @@ class B:
 A() + A()
 A() + 1
 A() + B()
-A() + '' # E: No overload variant of "__add__" of "A" matches argument type "str" \
-         # N: Possible overload variants: \
-         # N:     def __add__(self, A, /) -> int \
-         # N:     def __add__(self, int, /) -> int
+--zuban-diff A() + '' # E: No overload variant of "__add__" of "A" matches argument type "str" \
+--zuban-diff          # N: Possible overload variants: \
+--zuban-diff          # N:     def __add__(self, A, /) -> int \
+--zuban-diff          # N:     def __add__(self, int, /) -> int
+A() + '' # E: Unsupported operand types for + ("A" and "str")
 
 [case testOverrideOverloadSwapped]
 from foo import *
