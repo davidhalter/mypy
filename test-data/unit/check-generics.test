@@ -1472,9 +1472,9 @@ a, b = None, None # type: (A, B)
 
 if int():
 --zuban-diff     b = f([a]) # E: Incompatible types in assignment (expression has type "A", variable has type "B")
-    b = f([a]) # E: Argument 1 to "f" has incompatible type "list[A]"; expected "list[B]"
+    b = f([a]) # E: List item 0 has incompatible type "A"; expected "B"
 --zuban-diff     a = f([b]) # E: Incompatible types in assignment (expression has type "B", variable has type "A")
-    a = f([b]) # E: Argument 1 to "f" has incompatible type "list[B]"; expected "list[A]"
+    a = f([b]) # E: List item 0 has incompatible type "B"; expected "A"
 if int():
     a = f(b)   # E: Incompatible types in assignment (expression has type "B", variable has type "A")
 
