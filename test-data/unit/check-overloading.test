@@ -3344,10 +3344,12 @@ def wrapper() -> None:
     obj2: Union[W1[A], W2[B]]
 
     reveal_type(foo(obj2))  # N: Revealed type is "Union[__main__.A, __main__.B]"
-    bar(obj2)  # E: Cannot infer type argument 1 of "bar"
+--zuban-diff    bar(obj2)  # E: Cannot infer type argument 1 of "bar"
+    bar(obj2)  # E: Argument 1 to "bar" has incompatible type "W1[A] | W2[B]"; expected "W1[A] | W2[A]"
 
     b1_overload: A = foo(obj2)  # E: Incompatible types in assignment (expression has type "Union[A, B]", variable has type "A")
-    b1_union: A    = bar(obj2)  # E: Cannot infer type argument 1 of "bar"
+--zuban-diff    b1_union: A    = bar(obj2)  # E: Cannot infer type argument 1 of "bar"
+    b1_union: A    = bar(obj2)  # E: Argument 1 to "bar" has incompatible type "W1[A] | W2[B]"; expected "W1[A] | W2[A]"
 
 [case testOverloadingInferUnionReturnWithObjectTypevarReturn]
 from typing import overload, Union, TypeVar, Generic
