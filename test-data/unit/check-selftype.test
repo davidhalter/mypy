@@ -905,8 +905,7 @@ c: Lnk[int, float] = Lnk()
 
 d: Lnk[str, float] = b >> c  # OK
 e: Lnk[str, Tuple[int, float]] = a >> (b, c)  # OK
---zuban-diff f: Lnk[str, Tuple[float, int]] = a >> (c, b) # E: Unsupported operand types for >> ("Lnk[str, Tuple[str, int]]" and "Tuple[Lnk[int, float], Lnk[str, int]]")
-f: Lnk[str, Tuple[float, int]] = a >> (c, b) # E: Cannot infer type argument 1 of "__rshift__" of "Lnk"
+f: Lnk[str, Tuple[float, int]] = a >> (c, b) # E: Unsupported operand types for >> ("Lnk[str, Tuple[str, int]]" and "Tuple[Lnk[int, float], Lnk[str, int]]")
 [builtins fixtures/tuple.pyi]
 
 [case testSelfTypeMutuallyExclusiveRestrictions]

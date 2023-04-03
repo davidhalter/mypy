@@ -700,8 +700,10 @@ class A(Generic[T]): pass
 class B: pass
 
 
-f(ao, ab) # E: Cannot infer type argument 1 of "f"
-f(ab, ao) # E: Cannot infer type argument 1 of "f"
+--zuban-difff(ao, ab) # E: Cannot infer type argument 1 of "f"
+f(ao, ab) # E: Argument 2 to "f" has incompatible type "A[B]"; expected "A[object]"
+--zuban-difff(ab, ao) # E: Cannot infer type argument 1 of "f"
+f(ab, ao) # E: Argument 2 to "f" has incompatible type "A[object]"; expected "A[B]"
 f(ao, ao)
 f(ab, ab)
 [case testTypeInferenceWithCalleeDefaultArgs]

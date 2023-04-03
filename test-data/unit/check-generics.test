@@ -574,7 +574,8 @@ def func2(x: SameNode[T]) -> SameNode[T]:
     return x
 reveal_type(func2) # N: Revealed type is "def [T] (x: __main__.Node[T`-1, T`-1]) -> __main__.Node[T`-1, T`-1]"
 
-func2(Node(1, 'x')) # E: Cannot infer type argument 1 of "func2"
+--zuban-diff func2(Node(1, 'x')) # E: Cannot infer type argument 1 of "func2"
+func2(Node(1, 'x')) # E: Argument 1 to "func2" has incompatible type "Node[int, str]"; expected "Node[int, int]"
 y = func2(Node('x', 'x'))
 reveal_type(y) # N: Revealed type is "__main__.Node[builtins.str, builtins.str]"
 
@@ -855,8 +856,7 @@ def use_cb(arg: T, cb: C2[T]) -> Node[T]:
 
 use_cb(1, 1) # E: Argument 2 to "use_cb" has incompatible type "int"; expected "Callable[[int, int], Node[int]]"
 my_cb = None # type: C2[int]
---zuban-diff use_cb('x', my_cb) # E: Argument 2 to "use_cb" has incompatible type "Callable[[int, int], Node[int]]"; expected "Callable[[str, str], Node[str]]"
-use_cb('x', my_cb) # E: Cannot infer type argument 1 of "use_cb"
+use_cb('x', my_cb) # E: Argument 2 to "use_cb" has incompatible type "Callable[[int, int], Node[int]]"; expected "Callable[[str, str], Node[str]]"
 reveal_type(use_cb(1, my_cb)) # N: Revealed type is "__main__.Node[builtins.int]"
 [builtins fixtures/tuple.pyi]
 
@@ -903,7 +903,8 @@ def f(x: Node[T, T]) -> TupledNode[T]:
     return Node(x.x, (x.x, x.x))
 
 f(1) # E: Argument 1 to "f" has incompatible type "int"; expected "Node[<nothing>, <nothing>]"
-f(Node(1, 'x')) # E: Cannot infer type argument 1 of "f"
+--zuban-diff f(Node(1, 'x')) # E: Cannot infer type argument 1 of "f"
+f(Node(1, 'x')) # E: Argument 1 to "f" has incompatible type "Node[int, str]"; expected "Node[int, int]"
 reveal_type(Node('x', 'x')) # N: Revealed type is "a.Node[builtins.str, builtins.str]"
 
 [file a.py]
