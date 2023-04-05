@@ -3474,10 +3474,7 @@ def t_is_same_bound(arg1: T1, arg2: S) -> Tuple[T1, S]:
     y3: S
 --zuban-diff     Dummy[T1]().foo(x3, y3)  # E: Cannot infer type argument 1 of "foo" of "Dummy" \
 --zuban-diff                              # E: Argument 1 to "foo" of "Dummy" has incompatible type "Union[List[S], List[Tuple[S, T1]]]"; expected "List[Tuple[T1, Any]]"
-    Dummy[T1]().foo(x3, y3)  # E: No overload variant of "foo" of "Dummy" matches argument types "list[S] | list[tuple[S, T1]]", "S" \
-                             # N: Possible overload variants: \
-                             # N:     def [S] foo(self, x: list[tuple[T1, S]], y: S) -> T1 \
-                             # N:     def [S] foo(self, x: list[S], y: S) -> S
+    Dummy[T1]().foo(x3, y3)  # E: Argument 1 to "foo" of "Dummy" has incompatible type "Union[List[S], List[Tuple[S, T1]]]"; expected "List[S]"
 
     x4: Union[List[int], List[Tuple[C, int]]]
     y4: int
