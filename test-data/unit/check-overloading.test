@@ -2707,7 +2707,8 @@ b: Tuple[int, ...]
 c: Dict[str, int]
 
 reveal_type(f(*a, **c))  # N: Revealed type is "__main__.A"
-reveal_type(f(*b, **c))  # N: Revealed type is "__main__.A"
+--zuban-diff reveal_type(f(*b, **c))  # N: Revealed type is "__main__.A"
+reveal_type(f(*b, **c))  # N: Revealed type is "Any"
 reveal_type(f(*a))       # N: Revealed type is "__main__.B"
 reveal_type(f(*b))       # N: Revealed type is "Any"
 
