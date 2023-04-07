@@ -4621,7 +4621,8 @@ class D(C):
 
 x: D
 y: Union[D, Any]
-reveal_type(x.f(y))  # N: Revealed type is "Union[__main__.D, Any]"
+--zuban-diff reveal_type(x.f(y))  # N: Revealed type is "Union[__main__.D, Any]"
+reveal_type(x.f(y))  # N: Revealed type is "Any"
 [out]
 
 [case testManyUnionsInOverload]
