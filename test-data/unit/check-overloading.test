@@ -1360,10 +1360,18 @@ def g(x: int, *a: AnyStr) -> None: pass
 
 g('foo')
 g('foo', 'bar')
-g('foo', b'bar') # E: Value of type variable "AnyStr" of "g" cannot be "Sequence[object]"
+--zuban-diff g('foo', b'bar') # E: Value of type variable "AnyStr" of "g" cannot be "Sequence[object]"
+g('foo', b'bar') # E: No overload variant of "g" matches argument types "str", "bytes" \
+                 # N: Possible overload variants: \
+                 # N:     def [AnyStr in (bytes, str)] g(x: AnyStr, *a: AnyStr) -> None \
+                 # N:     def [AnyStr in (bytes, str)] g(x: int, *a: AnyStr) -> None
 g(1)
 g(1, 'foo')
-g(1, 'foo', b'bar') # E: Value of type variable "AnyStr" of "g" cannot be "Sequence[object]"
+--zuban-diff g(1, 'foo', b'bar') # E: Value of type variable "AnyStr" of "g" cannot be "Sequence[object]"
+g(1, 'foo', b'bar') # E: No overload variant of "g" matches argument types "int", "str", "bytes" \
+                    # N: Possible overload variants: \
+                    # N:     def [AnyStr in (bytes, str)] g(x: AnyStr, *a: AnyStr) -> None \
+                    # N:     def [AnyStr in (bytes, str)] g(x: int, *a: AnyStr) -> None
 [builtins fixtures/primitives.pyi]
 
 [case testOverloadOverlapWithTypeVarsWithValuesOrdering]
