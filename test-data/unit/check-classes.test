@@ -4117,11 +4117,13 @@ class B(object, A): # E: Cannot determine consistent method resolution order (MR
     __iter__ = readlines
 
 [case testDynamicMetaclass]
-class C(metaclass=int()):  # E: Dynamic metaclass not supported for "C"
+--zuban-diff class C(metaclass=int()):  # E: Dynamic metaclass not supported for "C"
+class C(metaclass=int()):  # E: Invalid metaclass "int()" 
     pass
 
 [case testDynamicMetaclassCrash]
-class C(metaclass=int().x):  # E: Dynamic metaclass not supported for "C"
+--zuban-diff class C(metaclass=int().x):  # E: Dynamic metaclass not supported for "C"
+class C(metaclass=int().x):  # E: Invalid metaclass "int().x" 
     pass
 
 [case testVariableSubclass]
