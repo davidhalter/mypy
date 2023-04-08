@@ -4637,7 +4637,8 @@ reveal_type(list(Explicit))  # N: Revealed type is "builtins.list[builtins.int]"
 from typing import Tuple
 
 class M(Tuple[int]): pass
-class C(metaclass=M): pass  # E: Invalid metaclass "M"
+--zuban-diff class C(metaclass=M): pass  # E: Invalid metaclass "M"
+class C(metaclass=M): pass  # E: Metaclasses not inheriting from "type" are not supported
 
 [builtins fixtures/tuple.pyi]
 
