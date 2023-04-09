@@ -6969,7 +6969,8 @@ class Conflict1(A1, B, E): ...  # E: Metaclass conflict: the metaclass of a deri
 class Conflict2(A, B): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
 class Conflict3(B, A): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
 
-class ChildOfConflict1(Conflict3): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+--zuban-diff class ChildOfConflict1(Conflict3): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+class ChildOfConflict1(Conflict3): ...
 class ChildOfConflict2(Conflict3, metaclass=CorrectMeta): ...
 
 class ConflictingMeta(MyMeta1, MyMeta3): ...
