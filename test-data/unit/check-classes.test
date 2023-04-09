@@ -4764,7 +4764,8 @@ A.x # E: "Type[A]" has no attribute "x"
 
 [case testAnyAsBaseOfMetaclass]
 from typing import Any, Type
-M = None  # type: Any
+--zuban-diff M = None  # type: Any
+M: Any
 class MM(M): pass
 
 class A(metaclass=MM):
