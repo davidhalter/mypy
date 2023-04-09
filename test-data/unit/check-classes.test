@@ -6939,8 +6939,10 @@ class AssocOp(Basic): ...
 # This does not make much sense, but we must not crash:
 import a
 [file m.py]
-from a import A  # E: Module "a" has no attribute "A"
-class Meta(A): pass
+--zuban-diff from a import A  # E: Module "a" has no attribute "A"
+--zuban-diff class Meta(A): pass
+from a import A
+class Meta(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 [file a.py]
 from m import Meta
 class A(metaclass=Meta): pass
