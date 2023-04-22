@@ -433,8 +433,10 @@ from typing import NamedTuple, Optional
 NT = NamedTuple("NT", [("x", Optional[NT]), ("y", int)])
 nt: NT
 reveal_type(nt)  # N: Revealed type is "Tuple[Union[..., None], builtins.int, fallback=__main__.NT]"
-reveal_type(nt.x)  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
-reveal_type(nt[0])  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
+--zuban-diff reveal_type(nt.x)  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
+reveal_type(nt.x)  # N: Revealed type is "Optional[Tuple[Optional[NT], builtins.int, fallback=__main__.NT]]"
+--zuban-diff reveal_type(nt[0])  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
+reveal_type(nt[0])  # N: Revealed type is "Optional[Tuple[Optional[NT], builtins.int, fallback=__main__.NT]]"
 y: str
 if nt.x is not None:
     y = nt.x[0]  # E: Incompatible types in assignment (expression has type "Optional[NT]", variable has type "str")
@@ -584,8 +586,10 @@ B = NamedTuple('B', [('x', A), ('y', int)])
 A = NamedTuple('A', [('x', str), ('y', 'B')])
 n: A
 def f(m: B) -> None: pass
-reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[..., builtins.int, fallback=__main__.B], fallback=__main__.A]"
-reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, ..., fallback=__main__.A], builtins.int, fallback=__main__.B])"
+--zuban-diff reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[..., builtins.int, fallback=__main__.B], fallback=__main__.A]"
+reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[__main__.A, builtins.int, fallback=__main__.B], fallback=__main__.A]"
+--zuban-diff reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, ..., fallback=__main__.A], builtins.int, fallback=__main__.B])"
+reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, __main__.B, fallback=__main__.A], builtins.int, fallback=__main__.B])"
 f(n)  # E: Argument 1 to "f" has incompatible type "A"; expected "B"
 [builtins fixtures/tuple.pyi]
 
