@@ -163,7 +163,8 @@ y: C
 reveal_type(y.x)  # N: Revealed type is "builtins.int"
 reveal_type(y[0])  # N: Revealed type is "builtins.int"
 x: A
-reveal_type(x)  # N: Revealed type is "__main__.G[Tuple[builtins.int, fallback=__main__.C]]"
+--zuban-diff reveal_type(x)  # N: Revealed type is "__main__.G[Tuple[builtins.int, fallback=__main__.C]]"
+reveal_type(x)  # N: Revealed type is "__main__.G[__main__.C]"
 [builtins fixtures/list.pyi]
 
 [case testRecursiveAliasViaBaseClassImported]
@@ -904,5 +905,6 @@ from typing import List, NamedTuple
 
 Example = NamedTuple("Example", [("rec", List["Example"])])
 e: Example
-reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[...], fallback=__main__.Example]"
+--zuban-diff reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[...], fallback=__main__.Example]"
+reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[__main__.Example], fallback=__main__.Example]"
 [builtins fixtures/tuple.pyi]
