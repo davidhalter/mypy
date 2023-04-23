@@ -81,7 +81,8 @@ MypyFile:1(
         NameExpr(y [__main__.y])))))
 
 [case testFor]
-for x in object:
+--zuban-diff for x in object:
+for x in object: # E: "Type[object]" object is not iterable
   x
 [out]
 MypyFile:1(
@@ -94,7 +95,8 @@ MypyFile:1(
 
 [case testForInFunction]
 def f():
-  for x in f:
+--zuban-diff   for x in f:
+  for x in f:  # E: "Callable[[], Any]" object is not iterable
     x
 [out]
 MypyFile:1(
@@ -158,9 +160,11 @@ MypyFile:1(
 
 [case testReusingForLoopIndexVariable]
 # flags: --allow-redefinition
-for x in None:
+--zuban-diff for x in None:
+for x in []:
     pass
-for x in None:
+--zuban-diff for x in None:
+for x in []:
     pass
 [out]
 MypyFile:1(
@@ -178,9 +182,11 @@ MypyFile:1(
 [case testReusingForLoopIndexVariable2]
 # flags: --allow-redefinition
 def f():
-    for x in None:
+--zuban-diff     for x in None:
+    for x in []:
         pass
-    for x in None:
+--zuban-diff     for x in None:
+    for x in []:
         pass
 [out]
 MypyFile:1(
@@ -314,11 +320,15 @@ MypyFile:1(
 [case testLvalues]
 x = y = 1
 xx = 1
-x.m = 1
+--zuban-diff x.m = 1
+x.m = 1  # E: "int" has no attribute "m"
 x[y] = 1
-x2, y2 = 1
-[x3, y3] = 1
-(x4, y4) = 1
+--zuban-diff x2, y2 = 1
+x2, y2 = (1, 2)
+--zuban-diff [x3, y3] = 1
+[x3, y3] = (1, 2)
+--zuban-diff (x4, y4) = 1
+(x4, y4) = (1, 2)
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -358,9 +368,12 @@ MypyFile:1(
 
 [case testStarLvalues]
 # flags: --allow-redefinition
-*x, y = 1
-*x, (y, *z) = 1
-*(x, q), r = 1
+--zuban-diff *x, y = 1
+*x, y = (1, 2, 3)
+--zuban-diff *x, (y, *z) = 1
+*x, (y, *z) = (1, (2, 3, 4, 5))
+--zuban-diff *(x, q), r = 1
+*(x, q), r = ((1,2),)
 [out]
 MypyFile:1(
   AssignmentStmt:2(
@@ -389,8 +402,10 @@ MypyFile:1(
 
 [case testMultipleDefinition]
 # flags: --allow-redefinition
-x, y = 1
-x, y = 2
+--zuban-diff x, y = 1
+x, y = (1, 1)
+--zuban-diff x, y = 2
+x, y = (2, 2)
 [out]
 MypyFile:1(
   AssignmentStmt:2(
@@ -406,7 +421,8 @@ MypyFile:1(
 
 [case testComplexDefinitions]
 (x) = 1
-([y]) = 2
+--zuban-diff ([y]) = 2
+([y]) = 2  # E: "int" object is not iterable
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -421,6 +437,8 @@ MypyFile:1(
 [case testLocalComplexDefinition]
 def f():
   (x) = 1
+--zuban-diff   ([y]) = 2
+  ([y]) = 2  # E: "int" object is not iterable
   x
 [out]
 MypyFile:1(
@@ -435,7 +453,8 @@ MypyFile:1(
 
 [case testMultipleDefOnlySomeNew]
 x = 1
-y, x = 1
+--zuban-diff y, x = 1
+y, x = (1, 1)
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -450,7 +469,8 @@ MypyFile:1(
 
 [case testMultipleDefOnlySomeNewNestedTuples]
 x = 1
-y, (x, z) = 1
+--zuban-diff y, (x, z) = 1
+y, (x, z) = (1, (1, 1))
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -468,8 +488,10 @@ MypyFile:1(
 [case testMultipleDefOnlySomeNewNestedLists]
 x = 1
 if x:
-    y, [x, z] = 1
-    [p, [x, r]] = 1
+--zuban-diff     y, [x, z] = 1
+    y, [x, z] = (1, (1, 2))
+--zuban-diff     [p, [x, r]] = 1
+    [p, [x, r]] = (1, (1, 2))
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -562,10 +584,12 @@ main:2: error: can't delete operator
 main:2: error: can't delete expression
 
 [case testTry]
-class c: pass
+--zuban-diff class c: pass
+class c(Exception): pass
 try:
   c
-except object:
+--zuban-diff except object:
+except object:  # E: Exception type must be derived from BaseException
   c
 except c as e:
   e
@@ -633,7 +657,8 @@ MypyFile:1(
 class c: pass
 try:
   pass
-except (c, object) as e:
+--zuban-diff except (c, object) as e:
+except (IndexError, AttributeError) as e:
   e
 [out]
 MypyFile:1(
@@ -751,7 +776,8 @@ MypyFile:1(
 [case testVariableInExceptHandler]
 try:
   pass
-except object as o:
+--zuban-diff except object as o:
+except Exception as o:
   x = None
   o = x
 [out]
@@ -772,8 +798,10 @@ MypyFile:1(
 [case testCallInExceptHandler]
 try:
   pass
-except object as o:
-  o = object()
+--zuban-diff except object as o:
+except Exception as o:
+--zuban-diff   o = object()
+  o = object()  # E: Incompatible types in assignment (expression has type "object", variable has type "Type[Exception]")
 [out]
 MypyFile:1(
   TryStmt:1(
@@ -795,7 +823,9 @@ try:
 except BaseException as e:
     pass
 except Err as f:
-    f = BaseException() # Fail
+--zuban-diff    f = BaseException() # Fail
+    f = BaseException() # E: Incompatible types in assignment (expression has type "BaseException", variable has type "Err"
+)
     f = Err()
 [builtins fixtures/exception.pyi]
 [out]
@@ -870,7 +900,8 @@ MypyFile:1(
 def f() -> None:
     try:
         pass
-    except object as o:
+--zuban-diff     except object as o:
+    except object as o:  # E: Exception type must be derived from BaseException
         pass
 [out]
 MypyFile:1(
@@ -890,9 +921,11 @@ MypyFile:1(
 def f() -> None:
     try:
         pass
-    except object as o:
+--zuban-diff     except object as o:
+    except Exception as o:
         pass
-    except object as o:
+--zuban-diff     except object as o:
+    except Exception as o:
         pass
 [out]
 MypyFile:1(
