@@ -524,7 +524,8 @@ class B(NamedTuple):
     y: int
 
 n: A
-reveal_type(n) # N: Revealed type is "Tuple[builtins.str, builtins.tuple[Tuple[..., builtins.int, fallback=__main__.B], ...], fallback=__main__.A]"
+--zuban-diff reveal_type(n) # N: Revealed type is "Tuple[builtins.str, builtins.tuple[Tuple[..., builtins.int, fallback=__main__.B], ...], fallback=__main__.A]"
+reveal_type(n) # N: Revealed type is "Tuple[builtins.str, builtins.tuple[Tuple[__main__.A, builtins.int, fallback=__main__.B], ...], fallback=__main__.A]"
 
 T = TypeVar("T")
 S = TypeVar("S")
