@@ -237,10 +237,12 @@ MypyFile:1(
 
 class A: pass
 a = None # type: A
-a = 1
+--zuban-diff a = 1
+a = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "A")
 def f():
   b = None # type: A
-  b = 1
+--zuban-diff   b = 1
+  b = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "A")
 [out]
 MypyFile:1(
   ClassDef:3(
@@ -303,7 +305,8 @@ MypyFile:1(
 import typing
 import _m
 typing.cast(_m.C, object)
-[fixture _m.py]
+--zuban-diff [fixture _m.py]
+[file _m.py]
 class C: pass
 [out]
 MypyFile:1(
@@ -318,8 +321,10 @@ MypyFile:1(
 import typing
 import _m._n
 typing.cast(_m._n.C, object)
-[fixture _m/__init__.py]
-[fixture _m/_n.py]
+--zuban-diff [fixture _m/__init__.py]
+[file _m/__init__.py]
+--zuban-diff [fixture _m/_n.py]
+[file _m/_n.py]
 class C: pass
 [out]
 MypyFile:1(
@@ -548,7 +553,8 @@ MypyFile:1(
 [case testGenericFunctionTypeVariableInReturnType]
 from typing import TypeVar
 t = TypeVar('t')
-def f() -> t: pass
+--zuban-diff def f() -> t: pass
+def f() -> t: pass # E: A function returning TypeVar should receive at least one argument containing the same Typevar
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])
@@ -581,7 +587,8 @@ MypyFile:1(
 from typing import TypeVar
 t = TypeVar('t')
 def f() -> None:
-    def g() -> t: pass
+--zuban-diff     def g() -> t: pass
+    def g() -> t: pass  # E: A function returning TypeVar should receive at least one argument containing the same Typevar
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])
@@ -739,7 +746,8 @@ from typing import overload, Any
 @overload
 def f(a: object) -> int: a
 @overload
-def f(a: str) -> object: a
+--zuban-diff def f(a: str) -> object: a
+def f(a: str) -> object: a  # E: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
 
 def f(a: Any) -> Any: return a
 
@@ -787,7 +795,8 @@ def f() -> None: pass
 @overload
 def f(x: int) -> None: pass
 
-def f(*args) -> None: pass
+--zuban-diff def f(*args) -> None: pass
+def f(*args) -> None: pass  # E: Overloaded function implementation does not accept all possible arguments of signature 2
 
 x = f
 [builtins fixtures/tuple.pyi]
@@ -984,7 +993,8 @@ MypyFile:1(
 from typing import TypeVar
 t = TypeVar('t')
 def f(x: t) -> None: pass
-f[int](1)
+--zuban-diff f[int](1)
+f[int](1)  # E: Type application is only supported for generic classes
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])
@@ -1152,7 +1162,8 @@ from typing import Generic
 from _m import T
 class A(Generic[T]):
     y = None # type: T
-[fixture _m.py]
+--zuban-diff [fixture _m.py]
+[file _m.py]
 from typing import TypeVar
 T = TypeVar('T')
 [out]
@@ -1175,7 +1186,8 @@ class A(Generic[_m.T]):
     a = None # type: _m.T
     def f(self, x: _m.T):
         b = None # type: _m.T
-[fixture _m.py]
+--zuban-diff [fixture _m.py]
+[file _m.py]
 from typing import TypeVar
 T = TypeVar('T')
 [out]
@@ -1206,7 +1218,8 @@ MypyFile:1(
 import _m
 def f(x: _m.T) -> None:
     a = None # type: _m.T
-[fixture _m.py]
+--zuban-diff [fixture _m.py]
+[file _m.py]
 from typing import TypeVar
 T = TypeVar('T')
 [out]
