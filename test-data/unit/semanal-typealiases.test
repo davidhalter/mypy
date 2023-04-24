@@ -91,7 +91,8 @@ MypyFile:1(
 import typing
 import _m
 A2 = _m.A
-x = 1 # type: A2
+--zuban-diff x = 1 # type: A2
+x = A2() # type: A2
 [fixture _m.py]
 import typing
 class A: pass
