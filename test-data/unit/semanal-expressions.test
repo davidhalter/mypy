@@ -11,7 +11,8 @@ MypyFile:1(
 
 [case testMemberExpr]
 x = 1
-x.y
+--zuban-diff x.y
+x.y  # E: "int" has no attribute "y"
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -25,7 +26,8 @@ MypyFile:1(
 
 [case testIndexExpr]
 x = y = 1
-x[y]
+--zuban-diff x[y]
+x[y]  # E: Value of type "int" is not indexable
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -103,9 +105,12 @@ MypyFile:1(
 
 [case testSlices]
 x = y = z = 1
-x[y:z:x]
-x[:]
-x[:y]
+--zuban-diff x[y:z:x]
+x[y:z:x] # E: Value of type "int" is not indexable
+--zuban-diff x[:]
+x[:] # E: Value of type "int" is not indexable
+--zuban-diff x[:y]
+x[:y] # E: Value of type "int" is not indexable
 [out]
 MypyFile:1(
   AssignmentStmt:1(
