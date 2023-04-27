@@ -979,7 +979,8 @@ a = (0, *b, '')
 class A: ...
 class B: ...
 bases = (A, B)
-class C(*bases): ...  # E: Invalid base class
+--zuban-diff class C(*bases): ...  # E: Invalid base class
+class C(*bases): ...  # E: Invalid base class "*bases"
 [builtins fixtures/tuple.pyi]
 
 [case testTupleMeetTupleAny]
