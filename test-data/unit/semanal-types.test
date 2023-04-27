@@ -1534,8 +1534,7 @@ main:1: note: Suggestion: Use Tuple[T1, ..., Tn] instead of (T1, ..., Tn)
 [case testQualifiedTypeNameBasedOnAny]
 from typing import Any
 x = 0 # type: Any
---zuban-diff z = 0 # type: x.y
-z = 0 # type: x.y # E: Variable "__main__.x" is not valid as a type # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+z = 0 # type: x.y
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [Any])
