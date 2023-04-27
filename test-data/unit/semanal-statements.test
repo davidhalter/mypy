@@ -824,8 +824,7 @@ except BaseException as e:
     pass
 except Err as f:
 --zuban-diff    f = BaseException() # Fail
-    f = BaseException() # E: Incompatible types in assignment (expression has type "BaseException", variable has type "Err"
-)
+    f = BaseException() # E: Incompatible types in assignment (expression has type "BaseException", variable has type "Err")
     f = Err()
 [builtins fixtures/exception.pyi]
 [out]
