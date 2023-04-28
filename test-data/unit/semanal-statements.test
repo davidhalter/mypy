@@ -16,7 +16,8 @@ MypyFile:1(
       ReturnStmt:2())))
 
 [case testRaise]
-raise object()
+--zuban-diff raise object()
+raise Exception()
 [out]
 MypyFile:1(
   RaiseStmt:1(
