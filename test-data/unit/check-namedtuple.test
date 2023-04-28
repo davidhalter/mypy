@@ -322,8 +322,8 @@ if int():
 if int():
     l = [A(1)]
 if int():
-    a = (1,)  # E: Incompatible types in assignment (expression has type "Tuple[int]", \
-                   variable has type "A")
+--zuban-diff merged lines
+    a = (1,)  # E: Incompatible types in assignment (expression has type "Tuple[int]", variable has type "A")
 [builtins fixtures/list.pyi]
 
 [case testNamedTupleMissingClassAttribute]
