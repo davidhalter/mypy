@@ -769,7 +769,8 @@ from b import tp
 x: tp
 reveal_type(x.x)  # N: Revealed type is "builtins.int"
 
-reveal_type(tp)  # N: Revealed type is "def (x: builtins.int) -> Tuple[builtins.int, fallback=b.tp]"
+--zuban-diff reveal_type(tp)  # N: Revealed type is "def (x: builtins.int) -> Tuple[builtins.int, fallback=b.tp]"
+reveal_type(tp)  # N: Revealed type is "Type[tuple[int, fallback=b.tp]]"
 tp('x')  # E: Argument 1 to "tp" has incompatible type "str"; expected "int"
 
 [file b.py]
