@@ -259,8 +259,8 @@ class B(A):
         s = ''
         if int():
             i, s = self
-            i, i = self  # E: Incompatible types in assignment (expression has type "str", \
-                              variable has type "int")
+--zuban-diff Merged lines
+            i, i = self  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
 [builtins fixtures/tuple.pyi]
 
 
@@ -277,10 +277,10 @@ class B(A):
             self = x
             i, s = x
             i, s = x.a, x.b
-            i, s = x.a, x.a  # E: Incompatible types in assignment (expression has type "int", \
-                                  variable has type "str")
-            i, i = self  # E: Incompatible types in assignment (expression has type "str", \
-                              variable has type "int")
+--zuban-diff merged lines 
+            i, s = x.a, x.a  # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+--zuban-diff merged lines 
+            i, i = self  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
 [builtins fixtures/tuple.pyi]
 
 [out]
