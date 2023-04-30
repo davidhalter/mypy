@@ -145,7 +145,8 @@ MypyFile:1(
 
 [case testNamedTupleWithTooFewArguments]
 from collections import namedtuple
-N = namedtuple('N') # E: Too few arguments for "namedtuple()"
+--zuban-diff N = namedtuple('N') # E: Too few arguments for "namedtuple()"
+N = namedtuple('N') # E: Missing positional argument "field_names" in call to "namedtuple"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidName]
