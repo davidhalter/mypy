@@ -151,7 +151,9 @@ N = namedtuple('N') # E: Missing positional argument "field_names" in call to "n
 
 [case testNamedTupleWithInvalidName]
 from collections import namedtuple
-N = namedtuple(1, ['x']) # E: "namedtuple()" expects a string literal as the first argument
+N = namedtuple(1, ['x']) # E: "namedtuple()" expects a string literal as the first argument \
+--zuban-diff 
+                         # E: Argument 1 to "namedtuple" has incompatible type "int"; expected "str"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidItems]
