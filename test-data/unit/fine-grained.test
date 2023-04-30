@@ -8077,7 +8077,8 @@ A = NamedTuple('A', F)  # type: ignore
 [builtins fixtures/list.pyi]
 [out]
 ==
-b.py:3: note: Revealed type is "Tuple[, fallback=a.A]"
+--zuban-diff b.py:3: note: Revealed type is "Tuple[, fallback=a.A]"
+b.py:3: note: Revealed type is "Any"
 
 [case testImportOnTopOfAlias1]
 from a import A
