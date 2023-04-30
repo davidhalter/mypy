@@ -132,11 +132,16 @@ B = namedtuple('B', 'a b', rename=1)
 C = namedtuple('C', 'a b', rename='not a bool')
 D = namedtuple('D', 'a b', unrecognized_arg=False)
 E = namedtuple('E', 'a b', 0)
+--zuban-diff 
+B = namedtuple('B', 'a b', rename=True)
 
 [builtins fixtures/bool.pyi]
 
 [out]
-main:5: error: Argument "rename" to "namedtuple" has incompatible type "str"; expected "int"
+--zuban-diff 
+main:4: error: Argument "rename" to "namedtuple" has incompatible type "int"; expected "bool"
+--zuban-diff main:5: error: Argument "rename" to "namedtuple" has incompatible type "str"; expected "int"
+main:5: error: Argument "rename" to "namedtuple" has incompatible type "str"; expected "bool"
 main:6: error: Unexpected keyword argument "unrecognized_arg" for "namedtuple"
 <ROOT>/test-data/unit/lib-stub/collections.pyi:3: note: "namedtuple" defined here
 main:7: error: Too many positional arguments for "namedtuple"
