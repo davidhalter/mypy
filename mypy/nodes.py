@@ -25,6 +25,7 @@ from typing_extensions import Final, TypeAlias as _TypeAlias, TypeGuard
 from mypy_extensions import trait
 
 import mypy.strconv
+from mypy.options import Options
 from mypy.util import short_type
 from mypy.visitor import ExpressionVisitor, NodeVisitor, StatementVisitor
 
@@ -173,7 +174,7 @@ del _nongen_builtins["builtins.str"]
 
 
 def get_nongen_builtins(python_version: tuple[int, int]) -> dict[str, str]:
-    # After 3.9 with pep585 generic builtins are allowed.
+    # After 3.9 with pep585 generic builtins are allowed
     return _nongen_builtins if python_version < (3, 9) else {}
 
 
@@ -190,9 +191,14 @@ class Node(Context):
     __slots__ = ()
 
     def __str__(self) -> str:
-        ans = self.accept(mypy.strconv.StrConv())
+        ans = self.accept(mypy.strconv.StrConv(options=Options()))
         if ans is None:
             return repr(self)
+        return ans
+
+    def str_with_options(self, options: Options) -> str:
+        ans = self.accept(mypy.strconv.StrConv(options=options))
+        assert ans
         return ans
 
     def accept(self, visitor: NodeVisitor[T]) -> T:
@@ -556,7 +562,7 @@ class OverloadedFuncDef(FuncBase, SymbolNode, Statement):
         self.items = items
         self.unanalyzed_items = items.copy()
         self.impl = None
-        if len(items) > 0:
+        if items:
             # TODO: figure out how to reliably set end position (we don't know the impl here).
             self.set_line(items[0].line, items[0].column)
         self.is_final = False
@@ -3083,7 +3089,7 @@ class TypeInfo(SymbolNode):
         for base in self.mro[:-1]:  # we skip "object" since everyone implements it
             if base.is_protocol:
                 for name, node in base.names.items():
-                    if isinstance(node.node, (TypeAlias, TypeVarExpr)):
+                    if isinstance(node.node, (TypeAlias, TypeVarExpr, MypyFile)):
                         # These are auxiliary definitions (and type aliases are prohibited).
                         continue
                     members.add(name)
@@ -3183,22 +3189,21 @@ class TypeInfo(SymbolNode):
 
         This includes the most important information about the type.
         """
-        return self.dump()
+        options = Options()
+        return self.dump(
+            str_conv=mypy.strconv.StrConv(options=options),
+            type_str_conv=mypy.types.TypeStrVisitor(options=options),
+        )
 
     def dump(
-        self,
-        str_conv: mypy.strconv.StrConv | None = None,
-        type_str_conv: mypy.types.TypeStrVisitor | None = None,
+        self, str_conv: mypy.strconv.StrConv, type_str_conv: mypy.types.TypeStrVisitor
     ) -> str:
         """Return a string dump of the contents of the TypeInfo."""
-        if not str_conv:
-            str_conv = mypy.strconv.StrConv()
+
         base: str = ""
 
         def type_str(typ: mypy.types.Type) -> str:
-            if type_str_conv:
-                return typ.accept(type_str_conv)
-            return str(typ)
+            return typ.accept(type_str_conv)
 
         head = "TypeInfo" + str_conv.format_id(self)
         if self.bases:
@@ -3326,7 +3331,6 @@ class TypeInfo(SymbolNode):
 
 
 class FakeInfo(TypeInfo):
-
     __slots__ = ("msg",)
 
     # types.py defines a single instance of this class, called types.NOT_READY.
@@ -3915,7 +3919,7 @@ class DataclassTransformSpec:
             "eq_default": self.eq_default,
             "order_default": self.order_default,
             "kw_only_default": self.kw_only_default,
-            "frozen_only_default": self.frozen_default,
+            "frozen_default": self.frozen_default,
             "field_specifiers": list(self.field_specifiers),
         }
 

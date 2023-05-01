@@ -170,7 +170,7 @@ from mypy.visitor import ExpressionVisitor
 # Type of callback user for checking individual function arguments. See
 # check_args() below for details.
 ArgChecker: _TypeAlias = Callable[
-    [Type, Type, ArgKind, Type, int, int, CallableType, Optional[Type], Context, Context], None,
+    [Type, Type, ArgKind, Type, int, int, CallableType, Optional[Type], Context, Context], None
 ]
 
 # Maximum nesting level for math union in overloads, setting this to large values
@@ -686,7 +686,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         context: Context,
         orig_callee: Type | None,
     ) -> Type:
-        if len(args) >= 1 and all([ak == ARG_NAMED for ak in arg_kinds]):
+        if args and all([ak == ARG_NAMED for ak in arg_kinds]):
             # ex: Point(x=42, y=1337)
             assert all(arg_name is not None for arg_name in arg_names)
             item_names = cast(List[str], arg_names)
@@ -708,7 +708,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                     callee, unique_arg.analyzed, context, orig_callee
                 )
 
-        if len(args) == 0:
+        if not args:
             # ex: EmptyDict()
             return self.check_typeddict_call_with_kwargs(callee, {}, context, orig_callee)
 
@@ -845,7 +845,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             # this may give a better error message.
             ret_type = callee
 
-        for (item_name, item_expected_type) in ret_type.items.items():
+        for item_name, item_expected_type in ret_type.items.items():
             if item_name in kwargs:
                 item_value = kwargs[item_name]
                 self.chk.check_simple_assignment(
@@ -2126,7 +2126,9 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 if actual_kind == nodes.ARG_STAR2 and not self.is_valid_keyword_var_arg(
                     actual_type
                 ):
-                    is_mapping = is_subtype(actual_type, self.chk.named_type("typing.Mapping"))
+                    is_mapping = is_subtype(
+                        actual_type, self.chk.named_type("_typeshed.SupportsKeysAndGetItem")
+                    )
                     self.msg.invalid_keyword_var_arg(actual_type, is_mapping, context)
                 expanded_actual = mapper.expand_actual_type(
                     actual_type, actual_kind, callee.arg_names[i], callee_arg_kind
@@ -2337,10 +2339,8 @@ class ExpressionChecker(ExpressionVisitor[Type]):
 
         def has_shape(typ: Type) -> bool:
             typ = get_proper_type(typ)
-            return (
-                isinstance(typ, TupleType)
-                or isinstance(typ, TypedDictType)
-                or (isinstance(typ, Instance) and typ.type.is_named_tuple)
+            return isinstance(typ, (TupleType, TypedDictType)) or (
+                isinstance(typ, Instance) and typ.type.is_named_tuple
             )
 
         matches: list[CallableType] = []
@@ -2423,8 +2423,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 inferred_types.append(infer_type)
                 type_maps.append(m)
 
-        if len(matches) == 0:
-            # No match was found
+        if not matches:
             return None
         elif any_causes_overload_ambiguity(matches, return_types, arg_types, arg_kinds, arg_names):
             # An argument of type or containing the type 'Any' caused ambiguity.
@@ -3015,7 +3014,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 if not encountered_partial_type and not failed_out:
                     iterable_type = UnionType.make_union(iterable_types)
                     if not is_subtype(left_type, iterable_type):
-                        if len(container_types) == 0:
+                        if not container_types:
                             self.msg.unsupported_operand_types("in", left_type, right_type, e)
                         else:
                             container_type = UnionType.make_union(container_types)
@@ -3917,6 +3916,12 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             always_allow_any=True,
         )
         target_type = expr.type
+        proper_source_type = get_proper_type(source_type)
+        if (
+            isinstance(proper_source_type, mypy.types.Instance)
+            and proper_source_type.last_known_value is not None
+        ):
+            source_type = proper_source_type.last_known_value
         if not is_same_type(source_type, target_type):
             if not self.chk.in_checked_function():
                 self.msg.note(
@@ -3966,7 +3971,12 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         if isinstance(tapp.expr, RefExpr) and isinstance(tapp.expr.node, TypeAlias):
             # Subscription of a (generic) alias in runtime context, expand the alias.
             item = expand_type_alias(
-                tapp.expr.node, tapp.types, self.chk.fail, tapp.expr.node.no_args, tapp
+                tapp.expr.node,
+                tapp.types,
+                self.chk.fail,
+                tapp.expr.node.no_args,
+                tapp,
+                self.chk.options,
             )
             item = get_proper_type(item)
             if isinstance(item, Instance):
@@ -4031,7 +4041,12 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         disallow_any = self.chk.options.disallow_any_generics and self.is_callee
         item = get_proper_type(
             set_any_tvars(
-                alias, ctx.line, ctx.column, disallow_any=disallow_any, fail=self.msg.fail
+                alias,
+                ctx.line,
+                ctx.column,
+                self.chk.options,
+                disallow_any=disallow_any,
+                fail=self.msg.fail,
             )
         )
         if isinstance(item, Instance):
@@ -4347,7 +4362,11 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             for arg in stargs:
                 if rv is None:
                     constructor = CallableType(
-                        [self.chk.named_generic_type("typing.Mapping", [kt, vt])],
+                        [
+                            self.chk.named_generic_type(
+                                "_typeshed.SupportsKeysAndGetItem", [kt, vt]
+                            )
+                        ],
                         [nodes.ARG_POS],
                         [None],
                         self.chk.named_generic_type("builtins.dict", [kt, vt]),
@@ -4457,7 +4476,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 is_ellipsis_args=False,
                 arg_types=[AnyType(TypeOfAny.special_form)] * len(arg_kinds),
                 arg_kinds=arg_kinds,
-                arg_names=e.arg_names[:],
+                arg_names=e.arg_names.copy(),
             )
 
         if ARG_STAR in arg_kinds or ARG_STAR2 in arg_kinds:
@@ -4920,15 +4939,8 @@ class ExpressionChecker(ExpressionVisitor[Type]):
     def is_valid_var_arg(self, typ: Type) -> bool:
         """Is a type valid as a *args argument?"""
         typ = get_proper_type(typ)
-        return (
-            isinstance(typ, TupleType)
-            or is_subtype(
-                typ,
-                self.chk.named_generic_type("typing.Iterable", [AnyType(TypeOfAny.special_form)]),
-            )
-            or isinstance(typ, AnyType)
-            or isinstance(typ, ParamSpecType)
-            or isinstance(typ, UnpackType)
+        return isinstance(typ, (TupleType, AnyType, ParamSpecType, UnpackType)) or is_subtype(
+            typ, self.chk.named_generic_type("typing.Iterable", [AnyType(TypeOfAny.special_form)])
         )
 
     def is_valid_keyword_var_arg(self, typ: Type) -> bool:
@@ -4937,14 +4949,14 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             is_subtype(
                 typ,
                 self.chk.named_generic_type(
-                    "typing.Mapping",
+                    "_typeshed.SupportsKeysAndGetItem",
                     [self.named_type("builtins.str"), AnyType(TypeOfAny.special_form)],
                 ),
             )
             or is_subtype(
                 typ,
                 self.chk.named_generic_type(
-                    "typing.Mapping", [UninhabitedType(), UninhabitedType()]
+                    "_typeshed.SupportsKeysAndGetItem", [UninhabitedType(), UninhabitedType()]
                 ),
             )
             or isinstance(typ, ParamSpecType)
@@ -5478,7 +5490,7 @@ def any_causes_overload_ambiguity(
 
 
 def all_same_types(types: list[Type]) -> bool:
-    if len(types) == 0:
+    if not types:
         return True
     return all(is_same_type(t, types[0]) for t in types[1:])
 
