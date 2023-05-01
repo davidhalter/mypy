@@ -590,7 +590,7 @@ class c(Exception): pass
 try:
   c
 --zuban-diff except object:
-except object:  # E: Exception type must be derived from BaseException
+except object:  # E: Exception type must be derived from BaseException (or be a tuple of exception classes)
   c
 except c as e:
   e
@@ -901,7 +901,7 @@ def f() -> None:
     try:
         pass
 --zuban-diff     except object as o:
-    except object as o:  # E: Exception type must be derived from BaseException
+    except object as o:  # E: Exception type must be derived from BaseException (or be a tuple of exception classes)
         pass
 [out]
 MypyFile:1(
