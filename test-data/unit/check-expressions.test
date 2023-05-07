@@ -2341,4 +2341,5 @@ from typing import TypeVar
 T = TypeVar("T")
 x: int
 x + T  # E: Unsupported operand types for + ("int" and "object")
-T()  # E: "object" not callable
+--zuban-diff T()  # E: "object" not callable
+T()  # E: "TypeVar" not callable
