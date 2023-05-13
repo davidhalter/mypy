@@ -2340,6 +2340,7 @@ def f() -> int:  # E: Missing return statement
 from typing import TypeVar
 T = TypeVar("T")
 x: int
-x + T  # E: Unsupported operand types for + ("int" and "object")
+--zuban-diff x + T  # E: Unsupported operand types for + ("int" and "object")
+x + T  # E: Unsupported operand types for + ("int" and "TypeVar")
 --zuban-diff T()  # E: "object" not callable
 T()  # E: "TypeVar" not callable
