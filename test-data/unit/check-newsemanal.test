@@ -1990,8 +1990,7 @@ class G(Generic[T]): pass
 
 t: Tuple[G[B], G[C]] # E: Type argument "B" of "G" must be a subtype of "A" \
                      # E: Type argument "C" of "G" must be a subtype of "A"
---zuban-diff reveal_type(t.__iter__) # N: Revealed type is "def () -> typing.Iterator[builtins.object]"
-reveal_type(t.__iter__) # N: Revealed type is "def () -> typing.Iterator[__main__.G[__main__.B]]"
+reveal_type(t.__iter__) # N: Revealed type is "def () -> typing.Iterator[builtins.object]"
 [builtins fixtures/tuple.pyi]
 
 [case testNewAnalyzerClassKeywordsForward]
