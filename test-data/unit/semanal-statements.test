@@ -802,7 +802,7 @@ try:
 --zuban-diff except object as o:
 except Exception as o:
 --zuban-diff   o = object()
-  o = object()  # E: Incompatible types in assignment (expression has type "object", variable has type "Type[Exception]")
+  o = object()  # E: Incompatible types in assignment (expression has type "object", variable has type "Exception")
 [out]
 MypyFile:1(
   TryStmt:1(
