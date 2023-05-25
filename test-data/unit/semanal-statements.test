@@ -520,7 +520,8 @@ MypyFile:1(
 
 [case testIndexedDel]
 x = y = 1
-del x[y]
+--zuban-diff del x[y]
+del x[y]  # E: "int" has no attribute "__delitem__"
 [out]
 MypyFile:1(
   AssignmentStmt:1(
