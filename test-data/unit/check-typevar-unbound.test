@@ -71,4 +71,5 @@ def j(a: List[Union[Callable[..., Tuple[T, T]], int]]) -> T:
 from typing import TypeVar
 T = TypeVar("T")
 def f(t: T) -> None:
-    a, *b = t  # E: "object" object is not iterable
+--zuban-diff     a, *b = t  # E: "object" object is not iterable
+    a, *b = t  # E: "T" object is not iterable
