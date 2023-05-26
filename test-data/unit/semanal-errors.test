@@ -1074,7 +1074,7 @@ f = TypeVar('f', (int, str), int) # E: Type expected
 g = TypeVar('g', int)             # E: TypeVar cannot have only a single constraint
 h = TypeVar('h', x=(int, str))    # E: Unexpected argument to "TypeVar()": "x"
 --zuban-diff i = TypeVar('i', bound=1)         # E: TypeVar "bound" must be a type
-i = TypeVar('i', bound=1)         # E: Type expected
+i = TypeVar('i', bound=1)         # E: Invalid type: try using Literal[1] instead?
 j = TypeVar('j', covariant=None)  # E: TypeVar "covariant" may only be a literal bool
 k = TypeVar('k', contravariant=1) # E: TypeVar "contravariant" may only be a literal bool
 [out]
