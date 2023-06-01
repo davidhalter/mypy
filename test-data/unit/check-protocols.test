@@ -330,8 +330,9 @@ class MyHashable(Protocol):
         return 0
 
 class C(MyHashable):
-    __my_hash__ = None  # E: Incompatible types in assignment \
-(expression has type "None", base class "MyHashable" defined the type as "Callable[[MyHashable], int]")
+--zuban-diff     __my_hash__ = None  # E: Incompatible types in assignment \
+--zuban-diff (expression has type "None", base class "MyHashable" defined the type as "Callable[[MyHashable], int]")
+    __my_hash__ = None  # E: Incompatible types in assignment (expression has type "None", base class "MyHashable" defined the type as "Callable[[MyHashable], int]")
 
 [case testProtocolsWithNoneAndStrictOptional]
 # flags: --strict-optional
