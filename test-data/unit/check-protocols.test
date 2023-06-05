@@ -2686,12 +2686,17 @@ def f() -> str: ...
 reveal_type(f.__name__)  # N: Revealed type is "builtins.str"
 a: A = f  # OK
 b1: B1 = f  # E: Incompatible types in assignment (expression has type "Callable[[], str]", variable has type "B1") \
-            # N: Following member(s) of "function" have conflicts: \
+--zuban-diff             # N: Following member(s) of "function" have conflicts: \
+            # N: Following member(s) of "Callable[[], str]" have conflicts: \
             # N:     __name__: expected "int", got "str"
 b2: B2 = f  # E: Incompatible types in assignment (expression has type "Callable[[], str]", variable has type "B2") \
-            # N: "B2.__call__" has type "Callable[[], int]"
+--zuban-diff             # N: "B2.__call__" has type "Callable[[], int]"
+            # N: "Callable[[], str]" is missing following "B2" protocol member: \
+            # N:     __call__
+
 b3: B3 = f  # E: Incompatible types in assignment (expression has type "Callable[[], str]", variable has type "B3") \
-            # N: "function" is missing following "B3" protocol member: \
+--zuban-diff             # N: "function" is missing following "B3" protocol member: \
+            # N: "Callable[[], str]" is missing following "B3" protocol member: \
             # N:     extra_stuff
 
 [case testCallbackProtocolFunctionAttributesInference]
