@@ -6735,8 +6735,12 @@ class D:
 class D:
     y: int
 [out]
-b2.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P2" (diff)
-b1.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P1"
+--zuban-diff 
+==
+--zuban-diff b2.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P2" (diff)
+--zuban-diff b1.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P1"
+b2.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P1"
+b1.py:7: error: Argument 1 to "f" has incompatible type "D"; expected "P2"
 
 [case testProtocolsInvalidateByRemovingBase]
 import a
