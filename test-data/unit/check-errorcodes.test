@@ -418,9 +418,11 @@ def h(a: TT, s: S) -> None:
 
 [case testErrorCodeOperators]
 class A: pass
-A() + 1  # E: Unsupported left operand type for + ("A")  [operator]
+--zuban-diff A() + 1  # E: Unsupported left operand type for + ("A")  [operator]
+A() + 1  # E: Unsupported operand types for + ("A" and "int")  [operator]
 1 in A()  # E: Unsupported right operand type for in ("A")  [operator]
-A() < 1  # E: Unsupported left operand type for < ("A")  [operator]
+--zuban-diff A() < 1  # E: Unsupported left operand type for < ("A")  [operator]
+A() < 1  # E: Unsupported operand types for < ("A" and "int")  [operator]
 -A()  # E: Unsupported operand type for unary - ("A")  [operator]
 +A()  # E: Unsupported operand type for unary + ("A")  [operator]
 ~A()  # E: Unsupported operand type for ~ ("A")  [operator]
@@ -914,12 +916,14 @@ def func(var: Iterable[str]) -> None:
 [case testNoOverloadImplementation]
 from typing import overload
 
-@overload  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
+--zuban-diff @overload  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
+@overload
 def f(arg: int) -> int:
     ...
 
 @overload
-def f(arg: str) -> str:
+--zuban-diff def f(arg: str) -> str:
+def f(arg: str) -> str:  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
     ...
 
 [case testSliceInDict39]
