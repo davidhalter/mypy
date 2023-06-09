@@ -191,7 +191,8 @@ def f() -> None: pass
 g = 0
 
 [out]
-main.py:2: error: Too few arguments
+--zuban-diff main.py:2: error: Too few arguments
+main.py:2: error: Missing positional argument "x" in call to "f"
 ==
 ==
 main.py:2: error: "int" not callable
