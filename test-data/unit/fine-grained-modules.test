@@ -1124,7 +1124,8 @@ x = 1
 [builtins fixtures/module.pyi]
 [out]
 ==
-main:2: error: Incompatible types in assignment (expression has type Module, variable has type "str")
+--zuban-diff main:2: error: Incompatible types in assignment (expression has type Module, variable has type "str")
+main:2: error: Incompatible types in assignment (expression has type "ModuleType", variable has type "str")
 
 [case testRefreshImportOfIgnoredModule1]
 # flags: --follow-imports=skip --ignore-missing-imports
