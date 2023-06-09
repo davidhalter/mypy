@@ -70,9 +70,11 @@ def f(*x: int) -> None: pass
 def g(**x: int) -> None: pass
 
 a = ['']
-f(*a)  # E:4: Argument 1 to "f" has incompatible type "*List[str]"; expected "int"
+--zuban-diff f(*a)  # E:4: Argument 1 to "f" has incompatible type "*List[str]"; expected "int"
+f(*a)  # E:3: Argument 1 to "f" has incompatible type "*List[str]"; expected "int"
 b = {'x': 'y'}
-g(**b) # E:5: Argument 1 to "g" has incompatible type "**Dict[str, str]"; expected "int"
+--zuban-diff g(**b) # E:5: Argument 1 to "g" has incompatible type "**Dict[str, str]"; expected "int"
+g(**b) # E:3: Argument 1 to "g" has incompatible type "**Dict[str, str]"; expected "int"
 [builtins fixtures/dict.pyi]
 
 [case testColumnsMultipleStatementsPerLine]
@@ -125,7 +127,8 @@ def f(x: object, n: int, s: str) -> None:
 [case testColumnHasNoAttribute]
 import m
 if int():
-    from m import foobaz # E:5: Module "m" has no attribute "foobaz"; maybe "foobar"?
+--zuban-diff     from m import foobaz # E:5: Module "m" has no attribute "foobaz"; maybe "foobar"?
+    from m import foobaz # E:19: Module "m" has no attribute "foobaz"; maybe "foobar"?
 1 .x # E:1: "int" has no attribute "x"
 (m.foobaz()) # E:2: Module has no attribute "foobaz"; maybe "foobar"?
 
@@ -137,7 +140,8 @@ def foobar(): pass
 [case testColumnUnexpectedOrMissingKeywordArg]
 def f(): pass  # N:1: "f" defined here
 # TODO: Point to "x" instead
-(f(x=1)) # E:2: Unexpected keyword argument "x" for "f"
+--zuban-diff (f(x=1)) # E:2: Unexpected keyword argument "x" for "f"
+(f(x=1)) # E:4: Unexpected keyword argument "x" for "f"
 def g(*, x: int) -> None: pass
 (g())  # E:2: Missing named argument "x" for "g"
 
@@ -145,7 +149,8 @@ def g(*, x: int) -> None: pass
 class A: pass
 if int():
     def f(a: 'A') -> None: pass # N:5: "f" defined here
-    (f(b=object())) # E:6: Unexpected keyword argument "b" for "f"
+--zuban-diff     (f(b=object())) # E:6: Unexpected keyword argument "b" for "f"
+    (f(b=object())) # E:8: Unexpected keyword argument "b" for "f"
 
 [case testColumnInvalidType]
 
@@ -311,8 +316,10 @@ T = TypeVar('T', int, str)
 class C(Generic[T]):
     pass
 
-def f(c: C[object]) -> None: pass # E:10: Value of type variable "T" of "C" cannot be "object"
-(C[object]()) # E:2: Value of type variable "T" of "C" cannot be "object"
+--zuban-diff def f(c: C[object]) -> None: pass # E:10: Value of type variable "T" of "C" cannot be "object"
+def f(c: C[object]) -> None: pass # E:12: Value of type variable "T" of "C" cannot be "object"
+--zuban-diff (C[object]()) # E:2: Value of type variable "T" of "C" cannot be "object"
+(C[object]()) # E:4: Value of type variable "T" of "C" cannot be "object"
 
 [case testColumnSyntaxErrorInTypeAnnotation]
 if int():
@@ -346,10 +353,12 @@ class B(A):
 [case testColumnOverloaded]
 from typing import overload, Any
 class A:
-    @overload # E:6: An overloaded function outside a stub file must have an implementation
+--zuban-diff     @overload # E:6: An overloaded function outside a stub file must have an implementation
+    @overload
     def f(self, x: int) -> int: pass
     @overload
-    def f(self, x: str) -> str: pass
+--zuban-diff     def f(self, x: str) -> str: pass
+    def f(self, x: str) -> str: pass # E:9: An overloaded function outside a stub file must have an implementation
 
 [case testColumnFunctionWithTypeVarValues]
 from typing import TypeVar, List
@@ -361,9 +370,11 @@ def g(x): pass  # N:1: "g" defined here
 def f(x: T) -> T:
     (x.bad) # E:6: "int" has no attribute "bad" \
             # E:6: "str" has no attribute "bad"
-    g(y=x) # E:5: Unexpected keyword argument "y" for "g"
+--zuban-diff     g(y=x) # E:5: Unexpected keyword argument "y" for "g"
+    g(y=x) # E:7: Unexpected keyword argument "y" for "g"
     y: List[int, str] # E:8: "list" expects 1 type argument, but 2 given
-    del 1[0] # E:5: "int" has no attribute "__delitem__"
+--zuban-diff     del 1[0] # E:5: "int" has no attribute "__delitem__"
+    del 1[0] # E:9: "int" has no attribute "__delitem__"
     bb: List[int] = [''] # E:22: List item 0 has incompatible type "str"; expected "int"
     # XXX: Disabled because the column differs in 3.8
     # aa: List[int] = ['' for x in [1]] # :22: List comprehension has incompatible type List[str]; expected List[int]

@@ -5878,8 +5878,10 @@ A = G
 x: A[B[int]] # E
 B = G
 [out]
-main:8:4: error: Type argument "G[int]" of "G" must be a subtype of "str"
-main:8:6: error: Type argument "int" of "G" must be a subtype of "str"
+--zuban-diff main:8:4: error: Type argument "G[int]" of "G" must be a subtype of "str"
+main:8:6: error: Type argument "G[int]" of "G" must be a subtype of "str"
+--zuban-diff main:8:6: error: Type argument "int" of "G" must be a subtype of "str"
+main:8:8: error: Type argument "int" of "G" must be a subtype of "str"
 
 [case testExtremeForwardReferencing]
 from typing import TypeVar, Generic
