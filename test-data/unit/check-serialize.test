@@ -685,7 +685,8 @@ class A: pass
 def f() -> None: pass
 [builtins fixtures/tuple.pyi]
 [out2]
-tmp/a.py:5: error: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "type")
+--zuban-diff tmp/a.py:5: error: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "type")
+tmp/a.py:5: error: Incompatible types in assignment (expression has type "Callable[[], None]", variable has type "Type[Any]")
 
 [case testSerializeOverloadedVsTypeObjectDistinction]
 import a
@@ -711,7 +712,7 @@ def f(x: int) -> None: pass
 [builtins fixtures/tuple.pyi]
 [out2]
 --zuban-diff tmp/a.py:5: error: Incompatible types in assignment (expression has type overloaded function, variable has type "type")
-tmp/a.py:5: error: Incompatible types in assignment (expression has type "overloaded function", variable has type "type")
+tmp/a.py:5: error: Incompatible types in assignment (expression has type "overloaded function", variable has type "Type[Any]")
 
 [case testSerializeNamedTupleInMethod4]
 from ntcrash import C
@@ -999,7 +1000,8 @@ tmp/a.py:13: note: Revealed type is "Tuple[builtins.int, builtins.str]"
 tmp/a.py:14: note: Revealed type is "def (builtins.int) -> builtins.str"
 tmp/a.py:15: note: Revealed type is "Type[builtins.int]"
 tmp/a.py:17: note: Revealed type is "def (*Any, **Any) -> builtins.str"
-tmp/a.py:19: note: Revealed type is "builtins.type"
+--zuban-diff tmp/a.py:19: note: Revealed type is "builtins.type"
+tmp/a.py:19: note: Revealed type is "Type[Any]"
 
 [case testSerializeGenericTypeAlias]
 import b
