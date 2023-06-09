@@ -4201,6 +4201,8 @@ def f(): pass
 [file a.py.2]
 [out]
 [out2]
+--zuban-diff 
+main:2: error: Module "a" has no attribute "f"
 
 [case testModuleGetattrInitIncremental]
 import c
