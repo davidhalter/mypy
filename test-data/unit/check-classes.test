@@ -4154,7 +4154,8 @@ class B(A, A):  # E: Duplicate base class "A"
 
 b: B
 
-reveal_type(b.method())  # N: Revealed type is "Any"
+--zuban-diff reveal_type(b.method())  # N: Revealed type is "Any"
+reveal_type(b.method())  # N: Revealed type is "str"
 reveal_type(b.missing())  # N: Revealed type is "Any"
 reveal_type(b.attr)  # N: Revealed type is "builtins.int"
 
@@ -4168,7 +4169,8 @@ class A(Generic[T]):
 class B(A[int], A[str]):  # E: Duplicate base class "A"
     attr: int
 
-reveal_type(B().method())  # N: Revealed type is "Any"
+--zuban-diff reveal_type(B().method())  # N: Revealed type is "Any"
+reveal_type(B().method())  # N: Revealed type is "int"
 reveal_type(B().attr)   # N: Revealed type is "builtins.int"
 
 [case testCannotDetermineMro]
