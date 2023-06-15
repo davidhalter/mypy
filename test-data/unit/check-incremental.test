@@ -1260,7 +1260,8 @@ y: Alias[int]
 reveal_type(y)
 [out2]
 tmp/a.py:3: note: Revealed type is "Union[builtins.int, builtins.str]"
-tmp/a.py:5: note: Revealed type is "Union[builtins.int, builtins.int]"
+--zuban-diff tmp/a.py:5: note: Revealed type is "Union[builtins.int, builtins.int]"
+tmp/a.py:5: note: Revealed type is "builtins.int"
 
 [case testIncrementalSilentImportsWithBlatantError]
 # cmd: mypy -m main
