@@ -1350,6 +1350,7 @@ from typing import NamedTuple
 class Test:
     def __init__(self, field) -> None:
         self.Item = NamedTuple("x", [(field, str)])  # E: NamedTuple type as an attribute is not supported
-        self.item: self.Item  # E: Name "self.Item" is not defined
+--zuban-diff         self.item: self.Item  # E: Name "self.Item" is not defined
+        self.item: self.Item  # E: Name "self.Item" is not defined  # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-namedtuple.pyi]
