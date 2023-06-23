@@ -2556,8 +2556,6 @@ x: c.C
 from p.c import B
 
 [out]
--- zuban-diff It looks like mypy confuses something here.
-p/u.pyi:1: error: Module "p" has no attribute "c"
 
 [case testNewSemanticAnalyzerQualifiedFunctionAsType]
 import m
