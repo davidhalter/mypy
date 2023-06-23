@@ -206,7 +206,8 @@ def h() -> None:
 ==
 a.py:3: error: Function "b.C" is not valid as a type
 a.py:3: note: Perhaps you need "Callable[...]" or a callback protocol?
-b.py:7: error: C? has no attribute "g"
+--zuban-diff b.py:7: error: C? has no attribute "g"
+--zuban-diff 
 
 -- TODO: More import cycle:
 --
