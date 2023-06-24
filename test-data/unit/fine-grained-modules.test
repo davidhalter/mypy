@@ -189,7 +189,8 @@ p.a.f(1)
 [file p/a.py.2]
 def f(x: str) -> None: pass
 [out]
-main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff 
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "p"
 ==
@@ -215,7 +216,8 @@ p.a.f(1)
 [file p/a.py.3]
 def f(x: str) -> None: pass
 [out]
-main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff 
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "p"
 ==
@@ -232,13 +234,15 @@ p.a.f(1)
 def f(x: str) -> None: pass
 [file p/__init__.py.3]
 [out]
-main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff 
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "p"
 ==
-main:1: error: Cannot find implementation or library stub for module named "p.a"
-main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
-main:1: error: Cannot find implementation or library stub for module named "p"
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p"
+main:2: error: Argument 1 to "f" has incompatible type "int"; expected "str"
 ==
 main:2: error: Argument 1 to "f" has incompatible type "int"; expected "str"
 
@@ -404,8 +408,9 @@ from p import q
 ==
 main:1: error: Module "p" has no attribute "q"
 -- TODO: The following messages are different compared to non-incremental mode
-main:1: error: Cannot find implementation or library stub for module named "p.q"
-main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.q"
+--zuban-diff main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff 
 ==
 
 -- TODO: Fix this bug. It is a real bug that was been papered over
@@ -420,8 +425,9 @@ from p import q
 [file p/q.py.3]
 [out]
 ==
-main:1: error: Cannot find implementation or library stub for module named "p.q"
-main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "p.q"
+--zuban-diff main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+main:1: error: Module "p" has no attribute "q"
 ==
 
 [case testDeletionOfSubmoduleTriggersImportFrom2]
