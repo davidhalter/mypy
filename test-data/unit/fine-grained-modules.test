@@ -223,6 +223,8 @@ main:1: error: Cannot find implementation or library stub for module named "p"
 ==
 main:1: error: Cannot find implementation or library stub for module named "p.a"
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff 
+main:2: error: Module has no attribute "a"
 ==
 main:2: error: Argument 1 to "f" has incompatible type "int"; expected "str"
 [builtins fixtures/module.pyi]
@@ -884,7 +886,8 @@ main:2: error: Cannot find implementation or library stub for module named "p.a"
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:3: error: Module has no attribute "a"
 ==
-main:2: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff main:2: error: Cannot find implementation or library stub for module named "p.a"
+--zuban-diff 
 main:2: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:2: error: Cannot find implementation or library stub for module named "p"
 
