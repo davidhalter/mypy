@@ -4353,7 +4353,12 @@ class C(B):
     def m(self, a: str) -> None: pass
     n = m
 [out]
-main:5: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
+--zuban-diff main:5: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
+main:5: error: Signature of "n" incompatible with supertype "B"
+main:5: note:      Superclass:
+main:5: note:          def n(self, a: int) -> None
+main:5: note:      Subclass:
+main:5: note:          def m(self, a: str) -> None
 
 [case testInstanceMethodOverwriteTypevar]
 from typing import Generic, TypeVar
@@ -4397,7 +4402,12 @@ class C(B):
     n = m
 [builtins fixtures/classmethod.pyi]
 [out]
-main:7: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
+--zuban-diff main:7: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
+main:7: error: Signature of "n" incompatible with supertype "B"
+main:7: note:      Superclass:
+main:7: note:          def n(a: int) -> None
+main:7: note:      Subclass:
+main:7: note:          def m(a: str) -> None
 
 [case testClassSpec]
 from typing import Callable
