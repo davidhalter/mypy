@@ -5388,7 +5388,8 @@ def dec_e(f: Bad1) -> Bad1: ...  # type: ignore
 def f_e(arg: int) -> None: ...
 @overload
 def f_e(arg: str) -> None: ...
-@dec_e  # E: Bad1? not callable
+--zuban-diff @dec_e  # E: Bad1? not callable
+@dec_e
 def f_e(arg): ...
 
 class Bad2:
