@@ -576,7 +576,8 @@ class set(Generic[t]):
 b = bool()
 l = set([b])
 if int():
-    l = set([object()]) # E: List item 0 has incompatible type "object"; expected "bool"
+--zuban-diff     l = set([object()]) # E: List item 0 has incompatible type "object"; expected "bool"
+    l = set([object()]) # E: Argument 1 to "set" has incompatible type "list[object]"; expected "Iterable[bool]"
 [builtins fixtures/for.pyi]
 
 
