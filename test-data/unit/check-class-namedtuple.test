@@ -708,7 +708,8 @@ class HasStaticMethod(NamedTuple):
 
     @property
     def size(self) -> int:
-        reveal_type(self)  # N: Revealed type is "Tuple[builtins.str, fallback=__main__.HasStaticMethod]"
+--zuban-diff         reveal_type(self)  # N: Revealed type is "Tuple[builtins.str, fallback=__main__.HasStaticMethod]"
+        reveal_type(self)  # N: Revealed type is "Self"
         return 4
 
 [builtins fixtures/property.pyi]
