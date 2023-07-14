@@ -40,12 +40,15 @@ class A:
     def __lt__(self, other: int) -> str: pass
 
 f(
- y=0, x=0) # E:4: Argument "y" to "f" has incompatible type "int"; expected "str"
+--zuban-diff  y=0, x=0) # E:4: Argument "y" to "f" has incompatible type "int"; expected "str"
+ y=0, x=0) # E:2: Argument "y" to "f" has incompatible type "int"; expected "str"
 f(x=0,
-   y=None) # E:6: Argument "y" to "f" has incompatible type "None"; expected "str"
+--zuban-diff    y=None) # E:6: Argument "y" to "f" has incompatible type "None"; expected "str"
+   y=None) # E:4: Argument "y" to "f" has incompatible type "None"; expected "str"
 g(1, '', 2) # E:6: Argument 2 to "g" has incompatible type "str"; expected "int"
 aaa: str
-h(x=1, y=aaa, z=2) # E:10: Argument "y" to "h" has incompatible type "str"; expected "int"
+--zuban-diff h(x=1, y=aaa, z=2) # E:10: Argument "y" to "h" has incompatible type "str"; expected "int"
+h(x=1, y=aaa, z=2) # E:8: Argument "y" to "h" has incompatible type "str"; expected "int"
 a: A
 ff(a.x) # E:4: Argument 1 to "ff" has incompatible type "str"; expected "int"
 ff([1]) # E:4: Argument 1 to "ff" has incompatible type "List[int]"; expected "int"
