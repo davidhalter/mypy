@@ -321,7 +321,10 @@ class B:
     def f(self) -> None: pass
 class C(B):
     def h(self) -> None:
-        super(*(C, self)).f() # E: Varargs not supported with "super"
+--zuban-diff         super(*(C, self)).f() # E: Varargs not supported with "super"
+        super(*(C, self)).f()
+--zuban-diff 
+        super(*[self]).f() # E: Varargs not supported with "super"
 
 [case testInvalidSuperArg]
 class B:
