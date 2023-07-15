@@ -241,8 +241,7 @@ a = None # type: A
 a = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "A")
 def f():
   b = None # type: A
---zuban-diff   b = 1
-  b = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "A")
+  b = 1
 [out]
 MypyFile:1(
   ClassDef:3(

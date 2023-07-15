@@ -96,8 +96,7 @@ MypyFile:1(
 
 [case testForInFunction]
 def f():
---zuban-diff   for x in f:
-  for x in f:  # E: "Callable[[], Any]" object is not iterable
+  for x in f:
     x
 [out]
 MypyFile:1(
@@ -438,8 +437,7 @@ MypyFile:1(
 [case testLocalComplexDefinition]
 def f():
   (x) = 1
---zuban-diff   ([y]) = 2
-  ([y]) = 2  # E: "int" object is not iterable
+  ([y]) = 2
   x
 [out]
 MypyFile:1(
