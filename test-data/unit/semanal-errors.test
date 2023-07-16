@@ -1446,11 +1446,15 @@ from typing import Dict, TypeVar
 T = TypeVar('T')
 
 def f():  # Note no annotation
-    x: Dict[str, T] = {}
-    y: T
-    z: x
+--zuban-diff     x: Dict[str, T] = {}
+--zuban-diff     y: T
+--zuban-diff     z: x
+    x: Dict[str, T] = {}  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+    y: T  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+    z: x  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
     def nested(): pass
-    t: nested
+--zuban-diff     t: nested
+    t: nested  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
 
 def g() -> None:
     x: Dict[str, T] = {}  # E: Type variable "__main__.T" is unbound \
