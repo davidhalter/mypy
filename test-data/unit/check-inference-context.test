@@ -821,7 +821,8 @@ class A:
 a = A()
 a.x = []
 a.x = [1]
-a.x = [''] # E: List item 0 has incompatible type "str"; expected "int"
+--zuban-diff a.x = [''] # E: List item 0 has incompatible type "str"; expected "int"
+a.x = [''] # E: Incompatible types in assignment (expression has type "list[str]", variable has type "list[int]")
 [builtins fixtures/list.pyi]
 
 [case testListMultiplyInContext]
