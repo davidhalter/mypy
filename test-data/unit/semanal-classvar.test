@@ -143,6 +143,8 @@ class A:
 [builtins fixtures/tuple.pyi]
 [out]
 main:3: error: Invalid type: ClassVar nested inside other type
+--zuban-diff 
+main:3: error: Invalid Type: ClassVar nested inside other type
 
 [case testDeeplyNested]
 from typing import Callable, ClassVar, Union
