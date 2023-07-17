@@ -96,6 +96,10 @@ from typing import ClassVar
 def f(x: ClassVar, y: ClassVar) -> ClassVar: pass
 [out]
 main:2: error: ClassVar can only be used for assignments in class body
+--zuban-diff 
+main:2: error: ClassVar can only be used for assignments in class body
+--zuban-diff 
+main:2: error: ClassVar can only be used for assignments in class body
 
 [case testClassVarInCallableArgs]
 from typing import Callable, ClassVar, Any
