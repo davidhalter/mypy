@@ -140,7 +140,9 @@ class AutoName(Enum):
 
     # In `typeshed`, this is a staticmethod and has more arguments,
     # but I have lied a bit to keep the test stubs lean.
-    def _generate_next_value_(self) -> str:
+--zuban-diff     def _generate_next_value_(self) -> str:
+    @staticmethod
+    def _generate_next_value_(name: str, start: int, count: int, last_values: list[Any]) -> str:
         return "name"
 
 class Truth(AutoName):
