@@ -483,25 +483,42 @@ W = Enum('W', 'a b')
 W.c
 [typing fixtures/typing-medium.pyi]
 [out]
-main:2: error: Too few arguments for Enum()
-main:3: error: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
-main:4: error: Too many arguments for Enum()
+
+--zuban-diff main:2: error: Too few arguments for Enum()
+main:2: error: Missing positional argument "names" in call to "Enum"
+--zuban-diff main:3: error: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
+main:3: error: Argument 2 to "Enum" has incompatible type "int"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+--zuban-diff main:4: error: Too many arguments for Enum()
+main:4: error: Too many positional arguments for "Enum"
 main:5: error: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
 main:5: error: Name "foo" is not defined
 main:7: error: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
-main:8: error: Too few arguments for IntEnum()
-main:9: error: Second argument of IntEnum() must be string, tuple, list or dict literal for mypy to determine Enum members
-main:10: error: Too many arguments for IntEnum()
+--zuban-diff main:8: error: Too few arguments for IntEnum()
+main:8: error: Missing positional argument "names" in call to "IntEnum"
+--zuban-diff main:9: error: Second argument of IntEnum() must be string, tuple, list or dict literal for mypy to determine Enum members
+main:9: error: Argument 2 to "IntEnum" has incompatible type "int"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+--zuban-diff main:10: error: Too many arguments for IntEnum()
+main:10: error: Too many positional arguments for "IntEnum"
 main:11: error: Enum() needs at least one item
 main:12: error: Enum() needs at least one item
 main:13: error: IntEnum() needs at least one item
-main:14: error: Enum() with tuple or list expects strings or (name, value) pairs
+--zuban-diff main:14: error: Enum() with tuple or list expects strings or (name, value) pairs
+main:14: error: Argument 2 to "Enum" has incompatible type "list[int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
 main:15: error: Enum() with tuple or list expects strings or (name, value) pairs
 main:16: error: IntEnum() with tuple or list expects strings or (name, value) pairs
-main:17: error: Enum() with dict literal requires string literals
-main:18: error: Unexpected keyword argument "keyword"
+--zuban-diff main:17: error: Enum() with dict literal requires string literals
+main:17: error: Argument 2 to "Enum" has incompatible type "dict[int, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+--zuban-diff main:18: error: Unexpected keyword argument "keyword"
+main:18: error: Unexpected keyword argument "keyword" for "Enum"
 main:19: error: Unexpected arguments to Enum()
-main:20: error: Unexpected arguments to Enum()
+--zuban-diff main:20: error: Unexpected arguments to Enum()
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+--zuban-diff 
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str"
+--zuban-diff 
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str"
+--zuban-diff 
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Type[Any]"
 main:22: error: "Type[W]" has no attribute "c"
 
 [case testFunctionalEnumFlag]
