@@ -571,11 +571,15 @@ fn(b)
 # TODO: Needs to have enum34 stubs somehow
 from enum import Enum
 Eu = Enum(u'Eu', u'a b')
-Eb = Enum(b'Eb', b'a b')  # E: Enum() expects a string literal as the first argument
+--zuban-diff Eb = Enum(b'Eb', b'a b')  # E: Enum() expects a string literal as the first argument
+Eb = Enum(b'Eb', b'a b')  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str" \
+                          # E: Argument 2 to "Enum" has incompatible type "bytes"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
 Gu = Enum(u'Gu', {u'a': 1})
-Gb = Enum(b'Gb', {b'a': 1})  # E: Enum() expects a string literal as the first argument
+--zuban-diff Gb = Enum(b'Gb', {b'a': 1})  # E: Enum() expects a string literal as the first argument
+Gb = Enum(b'Gb', {b'a': 1})  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str"
 Hu = Enum(u'Hu', [u'a'])
-Hb = Enum(b'Hb', [b'a'])  # E: Enum() expects a string literal as the first argument
+--zuban-diff Hb = Enum(b'Hb', [b'a'])  # E: Enum() expects a string literal as the first argument
+Hb = Enum(b'Hb', [b'a'])  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str"
 Eu.a
 Eb.a
 Gu.a
