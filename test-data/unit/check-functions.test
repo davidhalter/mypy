@@ -1641,9 +1641,11 @@ class A:
     if x:
         def f(self, x: int) -> None:  pass
         f(x, 1)
-        f(x, 'x') # E: Argument 2 to "f" of "A" has incompatible type "str"; expected "int"
+--zuban-diff         f(x, 'x') # E: Argument 2 to "f" of "A" has incompatible type "str"; expected "int"
+        f(x, 'x') # E: Argument 2 to "f" has incompatible type "str"; expected "int"
     f(x, 1)
-    f(x, 'x') # E: Argument 2 to "f" of "A" has incompatible type "str"; expected "int"
+--zuban-diff     f(x, 'x') # E: Argument 2 to "f" of "A" has incompatible type "str"; expected "int"
+    f(x, 'x') # E: Argument 2 to "f" has incompatible type "str"; expected "int"
 [out]
 
 [case testCallConditionalMethodViaInstance]
