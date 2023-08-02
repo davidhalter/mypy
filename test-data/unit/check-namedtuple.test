@@ -943,7 +943,8 @@ from typing import NamedTuple
 
 N = NamedTuple('N', [])
 n: N
-reveal_type(N)  # N: Revealed type is "def () -> Tuple[(), fallback=__main__.N]"
+--zuban-diff reveal_type(N)  # N: Revealed type is "def () -> Tuple[(), fallback=__main__.N]"
+reveal_type(N)  # N: Revealed type is "Type[Tuple[(), fallback=__main__.N]]"
 reveal_type(n)  # N: Revealed type is "Tuple[(), fallback=__main__.N]"
 [builtins fixtures/tuple.pyi]
 
