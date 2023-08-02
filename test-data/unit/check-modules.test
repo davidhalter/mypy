@@ -787,7 +787,8 @@ def f(x: str) -> None: pass
 None + 1
 [file m/a.py]
 [out]
-tmp/m/__init__.py:1: error: Unsupported left operand type for + ("None")
+--zuban-diff tmp/m/__init__.py:1: error: Unsupported left operand type for + ("None")
+tmp/m/__init__.py:1: error: Unsupported operand types for + ("None" and "int")
 
 [case testTypeCheckNamedModule2]
 # cmd: mypy -m m.a
@@ -795,7 +796,8 @@ tmp/m/__init__.py:1: error: Unsupported left operand type for + ("None")
 [file m/a.py]
 None + 1
 [out]
-tmp/m/a.py:1: error: Unsupported left operand type for + ("None")
+--zuban-diff tmp/m/a.py:1: error: Unsupported left operand type for + ("None")
+tmp/m/a.py:1: error: Unsupported operand types for + ("None" and "int")
 
 [case testTypeCheckNamedModule3]
 # cmd: mypy -m m
@@ -803,7 +805,8 @@ tmp/m/a.py:1: error: Unsupported left operand type for + ("None")
 None + 1
 [file m/a.py]
 [out]
-tmp/m/__init__.py:1: error: Unsupported left operand type for + ("None")
+--zuban-diff tmp/m/__init__.py:1: error: Unsupported left operand type for + ("None")
+tmp/m/__init__.py:1: error: Unsupported operand types for + ("None" and "int")
 
 [case testTypeCheckNamedModule4]
 # cmd: mypy -m m

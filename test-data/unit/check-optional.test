@@ -129,7 +129,8 @@ f(None)
 [case testInferOptionalFromDefaultNone]
 # flags: --implicit-optional
 def f(x: int = None) -> None:
-  x + 1  # E: Unsupported left operand type for + ("None") \
+--zuban-diff   x + 1  # E: Unsupported left operand type for + ("None") \
+  x + 1  # E: Unsupported operand types for + ("None" and "int") \
          # N: Left operand is of type "Optional[int]"
 f(None)
 [out]
