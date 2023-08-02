@@ -181,7 +181,8 @@ x = object()
 [case testChainedAssignmentAndImports]
 import m
 
-i, s = None, None # type: (int, str)
+i: int
+s: str
 if int():
     i = m.x
 if int():
@@ -568,7 +569,6 @@ x = 1
 x = 1
 
 [case testAssignToFuncDefViaImport]
-# flags: --strict-optional
 
 # Errors differ with the new analyzer. (Old analyzer gave error on the
 # input, which is maybe better, but no error about f, which seems
@@ -587,6 +587,7 @@ x = 1+0
 
 
 [case testConditionalImportAndAssign]
+# flags: --no-strict-optional
 try:
     from m import x
 except:
@@ -678,6 +679,7 @@ class B(A): ...
 
 
 [case testImportVariableAndAssignNone]
+# flags: --no-strict-optional
 try:
     from m import x
 except:
@@ -686,6 +688,7 @@ except:
 x = 1
 
 [case testImportFunctionAndAssignNone]
+# flags: --no-strict-optional
 try:
     from m import f
 except:
@@ -711,6 +714,7 @@ except:
 def f(): pass
 
 [case testAssignToFuncDefViaGlobalDecl2]
+# flags: --no-strict-optional
 import typing
 from m import f
 def g() -> None:
@@ -723,6 +727,7 @@ def f(): pass
 [out]
 
 [case testAssignToFuncDefViaNestedModules]
+# flags: --no-strict-optional
 import m.n
 m.n.f = None
 m.n.f = 1 # E: Incompatible types in assignment (expression has type "int", variable has type "Callable[[], Any]")
@@ -732,6 +737,7 @@ def f(): pass
 [out]
 
 [case testAssignToFuncDefViaModule]
+# flags: --no-strict-optional
 import m
 m.f = None
 m.f = 1 # E: Incompatible types in assignment (expression has type "int", variable has type "Callable[[], Any]")
@@ -740,6 +746,7 @@ def f(): pass
 [out]
 
 [case testConditionalImportAndAssignNoneToModule]
+# flags: --no-strict-optional
 if object():
     import m
 else:
@@ -760,6 +767,7 @@ else:
 [out]
 
 [case testImportAndAssignToModule]
+# flags: --no-strict-optional
 import m
 m = None
 m.f(1) # E: Argument 1 to "f" has incompatible type "int"; expected "str"
@@ -932,8 +940,8 @@ tmp/a/b/__init__.py:3: error: Name "a" is not defined
 
 [case testSubmoduleMixingLocalAndQualifiedNames]
 from a.b import MyClass
-val1 = None  # type: a.b.MyClass  # E: Name "a" is not defined
-val2 = None  # type: MyClass
+val1: a.b.MyClass  # E: Name "a" is not defined
+val2: MyClass
 
 [file a/__init__.py]
 [file a/b.py]
@@ -1503,7 +1511,7 @@ import bar
 from foo import *
 def bar(y: AnyAlias) -> None:  pass
 
-l = None # type: ListAlias[int]
+l: ListAlias[int]
 reveal_type(l)
 
 [file foo.py]
@@ -1535,7 +1543,7 @@ Row = Dict[str, int]
 
 [case testImportStarAliasGeneric]
 from y import *
-notes = None  # type: G[X]
+notes: G[X]
 another = G[X]()
 second = XT[str]()
 last = XT[G]()
@@ -1564,7 +1572,7 @@ from typing import Any
 def bar(x: Any, y: AnyCallable) -> Any:
     return 'foo'
 
-cb = None # type: AnyCallable
+cb: AnyCallable
 reveal_type(cb) # N: Revealed type is "def (*Any, **Any) -> Any"
 
 [file foo.py]
@@ -2062,16 +2070,6 @@ def __getattr__(name): ...
 
 [builtins fixtures/module.pyi]
 
-[case testModuleLevelGetattrNotStub36]
-# flags: --python-version 3.6
-import has_getattr
-reveal_type(has_getattr.any_attribute)  # E: Module has no attribute "any_attribute" \
-                                        # N: Revealed type is "Any"
-[file has_getattr.py]
-def __getattr__(name) -> str: ...
-
-[builtins fixtures/module.pyi]
-
 [case testModuleLevelGetattrNotStub37]
 # flags: --python-version 3.7
 
@@ -2103,17 +2101,6 @@ reveal_type(int_attr)  # N: Revealed type is "builtins.int"
 
 [file has_attr.pyi]
 def __getattr__(name: str) -> int: ...
-
-[builtins fixtures/module.pyi]
-
-[case testModuleLevelGetattrImportFromNotStub36]
-# flags: --python-version 3.6
-from non_stub import name  # E: Module "non_stub" has no attribute "name"
-reveal_type(name)  # N: Revealed type is "Any"
-
-[file non_stub.py]
-from typing import Any
-def __getattr__(name: str) -> Any: ...
 
 [builtins fixtures/module.pyi]
 

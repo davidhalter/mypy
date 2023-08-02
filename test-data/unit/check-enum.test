@@ -299,7 +299,7 @@ f(E.X)
 from enum import IntEnum
 class E(IntEnum):
     a = 1
-x = None  # type: int
+x: int
 reveal_type(E(x))
 [out]
 main:5: note: Revealed type is "__main__.E"
@@ -308,7 +308,7 @@ main:5: note: Revealed type is "__main__.E"
 from enum import IntEnum
 class E(IntEnum):
     a = 1
-s = None  # type: str
+s: str
 reveal_type(E[s])
 [out]
 main:5: note: Revealed type is "__main__.E"
@@ -976,7 +976,6 @@ else:
 [builtins fixtures/bool.pyi]
 
 [case testEnumReachabilityWithNone]
-# flags: --strict-optional
 from enum import Enum
 from typing import Optional
 
@@ -1039,7 +1038,6 @@ reveal_type(x3) # N: Revealed type is "Union[__main__.Foo, __main__.Bar]"
 [builtins fixtures/bool.pyi]
 
 [case testEnumReachabilityPEP484ExampleWithFinal]
-# flags: --strict-optional
 from typing import Union
 from typing_extensions import Final
 from enum import Enum
@@ -1086,7 +1084,6 @@ def process(response: Union[str, Reason] = '') -> str:
 
 
 [case testEnumReachabilityPEP484ExampleSingleton]
-# flags: --strict-optional
 from typing import Union
 from typing_extensions import Final
 from enum import Enum
@@ -1111,7 +1108,6 @@ def func(x: Union[int, None, Empty] = _empty) -> int:
 [builtins fixtures/primitives.pyi]
 
 [case testEnumReachabilityPEP484ExampleSingletonWithMethod]
-# flags: --strict-optional
 from typing import Union
 from typing_extensions import Final
 from enum import Enum

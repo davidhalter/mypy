@@ -15,10 +15,7 @@ def g() -> U: # E: A function returning TypeVar should receive at least one argu
 
 V = TypeVar('V', int, str)
 
---zuban-diff # TODO: this should also give an error
---zuban-diff def h() -> V:
-# TODO: this should also give an error
-def h() -> V: # E: A function returning TypeVar should receive at least one argument containing the same Typevar
+def h() -> V:  # E: A function returning TypeVar should receive at least one argument containing the same TypeVar
     ...
 
 [case testInnerFunctionTypeVar]
