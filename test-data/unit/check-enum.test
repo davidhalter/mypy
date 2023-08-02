@@ -514,11 +514,11 @@ main:19: error: Unexpected arguments to Enum()
 --zuban-diff main:20: error: Unexpected arguments to Enum()
 main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
 --zuban-diff 
-main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str"
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str | None"
 --zuban-diff 
-main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str"
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str | None"
 --zuban-diff 
-main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Type[Any]"
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Type[Any] | None"
 main:22: error: "Type[W]" has no attribute "c"
 
 [case testFunctionalEnumFlag]
