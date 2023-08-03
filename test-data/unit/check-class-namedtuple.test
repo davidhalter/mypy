@@ -448,7 +448,8 @@ class X(NamedTuple):
 from typing import NamedTuple
 
 class X(NamedTuple):
-    x: int = 1 + '1'  # E: Unsupported left operand type for + ("int")
+--zuban-diff     x: int = 1 + '1'  # E: Unsupported left operand type for + ("int")
+    x: int = 1 + '1'  # E: Unsupported operand types for + ("int" and "str")
 [builtins fixtures/tuple.pyi]
 
 [case testNewNamedTupleInheritance]
