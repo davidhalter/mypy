@@ -1723,7 +1723,8 @@ import types
 import m
 
 def takes_module(x: types.ModuleType):
-    reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+--zuban-diff     reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
+    reveal_type(x.__file__)  # N: Revealed type is "builtins.str | None"
 
 n = m
 takes_module(m)
