@@ -349,7 +349,11 @@ import typing
 class X(typing.NamedTuple):
     x: int
     y = 1  # E: Invalid statement in NamedTuple definition; expected "field_name: field_type [= default]"
-    x.x: int  # E: Invalid statement in NamedTuple definition; expected "field_name: field_type [= default]"
+    x.x: int  # E: Invalid statement in NamedTuple definition; expected "field_name: field_type [= default]" \
+--zuban-diff 
+              # E: Type cannot be declared in assignment to non-self attribute \
+--zuban-diff 
+              # E: "int" has no attribute "x"
     z: str = 'z'
     aa: int  # E: Non-default NamedTuple fields cannot follow default fields
 [builtins fixtures/list.pyi]
