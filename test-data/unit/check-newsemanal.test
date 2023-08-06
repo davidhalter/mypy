@@ -779,10 +779,12 @@ class C(Generic[T]):
     def __init__(self, x: T) -> None: ...
 def func(x: U) -> U: ...
 
-U = TypeVar('U', asdf, asdf)  # E: Name "asdf" is not defined
+--zuban-diff U = TypeVar('U', asdf, asdf)  # E: Name "asdf" is not defined
+U = TypeVar('U', asdf, asdf)  # E: Name "asdf" is not defined  # E: Name "asdf" is not defined
 T = TypeVar('T', bound='asdf')  # E: Name "asdf" is not defined
 
-reveal_type(C)  # N: Revealed type is "def [T <: Any] (x: T`1) -> __main__.C[T`1]"
+--zuban-diff reveal_type(C)  # N: Revealed type is "def [T <: Any] (x: T`1) -> __main__.C[T`1]"
+reveal_type(C)  # N: Revealed type is "Type[__main__.C[Any]]"
 reveal_type(func)  # N: Revealed type is "def [U in (Any, Any)] (x: U`-1) -> U`-1"
 
 [case testNewAnalyzerSubModuleInCycle]
@@ -2619,9 +2621,11 @@ c: C  # Force second semantic analysis pass
 class X: pass
 class C:
     X = X
-    reveal_type(X)  # N: Revealed type is "def () -> __main__.X"
+--zuban-diff     reveal_type(X)  # N: Revealed type is "def () -> __main__.X"
+    reveal_type(X)  # N: Revealed type is "Type[__main__.X]"
 
-reveal_type(C.X)  # N: Revealed type is "def () -> __main__.X"
+--zuban-diff reveal_type(C.X)  # N: Revealed type is "def () -> __main__.X"
+reveal_type(C.X)  # N: Revealed type is "Type[__main__.X]"
 
 [case testNewAnalyzerAnnotationConflictsWithAttributeSinglePass]
 class C:
@@ -2777,7 +2781,8 @@ from a import A
 class C:
     A = A  # Initially rvalue will be a placeholder
 
-reveal_type(C.A)  # N: Revealed type is "def () -> a.A"
+--zuban-diff reveal_type(C.A)  # N: Revealed type is "def () -> a.A"
+reveal_type(C.A)  # N: Revealed type is "Type[a.A]"
 
 [case testNewAnalyzerFinalLiteralInferredAsLiteralWithDeferral]
 from typing_extensions import Final, Literal

@@ -508,7 +508,8 @@ if MYPY:
 x: A
 reveal_type(x)  # N: Revealed type is "t2.D"
 
-reveal_type(A)  # N: Revealed type is "def () -> t2.D"
+--zuban-diff reveal_type(A)  # N: Revealed type is "def () -> t2.D"
+reveal_type(A)  # N: Revealed type is "Type[t2.D]"
 A()
 [file t2.py]
 import t
