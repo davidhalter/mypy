@@ -1918,7 +1918,8 @@ class C:
 
 [case testReExportChildStubs3]
 from util import mod
-reveal_type(mod)  # N: Revealed type is "def () -> package.mod.mod"
+--zuban-diff reveal_type(mod)  # N: Revealed type is "def () -> package.mod.mod"
+reveal_type(mod)  # N: Revealed type is "Type[package.mod.mod]"
 
 from util import internal_detail  # E: Module "util" does not explicitly export attribute "internal_detail"
 
@@ -2494,11 +2495,14 @@ y: Two
 y = x
 x = y
 [out]
-tmp/m/two.py:2: note: Revealed type is "def () -> m.one.One"
+--zuban-diff tmp/m/two.py:2: note: Revealed type is "def () -> m.one.One"
+tmp/m/two.py:2: note: Revealed type is "Type[m.one.One]"
 tmp/m/two.py:4: note: Revealed type is "m.one.One"
 tmp/m/two.py:9: error: Incompatible types in assignment (expression has type "One", variable has type "Two")
-tmp/m/__init__.py:3: note: Revealed type is "def () -> m.one.One"
-main:2: note: Revealed type is "def () -> m.one.One"
+--zuban-diff tmp/m/__init__.py:3: note: Revealed type is "def () -> m.one.One"
+tmp/m/__init__.py:3: note: Revealed type is "Type[m.one.One]"
+--zuban-diff main:2: note: Revealed type is "def () -> m.one.One"
+main:2: note: Revealed type is "Type[m.one.One]"
 
 [case testImportReExportInCycleUsingRelativeImport2]
 from m import One
@@ -2518,10 +2522,13 @@ reveal_type(x)
 class Two:
     pass
 [out]
-tmp/m/two.py:2: note: Revealed type is "def () -> m.one.One"
+--zuban-diff tmp/m/two.py:2: note: Revealed type is "def () -> m.one.One"
+tmp/m/two.py:2: note: Revealed type is "Type[m.one.One]"
 tmp/m/two.py:4: note: Revealed type is "m.one.One"
-tmp/m/__init__.py:3: note: Revealed type is "def () -> m.one.One"
-main:2: note: Revealed type is "def () -> m.one.One"
+--zuban-diff tmp/m/__init__.py:3: note: Revealed type is "def () -> m.one.One"
+tmp/m/__init__.py:3: note: Revealed type is "Type[m.one.One]"
+--zuban-diff main:2: note: Revealed type is "def () -> m.one.One"
+main:2: note: Revealed type is "Type[m.one.One]"
 
 [case testImportReExportedNamedTupleInCycle1]
 from m import One
