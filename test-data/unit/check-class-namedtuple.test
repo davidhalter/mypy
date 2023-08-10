@@ -161,7 +161,8 @@ class B(A):
         i = 0
         s = ''
         if int():
-            self = x
+--zuban-diff             self = x
+            self = x  # E: Incompatible types in assignment (expression has type "B", variable has type "Self")
             i, s = x
             i, s = x.a, x.b
             i, s = x.a, x.a  # E: Incompatible types in assignment (expression has type "int", variable has type "str")
