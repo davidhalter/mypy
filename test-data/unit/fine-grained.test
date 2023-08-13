@@ -1430,8 +1430,11 @@ class C:
 class C:
     def __init__(self) -> None: self.x = 'ar'
 [out]
+--zuban-diff
+main:4: error: "x" undefined in superclass
 ==
-main:4: error: Incompatible return value type (got "str", expected "int")
+--zuban-diff
+main:4: error: "x" undefined in superclass
 
 [case testImportFrom]
 from m import f

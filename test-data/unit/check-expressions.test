@@ -1526,7 +1526,8 @@ class A:
     def __init__(self, _add: Any) -> None:
         self.__add__ = _add
 a: A
-a + a
+--zuban-diff a + a
+a + a  # E: Unsupported left operand type for + ("A")
 [out]
 
 [case testOperatorMethodAsVar2]
