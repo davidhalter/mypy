@@ -1848,12 +1848,14 @@ from enum import Enum
 class A(Enum):
     x: int
 class B(A):  # E: Cannot extend enum with existing members: "A"
-    x = 1    # E: Cannot override writable attribute "x" with a final one
+--zuban-diff     x = 1    # E: Cannot override writable attribute "x" with a final one
+    x = 1
 
 class C(Enum):
     x = 1
 class D(C):  # E: Cannot extend enum with existing members: "C"
-    x: int   # E: Cannot assign to final name "x"
+--zuban-diff     x: int   # E: Cannot assign to final name "x"
+    x: int
 [builtins fixtures/bool.pyi]
 
 [case testEnumLiteralValues]
