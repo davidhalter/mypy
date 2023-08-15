@@ -1521,13 +1521,17 @@ class NonEmptyIntFlag(IntFlag):
     x = 1
 
 class ErrorEnumWithValue(NonEmptyEnum):  # E: Cannot extend enum with existing members: "NonEmptyEnum"
-    x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyEnum")
+--zuban-diff     x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyEnum")
+    x = 1
 class ErrorIntEnumWithValue(NonEmptyIntEnum):  # E: Cannot extend enum with existing members: "NonEmptyIntEnum"
-    x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyIntEnum")
+--zuban-diff     x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyIntEnum")
+    x = 1
 class ErrorFlagWithValue(NonEmptyFlag):  # E: Cannot extend enum with existing members: "NonEmptyFlag"
-    x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyFlag")
+--zuban-diff     x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyFlag")
+    x = 1
 class ErrorIntFlagWithValue(NonEmptyIntFlag):  # E: Cannot extend enum with existing members: "NonEmptyIntFlag"
-    x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyIntFlag")
+--zuban-diff     x = 1  # E: Cannot override final attribute "x" (previously declared in base class "NonEmptyIntFlag")
+    x = 1
 
 class ErrorEnumWithoutValue(NonEmptyEnum):  # E: Cannot extend enum with existing members: "NonEmptyEnum"
     pass
