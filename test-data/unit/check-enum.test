@@ -2016,7 +2016,9 @@ class TwoDataTypes(First, Second, enum.Enum):  # E: Only a single data type mixi
     pass
 
 class TwoDataTypesAndIntEnumMixin(First, Second, enum.IntEnum, Mixin):  # E: No non-enum mixin classes are allowed after "enum.IntEnum" \
-                                                                        # E: Only a single data type mixin is allowed for Enum subtypes, found extra "__main__.Second"
+                                                                        # E: Only a single data type mixin is allowed for Enum subtypes, found extra "__main__.Second" \
+--zuban-diff 
+                                                                        # E: Only a single data type mixin is allowed for Enum subtypes, found extra "enum.IntEnum"
     pass
 
 class ThreeDataTypes(First, Second, Third, enum.Enum):  # E: Only a single data type mixin is allowed for Enum subtypes, found extra "__main__.Second" \
