@@ -26,7 +26,9 @@ d['ab'] = 'ab'  # E: Invalid index type "str" for "Dict[int, str]"; expected typ
 [out]
 
 [case testNewSyntaxWithRevealType]
-from typing import Dict
+from typing import Dict, TypeVar
+--zuban-diff 
+T = TypeVar("T")
 
 def tst_local(dct: Dict[int, T]) -> Dict[T, int]:
     ret: Dict[T, int] = {}
