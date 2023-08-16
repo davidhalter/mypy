@@ -456,6 +456,14 @@ a, (*b, *c) = 1
 main:1: error: Two starred expressions in assignment
 main:3: error: Two starred expressions in assignment
 main:4: error: Two starred expressions in assignment
+--zuban-diff 
+--zuban-diff 
+--zuban-diff 
+--zuban-diff 
+main:1: error: "int" object is not iterable
+main:2: error: "int" object is not iterable
+main:3: error: "int" object is not iterable
+main:4: error: "int" object is not iterable
 
 [case testTwoStarExpressionsInForStmt]
 z = 1
