@@ -117,13 +117,15 @@ file:1: error: invalid syntax
 0
 x = 0 # type: A A
 [out]
-file:2: error: Syntax error in type comment "A A"
+--zuban-diff file:2: error: Syntax error in type comment "A A"
+file:2: error: invalid syntax
 
 [case testInvalidTypeComment2]
 0
 x = 0 # type: A[
 [out]
-file:2: error: Syntax error in type comment "A["
+--zuban-diff file:2: error: Syntax error in type comment "A["
+file:2: error: invalid Syntax
 
 [case testInvalidTypeComment3]
 0
@@ -135,7 +137,8 @@ file:2: error: Syntax error in type comment ""
 0
 x = 0 # type: *
 [out]
-file:2: error: Syntax error in type comment "*"
+--zuban-diff file:2: error: Syntax error in type comment "*"
+file:2: error: invalid syntax
 
 [case testInvalidTypeComment5]
 0
@@ -147,13 +150,15 @@ file:2: error: Syntax error in type comment ""
 0
 x = 0 # type: *# comment #6
 [out]
-file:2: error: Syntax error in type comment "*"
+--zuban-diff file:2: error: Syntax error in type comment "*"
+file:2: error: invalid syntax
 
 [case testInvalidTypeComment7]
 0
 x = 0 # type: A B #comment #7
 [out]
-file:2: error: Syntax error in type comment "A B"
+--zuban-diff file:2: error: Syntax error in type comment "A B"
+file:2: error: invalid syntax
 
 [case testInvalidSignatureInComment1]
 def f(): # type: x
