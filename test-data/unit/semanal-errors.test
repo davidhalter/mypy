@@ -1027,6 +1027,11 @@ a[1], a[2] = None, None # type: int, int \
     # E: Unexpected type declaration
 [builtins fixtures/tuple.pyi]
 [out]
+--zuban-diff --> added all these below
+main:2: error: "int" has no attribute "y"
+main:2: error: Type cannot be declared in assignment to non-self attribute
+main:2: error: "int" has no attribute "x"
+main:4: error: Unexpected type declaration
 
 [case testMissingGenericImport]
 from typing import TypeVar
