@@ -40,6 +40,10 @@ a*
 a+1*
 [out]
 file:1: error: invalid syntax
+--zuban-diff 
+file:2: error: invalid syntax
+--zuban-diff 
+file:3: error: invalid syntax
 
 [case testDoubleStar]
 **a
@@ -326,6 +330,10 @@ file:1: error: invalid syntax
 ...a
 [out]
 file:1: error: invalid syntax
+--zuban-diff 
+file:2: error: invalid syntax
+--zuban-diff 
+file:3: error: invalid syntax
 
 [case testBlockStatementInSingleLineIf]
 if 1: if 2: pass
@@ -403,6 +411,8 @@ file:0: error: unknown encoding: uft8
 0x2L
 [out]
 file:1: error: invalid syntax
+--zuban-diff 
+file:2: error: invalid syntax
 
 [case testPython2LegacyInequalityInPython3]
 1 <> 2
