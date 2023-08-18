@@ -1213,7 +1213,8 @@ def f() -> int: # E: The return type of a generator function should be "Generato
 from typing import List, Iterator
 def f() -> 'Iterator[List[int]]':
     yield []
-    yield [object()] # E: List item 0 has incompatible type "object"; expected "int"
+--zuban-diff     yield [object()] # E: List item 0 has incompatible type "object"; expected "int"
+    yield [object()] # E: Incompatible types in "yield" (actual type "list[object]", expected type "list[int]")
 [builtins fixtures/for.pyi]
 [out]
 
