@@ -1066,7 +1066,8 @@ o: object
 if int():
     a = f()         # E: "f" does not return a value
 if int():
-    o = a()         # E: Function does not return a value
+--zuban-diff     o = a()         # E: Function does not return a value
+    o = a()         # E: "__call__" of "A" does not return a value
 if int():
     o = A().g(a)    # E: "g" of "A" does not return a value
 if int():
