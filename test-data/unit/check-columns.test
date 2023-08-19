@@ -4,7 +4,10 @@
 f()
 1 +
 [out]
-main:2:5: error: invalid syntax
+--zuban-diff 
+main:1:1: error: Name "f" is not defined
+--zuban-diff main:2:5: error: invalid syntax
+main:2:1: error: invalid syntax
 
 [case testColumnsNestedFunctions]
 import typing
@@ -341,7 +344,8 @@ if int():
     # TODO: It would be better to point to the type comment
     xyz = 0  # type: blurbnard blarb
 [out]
-main:3:5: error: Syntax error in type comment "blurbnard blarb"
+--zuban-diff main:3:5: error: Syntax error in type comment "blurbnard blarb"
+main:3:22: error: invalid syntax
 
 [case testColumnProperty]
 class A:
