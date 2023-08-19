@@ -1377,7 +1377,8 @@ import typing
 class A:
     def __enter__(self, x) -> None: pass
     def __exit__(self, x, y, z) -> None: pass
-with A(): # E: Too few arguments for "__enter__" of "A"
+--zuban-diff with A(): # E: Too few arguments for "__enter__" of "A"
+with A(): # E: Missing positional argument "x" in call to "__enter__" of "A"
     pass
 
 [case testWithStmtAndMissingEnter]
@@ -1740,11 +1741,13 @@ from m import A, B
 import m as x
 
 with A() as x: \
-     # E: Incompatible types in assignment (expression has type "A", variable has type Module)
+--zuban-diff      # E: Incompatible types in assignment (expression has type "A", variable has type Module)
+     # E: Incompatible types in assignment (expression has type "A", variable has type "ModuleType")
     pass
 
 with B() as x: \
-     # E: Incompatible types in assignment (expression has type "B", variable has type Module)
+--zuban-diff      # E: Incompatible types in assignment (expression has type "B", variable has type Module)
+     # E: Incompatible types in assignment (expression has type "B", variable has type "ModuleType")
     pass
 
 [file m.pyi]
