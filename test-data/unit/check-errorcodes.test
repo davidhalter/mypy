@@ -46,14 +46,16 @@ x = 0  # type: x y  # E: Syntax error in type comment "x y"  [syntax]
 
 [case testErrorCodeSyntaxError3]
 # This is a bit inconsistent -- syntax error would be more logical?
-x: 'a b'  # E: Invalid type comment or annotation  [valid-type]
+--zuban-diff x: 'a b'  # E: invalid syntax  [valid-type]
+x: 'a b'  # E: Syntax error in type annotation  [syntax]
 for v in x:  # type: int, int  # E: Syntax error in type annotation  [syntax] \
     # N: Suggestion: Use Tuple[T1, ..., Tn] instead of (T1, ..., Tn)
     pass
 
 [case testErrorCodeSyntaxErrorIgnoreNote]
 # This is a bit inconsistent -- syntax error would be more logical?
-x: 'a b'  # type: ignore[valid-type]
+--zuban-diff x: 'a b'  # type: ignore[valid-type]
+x: 'a b'  # type: ignore[syntax]
 for v in x:  # type: int, int  # type: ignore[syntax]
     pass
 
