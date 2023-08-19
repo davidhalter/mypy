@@ -683,7 +683,8 @@ MypyFile:1(
   RaiseStmt:1())
 
 [case testWith]
-with object:
+--zuban-diff with object:
+with object:  # E: "Type[object]" has no attribute "__enter__" # E: "Type[object]" has no attribute "__exit__"
   object
 [out]
 MypyFile:1(
@@ -695,7 +696,8 @@ MypyFile:1(
         NameExpr(object [builtins.object])))))
 
 [case testWithAndVariable]
-with object as x:
+--zuban-diff with object as x:
+with object as x:  # E: "Type[object]" has no attribute "__enter__" # E: "Type[object]" has no attribute "__exit__"
   x
 [out]
 MypyFile:1(
@@ -727,9 +729,16 @@ MypyFile:1(
             NameExpr(x [l])))))))
 
 [case testComplexWith]
-with object, object:
+--zuban-diff 
+--zuban-diff 
+from typing import Any
+any: Any
+
+--zuban-diff with object, object:
+with any, any:
   pass
-with object as a, object as b:
+--zuban-diff with object as a, object as b:
+with any as a, any as b:
   pass
 [out]
 MypyFile:1(
@@ -1103,9 +1112,15 @@ MypyFile:1(
     StrExpr()))
 
 [case testSimpleWithRenaming]
-with 0 as y:
+--zuban-diff 
+from typing import Any
+a: Any
+
+--zuban-diff with 0 as y:
+with a as y:
     z = y
-with 1 as y:
+--zuban-diff with 1 as y:
+with a as y:
     y = 1
 [out]
 MypyFile:1(
@@ -1129,10 +1144,16 @@ MypyFile:1(
         IntExpr(1)))))
 
 [case testSimpleWithRenamingFailure]
-with 0 as y:
+--zuban-diff 
+from typing import Any
+a: Any
+
+--zuban-diff with 0 as y:
+with a as y:
     z = y
 zz = y
-with 1 as y:
+--zuban-diff with 1 as y:
+with a as y:
     y = 1
 [out]
 MypyFile:1(
