@@ -323,7 +323,8 @@ MypyFile:1(
       NameExpr(x [l]))))
 
 [case testGeneratorExpression]
-a = 0
+--zuban-diff a = 0
+a = [1]
 (x for x in a)
 [out]
 MypyFile:1(
@@ -338,7 +339,8 @@ MypyFile:1(
       NameExpr(a [__main__.a]))))
 
 [case testGeneratorExpressionNestedIndex]
-a = 0
+--zuban-diff a = 0
+a = []
 (x for x, (y, z) in a)
 [out]
 MypyFile:1(
