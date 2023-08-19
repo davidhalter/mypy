@@ -283,7 +283,8 @@ MypyFile:1(
         NameExpr(x [l])))))
 
 [case testDictionaryComprehension]
-a = 0
+--zuban-diff a = 0
+a = []
 ({x: x + 1 for x in a})
 [out]
 MypyFile:1(
@@ -302,7 +303,8 @@ MypyFile:1(
       NameExpr(a [__main__.a]))))
 
 [case testDictionaryComprehensionWithCondition]
-a = 0
+--zuban-diff a = 0
+a = []
 b = {x: x + 1 for x in a if x}
 [out]
 MypyFile:1(
