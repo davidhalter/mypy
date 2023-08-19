@@ -189,7 +189,8 @@ MypyFile:1(
       NameExpr(x [__main__.x]))))
 
 [case testListComprehension]
-a = 0
+--zuban-diff a = 0
+a = []
 ([x + 1 for x in a])
 [out]
 MypyFile:1(
@@ -226,7 +227,8 @@ MypyFile:1(
             NameExpr(a [l])))))))
 
 [case testListComprehensionWithCondition]
-a = 0
+--zuban-diff a = 0
+a = []
 b = [x for x in a if x]
 [out]
 MypyFile:1(
