@@ -1789,7 +1789,8 @@ from typing import Self, assert_type
 
 class C:
     def foo(self) -> None:
-        assert_type(self, Self)  # E: Expression is of type "C", not "Self"
+--zuban-diff         assert_type(self, Self)  # E: Expression is of type "C", not "Self"
+        assert_type(self, Self)
         assert_type(C(), Self)  # E: Expression is of type "C", not "Self"
 
     def bar(self) -> Self:

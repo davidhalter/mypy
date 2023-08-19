@@ -396,7 +396,8 @@ MypyFile:1(
 
 [case testAssertType]
 from typing import assert_type
-assert_type(1, int)
+--zuban-diff assert_type(1, int)
+assert_type(1, int) # E: Expression is of type "Literal[1]", not "int"
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [assert_type])
