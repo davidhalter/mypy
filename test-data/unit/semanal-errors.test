@@ -874,7 +874,8 @@ main:2: error: "None" object is not iterable
 [case testInvalidAssertType]
 from typing import assert_type
 assert_type(1, type=int) # E: "assert_type" must be called with 2 positional arguments
-assert_type(1, *int) # E: "assert_type" must be called with 2 positional arguments
+--zuban-diff assert_type(1, *int) # E: "assert_type" must be called with 2 positional arguments
+assert_type(1, *[1]) # E: "assert_type" must be called with 2 positional arguments
 assert_type() # E: "assert_type" expects 2 arguments
 assert_type(1, int, "hello") # E: "assert_type" expects 2 arguments
 assert_type(int, 1)  # E: Invalid type: try using Literal[1] instead?
