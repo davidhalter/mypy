@@ -879,7 +879,9 @@ assert_type(1, *[1]) # E: "assert_type" must be called with 2 positional argumen
 assert_type() # E: "assert_type" expects 2 arguments
 assert_type(1, int, "hello") # E: "assert_type" expects 2 arguments
 assert_type(int, 1)  # E: Invalid type: try using Literal[1] instead?
-assert_type(1, int[int])  # E: "int" expects no type arguments, but 1 given
+assert_type(1, int[int])  # E: "int" expects no type arguments, but 1 given \
+--zuban-diff 
+                          # E: Expression is of type "Literal[1]", not "int"
 
 [case testInvalidAnyCall]
 from typing import Any
