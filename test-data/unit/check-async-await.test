@@ -240,9 +240,11 @@ class asyncify(Generic[T], AsyncIterator[T]):
 
 async def wrong_iterable(obj: Iterable[int]):
     [i async for i in obj]  # E: "Iterable[int]" has no attribute "__aiter__" (not async iterable)
-    [i for i in asyncify(obj)]  # E: "asyncify[int]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+--zuban-diff     [i for i in asyncify(obj)]  # E: "asyncify[int]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+    [i for i in asyncify(obj)]  # E: "asyncify[int]" object is not iterable
     {i: i async for i in obj}  # E: "Iterable[int]" has no attribute "__aiter__" (not async iterable)
-    {i: i for i in asyncify(obj)}  # E: "asyncify[int]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+--zuban-diff     {i: i for i in asyncify(obj)}  # E: "asyncify[int]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+    {i: i for i in asyncify(obj)}  # E: "asyncify[int]" object is not iterable
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
 
