@@ -512,7 +512,8 @@ async def gen() -> AsyncGenerator[int, None]:
         yield i
 
 def h() -> None:
-    for i in gen():  # E: "AsyncGenerator[int, None]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+--zuban-diff     for i in gen():  # E: "AsyncGenerator[int, None]" has no attribute "__iter__"; maybe "__aiter__"? (not iterable)
+    for i in gen():  # E: "AsyncGenerator[int, None]" object is not iterable
         pass
 
 [builtins fixtures/dict.pyi]
