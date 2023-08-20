@@ -459,7 +459,8 @@ async def genfunc() -> AsyncGenerator[int, None]:
 async def user() -> None:
     gen = genfunc()
 
-    reveal_type(gen.__aiter__())  # N: Revealed type is "typing.AsyncGenerator[builtins.int, None]"
+--zuban-diff     reveal_type(gen.__aiter__())  # N: Revealed type is "typing.AsyncGenerator[builtins.int, None]"
+    reveal_type(gen.__aiter__())  # N: Revealed type is "typing.AsyncIterator[builtins.int]"
 
     reveal_type(await gen.__anext__())  # N: Revealed type is "builtins.int"
 
