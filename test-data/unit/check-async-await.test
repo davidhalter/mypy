@@ -289,7 +289,8 @@ class C:
     def __aenter__(self) -> None: pass
     async def __aexit__(self, x, y, z) -> None: pass
 async def f() -> None:
-    async with C() as x:  # E: "None" has no attribute "__await__"
+--zuban-diff     async with C() as x:  # E: "None" has no attribute "__await__"
+    async with C() as x:  # E: Incompatible types in "async with" for "__aenter__" (actual type "None", expected type "Awaitable[Any]")
         pass
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
@@ -311,7 +312,8 @@ class C:
     async def __aenter__(self) -> int: pass
     def __aexit__(self, x, y, z) -> None: pass
 async def f() -> None:
-    async with C() as x: # E: "None" has no attribute "__await__"
+--zuban-diff     async with C() as x: # E: "None" has no attribute "__await__"
+    async with C() as x: # E: Incompatible types in "async with" for "__aexit__" (actual type "None", expected type "Awaitable[Any]")
         pass
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
