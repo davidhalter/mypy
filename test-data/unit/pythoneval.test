@@ -648,6 +648,8 @@ s: FrozenSet
 [out]
 _program.py:2: error: Name "_T" is not defined
 _program.py:3: error: Name "FrozenSet" is not defined
+--zuban-diff 
+_program.py:3: note: Did you forget to import it from "typing"? (Suggestion: "from typing import FrozenSet")
 
 [case testVarArgsFunctionSubtyping]
 import typing
@@ -808,10 +810,12 @@ n = 4
 t = ('',) * n
 t + 1
 [out]
-_program.py:3: error: No overload variant of "__add__" of "tuple" matches argument type "int"
-_program.py:3: note: Possible overload variants:
-_program.py:3: note:     def __add__(self, Tuple[str, ...], /) -> Tuple[str, ...]
-_program.py:3: note:     def [_T] __add__(self, Tuple[_T, ...], /) -> Tuple[Union[str, _T], ...]
+--zuban-diff _program.py:3: error: No overload variant of "__add__" of "tuple" matches argument type "int"
+--zuban-diff _program.py:3: note: Possible overload variants:
+--zuban-diff _program.py:3: note:     def __add__(self, Tuple[str, ...], /) -> Tuple[str, ...]
+--zuban-diff _program.py:3: note:     def [_T] __add__(self, Tuple[_T, ...], /) -> Tuple[Union[str, _T], ...]
+_program.py:3: error: Unsupported operand types for + ("tuple[str, ...]" and "int")
+
 
 [case testMultiplyTupleByIntegerReverse]
 n = 4
