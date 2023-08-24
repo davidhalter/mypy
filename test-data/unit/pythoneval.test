@@ -1874,7 +1874,8 @@ _testTupleWithDifferentArgsPy310.py:19: note: Revealed type is "builtins.tuple[b
 _testTupleWithDifferentArgsPy310.py:20: note: Revealed type is "builtins.list[Tuple[builtins.int, builtins.str]]"
 _testTupleWithDifferentArgsPy310.py:26: error: Invalid type: try using Literal[1] instead?
 _testTupleWithDifferentArgsPy310.py:27: error: Unexpected "..."
-_testTupleWithDifferentArgsPy310.py:30: note: Revealed type is "builtins.tuple[builtins.object, ...]"
+--zuban-diff _testTupleWithDifferentArgsPy310.py:30: note: Revealed type is "builtins.tuple[builtins.object, ...]"
+_testTupleWithDifferentArgsPy310.py:30: note: Revealed type is "builtins.tuple[builtins.int, builtins.str]"
 
 [case testEnumIterMetaInference]
 import socket
