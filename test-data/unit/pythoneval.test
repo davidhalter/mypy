@@ -665,10 +665,11 @@ x = range(3)
 a = list(map(str, x))
 a + 1
 [out]
-_testMapStr.py:4: error: No overload variant of "__add__" of "list" matches argument type "int"
-_testMapStr.py:4: note: Possible overload variants:
-_testMapStr.py:4: note:     def __add__(self, List[str], /) -> List[str]
-_testMapStr.py:4: note:     def [_S] __add__(self, List[_S], /) -> List[Union[_S, str]]
+--zuban-diff _testMapStr.py:4: error: No overload variant of "__add__" of "list" matches argument type "int"
+--zuban-diff _testMapStr.py:4: note: Possible overload variants:
+--zuban-diff _testMapStr.py:4: note:     def __add__(self, List[str], /) -> List[str]
+--zuban-diff _testMapStr.py:4: note:     def [_S] __add__(self, List[_S], /) -> List[Union[_S, str]]
+_testMapStr.py:4: error: Unsupported operand types for + ("list[str]" and "int")
 
 [case testRelativeImport]
 import typing
