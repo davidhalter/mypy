@@ -5,12 +5,14 @@
 
 [case testLiteralInvalidString]
 from typing_extensions import Literal
-def f1(x: 'A[') -> None: pass  # E: Invalid type comment or annotation
+--zuban-diff def f1(x: 'A[') -> None: pass  # E: Invalid type comment or annotation
+def f1(x: 'A[') -> None: pass  # E: invalid syntax
 def g1(x: Literal['A[']) -> None: pass
 reveal_type(f1)  # N: Revealed type is "def (x: Any)"
 reveal_type(g1)  # N: Revealed type is "def (x: Literal['A['])"
 
-def f2(x: 'A B') -> None: pass  # E: Invalid type comment or annotation
+--zuban-diff def f2(x: 'A B') -> None: pass  # E: Invalid type comment or annotation
+def f2(x: 'A B') -> None: pass  # E: invalid syntax
 def g2(x: Literal['A B']) -> None: pass
 reveal_type(f2)  # N: Revealed type is "def (x: Any)"
 reveal_type(g2)  # N: Revealed type is "def (x: Literal['A B'])"

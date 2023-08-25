@@ -1169,15 +1169,18 @@ def f(x: 'foo'): pass # E: Name "foo" is not defined
 [out]
 
 [case testInvalidStrLiteralStrayBrace]
-def f(x: 'int['): pass # E: Invalid type comment or annotation
+--zuban-diff def f(x: 'int['): pass # E: Invalid type comment or annotation
+def f(x: 'int['): pass # E: invalid syntax
 [out]
 
 [case testInvalidStrLiteralSpaces]
-def f(x: 'A B'): pass # E: Invalid type comment or annotation
+--zuban-diff def f(x: 'A B'): pass # E: Invalid type comment or annotation
+def f(x: 'A B'): pass # E: invalid syntax
 [out]
 
 [case testInvalidMultilineLiteralType]
-def f() -> "A\nB": pass  # E: Invalid type comment or annotation
+--zuban-diff def f() -> "A\nB": pass  # E: Invalid type comment or annotation
+def f() -> "A\nB": pass  # E: Syntax error in type annotation
 [out]
 
 [case testInconsistentOverload]
