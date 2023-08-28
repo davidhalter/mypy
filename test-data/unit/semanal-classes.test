@@ -521,7 +521,8 @@ MypyFile:1(
 
 [case testClassDecorator]
 import typing
-@object
+--zuban-diff @object
+@object  # E: Too many arguments for "object"
 class A: pass
 [out]
 MypyFile:1(
