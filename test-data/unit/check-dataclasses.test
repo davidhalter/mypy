@@ -410,7 +410,8 @@ class Application:
 Application(rating=5)
 Application(name='name', rating=5)
 Application()  # E: Missing named argument "rating" for "Application"
-Application('name')  # E: Too many positional arguments for "Application" # E: Missing named argument "rating" for "Application"
+--zuban-diff Application('name')  # E: Too many positional arguments for "Application" # E: Missing named argument "rating" for "Application"
+Application('name')  # E: Too many positional arguments for "Application"
 Application('name', 123)  # E: Too many positional arguments for "Application"
 Application('name', rating=123)  # E: Too many positional arguments for "Application"
 Application(name=123, rating='name') # E: Argument "name" to "Application" has incompatible type "int"; expected "str" # E: Argument "rating" to "Application" has incompatible type "str"; expected "int"
