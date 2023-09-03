@@ -486,13 +486,18 @@ from dataclasses import dataclass, field, KW_ONLY
 class Application:
     _: KW_ONLY
     name: str = 'Unnamed'
-    rating: int = field(kw_only=False)  # E: Attributes without a default cannot follow attributes with one
+--zuban-diff     rating: int = field(kw_only=False)  # E: Attributes without a default cannot follow attributes with one
+    rating: int = field(kw_only=False)
 
 Application(name='name', rating=5)
-Application()  # E: Missing positional argument "name" in call to "Application"
-Application('name')  # E: Too many positional arguments for "Application" # E: Too few arguments for "Application"
-Application('name', 123)  # E: Too many positional arguments for "Application"
-Application('name', rating=123)  # E: Too many positional arguments for "Application"
+--zuban-diff Application()  # E: Missing positional argument "name" in call to "Application"
+Application()  # E: Missing positional argument "rating" in call to "Application"
+--zuban-diff Application('name')  # E: Too many positional arguments for "Application" # E: Too few arguments for "Application"
+Application('name')  # E: Argument 1 to "Application" has incompatible type "str"; expected "int"
+--zuban-diff Application('name', 123)  # E: Too many positional arguments for "Application"
+Application('name', 123)  # E: Too many positional arguments for "Application"  # E: Argument 1 to "Application" has incompatible type "str"; expected "int"
+--zuban-diff Application('name', rating=123)  # E: Too many positional arguments for "Application"
+Application('name', rating=123)  # E: Argument 1 to "Application" has incompatible type "str"; expected "int"  # E: "Application" gets multiple values for keyword argument "rating"
 
 [builtins fixtures/dataclasses.pyi]
 
