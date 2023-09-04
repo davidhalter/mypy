@@ -2009,7 +2009,8 @@ class LinkedList(Generic[T]):
     def meth(self) -> None:
         reveal_type(self.next)  # N: Revealed type is "Union[Self`0, None]"
 
-l_int: LinkedList[int] = LinkedList(1, LinkedList("no", None))  # E: Argument 1 to "LinkedList" has incompatible type "str"; expected "int"
+--zuban-diff l_int: LinkedList[int] = LinkedList(1, LinkedList("no", None))  # E: Argument 1 to "LinkedList" has incompatible type "str"; expected "int"
+l_int: LinkedList[int] = LinkedList(1, LinkedList("no", None))  # E: Argument 2 to "LinkedList" has incompatible type "LinkedList[str]"; expected "Optional[Self]"
 
 @dataclass
 class SubLinkedList(LinkedList[int]): ...
