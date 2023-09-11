@@ -2173,7 +2173,8 @@ TA = TypeVar('TA', bound=A)
 TB = TypeVar('TB', bound=B)
 
 def f(b_or_t: Union[TA, TB, int]) -> None:
-    a2 = replace(b_or_t)   # E: Argument 1 to "replace" has type "Union[TA, TB, int]" whose item "TB" is not bound to a dataclass  # E: Argument 1 to "replace" has incompatible type "Union[TA, TB, int]" whose item "int" is not a dataclass
+--zuban-diff     a2 = replace(b_or_t)   # E: Argument 1 to "replace" has type "Union[TA, TB, int]" whose item "TB" is not bound to a dataclass  # E: Argument 1 to "replace" has incompatible type "Union[TA, TB, int]" whose item "int" is not a dataclass
+    a2 = replace(b_or_t)   # E: Argument 1 to "replace" has incompatible type "int"; expected a dataclass
 
 [case testReplaceTypeVarBoundNotDataclass]
 from dataclasses import dataclass, replace
@@ -2194,7 +2195,8 @@ def f3(t: TNone) -> TNone:
     return replace(t, x='spam')  # E: Argument 1 to "replace" has a variable type "TNone" not bound to a dataclass
 
 def f4(t: TUnion) -> TUnion:
-    return replace(t, x='spam')  # E: Argument 1 to "replace" has incompatible type "TUnion" whose item "str" is not a dataclass  # E: Argument 1 to "replace" has incompatible type "TUnion" whose item "int" is not a dataclass
+--zuban-diff     return replace(t, x='spam')  # E: Argument 1 to "replace" has incompatible type "TUnion" whose item "str" is not a dataclass  # E: Argument 1 to "replace" has incompatible type "TUnion" whose item "int" is not a dataclass
+    return replace(t, x='spam')  # E: Argument 1 to "replace" has a variable type "TUnion" not bound to a dataclass
 
 [case testReplaceTypeVarBound]
 from dataclasses import dataclass, replace
