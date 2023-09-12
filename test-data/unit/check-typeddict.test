@@ -6,7 +6,8 @@ Point = TypedDict('Point', {'x': int, 'y': int})
 p = Point(x=42, y=1337)
 reveal_type(p)  # N: Revealed type is "TypedDict('__main__.Point', {'x': builtins.int, 'y': builtins.int})"
 # Use values() to check fallback value type.
-reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+--zuban-diff reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p.values()) # N: Revealed type is "_collections_abc.dict_values[str, object]"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 [targets __main__]
@@ -17,7 +18,8 @@ Point = TypedDict('Point', {'x': int, 'y': int})
 p = Point(dict(x=42, y=1337))
 reveal_type(p)  # N: Revealed type is "TypedDict('__main__.Point', {'x': builtins.int, 'y': builtins.int})"
 # Use values() to check fallback value type.
-reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+--zuban-diff reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p.values()) # N: Revealed type is "_collections_abc.dict_values[str, object]"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
@@ -27,7 +29,8 @@ Point = TypedDict('Point', {'x': int, 'y': int})
 p = Point({'x': 42, 'y': 1337})
 reveal_type(p)  # N: Revealed type is "TypedDict('__main__.Point', {'x': builtins.int, 'y': builtins.int})"
 # Use values() to check fallback value type.
-reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+--zuban-diff reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p.values()) # N: Revealed type is "_collections_abc.dict_values[str, object]"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
@@ -37,7 +40,8 @@ from mypy_extensions import TypedDict
 EmptyDict = TypedDict('EmptyDict', {})
 p = EmptyDict()
 reveal_type(p)  # N: Revealed type is "TypedDict('__main__.EmptyDict', {})"
-reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+--zuban-diff reveal_type(p.values()) # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p.values()) # N: Revealed type is "_collections_abc.dict_values[str, object]"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
