@@ -1701,8 +1701,10 @@ s = ''
 del a[s] # E: Expected TypedDict key to be string literal
 del b[s] # E: Expected TypedDict key to be string literal
 alias = b.__delitem__
-alias('x')
-alias(s)
+--zuban-diff alias('x')
+alias('x')  # E: Key "x" of TypedDict "B" cannot be deleted
+--zuban-diff alias(s)
+alias(s)  # E: Expected TypedDict key to be string literal
 [builtins fixtures/dict.pyi]
 
 [case testPluginUnionsOfTypedDicts]
