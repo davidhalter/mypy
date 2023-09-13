@@ -1611,8 +1611,9 @@ f1(**b, **a)
 f2(**a, **b) # E: Argument "y" to "f2" has incompatible type "str"; expected "float"
 f3(**a, **b) # E: Argument "z" to "f3" has incompatible type "bytes"; expected "float"
 f3(**b, **a) # E: Argument "z" to "f3" has incompatible type "bytes"; expected "float"
-f1(**a, **c) # E: "f1" gets multiple values for keyword argument "x" \
-             # E: Argument "x" to "f1" has incompatible type "str"; expected "int"
+f1(**a, **c) # E: "f1" gets multiple values for keyword argument "x"
+--zuban-diff              # E: Argument "x" to "f1" has incompatible type "str"; expected "int"
+--zuban-diff
 f1(**c, **a) # E: "f1" gets multiple values for keyword argument "x" \
              # E: Argument "x" to "f1" has incompatible type "str"; expected "int"
 [builtins fixtures/tuple.pyi]
