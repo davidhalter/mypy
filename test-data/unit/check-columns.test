@@ -240,11 +240,14 @@ def f() -> None:
 from typing import TypedDict
 class D(TypedDict):
     x: int
-t: D = {'x':
-    'y'} # E:5: Incompatible types (expression has type "str", TypedDict item "x" has type "int")
+--zuban-diff t: D = {'x':
+--zuban-diff     'y'} # E:5: Incompatible types (expression has type "str", TypedDict item "x" has type "int")
+t: D = {'x': # E:9: Incompatible types (expression has type "str", TypedDict item "x" has type "int")
+    'y'}
 
 if int():
-    del t['y'] # E:5: TypedDict "D" has no key "y"
+--zuban-diff     del t['y'] # E:5: TypedDict "D" has no key "y"
+    del t['y'] # E:9: TypedDict "D" has no key "y"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
