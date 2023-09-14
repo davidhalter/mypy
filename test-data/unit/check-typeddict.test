@@ -150,8 +150,10 @@ MovieBase2 = TypedDict(
 class Movie(MovieBase1, MovieBase2):
     pass
 
-def foo(x):
-    # type: (Movie) -> None
+--zuban-diff def foo(x):
+def foo(x: Movie) -> None:
+--zuban-diff     # type: (Movie) -> None
+--zuban-diff
     pass
 
 foo({})  # E: Missing keys ("name", "year") for TypedDict "Movie"
