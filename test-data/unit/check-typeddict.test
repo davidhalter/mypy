@@ -281,7 +281,8 @@ D2 = TypedDict("D2", {"x": int, "x": str})  # E: Duplicate TypedDict key "x"
 d1: D1
 d2: D2
 reveal_type(d1) # N: Revealed type is "TypedDict('__main__.D1', {'x': builtins.int})"
-reveal_type(d2) # N: Revealed type is "TypedDict('__main__.D2', {'x': builtins.str})"
+--zuban-diff reveal_type(d2) # N: Revealed type is "TypedDict('__main__.D2', {'x': builtins.str})"
+reveal_type(d2) # N: Revealed type is "TypedDict('__main__.D2', {'x': builtins.int})"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
