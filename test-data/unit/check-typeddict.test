@@ -2606,8 +2606,9 @@ def func(foo: Union[Foo1, Foo2]):
 
     del foo["missing"]  # E: TypedDict "Foo1" has no key "missing" \
                         # E: TypedDict "Foo2" has no key "missing"
-    del foo[1]  # E: Expected TypedDict key to be string literal \
-                # E: Argument 1 to "__delitem__" has incompatible type "int"; expected "str"
+--zuban-diff     del foo[1]  # E: Expected TypedDict key to be string literal \
+--zuban-diff                 # E: Argument 1 to "__delitem__" has incompatible type "int"; expected "str"
+    del foo[1]  # E: Expected TypedDict key to be string literal # E: Expected TypedDict key to be string literal
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
