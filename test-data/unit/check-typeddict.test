@@ -2366,8 +2366,9 @@ class TD(TypedDict):
     foo: int
 
 d: TD = {b'foo': 2} # E: Expected TypedDict key to be string literal
-d[b'foo'] = 3 # E: TypedDict key must be a string literal; expected one of ("foo") \
-    # E: Argument 1 to "__setitem__" has incompatible type "bytes"; expected "str"
+d[b'foo'] = 3 # E: TypedDict key must be a string literal; expected one of ("foo")
+--zuban-diff     # E: Argument 1 to "__setitem__" has incompatible type "bytes"; expected "str"
+--zuban-diff 
 d[b'foo'] # E: TypedDict key must be a string literal; expected one of ("foo")
 d[3] # E: TypedDict key must be a string literal; expected one of ("foo")
 d[True] # E: TypedDict key must be a string literal; expected one of ("foo")
@@ -2566,7 +2567,8 @@ def func(foo: Union[Foo1, Foo2]):
     foo["z"] = "a"  # ok
     foo.__setitem__("z", "a")  # ok
 
-    foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"
+--zuban-diff     foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"
+    foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"  # E: Value of "z" has incompatible type "int"; expected "str"
 
     foo["a"] = 1  # E: TypedDict "Foo2" has no key "a"
     foo["b"] = 2  # E: TypedDict "Foo1" has no key "b"
@@ -2574,8 +2576,9 @@ def func(foo: Union[Foo1, Foo2]):
     foo["missing"] = 1  # E: TypedDict "Foo1" has no key "missing" \
                         # E: TypedDict "Foo2" has no key "missing"
     foo[1] = "m"  # E: TypedDict key must be a string literal; expected one of ("z", "a") \
-                  # E: TypedDict key must be a string literal; expected one of ("z", "b") \
-                  # E: Argument 1 to "__setitem__" has incompatible type "int"; expected "str"
+                  # E: TypedDict key must be a string literal; expected one of ("z", "b")
+--zuban-diff                   # E: Argument 1 to "__setitem__" has incompatible type "int"; expected "str"
+--zuban-diff 
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
