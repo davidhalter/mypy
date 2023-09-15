@@ -2627,7 +2627,8 @@ class Foo2(TypedDict):
 
 def func(foo: Union[F1, F2]):
     foo["z"] = "a"  # ok
-    foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"
+--zuban-diff     foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"
+    foo["z"] = 1  # E: Value of "z" has incompatible type "int"; expected "str"  # E: Value of "z" has incompatible type "int"; expected "str"
 
     foo["a"] = 1  # E: TypedDict "Foo2" has no key "a"
     foo["b"] = 2  # E: TypedDict "Foo1" has no key "b"
@@ -2635,8 +2636,9 @@ def func(foo: Union[F1, F2]):
     foo["missing"] = 1  # E: TypedDict "Foo1" has no key "missing" \
                         # E: TypedDict "Foo2" has no key "missing"
     foo[1] = "m"  # E: TypedDict key must be a string literal; expected one of ("z", "a") \
-                  # E: TypedDict key must be a string literal; expected one of ("z", "b") \
-                  # E: Argument 1 to "__setitem__" has incompatible type "int"; expected "str"
+                  # E: TypedDict key must be a string literal; expected one of ("z", "b")
+--zuban-diff                   # E: Argument 1 to "__setitem__" has incompatible type "int"; expected "str"
+--zuban-diff 
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
