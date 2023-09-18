@@ -2702,15 +2702,18 @@ from typing import TypedDict, Generic, TypeVar
 T = TypeVar("T")
 class Base(TypedDict, Generic[T]):
     x: T
-class Sub(Base[{}]):  # E: Invalid TypedDict type argument \
-                      # E: Type expected within [...] \
-                      # E: Invalid base class "Base"
+--zuban-diff class Sub(Base[{}]):  # E: Invalid TypedDict type argument \
+--zuban-diff                       # E: Type expected within [...] \
+--zuban-diff                       # E: Invalid base class "Base"
+class Sub(Base[{}]):  # E: Type expected within [...]
     y: int
 s: Sub
-reveal_type(s)  # N: Revealed type is "TypedDict('__main__.Sub', {'y': builtins.int})"
+--zuban-diff reveal_type(s)  # N: Revealed type is "TypedDict('__main__.Sub', {'y': builtins.int})"
+reveal_type(s)  # N: Revealed type is "TypedDict('__main__.Sub', {'x': Any, 'y': int})"
 
-class Sub2(Base[int, str]):  # E: Invalid number of type arguments for "Base" \
-                             # E: "Base" expects 1 type argument, but 2 given
+--zuban-diff class Sub2(Base[int, str]):  # E: Invalid number of type arguments for "Base" \
+--zuban-diff                              # E: "Base" expects 1 type argument, but 2 given
+class Sub2(Base[int, str]):  # E: "Base" expects 1 type argument, but 2 given
     y: int
 s2: Sub2
 reveal_type(s2)  # N: Revealed type is "TypedDict('__main__.Sub2', {'x': Any, 'y': builtins.int})"
