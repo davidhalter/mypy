@@ -963,7 +963,8 @@ T = TypeVar('T')
 def join(x: T, y: T) -> T: return x
 ab = join(A(x=1, y=1), B(x=1, y=''))
 if int():
-    ab = {'x': 1, 'z': 1} # E: Expected TypedDict key "x" but found keys ("x", "z")
+--zuban-diff     ab = {'x': 1, 'z': 1} # E: Expected TypedDict key "x" but found keys ("x", "z")
+    ab = {'x': 1, 'z': 1} # E: Extra key "z" for TypedDict "TypedDict({'x': int})"
 [builtins fixtures/dict.pyi]
 
 [case testCannotCreateAnonymousTypedDictInstanceUsingDictLiteralWithMissingItems]
@@ -975,7 +976,8 @@ T = TypeVar('T')
 def join(x: T, y: T) -> T: return x
 ab = join(A(x=1, y=1, z=1), B(x=1, y=1, z=''))
 if int():
-    ab = {} # E: Expected TypedDict keys ("x", "y") but found no keys
+--zuban-diff     ab = {} # E: Expected TypedDict keys ("x", "y") but found no keys
+    ab = {} # E: Missing keys ("x", "y") for TypedDict "TypedDict({'x': int, 'y': int})"
 [builtins fixtures/dict.pyi]
 
 
