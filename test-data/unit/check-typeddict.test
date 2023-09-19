@@ -520,8 +520,10 @@ Point3D = TypedDict('Point3D', {'x': int, 'y': int, 'z': int})
 p1 = TaggedPoint(type='2d', x=0, y=0)
 p2 = Point3D(x=1, y=1, z=1)
 joined_points = [p1, p2][0]
-reveal_type(p1.values())   # N: Revealed type is "typing.Iterable[builtins.object]"
-reveal_type(p2.values())   # N: Revealed type is "typing.Iterable[builtins.object]"
+--zuban-diff reveal_type(p1.values())   # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p1.values())   # N: Revealed type is "_collections_abc.dict_values[str, object]"
+--zuban-diff reveal_type(p2.values())   # N: Revealed type is "typing.Iterable[builtins.object]"
+reveal_type(p2.values())   # N: Revealed type is "_collections_abc.dict_values[str, object]"
 reveal_type(joined_points)  # N: Revealed type is "TypedDict({'x': builtins.int, 'y': builtins.int})"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
