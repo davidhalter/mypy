@@ -3844,8 +3844,7 @@ x: a.A = {str(): int()}
 [builtins fixtures/dict.pyi]
 [out]
 ==
--- zuban-diff b.py:2: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
-b.py:2: error: Incompatible types in assignment (expression has type "dict[str, int]", variable has type "dict[str, str]")
+b.py:2: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
 
 [case testAliasFineGenericFunc]
 import b
@@ -3863,8 +3862,7 @@ f({str(): int()})
 [builtins fixtures/dict.pyi]
 [out]
 ==
--- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
-b.py:4: error: Argument 1 to "f" has incompatible type "dict[str, int]"; expected "dict[str, str]"
+b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
 
 [case testAliasFineForwardMod]
 import b
@@ -3949,8 +3947,7 @@ x: aa.B = {'first': {str(): int()}}
 [builtins fixtures/dict.pyi]
 [out]
 ==
--- zuban-diff b.py:3: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
-b.py:3: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
+b.py:3: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
 
 [case testAliasFineNestedFunc]
 import b
@@ -3972,8 +3969,7 @@ def f(x: aa.B):
 [builtins fixtures/dict.pyi]
 [out]
 ==
--- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
-b.py:4: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
+b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
 
 [case testAliasFineNestedFuncDirect]
 import b
@@ -3995,8 +3991,7 @@ def f(x: aa.E[str, aa.a.A]):
 [builtins fixtures/dict.pyi]
 [out]
 ==
--- zuban-diff b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
-b.py:4: error: Incompatible types in assignment (expression has type "dict[str, dict[str, int]]", variable has type "dict[str, dict[str, str]]")
+b.py:4: error: Dict entry 0 has incompatible type "str": "int"; expected "str": "str"
 
 [case testAliasFineNonGenericToGeneric]
 import b
