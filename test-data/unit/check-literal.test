@@ -260,9 +260,9 @@ c_str_wrapper_alias: CStrWrapperAlias
 --zuban-diff ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]
 --zuban-diff BBytesWrapperAlias = Wrap[b"Literal['foo']"]
 --zuban-diff CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]
-ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]  # E: Invalid type comment or annotation
-BBytesWrapperAlias = Wrap[b"Literal['foo']"]  # E: Invalid type comment or annotation
-CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]  # E: Invalid type comment or annotation
+ABytesWrapperAlias = Wrap[b"Literal[u'foo']"]  # E: Invalid type alias: expression is not a valid type
+BBytesWrapperAlias = Wrap[b"Literal['foo']"]  # E: Invalid type alias: expression is not a valid type
+CBytesWrapperAlias = Wrap[b"Literal[b'foo']"]  # E: Invalid type alias: expression is not a valid type
 a_bytes_wrapper_alias: ABytesWrapperAlias
 b_bytes_wrapper_alias: BBytesWrapperAlias
 c_bytes_wrapper_alias: CBytesWrapperAlias

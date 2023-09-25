@@ -1797,7 +1797,7 @@ from typing import Callable
 def Arg(x, y): pass
 
 --zuban-diff F = Callable[[Arg(int, 'x')], int]  # E: Invalid argument constructor "__main__.Arg"
-F = Callable[[Arg(int, 'x')], int]  # E: Invalid type comment or annotation
+F = Callable[[Arg(int, 'x')], int]  # E: Invalid type alias: expression is not a valid type
 
 [case testCallableParsingFromExpr]
 
