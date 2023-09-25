@@ -1314,10 +1314,14 @@ def g(x: U, y: V) -> None:
          # N: Possible overload variants: \
          # N:     def [T <: str] f(x: T) -> T \
          # N:     def [T <: str] f(x: List[T]) -> None
-    a = f([x])
-    reveal_type(a)  # N: Revealed type is "None"
-    f([y]) # E: Value of type variable "T" of "f" cannot be "V"
-    f([x, y]) # E: Value of type variable "T" of "f" cannot be "object"
+--zuban-diff     a = f([x])
+--zuban-diff     reveal_type(a)  # N: Revealed type is "None"
+    a = f([x])  # E: "f" does not return a value
+    reveal_type(a)  # N: Revealed type is "Any"
+--zuban-diff     f([y]) # E: Value of type variable "T" of "f" cannot be "V"
+--zuban-diff     f([x, y]) # E: Value of type variable "T" of "f" cannot be "object"
+    f([y]) # E: List item 0 has incompatible type "V"; expected "str"
+    f([x, y]) # E: List item 1 has incompatible type "V"; expected "str"
 [builtins fixtures/list.pyi]
 [out]
 
