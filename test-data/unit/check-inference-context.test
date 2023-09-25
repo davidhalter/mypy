@@ -818,7 +818,8 @@ s: List[str]
 if int():
     i = i = []
 if int():
-    i = s = [] # E: Incompatible types in assignment (expression has type "List[str]", variable has type "List[int]")
+--zuban-diff     i = s = [] # E: Incompatible types in assignment (expression has type "List[str]", variable has type "List[int]")
+    i = s = [] # E: Incompatible types in assignment (expression has type "List[int]", variable has type "List[str]")
 [builtins fixtures/list.pyi]
 
 [case testContextForAttributeDeclaredInInit]
