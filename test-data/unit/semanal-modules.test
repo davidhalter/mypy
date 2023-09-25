@@ -511,7 +511,8 @@ MypyFile:1(
 import _m
 _m.x[None] = None
 [fixture _m.py]
-x = None
+--zuban-diff x = None
+x = [1]
 [out]
 MypyFile:1(
   Import:1(_m)
