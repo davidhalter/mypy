@@ -2031,7 +2031,8 @@ class C(Generic[T]):
     @classmethod
     def other(cls) -> None:
         reveal_type(C)  # N: Revealed type is "def [T] () -> __main__.C[T`1]"
-        reveal_type(C[T])  # N: Revealed type is "def () -> __main__.C[T`1]"
+--zuban-diff         reveal_type(C[T])  # N: Revealed type is "def () -> __main__.C[T`1]"
+        reveal_type(C[T])  # N: Revealed type is "Type[__main__.C[T]]"
         reveal_type(C.f)  # N: Revealed type is "def [T] (x: T`1) -> T`1"
         reveal_type(C[T].f)  # N: Revealed type is "def (x: T`1) -> T`1"
         reveal_type(cls.f)  # N: Revealed type is "def (x: T`1) -> T`1"
