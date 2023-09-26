@@ -764,8 +764,7 @@ from b import tp
 x: tp
 reveal_type(x.x)  # N: Revealed type is "builtins.int"
 
---zuban-diff reveal_type(tp)  # N: Revealed type is "def (x: builtins.int) -> Tuple[builtins.int, fallback=b.tp]"
-reveal_type(tp)  # N: Revealed type is "Type[tuple[int, fallback=b.tp]]"
+reveal_type(tp)  # N: Revealed type is "def (x: builtins.int) -> Tuple[builtins.int, fallback=b.tp]"
 tp('x')  # E: Argument 1 to "tp" has incompatible type "str"; expected "int"
 
 [file b.py]
@@ -943,8 +942,7 @@ from typing import NamedTuple
 
 N = NamedTuple('N', [])
 n: N
---zuban-diff reveal_type(N)  # N: Revealed type is "def () -> Tuple[(), fallback=__main__.N]"
-reveal_type(N)  # N: Revealed type is "Type[Tuple[(), fallback=__main__.N]]"
+reveal_type(N)  # N: Revealed type is "def () -> Tuple[(), fallback=__main__.N]"
 reveal_type(n)  # N: Revealed type is "Tuple[(), fallback=__main__.N]"
 [builtins fixtures/tuple.pyi]
 
