@@ -1245,16 +1245,12 @@ class Foo:
         name = 'Bar'
     meta = Meta
 
---zuban-diff reveal_type(Foo.Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
---zuban-diff reveal_type(Foo.meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
-reveal_type(Foo.Meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
-reveal_type(Foo.meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
+reveal_type(Foo.Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+reveal_type(Foo.meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
 reveal_type(Foo.Meta.name)  # N: Revealed type is "builtins.str"
 reveal_type(Foo.meta.name)  # N: Revealed type is "builtins.str"
---zuban-diff reveal_type(Foo().Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
---zuban-diff reveal_type(Foo().meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
-reveal_type(Foo().Meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
-reveal_type(Foo().meta)  # N: Revealed type is "Type[__main__.Foo.Meta]"
+reveal_type(Foo().Meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
+reveal_type(Foo().meta)  # N: Revealed type is "def () -> __main__.Foo.Meta"
 reveal_type(Foo().meta.name)  # N: Revealed type is "builtins.str"
 reveal_type(Foo().Meta.name)  # N: Revealed type is "builtins.str"
 
@@ -6194,8 +6190,7 @@ class B(A):
     def __init__(self, x: int) -> None:
         pass
 
---zuban-diff reveal_type(B)  # N: Revealed type is "def (x: builtins.int) -> __main__.B"
-reveal_type(B)  # N: Revealed type is "Type[__main__.B]"
+reveal_type(B)  # N: Revealed type is "def (x: builtins.int) -> __main__.B"
 [builtins fixtures/tuple.pyi]
 
 [case testNewAndInit3]
@@ -6207,8 +6202,7 @@ class A:
     def __init__(self, x: int) -> None:
         pass
 
---zuban-diff reveal_type(A)  # N: Revealed type is "def (x: builtins.int) -> __main__.A"
-reveal_type(A)  # N: Revealed type is "Type[__main__.A]"
+reveal_type(A)  # N: Revealed type is "def (x: builtins.int) -> __main__.A"
 [builtins fixtures/tuple.pyi]
 
 [case testCyclicDecorator]

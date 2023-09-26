@@ -1578,10 +1578,8 @@ class C(Generic[T]):
 
 reveal_type(C.F(17).foo())      # N: Revealed type is "builtins.int"
 reveal_type(C("").F(17).foo())  # N: Revealed type is "builtins.int"
---zuban-diff reveal_type(C.F)                # N: Revealed type is "def [K] (k: K`1) -> __main__.C.F[K`1]"
---zuban-diff reveal_type(C("").F)            # N: Revealed type is "def [K] (k: K`6) -> __main__.C.F[K`6]"
-reveal_type(C.F)                # N: Revealed type is "Type[__main__.C.F[Any]]"
-reveal_type(C("").F)            # N: Revealed type is "Type[__main__.C.F[Any]]"
+reveal_type(C.F)                # N: Revealed type is "def [K] (k: K`1) -> __main__.C.F[K`1]"
+reveal_type(C("").F)            # N: Revealed type is "def [K] (k: K`6) -> __main__.C.F[K`6]"
 --zuban-diff 
 --zuban-diff 
 reveal_type(C.F(3))             # N: Revealed type is "__main__.C.F[int]"
@@ -2032,10 +2030,8 @@ class C(Generic[T]):
 
     @classmethod
     def other(cls) -> None:
---zuban-diff         reveal_type(C)  # N: Revealed type is "def [T] () -> __main__.C[T`1]"
---zuban-diff         reveal_type(C[T])  # N: Revealed type is "def () -> __main__.C[T`1]"
-        reveal_type(C)  # N: Revealed type is "Type[__main__.C[Any]]"
-        reveal_type(C[T])  # N: Revealed type is "Type[__main__.C[T`1]]"
+        reveal_type(C)  # N: Revealed type is "def [T] () -> __main__.C[T`1]"
+        reveal_type(C[T])  # N: Revealed type is "def () -> __main__.C[T`1]"
         reveal_type(C.f)  # N: Revealed type is "def [T] (x: T`1) -> T`1"
         reveal_type(C[T].f)  # N: Revealed type is "def (x: T`1) -> T`1"
         reveal_type(cls.f)  # N: Revealed type is "def (x: T`1) -> T`1"

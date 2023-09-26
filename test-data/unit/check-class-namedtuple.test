@@ -636,8 +636,7 @@ class HasClassMethod(NamedTuple):
     def new(cls, f: str) -> 'HasClassMethod':
 --zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[Tuple[builtins.str, fallback=__main__.HasClassMethod]]"
         reveal_type(cls)  # N: Revealed type is "Type[Self]"
---zuban-diff         reveal_type(HasClassMethod)  # N: Revealed type is "def (x: builtins.str) -> Tuple[builtins.str, fallback=__main__.HasClassMethod]"
-        reveal_type(HasClassMethod)  # N: Revealed type is "Type[Tuple[builtins.str, fallback=__main__.HasClassMethod]]"
+        reveal_type(HasClassMethod)  # N: Revealed type is "def (x: builtins.str) -> Tuple[builtins.str, fallback=__main__.HasClassMethod]"
         return cls(x=f)
 
 [builtins fixtures/classmethod.pyi]

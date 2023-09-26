@@ -1663,10 +1663,8 @@ class C:
     def __init__(self, other: Self) -> None: ...
 class D(C): ...
 
---zuban-diff reveal_type(C)  # N: Revealed type is "def (other: __main__.C) -> __main__.C"
---zuban-diff reveal_type(D)  # N: Revealed type is "def (other: __main__.D) -> __main__.D"
-reveal_type(C)  # N: Revealed type is "Type[__main__.C]"
-reveal_type(D)  # N: Revealed type is "Type[__main__.D]"
+reveal_type(C)  # N: Revealed type is "def (other: __main__.C) -> __main__.C"
+reveal_type(D)  # N: Revealed type is "def (other: __main__.D) -> __main__.D"
 
 [case testTypingSelfCorrectName]
 from typing import Self, List
