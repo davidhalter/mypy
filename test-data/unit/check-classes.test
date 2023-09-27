@@ -4145,7 +4145,8 @@ int.__eq__(3, 4)
 [builtins fixtures/args.pyi]
 [out]
 main:33: error: Too few arguments for "__eq__" of "int"
-main:33: error: Unsupported operand types for == ("int" and "Type[int]")
+--zuban-diff main:33: error: Unsupported operand types for == ("int" and "Type[int]")
+main:33: error: Argument 1 to "__eq__" of "int" has incompatible type "Type[int]"; expected "int"
 
 [case testDupBaseClasses]
 class A:
