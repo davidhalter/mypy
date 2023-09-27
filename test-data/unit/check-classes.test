@@ -3791,7 +3791,8 @@ def f(a: type) -> None: pass
 f(3)  # E: No overload variant of "f" matches argument type "int" \
       # N: Possible overload variants: \
       # N:     def f(a: Type[User]) -> None \
-      # N:     def f(a: type) -> None
+--zuban-diff       # N:     def f(a: type) -> None
+      # N:     def f(a: Type[Any]) -> None
 [builtins fixtures/classmethod.pyi]
 [out]
 
@@ -4091,8 +4092,10 @@ def fake2(a: int) -> type:
     return User
 
 reveal_type(type(User()))  # N: Revealed type is "Type[__main__.User]"
-reveal_type(fake1(User()))  # N: Revealed type is "builtins.type"
-reveal_type(fake2(3))  # N: Revealed type is "builtins.type"
+--zuban-diff reveal_type(fake1(User()))  # N: Revealed type is "builtins.type"
+reveal_type(fake1(User()))  # N: Revealed type is "Type[Any]"
+--zuban-diff reveal_type(fake2(3))  # N: Revealed type is "builtins.type"
+reveal_type(fake2(3))  # N: Revealed type is "Type[Any]"
 [builtins fixtures/classmethod.pyi]
 [out]
 
