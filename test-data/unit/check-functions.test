@@ -2421,10 +2421,8 @@ bad = make_list()  # E: Need type annotation for "bad" (hint: "bad: List[<type>]
 
 [case testAnonymousArgumentError]
 def foo(__b: int, x: int, y: int) -> int: pass
---zuban-diff foo(x=2, y=2)  # E: Too few arguments for "foo"
-foo(x=2, y=2)  # E: Missing positional argument "__b" in call to "foo"
---zuban-diff foo(y=2)  # E: Too few arguments for "foo"
-foo(y=2)  # E: Missing positional arguments "__b", "x" in call to "foo"
+foo(x=2, y=2)  # E: Too few arguments for "foo"
+foo(y=2)  # E: Too few arguments for "foo"
 
 [case testMissingArgumentError]
 def f(a, b, c, d=None) -> None: pass
