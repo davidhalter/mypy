@@ -1871,7 +1871,8 @@ class D:
     __set__ = 's'
 class A:
     f = D()
-A().f = 'x'  # E: __main__.D.__set__ is not callable
+--zuban-diff A().f = 'x'  # E: __main__.D.__set__ is not callable
+A().f = 'x'  # E: "str" not callable
 
 [case testDescriptorDunderSetTooFewArgs]
 class D:
@@ -1901,7 +1902,8 @@ class D:
     __get__ = 's'
 class A:
     f = D()
-A().f  # E: __main__.D.__get__ is not callable
+--zuban-diff A().f  # E: __main__.D.__get__ is not callable
+A().f  # E: "str" not callable
 
 [case testDescriptorDunderGetTooFewArgs]
 class D:
