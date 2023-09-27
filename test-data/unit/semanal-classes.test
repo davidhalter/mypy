@@ -566,7 +566,8 @@ class B(Any): pass
 class C(Callable[[], int]): pass
 [out]
 main:3: error: Invalid base class "None"
-main:5: error: Invalid base class "Callable"
+--zuban-diff main:5: error: Invalid base class "Callable"
+main:5: error: Invalid base class "Callable[[], int]"
 
 [case testTupleAsBaseClass]
 
