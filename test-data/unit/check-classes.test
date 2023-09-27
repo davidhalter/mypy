@@ -3579,8 +3579,10 @@ u = new(User)
 [out]
 tmp/foo.pyi:17: error: No overload variant of "User" matches argument type "str"
 tmp/foo.pyi:17: note: Possible overload variants:
-tmp/foo.pyi:17: note:     def __init__(self) -> U
-tmp/foo.pyi:17: note:     def __init__(self, arg: int) -> U
+--zuban-diff tmp/foo.pyi:17: note:     def __init__(self) -> U
+--zuban-diff tmp/foo.pyi:17: note:     def __init__(self, arg: int) -> U
+tmp/foo.pyi:17: note:     def __init__(self)
+tmp/foo.pyi:17: note:     def __init__(self, arg: int)
 tmp/foo.pyi:18: error: Too many arguments for "foo" of "User"
 
 [case testTypeUsingTypeCInUpperBound]
