@@ -3520,7 +3520,8 @@ def process(cls: Type[U]):
     obj = cls()
     reveal_type(cls.bar(obj))  # N: Revealed type is "builtins.int"
     cls.mro()  # Defined in class type
-    cls.error  # E: "Type[U]" has no attribute "error"
+--zuban-diff     cls.error  # E: "Type[U]" has no attribute "error"
+    cls.error  # E: "Type[User]" has no attribute "error"
 [builtins fixtures/classmethod.pyi]
 [out]
 
@@ -3539,7 +3540,9 @@ def process(cls: Type[U]):
     obj = cls()
     cls.bar(obj)
     cls.mro()  # Defined in class type
-    cls.error  # E: "Type[U]" has no attribute "error"
+--zuban-diff     cls.error  # E: "Type[U]" has no attribute "error"
+    cls.error  # E: "Type[ProUser]" has no attribute "error" \
+               # E: "Type[BasicUser]" has no attribute "error"
 [builtins fixtures/classmethod.pyi]
 [out]
 
