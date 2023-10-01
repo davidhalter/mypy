@@ -1959,8 +1959,9 @@ def test2() -> None:
     k, (v1, *vs) = next(iter(d.items()))
     reveal_type(vs)
 [out]
-_testStarUnpackNestedUnderscore.py:10: error: List item 0 has incompatible type "int"; expected "str"
-_testStarUnpackNestedUnderscore.py:10: error: List item 1 has incompatible type "int"; expected "str"
+--zuban-diff _testStarUnpackNestedUnderscore.py:10: error: List item 0 has incompatible type "int"; expected "str"
+--zuban-diff _testStarUnpackNestedUnderscore.py:10: error: List item 1 has incompatible type "int"; expected "str"
+_testStarUnpackNestedUnderscore.py:10: error: Incompatible types in assignment (expression has type "list[int]", variable has type "list[str]")
 _testStarUnpackNestedUnderscore.py:11: note: Revealed type is "builtins.list[builtins.str]"
 _testStarUnpackNestedUnderscore.py:16: note: Revealed type is "builtins.list[builtins.object]"
 
