@@ -1323,7 +1323,8 @@ if int():
 if int():
     b, a = list_a   # E: Incompatible types in assignment (expression has type "A", variable has type "B")
 if int():
-    b2, b2 = list_b # E: Incompatible types in assignment (expression has type "B", variable has type "B2")
+--zuban-diff     b2, b2 = list_b # E: Incompatible types in assignment (expression has type "B", variable has type "B2")
+    b2, b2 = list_b # E: Incompatible types in assignment (expression has type "B", variable has type "B2") # E: Incompatible types in assignment (expression has type "B", variable has type "B2")
 
 a, a = list_a
 b, b2, b = list_b2
