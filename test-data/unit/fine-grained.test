@@ -7543,8 +7543,8 @@ def t() -> Tuple[str]: ...
 [out]
 ==
 main:5: error: Incompatible return value type (got "Tuple[int, str]", expected "Tuple[int, int]")
--- zuban-diff main:8: error: List item 1 has incompatible type "Tuple[str]"; expected "int"
-main:8: error: Incompatible return value type (got "list[int | str]", expected "list[int]")
+--zuban-diff main:8: error: List item 1 has incompatible type "Tuple[str]"; expected "int"
+main:8: error: List item 1 has incompatible type "str"; expected "int"
 
 [case testUnpackInExpression2-only_when_nocache]
 from typing import Set
