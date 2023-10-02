@@ -2586,8 +2586,7 @@ class B(I[B]): ...
 
 a: A
 b: B
---zuban-diff reveal_type([a, b])  # N: Revealed type is "builtins.list[builtins.object]"
-reveal_type([a, b])  # N: Revealed type is "builtins.list[__main__.I[object]]"
+reveal_type([a, b])  # N: Revealed type is "builtins.list[builtins.object]"
 [builtins fixtures/list.pyi]
 
 [case testGenericJoinNestedInvariantAny]
