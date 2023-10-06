@@ -550,7 +550,8 @@ class C: pass
 a, c = cast(Any, 1), C()
 p, *q = a
 c = a
-c = q
+--zuban-diff c = q
+c = q  # E: Incompatible types in assignment (expression has type "list[Any]", variable has type "C")
 [case testAssignmentToComplexStar]
 from typing import List
 li: List[int]

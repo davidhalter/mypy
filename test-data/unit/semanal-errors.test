@@ -466,7 +466,8 @@ main:3: error: "int" object is not iterable
 main:4: error: "int" object is not iterable
 
 [case testTwoStarExpressionsInForStmt]
-z = 1
+--zuban-diff z = 1
+z: Any
 for a, *b, *c in z:
     pass
 for *a, (*b, c) in z:
