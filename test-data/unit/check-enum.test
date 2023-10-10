@@ -754,22 +754,14 @@ class F2(metaclass=EnumMeta):
 class F3(metaclass=EnumMeta):
     x = 1
 
---zuban-diff F2.x.name      # E: "F2" has no attribute "name"
---zuban-diff F2.x._name_    # E: "F2" has no attribute "_name_"
---zuban-diff F2.x.value     # E: "F2" has no attribute "value"
---zuban-diff F2.x._value_   # E: "F2" has no attribute "_value_"
---zuban-diff F3.x.name      # E: "F3" has no attribute "name"
---zuban-diff F3.x._name_    # E: "F3" has no attribute "_name_"
---zuban-diff F3.x.value     # E: "F3" has no attribute "value"
---zuban-diff F3.x._value_   # E: "F3" has no attribute "_value_"
-F2.x.name      # E: "Literal[F2.x]" has no attribute "name"
-F2.x._name_    # E: "Literal[F2.x]" has no attribute "_name_"
-F2.x.value     # E: "Literal[F2.x]" has no attribute "value"
-F2.x._value_   # E: "Literal[F2.x]" has no attribute "_value_"
-F3.x.name      # E: "Literal[F3.x]" has no attribute "name"
-F3.x._name_    # E: "Literal[F3.x]" has no attribute "_name_"
-F3.x.value     # E: "Literal[F3.x]" has no attribute "value"
-F3.x._value_   # E: "Literal[F3.x]" has no attribute "_value_"
+F2.x.name      # E: "F2" has no attribute "name"
+F2.x._name_    # E: "F2" has no attribute "_name_"
+F2.x.value     # E: "F2" has no attribute "value"
+F2.x._value_   # E: "F2" has no attribute "_value_"
+F3.x.name      # E: "F3" has no attribute "name"
+F3.x._name_    # E: "F3" has no attribute "_name_"
+F3.x.value     # E: "F3" has no attribute "value"
+F3.x._value_   # E: "F3" has no attribute "_value_"
 [builtins fixtures/primitives.pyi]
 
 [case testEnumAttributeChangeIncremental]
