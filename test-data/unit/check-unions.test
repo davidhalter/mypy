@@ -684,6 +684,10 @@ a: Union[Tuple[int, int], Tuple[int, object]]
                  # N: Possible overload variants: \
                  # N:     def __setitem__(self, int, A, /) -> None \
                  # N:     def __setitem__(self, slice, Iterable[A], /) -> None \
+                 # E: No overload variant of "__setitem__" of "list" matches argument types "int", "int" \
+                 # N: Possible overload variants: \
+                 # N:     def __setitem__(self, int, A, /) -> None \
+                 # N:     def __setitem__(self, slice, Iterable[A], /) -> None \
                  # E: Incompatible types in assignment (expression has type "object", variable has type "int")
 reveal_type(x[0])  # N: Revealed type is "__main__.A"
 reveal_type(b.x)  # N: Revealed type is "builtins.int"
@@ -728,7 +732,8 @@ x = make_tuple()
 a, b = x # E: Too many values to unpack (2 expected, 3 provided)
 a, b, c = x # E: Need more than 2 values to unpack (3 expected)
 c, *d = x
-reveal_type(c) # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(c) # N: Revealed type is "builtins.int"
+reveal_type(c) # N: Revealed type is "Any | builtins.int"
 reveal_type(d) # N: Revealed type is "builtins.list[builtins.int]"
 [builtins fixtures/tuple.pyi]
 
@@ -760,7 +765,8 @@ a, b = s # E: Unpacking a string is disallowed
 from typing import Union, Tuple
 bad: Union[Tuple[int, int, int], Tuple[str, str, str]]
 
-x, y = bad # E: Too many values to unpack (2 expected, 3 provided)
+--zuban-diff x, y = bad # E: Too many values to unpack (2 expected, 3 provided)
+x, y = bad # E: Too many values to unpack (2 expected, 3 provided) # E: Too many values to unpack (2 expected, 3 provided)
 reveal_type(x) # N: Revealed type is "Any"
 reveal_type(y) # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
@@ -770,7 +776,8 @@ reveal_type(y) # N: Revealed type is "Any"
 from typing import Union, Tuple
 bad: Union[Tuple[int, int, int], Tuple[str, str, str]]
 
-x, y, z, w = bad # E: Need more than 3 values to unpack (4 expected)
+--zuban-diff x, y, z, w = bad # E: Need more than 3 values to unpack (4 expected)
+x, y, z, w = bad # E: Need more than 3 values to unpack (4 expected) # E: Need more than 3 values to unpack (4 expected)
 reveal_type(x) # N: Revealed type is "Any"
 reveal_type(y) # N: Revealed type is "Any"
 reveal_type(z) # N: Revealed type is "Any"
