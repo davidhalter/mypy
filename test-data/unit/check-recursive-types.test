@@ -497,8 +497,7 @@ class B(Tuple[B, int]):
     x: int
 C = NewType("C", B)
 b, _ = x
---zuban-diff reveal_type(b)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.B]"
-reveal_type(b)  # N: Revealed type is "__main__.B"
+reveal_type(b)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.B]"
 reveal_type(b.x)  # N: Revealed type is "builtins.int"
 
 y: CNT
