@@ -1604,6 +1604,8 @@ b: Union[int, Literal['foo']] = identity('bar')  # E: Argument 1 to "identity" h
 [case testLiteralAndGenericsNoMatch]
 from typing import TypeVar, Union, List
 from typing_extensions import Literal
+--zuban-diff
+T = TypeVar('T')
 
 def identity(x: T) -> T:
     return x
