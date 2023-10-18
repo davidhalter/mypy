@@ -96,7 +96,7 @@ B = Callable[[C], int]
 C = Type[A]
 x: A
 --zuban-diff reveal_type(x)  # N: Revealed type is "Union[def (Union[Type[def (...) -> builtins.int], Type[builtins.int]]) -> builtins.int, builtins.int]"
-reveal_type(x)  # N: Revealed type is "Union[def (Union[Type[A]]) -> builtins.int, builtins.int]"
+reveal_type(x)  # N: Revealed type is "Union[def (Type[...]) -> builtins.int, builtins.int]"
 
 [case testRecursiveAliasesProhibited-skip]
 from typing import Type, Callable, Union
