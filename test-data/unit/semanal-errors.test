@@ -486,7 +486,8 @@ main:8: error: Two starred expressions in assignment
 (a for *a, (*b, c) in [])
 (a for a, (*b, *c) in [])
 [out]
-main:1: error: Name "a" is not defined
+--zuban-diff main:1: error: Name "a" is not defined
+--zuban-diff 
 main:1: error: Two starred expressions in assignment
 main:3: error: Two starred expressions in assignment
 
