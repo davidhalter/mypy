@@ -79,13 +79,15 @@ continue # E: "continue" outside loop
 
 [case testYieldOutsideFunction]
 yield # E: "yield" outside function
-x = 1
+--zuban-diff x = 1
+x = [1]
 yield from x # E: "yield from" outside function
 [(yield 1) for _ in x] # E: "yield" inside comprehension or generator expression
 {(yield 1) for _ in x} # E: "yield" inside comprehension or generator expression
 {i: (yield 1) for i in x} # E: "yield" inside comprehension or generator expression
 ((yield 1) for _ in x) # E: "yield" inside comprehension or generator expression
-y = 1
+--zuban-diff y = 1
+y = [1]
 [(yield from x) for _ in y] # E: "yield from" inside comprehension or generator expression
 {(yield from x) for _ in y} # E: "yield from" inside comprehension or generator expression
 {i: (yield from x) for i in y} # E: "yield from" inside comprehension or generator expression
