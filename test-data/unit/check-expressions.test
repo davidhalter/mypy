@@ -1670,8 +1670,7 @@ dict(undefined) # E: Name "undefined" is not defined
 from typing import Dict
 d = dict([(1, 'x'), (2, 'y')])
 d() # E: "Dict[int, str]" not callable
---zuban-diff d2 = dict([(1, 'x')]) # type: Dict[str, str] # E: List item 0 has incompatible type "Tuple[int, str]"; expected "Tuple[str, str]"
-d2 = dict([(1, 'x')]) # type: Dict[str, str] # E: Argument 1 to "dict" has incompatible type "list[tuple[int, str]]"; expected "Iterable[tuple[str, str]]"
+d2 = dict([(1, 'x')]) # type: Dict[str, str] # E: List item 0 has incompatible type "Tuple[int, str]"; expected "Tuple[str, str]"
 [builtins fixtures/dict.pyi]
 
 [case testDictFromIterableAndKeywordArg]
@@ -1735,12 +1734,12 @@ T = TypeVar('T')
 S = TypeVar('S')
 class D1(dict): pass # Implicit base class Dict[Any, Any]
 --zuban-diff D1([(1, 2)], x=1)
-D1([(1, 2)], x=1)  # E: Argument 1 to "D1" has incompatible type "list[tuple[int, int]]"; expected "Iterable[tuple[str, Any]]"
+D1([(1, 2)], x=1)  # E: List item 0 has incompatible type "tuple[int, int]"; expected "tuple[str, Any]"
 class D2(Dict[T, S], Generic[T, S]): pass
 da = D2([('x', 2)], x=1)
 da() # E: "D2[str, int]" not callable
 --zuban-diff D2([(1, 2)], x=1) # E: Keyword argument only valid with "str" key type in call to "dict"
-D2([(1, 2)], x=1) # E: Argument 1 to "D2" has incompatible type "list[tuple[int, int]]"; expected "Iterable[tuple[str, int]]"
+D2([(1, 2)], x=1) # E: List item 0 has incompatible type "tuple[int, int]"; expected "tuple[str, int]"
 db = D2(x=1)
 db() # E: "D2[str, int]" not callable
 [builtins fixtures/dict.pyi]
