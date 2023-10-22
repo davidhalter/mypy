@@ -620,7 +620,8 @@ def foo(a): ...
 
 foo(a=1)
 [out]
-main:10: error: No overload variant of "foo" matches argument type "int"
+--zuban-diff main:10: error: No overload variant of "foo" matches argument type "int"
+main:10: error: No overload variant of "foo" matches argument type "a=int"
 main:10: note: Possible overload variants:
 main:10: note:     def foo(int, /) -> Any
 main:10: note:     def foo(a: str) -> Any
@@ -637,7 +638,8 @@ def foo(a, b, *, c): ...
 
 foo(a=1)
 [out]
-main:10: error: No overload variant of "foo" matches argument type "int"
+--zuban-diff main:10: error: No overload variant of "foo" matches argument type "int"
+main:10: error: No overload variant of "foo" matches argument type "a=int"
 main:10: note: Possible overload variants:
 main:10: note:     def foo(int, /, b: int, *, c: int) -> Any
 main:10: note:     def foo(a: str, b: int, *, c: int) -> Any
@@ -654,7 +656,8 @@ def foo(a, b, c, d): ...
 
 foo(a=1)
 [out]
-main:10: error: No overload variant of "foo" matches argument type "int"
+--zuban-diff main:10: error: No overload variant of "foo" matches argument type "int"
+main:10: error: No overload variant of "foo" matches argument type "a=int"
 main:10: note: Possible overload variants:
 main:10: note:     def foo(int, int, int, /, d: str) -> Any
 main:10: note:     def foo(a: str, b: int, c: int, d: str) -> Any
@@ -674,7 +677,8 @@ class Some:
 
 Some().foo(a=1)
 [out]
-main:13: error: No overload variant of "foo" of "Some" matches argument type "int"
+--zuban-diff main:13: error: No overload variant of "foo" of "Some" matches argument type "int"
+main:13: error: No overload variant of "foo" of "Some" matches argument type "a=int"
 main:13: note: Possible overload variants:
 main:13: note:     def foo(self, int, /) -> Any
 main:13: note:     def foo(self, float, /) -> Any
@@ -700,7 +704,8 @@ class Some:
 Some.foo(a=1)
 [builtins fixtures/classmethod.pyi]
 [out]
-main:17: error: No overload variant of "foo" of "Some" matches argument type "int"
+--zuban-diff main:17: error: No overload variant of "foo" of "Some" matches argument type "int"
+main:17: error: No overload variant of "foo" of "Some" matches argument type "a=int"
 main:17: note: Possible overload variants:
 main:17: note:     def foo(cls, int, /) -> Any
 main:17: note:     def foo(cls, float, /) -> Any
