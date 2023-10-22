@@ -5731,7 +5731,8 @@ class C:
 
 [builtins fixtures/dict.pyi]
 [out2]
-tmp/a.py:2: error: "object" has no attribute "xyz"
+--zuban-diff tmp/a.py:2: error: "object" has no attribute "xyz"
+tmp/a.py:2: error: Module has no attribute "xyz"
 
 [case testIncrementalInvalidNamedTupleInUnannotatedFunction]
 # flags: --disable-error-code=annotation-unchecked
