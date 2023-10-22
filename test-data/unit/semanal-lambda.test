@@ -24,12 +24,14 @@ def g():
 
 [case testLambdaInheritsCheckedContextFromTypedFunc]
 def g() -> None:
-    return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+--zuban-diff     return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+    return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined  # E: Incompatible return value type (got "Callable[[Any], bool]", expected "None")
 
 [case testLambdaInheritsCheckedContextFromTypedFuncForced]
 # flags: --check-untyped-defs
 def g() -> None:
-    return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+--zuban-diff     return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+    return lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined  # E: Incompatible return value type (got "Callable[[Any], bool]", expected "None")
 
 [case testLambdaInheritsCheckedContextFromModule]
 g = lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
@@ -77,12 +79,14 @@ def g():
 
 [case testLambdaInheritsCheckedContextFromTypedFuncLambdaStack]
 def g() -> None:
-    return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+--zuban-diff     return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+    return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined  # E: Incompatible return value type (got "Callable[[], Callable[[], Callable[[Any], bool]]]", expected "None")
 
 [case testLambdaInheritsCheckedContextFromTypedFuncLambdaStackForce]
 # flags: --check-untyped-defs
 def g() -> None:
-    return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+--zuban-diff     return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined
+    return lambda: lambda: lambda x: UNDEFINED in x  # E: Name "UNDEFINED" is not defined  # E: Incompatible return value type (got "Callable[[], Callable[[], Callable[[Any], bool]]]", expected "None")
 
 [case testLambdaInheritsCheckedContextFromClassLambdaStack]
 class A:
