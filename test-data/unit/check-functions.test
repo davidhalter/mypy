@@ -2534,7 +2534,8 @@ main:1: error: Unsupported operand types for + ("int" and "str")
 f = lambda: 5
 reveal_type(f)
 [out]
-main:2: note: Revealed type is "def () -> builtins.int"
+--zuban-diff main:2: note: Revealed type is "def () -> builtins.int"
+main:2: note: Revealed type is "def () -> Literal[5]?"
 
 [case testRevealLocalsFunction]
 a = 1.0
