@@ -685,7 +685,8 @@ g = lambda x: 1 # type: Callable[..., str]
 [builtins fixtures/dict.pyi]
 [out]
 main:6: error: Incompatible types in assignment (expression has type "Callable[[Any], int]", variable has type "Callable[..., str]")
-main:6: error: Incompatible return value type (got "int", expected "str")
+--zuban-diff main:6: error: Incompatible return value type (got "int", expected "str")
+--zuban-diff 
 
 [case testEllipsisContextForLambda2]
 from typing import TypeVar, Callable
