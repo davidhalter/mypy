@@ -6,27 +6,30 @@ from collections import defaultdict
 from typing import Iterable, Sequence
 from typing_extensions import TypeAlias as _TypeAlias
 
-from mypy.constraints import SUBTYPE_OF, SUPERTYPE_OF, Constraint, infer_constraints, neg_op
+from mypy.constraints import SUBTYPE_OF, SUPERTYPE_OF, Constraint, infer_constraints
 from mypy.expandtype import expand_type
 from mypy.graph_utils import prepare_sccs, strongly_connected_components, topsort
 from mypy.join import join_types
 from mypy.meet import meet_type_list, meet_types
 from mypy.subtypes import is_subtype
-from mypy.typeops import get_type_vars
+from mypy.typeops import get_all_type_vars
 from mypy.types import (
     AnyType,
     Instance,
     NoneType,
+    ParamSpecType,
     ProperType,
+    TupleType,
     Type,
     TypeOfAny,
     TypeVarId,
     TypeVarLikeType,
+    TypeVarTupleType,
     TypeVarType,
     UninhabitedType,
     UnionType,
+    UnpackType,
     get_proper_type,
-    remove_dups,
 )
 from mypy.typestate import type_state
 
@@ -62,10 +65,6 @@ def solve_constraints(
     for c in constraints:
         extra_vars.extend([v.id for v in c.extra_tvars if v.id not in vars + extra_vars])
         originals.update({v.id: v for v in c.extra_tvars if v.id not in originals})
-    if allow_polymorphic:
-        # Constraints like T :> S and S <: T are semantically the same, but they are
-        # represented differently. Normalize the constraint list w.r.t this equivalence.
-        constraints = normalize_constraints(constraints, vars + extra_vars)
 
     # Collect a list of constraints for each type variable.
     cmap: dict[TypeVarId, list[Constraint]] = {tv: [] for tv in vars + extra_vars}
@@ -110,6 +109,13 @@ def solve_constraints(
             else:
                 candidate = AnyType(TypeOfAny.special_form)
             res.append(candidate)
+
+    if not free_vars:
+        # Most of the validation for solutions is done in applytype.py, but here we can
+        # quickly test solutions w.r.t. to upper bounds, and use the latter (if possible),
+        # if solutions are actually not valid (due to poor inference context).
+        res = pre_validate_solutions(res, original_vars, constraints)
+
     return res, free_vars
 
 
@@ -145,6 +151,8 @@ def solve_with_dependent(
         if all(not lowers[tv] and not uppers[tv] for tv in scc):
             best_free = choose_free([originals[tv] for tv in scc], original_vars)
             if best_free:
+                # TODO: failing to choose may cause leaking type variables,
+                # we need to fail gracefully instead.
                 free_vars.append(best_free.id)
                 free_solutions[best_free.id] = best_free
 
@@ -238,6 +246,20 @@ def solve_one(lowers: Iterable[Type], uppers: Iterable[Type]) -> Type | None:
     top: Type | None = None
     candidate: Type | None = None
 
+    # Filter out previous results of failed inference, they will only spoil the current pass...
+    new_uppers = []
+    for u in uppers:
+        pu = get_proper_type(u)
+        if not isinstance(pu, UninhabitedType) or not pu.ambiguous:
+            new_uppers.append(u)
+    uppers = new_uppers
+
+    # ...unless this is the only information we have, then we just pass it on.
+    if not uppers and not lowers:
+        candidate = UninhabitedType()
+        candidate.ambiguous = True
+        return candidate
+
     # Process each bound separately, and calculate the lower and upper
     # bounds based on constraints. Note that we assume that the constraint
     # targets do not have constraint references.
@@ -301,8 +323,8 @@ def choose_free(
     common_upper_bound_p = get_proper_type(common_upper_bound)
     # We include None for when strict-optional is disabled.
     if isinstance(common_upper_bound_p, (UninhabitedType, NoneType)):
-        # This will cause to infer <nothing>, which is better than a free TypeVar
-        # that has an upper bound <nothing>.
+        # This will cause to infer Never, which is better than a free TypeVar
+        # that has an upper bound Never.
         return None
 
     values: list[Type] = []
@@ -324,31 +346,33 @@ def choose_free(
     best = sorted(scc, key=lambda x: (x.id not in original_vars, x.id.raw_id))[0]
     if isinstance(best, TypeVarType):
         return best.copy_modified(values=values, upper_bound=common_upper_bound)
-    if is_trivial_bound(common_upper_bound_p):
+    if is_trivial_bound(common_upper_bound_p, allow_tuple=True):
         # TODO: support more cases for ParamSpecs/TypeVarTuples
         return best
     return None
 
 
-def is_trivial_bound(tp: ProperType) -> bool:
+def is_trivial_bound(tp: ProperType, allow_tuple: bool = False) -> bool:
+    if isinstance(tp, Instance) and tp.type.fullname == "builtins.tuple":
+        return allow_tuple and is_trivial_bound(get_proper_type(tp.args[0]))
     return isinstance(tp, Instance) and tp.type.fullname == "builtins.object"
 
 
-def normalize_constraints(
-    constraints: list[Constraint], vars: list[TypeVarId]
-) -> list[Constraint]:
-    """Normalize list of constraints (to simplify life for the non-linear solver).
-
-    This includes two things currently:
-      * Complement T :> S by S <: T
-      * Remove strict duplicates
-      * Remove constrains for unrelated variables
-    """
-    res = constraints.copy()
-    for c in constraints:
+def find_linear(c: Constraint) -> tuple[bool, TypeVarId | None]:
+    """Find out if this constraint represent a linear relationship, return target id if yes."""
+    if isinstance(c.origin_type_var, TypeVarType):
         if isinstance(c.target, TypeVarType):
-            res.append(Constraint(c.target, neg_op(c.op), c.origin_type_var))
-    return [c for c in remove_dups(constraints) if c.type_var in vars]
+            return True, c.target.id
+    if isinstance(c.origin_type_var, ParamSpecType):
+        if isinstance(c.target, ParamSpecType) and not c.target.prefix.arg_types:
+            return True, c.target.id
+    if isinstance(c.origin_type_var, TypeVarTupleType):
+        target = get_proper_type(c.target)
+        if isinstance(target, TupleType) and len(target.items) == 1:
+            item = target.items[0]
+            if isinstance(item, UnpackType) and isinstance(item.type, TypeVarTupleType):
+                return True, item.type.id
+    return False, None
 
 
 def transitive_closure(
@@ -380,11 +404,17 @@ def transitive_closure(
     remaining = set(constraints)
     while remaining:
         c = remaining.pop()
-        if isinstance(c.target, TypeVarType) and c.target.id in tvars:
+        # Note that ParamSpec constraint P <: Q may be considered linear only if Q has no prefix,
+        # for cases like P <: Concatenate[T, Q] we should consider this non-linear and put {P} and
+        # {T, Q} into separate SCCs. Similarly, Ts <: Tuple[*Us] considered linear, while
+        # Ts <: Tuple[*Us, U] is non-linear.
+        is_linear, target_id = find_linear(c)
+        if is_linear and target_id in tvars:
+            assert target_id is not None
             if c.op == SUBTYPE_OF:
-                lower, upper = c.type_var, c.target.id
+                lower, upper = c.type_var, target_id
             else:
-                lower, upper = c.target.id, c.type_var
+                lower, upper = target_id, c.type_var
             if (lower, upper) in graph:
                 continue
             graph |= {
@@ -463,4 +493,32 @@ def check_linear(scc: set[TypeVarId], lowers: Bounds, uppers: Bounds) -> bool:
 
 def get_vars(target: Type, vars: list[TypeVarId]) -> set[TypeVarId]:
     """Find type variables for which we are solving in a target type."""
-    return {tv.id for tv in get_type_vars(target)} & set(vars)
+    return {tv.id for tv in get_all_type_vars(target)} & set(vars)
+
+
+def pre_validate_solutions(
+    solutions: list[Type | None],
+    original_vars: Sequence[TypeVarLikeType],
+    constraints: list[Constraint],
+) -> list[Type | None]:
+    """Check is each solution satisfies the upper bound of the corresponding type variable.
+
+    If it doesn't satisfy the bound, check if bound itself satisfies all constraints, and
+    if yes, use it instead as a fallback solution.
+    """
+    new_solutions: list[Type | None] = []
+    for t, s in zip(original_vars, solutions):
+        if s is not None and not is_subtype(s, t.upper_bound):
+            bound_satisfies_all = True
+            for c in constraints:
+                if c.op == SUBTYPE_OF and not is_subtype(t.upper_bound, c.target):
+                    bound_satisfies_all = False
+                    break
+                if c.op == SUPERTYPE_OF and not is_subtype(c.target, t.upper_bound):
+                    bound_satisfies_all = False
+                    break
+            if bound_satisfies_all:
+                new_solutions.append(t.upper_bound)
+                continue
+        new_solutions.append(s)
+    return new_solutions

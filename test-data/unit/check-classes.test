@@ -1164,7 +1164,7 @@ def test() -> None:
             reveal_type(x)  # N: Revealed type is "T`-1"
             reveal_type(x.returns_int())  # N: Revealed type is "builtins.int"
             return foo
-    reveal_type(Foo.bar)  # N: Revealed type is "def [T <: __main__.Foo@5] (self: __main__.Foo@5, foo: T`-1) -> T`-1"
+    reveal_type(Foo.bar)  # N: Revealed type is "def [T <: __main__.Foo@5] (self: __main__.Foo@5, foo: T`1) -> T`1"
 
 [case testGenericClassWithInvalidTypevarUseWithinFunction]
 from typing import TypeVar
@@ -7776,13 +7776,13 @@ class D:
     def __init__(self) -> NoReturn: ...
 
 if object():
-    reveal_type(A())  # N: Revealed type is "<nothing>"
+    reveal_type(A())  # N: Revealed type is "Never"
 if object():
-    reveal_type(B())  # N: Revealed type is "<nothing>"
+    reveal_type(B())  # N: Revealed type is "Never"
 if object():
-    reveal_type(C())  # N: Revealed type is "<nothing>"
+    reveal_type(C())  # N: Revealed type is "Never"
 if object():
-    reveal_type(D())  # N: Revealed type is "<nothing>"
+    reveal_type(D())  # N: Revealed type is "Never"
 
 [case testOverloadedNewAndInitNoReturn]
 from typing import NoReturn, overload
@@ -7822,19 +7822,19 @@ class D:
     def __init__(self, a: int = ...) -> None: ...
 
 if object():
-    reveal_type(A())  # N: Revealed type is "<nothing>"
+    reveal_type(A())  # N: Revealed type is "Never"
 reveal_type(A(1))  # N: Revealed type is "__main__.A"
 
 if object():
-    reveal_type(B())  # N: Revealed type is "<nothing>"
+    reveal_type(B())  # N: Revealed type is "Never"
 reveal_type(B(1))  # N: Revealed type is "__main__.B"
 
 if object():
-    reveal_type(C())  # N: Revealed type is "<nothing>"
+    reveal_type(C())  # N: Revealed type is "Never"
 reveal_type(C(1))  # N: Revealed type is "__main__.C"
 
 if object():
-    reveal_type(D())  # N: Revealed type is "<nothing>"
+    reveal_type(D())  # N: Revealed type is "Never"
 reveal_type(D(1))  # N: Revealed type is "__main__.D"
 
 [case testClassScopeImportWithWrapperAndError]
@@ -8063,3 +8063,11 @@ f5(1)  # E: Argument 1 to "f5" has incompatible type "int"; expected "Integral" 
        # N: Types from "numbers" aren't supported for static type checking \
        # N: See https://peps.python.org/pep-0484/#the-numeric-tower \
        # N: Consider using a protocol instead, such as typing.SupportsFloat
+
+[case testImplicitClassScopedNames]
+class C:
+    reveal_type(__module__)  # N: Revealed type is "builtins.str"
+    reveal_type(__qualname__)  # N: Revealed type is "builtins.str"
+    def f(self) -> None:
+        __module__  # E: Name "__module__" is not defined
+        __qualname__  # E: Name "__qualname__" is not defined

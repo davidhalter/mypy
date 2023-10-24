@@ -1991,7 +1991,7 @@ class State:
                 raise ModuleNotFound
 
             # Parse the file (and then some) to get the dependencies.
-            self.parse_file()
+            self.parse_file(temporary=temporary)
             self.compute_dependencies()
 
     @property
@@ -2109,7 +2109,7 @@ class State:
 
     # Methods for processing modules from source code.
 
-    def parse_file(self) -> None:
+    def parse_file(self, *, temporary: bool = False) -> None:
         """Parse file and run first pass of semantic analysis.
 
         Everything done here is local to the file. Don't depend on imported
@@ -2194,12 +2194,14 @@ class State:
         else:
             self.early_errors = manager.ast_cache[self.id][1]
 
-        modules[self.id] = self.tree
+        if not temporary:
+            modules[self.id] = self.tree
 
         if not cached:
             self.semantic_analysis_pass1()
 
-        self.check_blockers()
+        if not temporary:
+            self.check_blockers()
 
         manager.ast_cache[self.id] = (self.tree, self.early_errors)
 
@@ -2798,7 +2800,7 @@ def module_not_found(
         for note in notes:
             if "{stub_dist}" in note:
                 note = note.format(stub_dist=stub_distribution_name(module))
-            errors.report(line, 0, note, severity="note", only_once=True, code=codes.IMPORT)
+            errors.report(line, 0, note, severity="note", only_once=True, code=code)
         if reason is ModuleNotFoundReason.APPROVED_STUBS_NOT_INSTALLED:
             manager.missing_stub_packages.add(stub_distribution_name(module))
     errors.set_import_context(save_import_context)
@@ -3024,7 +3026,7 @@ def dump_graph(graph: Graph, stdout: TextIO | None = None) -> None:
             if state.path:
                 try:
                     size = os.path.getsize(state.path)
-                except os.error:
+                except OSError:
                     pass
             node.sizes[mod] = size
             for dep in state.dependencies:

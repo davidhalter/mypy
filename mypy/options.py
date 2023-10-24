@@ -62,6 +62,7 @@ OPTIONS_AFFECTING_CACHE: Final = (
     | {
         "platform",
         "bazel",
+        "new_type_inference",
         "plugins",
         "disable_bytearray_promotion",
         "disable_memoryview_promotion",
@@ -71,7 +72,8 @@ OPTIONS_AFFECTING_CACHE: Final = (
 # Features that are currently incomplete/experimental
 TYPE_VAR_TUPLE: Final = "TypeVarTuple"
 UNPACK: Final = "Unpack"
-INCOMPLETE_FEATURES: Final = frozenset((TYPE_VAR_TUPLE, UNPACK))
+PRECISE_TUPLE_TYPES: Final = "PreciseTupleTypes"
+INCOMPLETE_FEATURES: Final = frozenset((TYPE_VAR_TUPLE, UNPACK, PRECISE_TUPLE_TYPES))
 
 
 class Options:
@@ -383,6 +385,9 @@ class Options:
         if self.python_version >= (3, 10):
             return not self.force_union_syntax
         return False
+
+    def use_star_unpack(self) -> bool:
+        return self.python_version >= (3, 11)
 
     # To avoid breaking plugin compatibility, keep providing new_semantic_analyzer
     @property
