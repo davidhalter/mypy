@@ -1206,7 +1206,8 @@ reveal_type(asyncio.gather(*[asyncio.sleep(1), asyncio.sleep(1)]))
 [out]
 _testAsyncioGatherPreciseType.py:9: note: Revealed type is "builtins.str"
 _testAsyncioGatherPreciseType.py:10: note: Revealed type is "builtins.str"
-_testAsyncioGatherPreciseType.py:11: note: Revealed type is "asyncio.futures.Future[builtins.list[Any]]"
+--zuban-diff _testAsyncioGatherPreciseType.py:11: note: Revealed type is "asyncio.futures.Future[builtins.list[Any]]"
+_testAsyncioGatherPreciseType.py:11: note: Revealed type is "asyncio.futures.Future[builtins.list[None]]"
 
 [case testMultipleInheritanceWorksWithTupleTypeGeneric]
 from typing import SupportsAbs, NamedTuple
