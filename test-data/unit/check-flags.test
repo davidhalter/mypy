@@ -2291,6 +2291,8 @@ A = Union[C, List]  # E: Missing type parameters for generic type "C" \
 [case testNestedGenericInAliasAllow]
 # flags: --allow-any-generics
 from typing import TypeVar, Generic, List, Union
+--zuban-diff
+T = TypeVar("T")
 
 class C(Generic[T]): ...
 
