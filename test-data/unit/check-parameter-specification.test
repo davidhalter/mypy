@@ -2005,8 +2005,10 @@ class C(Generic[P, R]):
     x: Callable[P, R]
 
 bad = C[int, str]()  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
-reveal_type(bad)  # N: Revealed type is "__main__.C[Any, Any]"
-reveal_type(bad.x)  # N: Revealed type is "def (*Any, **Any) -> Any"
+--zuban-diff reveal_type(bad)  # N: Revealed type is "__main__.C[Any, Any]"
+reveal_type(bad)  # N: Revealed type is "__main__.C[Any, str]"
+--zuban-diff reveal_type(bad.x)  # N: Revealed type is "def (*Any, **Any) -> Any"
+reveal_type(bad.x)  # N: Revealed type is "def (*Any, **Any) -> str"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecNoCrashOnUnificationAlias]
