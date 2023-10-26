@@ -105,9 +105,14 @@ class B(Generic[P]):
 x: B[Concatenate[int, ...]]
 reveal_type(x.test)  # N: Revealed type is "def (builtins.int, *Any, **Any)"
 
-Bad = Callable[Concatenate[int, [int, str]], None]  # E: The last parameter to Concatenate needs to be a ParamSpec \
-                                                    # E: Bracketed expression "[...]" is not valid as a type
-def bad(fn: Callable[Concatenate[P, int], None]):  # E: The last parameter to Concatenate needs to be a ParamSpec
+Bad = Callable[Concatenate[int, [int, str]], None]  # E: The last parameter to Concatenate needs to be a ParamSpec
+--zuban-diff                                                     # E: Bracketed expression "[...]" is not valid as a type
+--zuban-diff 
+def bad(fn: Callable[Concatenate[P, int], None]):  # E: The last parameter to Concatenate needs to be a ParamSpec \
+--zuban-diff 
+--zuban-diff 
+                                                   # E: Invalid location for ParamSpec "P" \
+                                                   # N: You can use ParamSpec as the first argument to Callable, e.g., 'Callable[P, int]'
     ...
 [builtins fixtures/paramspec.pyi]
 
