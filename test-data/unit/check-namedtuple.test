@@ -122,7 +122,7 @@ C = namedtuple('C', 'a b', rename='not a bool')
 D = namedtuple('D', 'a b', unrecognized_arg=False)
 E = namedtuple('E', 'a b', 0)
 --zuban-diff 
-B = namedtuple('B', 'a b', rename=True)
+F = namedtuple('F', 'a b', rename=True)
 
 [builtins fixtures/bool.pyi]
 
