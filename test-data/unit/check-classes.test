@@ -5758,7 +5758,8 @@ T = TypeVar('T')
 class C(Any):
     def bar(self: T) -> Type[T]: pass
     def foo(self) -> None:
-        reveal_type(self.bar()) # N: Revealed type is "Type[__main__.C]"
+--zuban-diff         reveal_type(self.bar()) # N: Revealed type is "Type[__main__.C]"
+        reveal_type(self.bar()) # N: Revealed type is "Type[Self]"
         reveal_type(self.bar().__name__) # N: Revealed type is "builtins.str"
 [builtins fixtures/type.pyi]
 [out]
