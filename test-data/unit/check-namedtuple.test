@@ -378,7 +378,8 @@ from collections import namedtuple
 X = namedtuple('X', ['x', 'y'])
 x = None  # type: X
 X._replace(x, x=1, y=2)
-X._replace(x=1, y=2)  # E: Missing positional argument "_self" in call to "_replace" of "X"
+--zuban-diff X._replace(x=1, y=2)  # E: Missing positional argument "_self" in call to "_replace" of "X"
+X._replace(x=1, y=2)  # E: Too few arguments for "_replace" of "X"
 
 [builtins fixtures/list.pyi]
 
