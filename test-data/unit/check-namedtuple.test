@@ -398,7 +398,10 @@ from typing import NamedTuple
 
 X = NamedTuple('X', [('x', int), ('y', str)])
 reveal_type(X._make([5, 'a']))  # N: Revealed type is "Tuple[builtins.int, builtins.str, fallback=__main__.X]"
-X._make('a b')  # E: Argument 1 to "_make" of "X" has incompatible type "str"; expected "Iterable[Any]"
+--zuban-diff X._make('a b')  # E: Argument 1 to "_make" of "X" has incompatible type "str"; expected "Iterable[Any]"
+X._make('a b')
+--zuban-diff 
+X._make(3)  # E: Argument 1 to "_make" of "X" has incompatible type "int"; expected "Iterable[Any]"
 
 -- # FIX: not a proper class method
 -- x: X
