@@ -294,7 +294,8 @@ reveal_type(X._field_defaults)  # N: Revealed type is "builtins.dict[builtins.st
 
 # In typeshed's stub for builtins.pyi, __annotations__ is `dict[str, Any]`,
 # but it's inferred as `Mapping[str, object]` here due to the fixture we're using
-reveal_type(X.__annotations__)  # N: Revealed type is "typing.Mapping[builtins.str, builtins.object]"
+--zuban-diff reveal_type(X.__annotations__)  # N: Revealed type is "typing.Mapping[builtins.str, builtins.object]"
+reveal_type(X.__annotations__)  # N: Revealed type is "dict[str, Any]"
 
 [builtins fixtures/dict.pyi]
 
