@@ -451,8 +451,8 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 S = TypeVar('S')
 class A(Generic[T, S]): pass
--- zuban-diff A[int]()  # E: Type application has too few types (2 expected)
--- zuban-diff A[int, str, int]() # E: Type application has too many types (2 expected)
+--zuban-diff A[int]()  # E: Type application has too few types (2 expected)
+--zuban-diff A[int, str, int]() # E: Type application has too many types (2 expected)
 A[int]()  # E: "A" expects 2 type arguments, but 1 given
 A[int, str, int]() # E: "A" expects 2 type arguments, but 3 given
 [out]
@@ -461,7 +461,7 @@ A[int, str, int]() # E: "A" expects 2 type arguments, but 3 given
 a: A
 class A: pass
 a[A]()  # E: Value of type "A" is not indexable
--- zuban-diff A[A]()  # E: The type "Type[A]" is not generic and not indexable
+--zuban-diff A[A]()  # E: The type "Type[A]" is not generic and not indexable
 A[A]()  # E: "A" expects no type arguments, but 1 given
 [out]
 
@@ -779,7 +779,7 @@ UNode = Union[int, Node[T]]
 
 class C(TupledNode): ... # Same as TupledNode[Any]
 class D(TupledNode[T]): ...
--- zuban-diff class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode"
+--zuban-diff class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode"
 class E(Generic[T], UNode[T]): ... # E: Invalid base class "UNode[T]"
 
 reveal_type(D((1, 1))) # N: Revealed type is "__main__.D[builtins.int]"
@@ -1011,9 +1011,9 @@ y: U
 reveal_type(x)  # N: Revealed type is "Union[builtins.int, None]"
 reveal_type(y)  # N: Revealed type is "builtins.int"
 
--- zuban-diff U[int]  # E: Type application targets a non-generic function or class
+--zuban-diff U[int]  # E: Type application targets a non-generic function or class
 U[int]  # E: "int" expects no type arguments, but 1 given
--- zuban-diff O[int]  # E: Bad number of arguments for type alias, expected: 0, given: 1  # E: Type application is only supported for generic classes
+--zuban-diff O[int]  # E: Bad number of arguments for type alias, expected: 0, given: 1  # E: Type application is only supported for generic classes
 O[int]  # E: Type application is only supported for generic classes
 [out]
 
@@ -1074,14 +1074,14 @@ CA = Callable[[T], int]
 TA = Tuple[T, int]
 UA = Union[T, int]
 
--- zuban-diff cs = CA + 1 # E: Unsupported left operand type for + ("<typing special form>")
+--zuban-diff cs = CA + 1 # E: Unsupported left operand type for + ("<typing special form>")
 cs = CA + 1 # E: Unsupported operand types for + ("Type[Callable[[Any], int]]" and "int")
 reveal_type(cs) # N: Revealed type is "Any"
 
 ts = TA() # E: "<typing special form>" not callable
 reveal_type(ts) # N: Revealed type is "Any"
 
--- zuban-diff us = UA.x # E: "<typing special form>" has no attribute "x"
+--zuban-diff us = UA.x # E: "<typing special form>" has no attribute "x"
 us = UA.x # E: Item "Type[int]" of "Type[Any | int]" has no attribute "x"
 reveal_type(us) # N: Revealed type is "Any"
 
@@ -1376,7 +1376,7 @@ T = TypeVar('T')
 def f(x: T) -> Iterable[T]: pass
 
 a, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
--- zuban-diff b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+--zuban-diff b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str")
 b, b = f(a)   # E: Incompatible types in assignment (expression has type "int", variable has type "str") # E: Incompatible types in assignment (expression has type "int", variable has type "str")
 a, a = f(a)
 b, b = f(b)
@@ -1700,7 +1700,7 @@ g1(f)
 def g2(f: Callable[[int], int]) -> None: pass
 g2(f)
 def g3(f: Callable[[object], object]) -> None: pass
--- zuban-diff g3(f) # E: Argument 1 to "g3" has incompatible type "Callable[[T], T]"; expected "Callable[[object], object]"
+--zuban-diff g3(f) # E: Argument 1 to "g3" has incompatible type "Callable[[T], T]"; expected "Callable[[object], object]"
 g3(f) # E: Value of type variable "T" of "g3" cannot be "object"
 
 [case testSubtypingWithGenericFunctionUsingTypevarWithValues2]

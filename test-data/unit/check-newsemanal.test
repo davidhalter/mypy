@@ -435,8 +435,8 @@ def main() -> None:
 
 [case testNewAnalyzerCyclicDefinitions]
 # flags: --disable-recursive-aliases --disable-error-code used-before-def
--- zuban-diff gx = gy  # E: Cannot resolve name "gy" (possible cyclic definition)
--- zuban-diff gy = gx
+--zuban-diff gx = gy  # E: Cannot resolve name "gy" (possible cyclic definition)
+--zuban-diff gy = gx
 gx = gy
 gy = gx   # E: Cannot resolve name "gx" (possible cyclic definition)
 def main() -> None:

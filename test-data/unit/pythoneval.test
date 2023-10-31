@@ -1642,7 +1642,7 @@ class Foo(Enum):
 [out]
 --zuban-diff _testEnumValueWithPlaceholderNodeType.py:5: error: Incompatible types in assignment (expression has type "object", variable has type "Foo")
 _testEnumValueWithPlaceholderNodeType.py:5: error: Incompatible types in assignment (expression has type "Type[Callable[[str], None]]", variable has type "Foo")
---zuband-diff _testEnumValueWithPlaceholderNodeType.py:6: error: Incompatible types in assignment (expression has type "object", variable has type "Foo")
+--zuban-diff _testEnumValueWithPlaceholderNodeType.py:6: error: Incompatible types in assignment (expression has type "object", variable has type "Foo")
 _testEnumValueWithPlaceholderNodeType.py:6: error: Incompatible types in assignment (expression has type "Type[Callable[[Dict[str, Any]], None]]", variable has type "Foo")
 _testEnumValueWithPlaceholderNodeType.py:6: error: Name "Missing" is not defined
 

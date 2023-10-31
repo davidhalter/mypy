@@ -48,7 +48,7 @@ class A(Generic[t]): pass
 x = 0 # type: A[y]
 [out]
 main:4: error: Name "y" is not defined
--- zuban-diff
+--zuban-diff
 main:4: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
 
 [case testInvalidNumberOfGenericArgsInTypeDecl]
@@ -330,7 +330,7 @@ m.n.x
 [file m/n.py]
 x = 1
 [out]
--- zuban-diff main:3: error: Cannot find implementation or library stub for module named "m.n"
+--zuban-diff main:3: error: Cannot find implementation or library stub for module named "m.n"
 main:3: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:3: error: Cannot find implementation or library stub for module named "m"
 
@@ -792,13 +792,13 @@ class A(Generic[t]):
                                   # N: (Hint: Use "s" in function signature to bind "s" inside a function)
     a = 0 # type: A[t]
 [out]
--- zuban diff -- wtf why are these no raised
+--zuban-diff
 main:7: error: Incompatible types in assignment (expression has type "int", variable has type "A[s]")
--- zuban diff
+--zuban-diff
 main:8: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
--- zuban diff
+--zuban-diff
 main:11: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
--- zuban diff
+--zuban-diff
 main:14: error: Incompatible types in assignment (expression has type "int", variable has type "A[t]")
 
 [case testTestExtendPrimitives]
@@ -818,8 +818,8 @@ class A(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 
 [case testCyclicInheritance2]
 
--- zuban-diff class A(B): pass # E: Cannot resolve name "B" (possible cyclic definition)
--- zuban-diff class B(A): pass
+--zuban-diff class A(B): pass # E: Cannot resolve name "B" (possible cyclic definition)
+--zuban-diff class B(A): pass
 class A(B): pass
 class B(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 [out]
