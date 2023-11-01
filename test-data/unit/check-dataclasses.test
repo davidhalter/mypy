@@ -2240,7 +2240,8 @@ TA = TypeVar('TA', bound=A)
 def f(t: TA) -> TA:
     t2 = replace(t, x=42)
     reveal_type(t2)  # N: Revealed type is "TA`-1"
-    _ = replace(t, x='42')  # E: Argument "x" to "replace" of "TA" has incompatible type "str"; expected "int"
+--zuban-diff     _ = replace(t, x='42')  # E: Argument "x" to "replace" of "TA" has incompatible type "str"; expected "int"
+    _ = replace(t, x='42')  # E: Argument "x" to "replace" of "A" has incompatible type "str"; expected "int"
     return t2
 
 f(A(x=42))
