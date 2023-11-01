@@ -1075,14 +1075,14 @@ TA = Tuple[T, int]
 UA = Union[T, int]
 
 --zuban-diff cs = CA + 1 # E: Unsupported left operand type for + ("<typing special form>")
-cs = CA + 1 # E: Unsupported operand types for + ("Type[Callable[[Any], int]]" and "int")
+cs = CA + 1 # E: Unsupported operand types for + ("_SpecialForm" and "int")
 reveal_type(cs) # N: Revealed type is "Any"
 
 ts = TA() # E: "<typing special form>" not callable
 reveal_type(ts) # N: Revealed type is "Any"
 
 --zuban-diff us = UA.x # E: "<typing special form>" has no attribute "x"
-us = UA.x # E: Item "Type[int]" of "Type[Any | int]" has no attribute "x"
+us = UA.x # E: "_SpecialForm" has no attribute "x"
 reveal_type(us) # N: Revealed type is "Any"
 
 xx = CA[str] + 1  # E: Type application is only supported for generic classes
