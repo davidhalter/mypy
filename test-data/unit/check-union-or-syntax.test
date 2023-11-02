@@ -47,7 +47,7 @@ reveal_type(f)  # N: Revealed type is "def (x: Union[__main__.A, __main__.B, __m
 # flags: --python-version 3.10
 from typing_extensions import Literal
 --zuban-diff reveal_type(Literal[4] | str)  # N: Revealed type is "Any"
-reveal_type(Literal[4] | str)  # N: Revealed type is "types.UnionType"
+reveal_type(Literal[4] | str)  # N: Revealed type is "typing._SpecialForm"
 [builtins fixtures/tuple.pyi]
 
 [case testUnionOrSyntaxWithBadOperator]
