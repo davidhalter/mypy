@@ -275,7 +275,8 @@ class D(A):
 # flags: --disallow-any-generics
 from typing import List, Callable
 def f(x: List) -> None: pass # E:10: Missing type parameters for generic type "List"
-def g(x: list) -> None: pass # E:10: Implicit generic "Any". Use "typing.List" and specify generic parameters
+--zuban-diff def g(x: list) -> None: pass # E:10: Implicit generic "Any". Use "typing.List" and specify generic parameters
+def g(x: list) -> None: pass # E:10: Missing type parameters for generic type "List"
 if int():
     c: Callable # E:8: Missing type parameters for generic type "Callable"
 [builtins fixtures/list.pyi]
