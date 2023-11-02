@@ -1725,8 +1725,10 @@ main:2: error: Module "other_module_2" does not explicitly export attribute "a"
 from typing import List
 
 A = List  # OK
-B = List[A]  # E:10: Missing type parameters for generic type "A"
-x: A  # E:4: Missing type parameters for generic type "A"
+--zuban-diff B = List[A]  # E:10: Missing type parameters for generic type "A"
+B = List[A]  # E:10: Missing type parameters for generic type "list"
+--zuban-diff x: A  # E:4: Missing type parameters for generic type "A"
+x: A  # E:4: Missing type parameters for generic type "list"
 [builtins fixtures/list.pyi]
 
 [case testDisallowAnyExplicitDefSignature]
@@ -1884,7 +1886,8 @@ from typing import List
 
 L = List  # no error
 
-def f(l: L) -> None: pass  # E: Missing type parameters for generic type "L"
+--zuban-diff def f(l: L) -> None: pass  # E: Missing type parameters for generic type "L"
+def f(l: L) -> None: pass  # E: Missing type parameters for generic type "list"
 def g(l: L[str]) -> None: pass  # no error
 [builtins fixtures/list.pyi]
 
