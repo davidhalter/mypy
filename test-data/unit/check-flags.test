@@ -1811,14 +1811,16 @@ z = cast(List[Any], x)  # E: Explicit "Any" is not allowed
 # flags: --disallow-any-explicit
 from typing import Any, List, NamedTuple
 
-Point = NamedTuple('Point', [('x', List[Any]), ('y', Any)])  # E: Explicit "Any" is not allowed
+--zuban-diff Point = NamedTuple('Point', [('x', List[Any]), ('y', Any)])  # E: Explicit "Any" is not allowed
+Point = NamedTuple('Point', [('x', List[Any]), ('y', Any)])  # E: Explicit "Any" is not allowed # E: Explicit "Any" is not allowed
 [builtins fixtures/list.pyi]
 
 [case testDisallowAnyExplicitTypeVarConstraint]
 # flags: --disallow-any-explicit
 from typing import Any, List, TypeVar
 
-T = TypeVar('T', Any, List[Any])  # E: Explicit "Any" is not allowed
+--zuban-diff T = TypeVar('T', Any, List[Any])  # E: Explicit "Any" is not allowed
+T = TypeVar('T', Any, List[Any])  # E: Explicit "Any" is not allowed # E: Explicit "Any" is not allowed
 [builtins fixtures/list.pyi]
 
 [case testDisallowAnyExplicitNewType]
@@ -1826,7 +1828,8 @@ T = TypeVar('T', Any, List[Any])  # E: Explicit "Any" is not allowed
 from typing import Any, List, NewType
 
 # this error does not come from `--disallow-any-explicit` flag
-Baz = NewType('Baz', Any)  # E: Argument 2 to NewType(...) must be subclassable (got "Any")
+--zuban-diff Baz = NewType('Baz', Any)  # E: Argument 2 to NewType(...) must be subclassable (got "Any")
+Baz = NewType('Baz', Any)  # E: Argument 2 to NewType(...) must be subclassable (got "Any") # E: Explicit "Any" is not allowed
 Bar = NewType('Bar', List[Any])  # E: Explicit "Any" is not allowed
 [builtins fixtures/list.pyi]
 
