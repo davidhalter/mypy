@@ -2071,6 +2071,8 @@ __getattr__ = 3
 [out]
 tmp/has_getattr.pyi:1: error: Invalid signature "int" for "__getattr__"
 main:3: note: Revealed type is "Any"
+--zuban-diff
+main:3: error: "int" not callable
 
 [builtins fixtures/module.pyi]
 
@@ -2177,6 +2179,8 @@ __getattr__ = make_getattr_bad()
 [out]
 tmp/non_stub.py:4: error: Invalid signature "Callable[[], int]" for "__getattr__"
 main:3: note: Revealed type is "builtins.int"
+--zuban-diff
+main:3: error: Too many arguments
 
 [case testModuleLevelGetattrImportedGood]
 # flags: --python-version 3.7
@@ -2203,6 +2207,8 @@ def __getattr__() -> int: ...
 [out]
 tmp/has_getattr.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
 main:3: note: Revealed type is "builtins.int"
+--zuban-diff 
+main:3: error: Too many arguments for "__getattr__"
 
 [builtins fixtures/module.pyi]
 
@@ -2848,7 +2854,8 @@ def __getattr__(name: str) -> Any: ...
 
 [case testModuleGetAttrAssignSubmoduleStrict]
 import roles
-roles.role = 1  # E: Incompatible types in assignment (expression has type "int", variable has type Module)
+--zuban-diff roles.role = 1  # E: Incompatible types in assignment (expression has type "int", variable has type Module)
+roles.role = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "ModuleType")
 
 [file roles/__init__.pyi]
 from types import ModuleType
