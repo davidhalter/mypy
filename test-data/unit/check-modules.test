@@ -2399,7 +2399,8 @@ def __getattr__(attr: str) -> Any: ...
 # empty (i.e. complete subpackage)
 [builtins fixtures/module.pyi]
 [out]
-main:1: error: Cannot find implementation or library stub for module named "a.b.c.d"
+--zuban-diff main:1: error: Cannot find implementation or library stub for module named "a.b.c.d"
+main:3: error: Module has no attribute "c"
 main:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 main:1: error: Cannot find implementation or library stub for module named "a.b.c"
 
