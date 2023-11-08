@@ -2206,6 +2206,7 @@ def __getattr__() -> int: ...
 
 [out]
 tmp/has_getattr.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
+non_stub.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
 main:3: note: Revealed type is "builtins.int"
 --zuban-diff 
 main:3: error: Too many arguments for "__getattr__"
