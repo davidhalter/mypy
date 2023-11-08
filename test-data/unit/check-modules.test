@@ -2057,6 +2057,11 @@ def __getattr__(x: int, y: str) -> str: ...
 [out]
 tmp/has_getattr.pyi:1: error: Invalid signature "Callable[[int, str], str]" for "__getattr__"
 main:3: note: Revealed type is "builtins.str"
+--zuban-diff 
+main:3: error: Argument 1 to "__getattr__" has incompatible type "str"; expected "int"
+--zuban-diff 
+main:3: error: Missing positional argument "y" in call to "__getattr__"
+
 
 [builtins fixtures/module.pyi]
 
