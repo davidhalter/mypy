@@ -4366,11 +4366,9 @@ class C(B):
     n = m
 [out]
 --zuban-diff main:5: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
-main:5: error: Signature of "n" incompatible with supertype "B"
-main:5: note:      Superclass:
-main:5: note:          def n(self, a: int) -> None
-main:5: note:      Subclass:
-main:5: note:          def m(self, a: str) -> None
+main:5: error: Argument 1 of "n" is incompatible with supertype "B"; supertype defines the argument type as "int"
+main:5: note: This violates the Liskov substitution principle
+main:5: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 
 [case testInstanceMethodOverwriteTypevar]
 from typing import Generic, TypeVar
@@ -4415,11 +4413,9 @@ class C(B):
 [builtins fixtures/classmethod.pyi]
 [out]
 --zuban-diff main:7: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "B" defined the type as "Callable[[int], None]")
-main:7: error: Signature of "n" incompatible with supertype "B"
-main:7: note:      Superclass:
-main:7: note:          def n(a: int) -> None
-main:7: note:      Subclass:
-main:7: note:          def m(a: str) -> None
+main:7: error: Argument 1 of "n" is incompatible with supertype "B"; supertype defines the argument type as "int"
+main:7: note: This violates the Liskov substitution principle
+main:7: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 
 [case testClassSpec]
 from typing import Callable
