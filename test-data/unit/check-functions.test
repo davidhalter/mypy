@@ -2889,11 +2889,12 @@ class C(A):  # inverted order of decorators
 class D(A):
     @property
     @override
-    def f(self) -> int: pass  # E: Signature of "f" incompatible with supertype "A" \
-                              # N:      Superclass: \
-                              # N:          str \
-                              # N:      Subclass: \
-                              # N:          int
+--zuban-diff     def f(self) -> int: pass  # E: Signature of "f" incompatible with supertype "A" \
+--zuban-diff                               # N:      Superclass: \
+--zuban-diff                               # N:          str \
+--zuban-diff                               # N:      Subclass: \
+--zuban-diff                               # N:          int
+    def f(self) -> int: pass  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "str")
 [typing fixtures/typing-override.pyi]
 [builtins fixtures/property.pyi]
 
@@ -2922,13 +2923,16 @@ class C(A):
     def f(self, value: str) -> None: pass
 
 class D(A):
-    @override  # E: Signature of "f" incompatible with supertype "A" \
-               # N:      Superclass: \
-               # N:          str \
-               # N:      Subclass: \
-               # N:          int
+--zuban-diff     @override  # E: Signature of "f" incompatible with supertype "A" \
+--zuban-diff                # N:      Superclass: \
+--zuban-diff                # N:          str \
+--zuban-diff                # N:      Subclass: \
+--zuban-diff                # N:          int
+--zuban-diff     @property
+--zuban-diff     def f(self) -> int: pass
+    @override
     @property
-    def f(self) -> int: pass
+    def f(self) -> int: pass  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "str")
 
     @f.setter
     def f(self, value: int) -> None: pass
