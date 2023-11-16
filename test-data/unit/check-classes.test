@@ -4321,7 +4321,12 @@ class A:
     def a(self) -> None: pass
     b = 1
 class B(A):
-    a = 1  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "Callable[[A], None]")
+--zuban-diff     a = 1  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "Callable[[A], None]")
+    a = 1  # E: Signature of "a" incompatible with supertype "A" \
+           # N:      Superclass: \
+           # N:          def a(self) -> None \
+           # N:      Subclass: \
+           # N:          int
     def b(self) -> None: pass  # E: Signature of "b" incompatible with supertype "A" \
                                # N:      Superclass: \
                                # N:          int \
