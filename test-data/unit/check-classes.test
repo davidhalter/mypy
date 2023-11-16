@@ -6308,6 +6308,12 @@ class Base:
     def __init__(self):
         self.x = 1
 [out]
+--zuban-diff 
+b.py:3: error: Signature of "x" incompatible with supertype "Base"
+b.py:3: note:      Superclass:
+b.py:3: note:          int
+b.py:3: note:      Subclass:
+b.py:3: note:          def x(self) -> int
 
 [case testCyclicOverrideChecked]
 import a
