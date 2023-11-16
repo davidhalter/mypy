@@ -897,7 +897,8 @@ if int():
 if int():
     i = t.__str__()  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
 if int():
-    i = s in t       # E: Incompatible types in assignment (expression has type "bool", variable has type "int")
+--zuban-diff     i = s in t       # E: Incompatible types in assignment (expression has type "bool", variable has type "int")
+    i = s in t
 t.foo            # E: "Tuple[int, str]" has no attribute "foo"
 
 if int():
@@ -917,7 +918,8 @@ class tuple(Generic[_T]):
     def __str__(self) -> str: pass
     def __contains__(self, o: object) -> bool: pass
 class int: pass
-class str: pass
+--zuban-diff class str: pass
+--zuban-diff 
 class bool: pass
 class type: pass
 class function: pass
