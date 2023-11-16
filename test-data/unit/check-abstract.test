@@ -862,11 +862,12 @@ class A(metaclass=ABCMeta):
     def x(self) -> int: pass
 class B(A):
     @property
-    def x(self) -> str: return "no" # E: Signature of "x" incompatible with supertype "A" \
-                                    # N:      Superclass: \
-                                    # N:          int \
-                                    # N:      Subclass: \
-                                    # N:          str
+--zuban-diff     def x(self) -> str: return "no" # E: Signature of "x" incompatible with supertype "A" \
+--zuban-diff                                     # N:      Superclass: \
+--zuban-diff                                     # N:          int \
+--zuban-diff                                     # N:      Subclass: \
+--zuban-diff                                     # N:          str
+    def x(self) -> str: return "no" # E: Incompatible types in assignment (expression has type "str", base class "A" defined the type as "int")
 b = B()
 b.x() # E: "str" not callable
 [builtins fixtures/property.pyi]
