@@ -7397,9 +7397,11 @@ main:4: note:          @overload
 main:4: note:          def f(self, arg: str) -> C
 main:4: note:      Subclass:
 main:4: note:          @overload
-main:4: note:          def f(arg: int) -> int
+--zuban-diff main:4: note:          def f(arg: int) -> int
+main:4: note:          def f(self, arg: int) -> int
 main:4: note:          @overload
-main:4: note:          def f(arg: str) -> str
+--zuban-diff main:4: note:          def f(arg: str) -> str
+main:4: note:          def f(self, arg: str) -> str
 
 [case testOverloadedInitSupertype]
 import a
