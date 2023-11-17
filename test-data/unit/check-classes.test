@@ -147,7 +147,16 @@ class Base:
         pass
 
 class Derived(Base):
-    __hash__ = 1  # E: Incompatible types in assignment (expression has type "int", base class "Base" defined the type as "Callable[[Base], int]")
+--zuban-diff     __hash__ = 1  # E: Incompatible types in assignment (expression has type "int", base class "Base" defined the type as "Callable[[Base], int]")
+    __hash__ = 1
+--zuban-diff 
+[out]
+main:9: error: Signature of "__hash__" incompatible with supertype "Base"
+main:9: note:      Superclass:
+main:9: note:          def __hash__(self) -> int
+main:9: note:      Subclass:
+main:9: note:          int
+
 
 
 [case testOverridePartialAttributeWithMethod]
@@ -4450,7 +4459,10 @@ class B(A):
     a = b
 [builtins fixtures/staticmethod.pyi]
 [out]
-main:7: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "A" defined the type as "Callable[[int], None]")
+--zuban-diff main:7: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "A" defined the type as "Callable[[int], None]")
+main:7: error: Argument 1 of "a" is incompatible with supertype "A"; supertype defines the argument type as "int"
+main:7: note: This violates the Liskov substitution principle
+main:7: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 
 [case testClassStaticMethodIndirect]
 class A():
@@ -4463,7 +4475,10 @@ class B(A):
     c = b
 [builtins fixtures/staticmethod.pyi]
 [out]
-main:8: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "A" defined the type as "Callable[[int], None]")
+--zuban-diff main:8: error: Incompatible types in assignment (expression has type "Callable[[str], None]", base class "A" defined the type as "Callable[[int], None]")
+main:8: error: Argument 1 of "c" is incompatible with supertype "A"; supertype defines the argument type as "int"
+main:8: note: This violates the Liskov substitution principle
+main:8: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 
 [case testClassStaticMethodSubclassing]
 class A:
