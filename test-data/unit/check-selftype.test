@@ -225,12 +225,19 @@ class B(A[int]):
     def f(self, s: int) -> int: ...
 
 class C(A[None]):
-    def f(self, s: int) -> int: ...  # E: Signature of "f" incompatible with supertype "A" \
-                                     # N:      Superclass:            \
-                                     # N:          @overload          \
-                                     # N:          def f(self, s: None) -> None \
-                                     # N:      Subclass:              \
-                                     # N:          def f(self, s: int) -> int
+--zuban-diff     def f(self, s: int) -> int: ...  # E: Signature of "f" incompatible with supertype "A" \
+--zuban-diff                                      # N:      Superclass:            \
+--zuban-diff                                      # N:          @overload          \
+--zuban-diff                                      # N:          def f(self, s: None) -> None \
+--zuban-diff                                      # N:      Subclass:              \
+--zuban-diff                                      # N:          def f(self, s: int) -> int
+    def f(self, s: int) -> int: ... 
+--zuban-diff
+[out]
+main:16: error: Return type "int" of "f" incompatible with return type "None" in supertype "A"
+main:16: error: Argument 1 of "f" is incompatible with supertype "A"; supertype defines the argument type as "None"
+main:16: note: This violates the Liskov substitution principle
+main:16: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 [builtins fixtures/tuple.pyi]
 
 [case testSelfTypeOverrideCompatibilityTypeVar]
