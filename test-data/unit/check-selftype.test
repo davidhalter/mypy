@@ -258,11 +258,13 @@ class B(A):
     @overload  # E: Signature of "f" incompatible with supertype "A" \
                # N:      Superclass:                                 \
                # N:          @overload                               \
-               # N:          def f(self, x: int) -> B                \
+--zuban-diff                # N:          def f(self, x: int) -> B                \
+               # N:          def [AT <: A] f(self: AT, x: int) -> AT \
                # N:          @overload                               \
                # N:          def f(self, x: str) -> None             \
                # N:          @overload                               \
-               # N:          def f(self) -> bytes                    \
+--zuban-diff                # N:          def f(self) -> bytes                    \
+               # N:          def [AT <: A] f(self: AT) -> bytes      \
                # N:      Subclass:                                   \
                # N:          @overload                               \
                # N:          def f(self, x: int) -> B                \
