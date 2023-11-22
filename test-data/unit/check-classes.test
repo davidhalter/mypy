@@ -2474,8 +2474,7 @@ reveal_type(FractionChild() + FractionChild())  # N: Revealed type is "builtins.
 
 # Runtime error: we try calling __add__, it doesn't match, and we don't try __radd__ since
 # the LHS and the RHS are not the same.
---zuban-diff Fraction() + Fraction()                         # E: Unsupported operand types for + ("Fraction" and "Fraction")
-Fraction() + Fraction()                         # E: Unsupported left operand type for + ("Fraction")
+Fraction() + Fraction()                         # E: Unsupported operand types for + ("Fraction" and "Fraction")
 
 [case testReverseOperatorTypeType]
 from typing import TypeVar, Type
