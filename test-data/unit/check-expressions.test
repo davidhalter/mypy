@@ -700,7 +700,8 @@ if int():
     s = A() < B()
 if int():
     n = A() < B() # E: Incompatible types in assignment (expression has type "str", variable has type "int")
-    s = object() < B() # E: Unsupported operand types for > ("B" and "object")
+--zuban-diff     s = object() < B() # E: Unsupported operand types for > ("B" and "object")
+    s = object() < B() # E: Unsupported operand types for < ("object" and "B")
 
 [case testReversibleComparisonWithExtraArgument]
 class C:
