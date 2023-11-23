@@ -2103,8 +2103,10 @@ def foo(x: T, y: int) -> T:
 --zuban-diff     C[T](y)  # E: Argument 1 to "C" has incompatible type "int"; expected "T"
     C[T](y)  # E: No overload variant of "C" matches argument type "int" \
              # N: Possible overload variants: \
-             # N:     def __new__(cls: Any) -> C[None] \
-             # N:     def __new__(cls: Any, item: T) -> C[T]
+--zuban-diff              # N:     def __new__(cls: Any) -> C[None] \
+             # N:     def __new__() -> C[None] \
+--zuban-diff              # N:     def __new__(cls: Any, item: T) -> C[T]
+             # N:     def __new__(item: T) -> C[T]
     C[T].f(y)  # E: Argument 1 to "f" of "C" has incompatible type "int"; expected "T"
     C[T].f(x)  # OK
     return x

@@ -3156,8 +3156,10 @@ c.a # E: "C" has no attribute "a"
 C('', '')
 C('') # E: No overload variant of "C" matches argument type "str" \
       # N: Possible overload variants: \
-      # N:     def __new__(cls, foo: int) -> C \
-      # N:     def __new__(cls, x: str, y: str) -> C
+--zuban-diff       # N:     def __new__(cls, foo: int) -> C \
+      # N:     def __new__(foo: int) -> C \
+--zuban-diff       # N:     def __new__(cls, x: str, y: str) -> C
+      # N:     def __new__(x: str, y: str) -> C
 [builtins fixtures/__new__.pyi]
 
 
