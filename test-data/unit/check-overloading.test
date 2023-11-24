@@ -4806,12 +4806,15 @@ reveal_type(actually_b + Other())               # Note
 [out]
 main:12: error: Signature of "__add__" incompatible with supertype "A"
 main:12: note:      Superclass:
-main:12: note:          def __add__(self, A, /) -> A
+--zuban-diff main:12: note:          def __add__(self, A, /) -> A
+main:12: note:          def __add__(self, x: A) -> A
 main:12: note:      Subclass:
 main:12: note:          @overload
-main:12: note:          def __add__(self, Other, /) -> B
+--zuban-diff main:12: note:          def __add__(self, Other, /) -> B
+main:12: note:          def __add__(self, x: Other) -> B
 main:12: note:          @overload
-main:12: note:          def __add__(self, A, /) -> A
+--zuban-diff main:12: note:          def __add__(self, A, /) -> A
+main:12: note:          def __add__(self, x: A) -> A
 main:12: note: Overloaded operator methods can't have wider argument types in overrides
 main:32: note: Revealed type is "__main__.Other"
 
