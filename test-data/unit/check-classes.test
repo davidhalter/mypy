@@ -8064,7 +8064,8 @@ class D:
         # that could allow for arbitrary attributes to be accessed on instances,
         # since `type(C()).__iter__` still raises AttributeError at runtime,
         # and that's what matters.
-        a, b = self.f()  # E: "C" has no attribute "__iter__" (not iterable)
+--zuban-diff         a, b = self.f()  # E: "C" has no attribute "__iter__" (not iterable)
+        a, b = self.f()  # E: "C" object is not iterable
 [builtins fixtures/tuple.pyi]
 
 [case testUsingNumbersType]
