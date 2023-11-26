@@ -2825,8 +2825,16 @@ class C:
 class D:
     def __getattribute__(self, x: str) -> None: pass
 [out]
-main:4: error: Invalid signature "Callable[[B, A], B]" for "__getattribute__"
-main:6: error: Invalid signature "Callable[[C, str, str], C]" for "__getattribute__"
+--zuban-diff main:4: error: Invalid signature "Callable[[B, A], B]" for "__getattribute__"
+main:4: error: Argument 1 of "__getattribute__" is incompatible with supertype "object"; supertype defines the argument type as "str"
+main:4: note: This violates the Liskov substitution principle
+main:4: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+--zuban-diff main:6: error: Invalid signature "Callable[[C, str, str], C]" for "__getattribute__"
+main:6: error: Signature of "__getattribute__" incompatible with supertype "object"
+main:6: note:      Superclass:
+main:6: note:          def __getattribute__(self, str, /) -> Any
+main:6: note:      Subclass:
+main:6: note:          def __getattribute__(self, x: str, y: str) -> C
 
 [case testGetattr]
 a: A
@@ -2956,7 +2964,12 @@ c = C()
 c.fail = 4  # E: Incompatible types in assignment (expression has type "int", variable has type "str")
 
 class D:
-    __setattr__ = 'hello'  # E: Invalid signature "str" for "__setattr__"
+--zuban-diff     __setattr__ = 'hello'  # E: Invalid signature "str" for "__setattr__"
+    __setattr__ = 'hello'  # E: Signature of "__setattr__" incompatible with supertype "object" \
+                           # N:      Superclass: \
+                           # N:          def __setattr__(self, str, Any, /) -> None \
+                           # N:      Subclass: \
+                           # N:          str
 
 d = D()
 d.crash = 4  # E: "D" has no attribute "crash"
@@ -3010,12 +3023,20 @@ b.bad = 'a'  # E: Incompatible types in assignment (expression has type "str", v
 from typing import Any
 
 class Test:
-    def __setattr__() -> None: ...  # E: Method must have at least one argument. Did you forget the "self" argument? # E: Invalid signature "Callable[[], None]" for "__setattr__"
+--zuban-diff     def __setattr__() -> None: ...  # E: Method must have at least one argument. Did you forget the "self" argument? # E: Invalid signature "Callable[[], None]" for "__setattr__"
+    def __setattr__() -> None: ...  # E: Method must have at least one argument. Did you forget the "self" argument? \
+                                    # E: Signature of "__setattr__" incompatible with supertype "object" \
+                                    # N:      Superclass: \
+                                    # N:          def __setattr__(self, str, Any, /) -> None \
+                                    # N:      Subclass: \
+                                    # N:          def __setattr__() -> None
 t = Test()
 t.crash = 'test'  # E: "Test" has no attribute "crash"
 
 class A:
-    def __setattr__(self): ...  # E: Invalid signature "Callable[[A], Any]" for "__setattr__"
+--zuban-diff     def __setattr__(self): ...  # E: Invalid signature "Callable[[A], Any]" for "__setattr__"
+    def __setattr__(self): ...
+
 a = A()
 a.test = 4  # E: "A" has no attribute "test"
 
@@ -3025,7 +3046,10 @@ b = B()
 b.integer = 5
 
 class C:
-    def __setattr__(self, name: int, value: int) -> None: ...  # E: Invalid signature "Callable[[C, int, int], None]" for "__setattr__"
+--zuban-diff     def __setattr__(self, name: int, value: int) -> None: ...  # E: Invalid signature "Callable[[C, int, int], None]" for "__setattr__"
+    def __setattr__(self, name: int, value: int) -> None: ...  # E: Argument 1 of "__setattr__" is incompatible with supertype "object"; supertype defines the argument type as "str" \
+                                                               # N: This violates the Liskov substitution principle \
+                                                               # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 c = C()
 c.check = 13
 
