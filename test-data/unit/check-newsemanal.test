@@ -3220,7 +3220,8 @@ class User:
         self.first_name = value
 
     def __init__(self, name: str) -> None:
-        self.name = name  # E: Cannot assign to a method
+--zuban-diff         self.name = name  # E: Cannot assign to a method
+        self.name = name
 
 [case testNewAnalyzerMemberNameMatchesTypedDict]
 from typing import Union, Any
