@@ -106,7 +106,8 @@ import typing
 class A:
     def f(self): pass
 A().f = None  # E: Cannot assign to a method \
-              # E: Incompatible types in assignment (expression has type "None", variable has type "Callable[[], Any]")
+--zuban-diff               # E: Incompatible types in assignment (expression has type "None", variable has type "Callable[[], Any]")
+              # E: Incompatible types in assignment (expression has type "None", variable has type "Callable[[A], Any]")
 
 
 [case testOverrideAttributeWithMethod]
