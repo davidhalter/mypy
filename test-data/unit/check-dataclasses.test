@@ -2262,14 +2262,17 @@ reveal_type(a2)  # N: Revealed type is "Any"
 [case testReplaceNotDataclass]
 from dataclasses import replace
 
-replace(5)  # E: Value of type variable "_DataclassT" of "replace" cannot be "int"
+--zuban-diff replace(5)  # E: Value of type variable "_DataclassT" of "replace" cannot be "int"
+replace(5)  # E: Argument 1 to "replace" has incompatible type "int"; expected a dataclass
 
 class C:
     pass
 
-replace(C())  # E: Value of type variable "_DataclassT" of "replace" cannot be "C"
+--zuban-diff replace(C())  # E: Value of type variable "_DataclassT" of "replace" cannot be "C"
+replace(C())  # E: Argument 1 to "replace" has incompatible type "C"; expected a dataclass
 
-replace(None)  # E: Value of type variable "_DataclassT" of "replace" cannot be "None"
+--zuban-diff replace(None)  # E: Value of type variable "_DataclassT" of "replace" cannot be "None"
+replace(None)  # E: Argument 1 to "replace" has incompatible type "None"; expected a dataclass
 
 [builtins fixtures/tuple.pyi]
 
