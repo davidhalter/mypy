@@ -3962,12 +3962,18 @@ class A:
 [out1]
 [out2]
 tmp/b.py:3: note: Revealed type is "def (a: builtins.int) -> a.A"
-tmp/b.py:4: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
-tmp/b.py:5: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
-tmp/b.py:6: note: Revealed type is "def [_DT] (self: _DT`1, other: _DT`1) -> builtins.bool"
-tmp/b.py:7: note: Revealed type is "def [_DT] (self: _DT`2, other: _DT`2) -> builtins.bool"
-tmp/b.py:8: note: Revealed type is "def [_DT] (self: _DT`3, other: _DT`3) -> builtins.bool"
-tmp/b.py:9: note: Revealed type is "def [_DT] (self: _DT`4, other: _DT`4) -> builtins.bool"
+--zuban-diff tmp/b.py:4: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
+tmp/b.py:4: note: Revealed type is "def (self: builtins.object, builtins.object) -> builtins.bool"
+--zuban-diff tmp/b.py:5: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
+tmp/b.py:5: note: Revealed type is "def (self: builtins.object, builtins.object) -> builtins.bool"
+--zuban-diff tmp/b.py:6: note: Revealed type is "def [_DT] (self: _DT`1, other: _DT`1) -> builtins.bool"
+--zuban-diff tmp/b.py:7: note: Revealed type is "def [_DT] (self: _DT`2, other: _DT`2) -> builtins.bool"
+--zuban-diff tmp/b.py:8: note: Revealed type is "def [_DT] (self: _DT`3, other: _DT`3) -> builtins.bool"
+--zuban-diff tmp/b.py:9: note: Revealed type is "def [_DT] (self: _DT`4, other: _DT`4) -> builtins.bool"
+b.py:6: note: Revealed type is "def [Self] (Self, Self) -> bool"
+b.py:7: note: Revealed type is "def [Self] (Self, Self) -> bool"
+b.py:8: note: Revealed type is "def [Self] (Self, Self) -> bool"
+b.py:9: note: Revealed type is "def [Self] (Self, Self) -> bool"
 tmp/b.py:18: error: Unsupported operand types for < ("A" and "int")
 tmp/b.py:19: error: Unsupported operand types for <= ("A" and "int")
 tmp/b.py:20: error: Unsupported operand types for > ("A" and "int")
@@ -3976,10 +3982,10 @@ tmp/b.py:21: error: Unsupported operand types for >= ("A" and "int")
 --zuban-diff tmp/b.py:26: error: Unsupported operand types for >= ("A" and "int")
 --zuban-diff tmp/b.py:27: error: Unsupported operand types for < ("A" and "int")
 --zuban-diff tmp/b.py:28: error: Unsupported operand types for <= ("A" and "int")
-tmp/b.py:25: error: Unsupported operand types for > ("int" and "A")
-tmp/b.py:26: error: Unsupported operand types for >= ("int" and "A")
-tmp/b.py:27: error: Unsupported operand types for < ("int" and "A")
-tmp/b.py:28: error: Unsupported operand types for <= ("int" and "A")
+tmp/b.py:25: error: Unsupported operand types for < ("int" and "A")
+tmp/b.py:26: error: Unsupported operand types for <= ("int" and "A")
+tmp/b.py:27: error: Unsupported operand types for > ("int" and "A")
+tmp/b.py:28: error: Unsupported operand types for >= ("int" and "A")
 
 [case testIncrementalDataclassesSubclassModified]
 # flags: --python-version 3.7
