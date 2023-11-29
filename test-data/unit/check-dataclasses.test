@@ -2414,9 +2414,11 @@ class Child:
 [out]
 main:6: error: Signature of "__post_init__" incompatible with supertype "dataclass"
 main:6: note:      Superclass:
-main:6: note:          def __post_init__(self: Child, y: str) -> None
+--zuban-diff main:6: note:          def __post_init__(self: Child, y: str) -> None
+main:6: note:          def __post_init__(self, y: str) -> None
 main:6: note:      Subclass:
-main:6: note:          def __post_init__(self: Child) -> None
+--zuban-diff main:6: note:          def __post_init__(self: Child) -> None
+main:6: note:          def __post_init__(self) -> None
 
 [case testPostInitWrongTypeAndName]
 from dataclasses import dataclass, InitVar
@@ -2424,12 +2426,14 @@ from dataclasses import dataclass, InitVar
 @dataclass
 class Test1:
     y: InitVar[str]
-    def __post_init__(self, x: int) -> None: ...  # E: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
+--zuban-diff     def __post_init__(self, x: int) -> None: ...  # E: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
+    def __post_init__(self, x: int) -> None: ...  # E: Argument 1 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
 
 @dataclass
 class Test2:
     y: InitVar[str] = 'a'
-    def __post_init__(self, x: int) -> None: ...  # E: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
+--zuban-diff     def __post_init__(self, x: int) -> None: ...  # E: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
+    def __post_init__(self, x: int) -> None: ...  # E: Argument 1 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "str"
 [builtins fixtures/dataclasses.pyi]
 
 [case testPostInitExtraParam]
@@ -2443,9 +2447,11 @@ class Child:
 [out]
 main:6: error: Signature of "__post_init__" incompatible with supertype "dataclass"
 main:6: note:      Superclass:
-main:6: note:          def __post_init__(self: Child, y: str) -> None
+--zuban-diff main:6: note:          def __post_init__(self: Child, y: str) -> None
+main:6: note:          def __post_init__(self, y: str) -> None
 main:6: note:      Subclass:
-main:6: note:          def __post_init__(self: Child, y: str, z: int) -> None
+--zuban-diff main:6: note:          def __post_init__(self: Child, y: str, z: int) -> None
+main:6: note:          def __post_init__(self, y: str, z: int) -> None
 
 [case testPostInitReturnType]
 from dataclasses import dataclass, InitVar
@@ -2472,9 +2478,11 @@ class Klass:
 [out]
 main:11: error: Signature of "__post_init__" incompatible with supertype "dataclass"
 main:11: note:      Superclass:
-main:11: note:          def __post_init__(self: Klass, y: str) -> None
+--zuban-diff main:11: note:          def __post_init__(self: Klass, y: str) -> None
+main:11: note:          def __post_init__(self, y: str) -> None
 main:11: note:      Subclass:
-main:11: note:          def __post_init__(self: Klass) -> None
+--zuban-diff main:11: note:          def __post_init__(self: Klass) -> None
+main:11: note:          def __post_init__(self) -> None
 
 [case testPostInitIsNotAFunction]
 from dataclasses import dataclass, InitVar
@@ -2482,7 +2490,15 @@ from dataclasses import dataclass, InitVar
 @dataclass
 class Test:
     y: InitVar[str]
-    __post_init__ = 1  # E: "__post_init__" method must be an instance method
+--zuban-diff     __post_init__ = 1  # E: "__post_init__" method must be an instance method
+    __post_init__ = 1
+--zuban-diff
+[out]
+main:6: error: Signature of "__post_init__" incompatible with supertype "dataclass"
+main:6: note:      Superclass:
+main:6: note:          def __post_init__(self, y: str) -> None
+main:6: note:      Subclass:
+main:6: note:          int
 [builtins fixtures/dataclasses.pyi]
 
 [case testPostInitClassMethod]
@@ -2497,10 +2513,12 @@ class Test:
 [out]
 main:7: error: Signature of "__post_init__" incompatible with supertype "dataclass"
 main:7: note:      Superclass:
-main:7: note:          def __post_init__(self: Test, y: str) -> None
+--zuban-diff main:7: note:          def __post_init__(self: Test, y: str) -> None
+main:7: note:          def __post_init__(self, y: str) -> None
 main:7: note:      Subclass:
 main:7: note:          @classmethod
-main:7: note:          def __post_init__(cls: Type[Test]) -> None
+--zuban-diff main:7: note:          def __post_init__(cls: Type[Test]) -> None
+main:7: note:          def __post_init__(cls) -> None
 
 [case testPostInitStaticMethod]
 from dataclasses import dataclass, InitVar
@@ -2514,7 +2532,8 @@ class Test:
 [out]
 main:7: error: Signature of "__post_init__" incompatible with supertype "dataclass"
 main:7: note:      Superclass:
-main:7: note:          def __post_init__(self: Test, y: str) -> None
+--zuban-diff main:7: note:          def __post_init__(self: Test, y: str) -> None
+main:7: note:          def __post_init__(self, y: str) -> None
 main:7: note:      Subclass:
 main:7: note:          @staticmethod
 main:7: note:          def __post_init__() -> None
