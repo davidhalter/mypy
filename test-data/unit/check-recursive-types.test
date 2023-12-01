@@ -838,7 +838,8 @@ y = y
 z: M
 z = z
 
-x = y  # E: Incompatible types in assignment (expression has type "L", variable has type "K")
+--zuban-diff x = y  # E: Incompatible types in assignment (expression has type "L", variable has type "K")
+x = y  # E: Incompatible types in assignment (expression has type "int | Callable[[], int | L]", variable has type "int | tuple[int | K]")
 z = x  # OK
 [builtins fixtures/tuple.pyi]
 
