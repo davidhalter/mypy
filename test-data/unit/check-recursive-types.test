@@ -587,10 +587,8 @@ B = NamedTuple('B', [('x', A), ('y', int)])
 A = NamedTuple('A', [('x', str), ('y', 'B')])
 n: A
 def f(m: B) -> None: pass
---zuban-diff reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[..., builtins.int, fallback=__main__.B], fallback=__main__.A]"
-reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[__main__.A, builtins.int, fallback=__main__.B], fallback=__main__.A]"
---zuban-diff reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, ..., fallback=__main__.A], builtins.int, fallback=__main__.B])"
-reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, __main__.B, fallback=__main__.A], builtins.int, fallback=__main__.B])"
+reveal_type(n) # N: Revealed type is "Tuple[builtins.str, Tuple[..., builtins.int, fallback=__main__.B], fallback=__main__.A]"
+reveal_type(f) # N: Revealed type is "def (m: Tuple[Tuple[builtins.str, ..., fallback=__main__.A], builtins.int, fallback=__main__.B])"
 f(n)  # E: Argument 1 to "f" has incompatible type "A"; expected "B"
 [builtins fixtures/tuple.pyi]
 
@@ -904,8 +902,7 @@ from typing import List, NamedTuple
 
 Example = NamedTuple("Example", [("rec", List["Example"])])
 e: Example
---zuban-diff reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[...], fallback=__main__.Example]"
-reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[__main__.Example], fallback=__main__.Example]"
+reveal_type(e)  # N: Revealed type is "Tuple[builtins.list[...], fallback=__main__.Example]"
 [builtins fixtures/tuple.pyi]
 
 [case testRecursiveBoundFunctionScopeNoCrash]
