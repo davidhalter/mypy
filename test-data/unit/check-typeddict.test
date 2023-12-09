@@ -1700,8 +1700,10 @@ b.pop('x') # E: Key "x" of TypedDict "B" cannot be deleted
 x = ''
 b.pop(x) # E: Expected TypedDict key to be string literal
 pop = b.pop
-pop('x') # E: Argument 1 has incompatible type "str"; expected "NoReturn"
-pop('invalid') # E: Argument 1 has incompatible type "str"; expected "NoReturn"
+--zuban-diff pop('x') # E: Argument 1 has incompatible type "str"; expected "NoReturn"
+pop('x') # E: Key "x" of TypedDict "B" cannot be deleted
+--zuban-diff pop('invalid') # E: Argument 1 has incompatible type "str"; expected "NoReturn"
+pop('invalid') # E: TypedDict "B" has no key "invalid"
 [builtins fixtures/dict.pyi]
 
 [case testTypedDictDel]
