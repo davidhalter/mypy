@@ -738,8 +738,10 @@ T = TypeVar('T')
 def join(x: T, y: T) -> T: return x
 ab = join(A(x='', y=1, z=''), B(x='', z=1))
 ac = join(A(x='', y=1, z=''), C(x='', y=0, z=1))
-ab['y']  # E: "y" is not a valid TypedDict key; expected one of ("x")
-ac['a']  # E: "a" is not a valid TypedDict key; expected one of ("x", "y")
+--zuban-diff ab['y']  # E: "y" is not a valid TypedDict key; expected one of ("x")
+ab['y']  # E: TypedDict "TypedDict({'x': str})" has no key "y"
+--zuban-diff ac['a']  # E: "a" is not a valid TypedDict key; expected one of ("x", "y")
+ac['a']  # E: TypedDict "TypedDict({'x': str, 'y': int})" has no key "a"
 [builtins fixtures/dict.pyi]
 
 [case testCannotGetItemOfTypedDictWithNonLiteralKey]
