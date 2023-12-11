@@ -158,12 +158,14 @@ N = namedtuple(1, ['x']) # E: "namedtuple()" expects a string literal as the fir
 
 [case testNamedTupleWithInvalidItems]
 from collections import namedtuple
-N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"
+--zuban-diff N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"
+N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"  # E: Argument 2 to "namedtuple" has incompatible type "int"; expected "str | Iterable[str]"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidItems2]
 from collections import namedtuple
-N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item
+--zuban-diff N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item
+N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item  # E: List item 1 has incompatible type "int"; expected "str"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithUnderscoreItemName]

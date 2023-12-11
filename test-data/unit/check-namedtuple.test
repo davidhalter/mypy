@@ -1164,10 +1164,12 @@ reveal_type(o.__match_args__)  # E: "One" has no attribute "__match_args__" \
 from collections import namedtuple
 from typing import NamedTuple
 
-NT1 = namedtuple('NT1', b'x y z')  # E: List or tuple literal expected as the second argument to "namedtuple()"
+--zuban-diff NT1 = namedtuple('NT1', b'x y z')  # E: List or tuple literal expected as the second argument to "namedtuple()"
+NT1 = namedtuple('NT1', b'x y z')  # E: List or tuple literal expected as the second argument to "namedtuple()"  # E: Argument 2 to "namedtuple" has incompatible type "bytes"; expected "str | Iterable[str]"
 NT2 = namedtuple(b'NT2', 'x y z')  # E: "namedtuple()" expects a string literal as the first argument \
                                    # E: Argument 1 to "namedtuple" has incompatible type "bytes"; expected "str"
-NT3 = namedtuple('NT3', [b'x', 'y'])  # E: String literal expected as "namedtuple()" item
+--zuban-diff NT3 = namedtuple('NT3', [b'x', 'y'])  # E: String literal expected as "namedtuple()" item
+NT3 = namedtuple('NT3', [b'x', 'y'])  # E: String literal expected as "namedtuple()" item  # E: List item 0 has incompatible type "bytes"; expected "str"
 
 NT4 = NamedTuple('NT4', [('x', int), (b'y', int)])  # E: Invalid "NamedTuple()" field name
 NT5 = NamedTuple(b'NT5', [('x', int), ('y', int)])  # E: "NamedTuple()" expects a string literal as the first argument
