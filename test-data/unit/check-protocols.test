@@ -3637,11 +3637,14 @@ class C:
 
 p: P = C  # E: Incompatible types in assignment (expression has type "Type[C]", variable has type "P") \
           # N: Following member(s) of "C" have conflicts: \
+--zuban-diff 
+          # N: "C" has constructor incompatible with "__call__" of "P" \
           # N:     Expected: \
           # N:         def __call__(app: int) -> Callable[[str], None] \
           # N:     Got: \
           # N:         def __init__(app: str) -> C \
-          # N: "P.__call__" has type "Callable[[Arg(int, 'app')], Callable[[str], None]]"
+--zuban-diff           # N: "P.__call__" has type "Callable[[Arg(int, 'app')], Callable[[str], None]]"
+--zuban-diff 
 
 [builtins fixtures/type.pyi]
 
