@@ -364,7 +364,8 @@ class A:
     def x(self, x: int) -> None: pass
 
 class B(A):
-    @property  # E:6: Read-only property cannot override read-write property
+--zuban-diff     @property  # E:6: Read-only property cannot override read-write property
+    @property  # E:5: Read-only property cannot override read-write property
     def x(self) -> int: pass
 [builtins fixtures/property.pyi]
 
