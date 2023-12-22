@@ -1367,7 +1367,7 @@ import typing
 --zuban-diff int.from_bytes('', '') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "bytes"
 --zuban-diff fixtures/classmethod.pyi was wrong.
 int.from_bytes(b'', 'little')
-int.from_bytes('', 'little') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "bytes"
+int.from_bytes('', 'little') # E: Argument 1 to "from_bytes" of "int" has incompatible type "str"; expected "Iterable[int] | SupportsBytes | Buffer"
 [builtins fixtures/classmethod.pyi]
 
 [case testAssignClassMethodOnClass]
