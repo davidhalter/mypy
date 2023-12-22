@@ -929,7 +929,16 @@ class L:
 
 def last(seq: Linked[T]) -> T:
     pass
-last(L()) # E: Argument 1 to "last" has incompatible type "L"; expected "Linked[Never]"
+--zuban-diff last(L()) # E: Argument 1 to "last" has incompatible type "L"; expected "Linked[Never]"
+last(L())
+--zuban-diff 
+[out]
+main:13: error: Argument 1 to "last" has incompatible type "L"; expected "Linked[int]"
+main:13: note: Following member(s) of "L" have conflicts:
+main:13: note:     Expected:
+main:13: note:         def next(self) -> Linked[T]
+main:13: note:     Got:
+main:13: note:         def next(self) -> int
 
 [case testMutuallyRecursiveProtocols]
 from typing import Protocol, Sequence, List
@@ -1827,6 +1836,13 @@ f(t)  # OK
 
 y: MyProto[str]
 y = t # E: Incompatible types in assignment (expression has type "Tuple[int, str]", variable has type "MyProto[str]")
+--zuban-diff 
+[out]
+main:15: note: Following member(s) of "tuple[int, str]" have conflicts:
+main:15: note:     Expected:
+main:15: note:         def __len__() -> str
+main:15: note:     Got:
+main:15: note:         def __len__() -> int
 [builtins fixtures/isinstancelist.pyi]
 
 [case testBasicNamedTupleStructuralSubtyping]
@@ -2622,6 +2638,12 @@ b: Bad
 func(a)
 func(b)  # E: Argument 1 to "func" has incompatible type "Bad"; expected "One"
 [out]
+--zuban-diff 
+main:19: note: Following member(s) of "Bad" have conflicts:
+main:19: note:     Expected:
+main:19: note:         def __call__(self, x: str) -> None
+main:19: note:     Got:
+main:19: note:         def __call__(self, zzz: str) -> None
 
 [case testJoinProtocolCallback]
 from typing import Protocol, Callable
