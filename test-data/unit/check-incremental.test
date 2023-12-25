@@ -4166,18 +4166,18 @@ it: Iterable[int] = p  # change
 [builtins fixtures/dict.pyi]
 [out]
 tmp/b.py:4: error: Incompatible types in assignment (expression has type "Point", variable has type "Iterable[int]")
-tmp/b.py:4: note: Following member(s) of "Point" have conflicts:
-tmp/b.py:4: note:     Expected:
-tmp/b.py:4: note:         def __iter__(self) -> Iterator[int]
-tmp/b.py:4: note:     Got:
-tmp/b.py:4: note:         def __iter__(self) -> Iterator[str]
+--zuban-diff tmp/b.py:4: note: Following member(s) of "Point" have conflicts:
+--zuban-diff tmp/b.py:4: note:     Expected:
+--zuban-diff tmp/b.py:4: note:         def __iter__(self) -> Iterator[int]
+--zuban-diff tmp/b.py:4: note:     Got:
+--zuban-diff tmp/b.py:4: note:         def __iter__(self) -> Iterator[str]
 [out2]
 tmp/b.py:4: error: Incompatible types in assignment (expression has type "Point", variable has type "Iterable[int]")
-tmp/b.py:4: note: Following member(s) of "Point" have conflicts:
-tmp/b.py:4: note:     Expected:
-tmp/b.py:4: note:         def __iter__(self) -> Iterator[int]
-tmp/b.py:4: note:     Got:
-tmp/b.py:4: note:         def __iter__(self) -> Iterator[str]
+--zuban-diff tmp/b.py:4: note: Following member(s) of "Point" have conflicts:
+--zuban-diff tmp/b.py:4: note:     Expected:
+--zuban-diff tmp/b.py:4: note:         def __iter__(self) -> Iterator[int]
+--zuban-diff tmp/b.py:4: note:     Got:
+--zuban-diff tmp/b.py:4: note:         def __iter__(self) -> Iterator[str]
 
 [case testIndirectDepsAlwaysPatched-writescache]
 # flags: --no-incremental

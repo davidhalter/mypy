@@ -1335,11 +1335,11 @@ f(a)
 [typing fixtures/typing-typeddict.pyi]
 [out]
 main:13: error: Argument 1 to "f" has incompatible type "A"; expected "Iterable[int]"
-main:13: note: Following member(s) of "A" have conflicts:
-main:13: note:     Expected:
-main:13: note:         def __iter__(self) -> Iterator[int]
-main:13: note:     Got:
-main:13: note:         def __iter__(self) -> Iterator[str]
+--zuban-diff main:13: note: Following member(s) of "A" have conflicts:
+--zuban-diff main:13: note:     Expected:
+--zuban-diff main:13: note:         def __iter__(self) -> Iterator[int]
+--zuban-diff main:13: note:     Got:
+--zuban-diff main:13: note:         def __iter__(self) -> Iterator[str]
 
 [case testTypedDictOverloading3]
 from typing import overload
