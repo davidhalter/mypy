@@ -333,7 +333,12 @@ class MyHashable(Protocol):
 class C(MyHashable):
 --zuban-diff     __my_hash__ = None  # E: Incompatible types in assignment \
 --zuban-diff (expression has type "None", base class "MyHashable" defined the type as "Callable[[MyHashable], int]")
-    __my_hash__ = None  # E: Incompatible types in assignment (expression has type "None", base class "MyHashable" defined the type as "Callable[[MyHashable], int]")
+    __my_hash__ = None  # E: Signature of "__my_hash__" incompatible with supertype "MyHashable" \
+                        # N:      Superclass: \
+                        # N:          def __my_hash__(self) -> int \
+                        # N:      Subclass: \
+                        # N:          None
+
 
 [case testProtocolsWithNoneAndStrictOptional]
 from typing import Protocol
