@@ -957,9 +957,11 @@ class SubGood(Base):
 class SubBad(Base):
     def foo(self, **kwargs: Unpack[Unrelated]) -> None: ...  # E: Signature of "foo" incompatible with supertype "Base" \
     # N:      Superclass: \
-    # N:          def foo(*, name: str, age: int) -> None \
+--zuban-diff     # N:          def foo(*, name: str, age: int) -> None \
+    # N:          def foo(self, **kwargs: Unpack[Person]) -> None \
     # N:      Subclass: \
-    # N:          def foo(self, *, baz: int) -> None
+--zuban-diff     # N:          def foo(self, *, baz: int) -> None
+    # N:          def foo(self, **kwargs: Unpack[Unrelated]) -> None
 [builtins fixtures/dict.pyi]
 
 [case testUnpackKwargsGeneric]
