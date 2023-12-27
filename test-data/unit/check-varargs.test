@@ -927,9 +927,14 @@ class Base:
 class SubGood(Base):
     def foo(self, *, name: str, age: int, extra: bool = False) -> None: ...
 class SubBad(Base):
-    def foo(self, *, name: str, age: str) -> None: ...  # E: Argument 2 of "foo" is incompatible with supertype "Base"; supertype defines the argument type as "int" \
-    # N: This violates the Liskov substitution principle \
-    # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+--zuban-diff     def foo(self, *, name: str, age: str) -> None: ...  # E: Argument 2 of "foo" is incompatible with supertype "Base"; supertype defines the argument type as "int" \
+--zuban-diff     # N: This violates the Liskov substitution principle \
+--zuban-diff     # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+    def foo(self, *, name: str, age: str) -> None: ...  # E: Signature of "foo" incompatible with supertype "Base" \
+                                     # N:      Superclass: \
+                                     # N:          def foo(self, **kwargs: Unpack[Person]) -> None \
+                                     # N:      Subclass: \
+                                     # N:          def foo(self, *, name: str, age: str) -> None
 [builtins fixtures/dict.pyi]
 
 [case testUnpackKwargsOverridesTypedDict]
