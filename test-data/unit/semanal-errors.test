@@ -849,8 +849,7 @@ x = 0
 cast(x, None)        # E: Variable "__main__.x" is not valid as a type \
                      # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 cast(t, None)        # E: Name "t" is not defined
---zuban-diff cast(__builtins__.x, None) # E: Name "__builtins__.x" is not defined
-cast(__builtins__.x, None) # E: Name "__builtins__" is not defined
+cast(__builtins__.x, None) # E: Name "__builtins__.x" is not defined
 [out]
 
 [case testInvalidCastTargetType2]
