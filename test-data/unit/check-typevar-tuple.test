@@ -1207,7 +1207,8 @@ A = Union[int, str]
 x: List[Alias[int, Unpack[A], str]]  # E: "Union[int, str]" cannot be unpacked (must be tuple or TypeVarTuple)
 reveal_type(x)  # N: Revealed type is "builtins.list[Tuple[builtins.int, builtins.int, Unpack[builtins.tuple[Any, ...]], builtins.str, builtins.str]]"
 y: List[Alias[int, Unpack[Undefined], str]]  # E: Name "Undefined" is not defined
-reveal_type(y)  # N: Revealed type is "builtins.list[Tuple[builtins.int, Unpack[builtins.tuple[Any, ...]], builtins.str]]"
+--zuban-diff reveal_type(y)  # N: Revealed type is "builtins.list[Tuple[builtins.int, Unpack[builtins.tuple[Any, ...]], builtins.str]]"
+reveal_type(y)  # N: Revealed type is "builtins.list[Tuple[builtins.int, builtins.int, Unpack[builtins.tuple[Any, ...]], builtins.str, builtins.str]]"
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicAliasForwardRefToFixedUnpack]
