@@ -1093,7 +1093,7 @@ reveal_type(y.fn)  # N: Revealed type is "def (builtins.int, builtins.str)"
 
 z: A[Unpack[Tuple[int, ...]]]
 --zuban-diff reveal_type(z)  # N: Revealed type is "__main__.A[Unpack[builtins.tuple[builtins.int, ...]]]"
-reveal_type(z)  # N: Revealed type is "tuple[int, ..., fallback=__main__.A[int, ...]]"
+reveal_type(z)  # N: Revealed type is "tuple[int, ..., fallback=__main__.A[Unpack[tuple[int, ...]]]]"
 reveal_type(z[0])  # N: Revealed type is "builtins.int"
 reveal_type(z.fn)  # N: Revealed type is "def (*builtins.int)"
 
