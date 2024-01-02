@@ -1136,6 +1136,8 @@ nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callab
 from typing import Tuple, Callable, Generic
 from typing_extensions import TypeVarTuple, Unpack, TypedDict
 
+--zuban-diff 
+T = TypeVar("T")
 Ts = TypeVarTuple("Ts")
 class A(TypedDict, Generic[Unpack[Ts], T]):
     fn: Callable[[Unpack[Ts]], None]
@@ -1187,8 +1189,10 @@ T4 = TypeVar("T4")
 class C(Generic[T1, T2, T3, T4]): ...
 x: C[int, Unpack[Alias], str, str]  # E: Unpack is only valid in a variadic position
 Alias = Tuple[int, ...]
-reveal_type(x)  # N: Revealed type is "__main__.C[Any, Any, Any, Any]"
-y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined
+--zuban-diff reveal_type(x)  # N: Revealed type is "__main__.C[Any, Any, Any, Any]"
+reveal_type(x)  # N: Revealed type is "__main__.C[int, Any, str, str]"
+--zuban-diff y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined
+y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined # E: "C" expects 4 type arguments, but 2 given
 reveal_type(y)  # N: Revealed type is "__main__.C[Any, Any, Any, Any]"
 [builtins fixtures/tuple.pyi]
 
