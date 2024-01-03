@@ -297,7 +297,7 @@ reveal_type(X._field_defaults)  # N: Revealed type is "builtins.dict[builtins.st
 --zuban-diff reveal_type(X.__annotations__)  # N: Revealed type is "typing.Mapping[builtins.str, builtins.object]"
 reveal_type(X.__annotations__)  # N: Revealed type is "dict[str, Any]"
 
-[builtins fixtures/dict.pyi]
+[builtins fixtures/dict-full.pyi]
 
 [case testNewNamedTupleUnit]
 from typing import NamedTuple

@@ -35,7 +35,7 @@ from mypy.nodes import (
     check_arg_names,
     get_nongen_builtins,
 )
-from mypy.options import UNPACK, Options
+from mypy.options import Options
 from mypy.plugin import AnalyzeTypeContext, Plugin, TypeAnalyzerPluginInterface
 from mypy.semanal_shared import SemanticAnalyzerCoreInterface, paramspec_args, paramspec_kwargs
 from mypy.tvar_scope import TypeVarLikeScope
@@ -490,7 +490,7 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
         #       need access to MessageBuilder here. Also move the similar
         #       message generation logic in semanal.py.
         self.api.fail(f'Cannot resolve name "{t.name}" (possible cyclic definition)', t)
-        if not self.options.disable_recursive_aliases and self.api.is_func_scope():
+        if self.api.is_func_scope():
             self.note("Recursive types are not allowed at function scope", t)
 
     def apply_concatenate_operator(self, t: UnboundType) -> Type:
@@ -664,8 +664,6 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
             # In most contexts, TypeGuard[...] acts as an alias for bool (ignoring its args)
             return self.named_type("builtins.bool")
         elif fullname in ("typing.Unpack", "typing_extensions.Unpack"):
-            if not self.api.incomplete_feature_enabled(UNPACK, t):
-                return AnyType(TypeOfAny.from_error)
             if len(t.args) != 1:
                 self.fail("Unpack[...] requires exactly one type argument", t)
                 return AnyType(TypeOfAny.from_error)
@@ -987,33 +985,40 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
                     self.anal_star_arg_type(t.arg_types[-2], ARG_STAR, nested=nested),
                     self.anal_star_arg_type(t.arg_types[-1], ARG_STAR2, nested=nested),
                 ]
+                # If nested is True, it means we are analyzing a Callable[...] type, rather
+                # than a function definition type. We need to "unpack" ** TypedDict annotation
+                # here (for function definitions it is done in semanal).
+                if nested and isinstance(arg_types[-1], UnpackType):
+                    # TODO: it would be better to avoid this get_proper_type() call.
+                    unpacked = get_proper_type(arg_types[-1].type)
+                    if isinstance(unpacked, TypedDictType):
+                        arg_types[-1] = unpacked
+                        unpacked_kwargs = True
+                    arg_types = self.check_unpacks_in_list(arg_types)
             else:
-                arg_types = self.anal_array(t.arg_types, nested=nested, allow_unpack=True)
                 star_index = None
                 if ARG_STAR in arg_kinds:
                     star_index = arg_kinds.index(ARG_STAR)
                 star2_index = None
                 if ARG_STAR2 in arg_kinds:
                     star2_index = arg_kinds.index(ARG_STAR2)
-                validated_args: list[Type] = []
-                for i, at in enumerate(arg_types):
-                    if isinstance(at, UnpackType) and i not in (star_index, star2_index):
-                        self.fail(
-                            message_registry.INVALID_UNPACK_POSITION, at, code=codes.VALID_TYPE
-                        )
-                        validated_args.append(AnyType(TypeOfAny.from_error))
-                    else:
-                        if nested and isinstance(at, UnpackType) and i == star_index:
-                            # TODO: it would be better to avoid this get_proper_type() call.
-                            p_at = get_proper_type(at.type)
-                            if isinstance(p_at, TypedDictType) and not at.from_star_syntax:
-                                # Automatically detect Unpack[Foo] in Callable as backwards
-                                # compatible syntax for **Foo, if Foo is a TypedDict.
-                                at = p_at
-                                arg_kinds[i] = ARG_STAR2
-                                unpacked_kwargs = True
-                        validated_args.append(at)
-                arg_types = validated_args
+                arg_types = []
+                for i, ut in enumerate(t.arg_types):
+                    at = self.anal_type(
+                        ut, nested=nested, allow_unpack=i in (star_index, star2_index)
+                    )
+                    if nested and isinstance(at, UnpackType) and i == star_index:
+                        # TODO: it would be better to avoid this get_proper_type() call.
+                        p_at = get_proper_type(at.type)
+                        if isinstance(p_at, TypedDictType) and not at.from_star_syntax:
+                            # Automatically detect Unpack[Foo] in Callable as backwards
+                            # compatible syntax for **Foo, if Foo is a TypedDict.
+                            at = p_at
+                            arg_kinds[i] = ARG_STAR2
+                            unpacked_kwargs = True
+                    arg_types.append(at)
+                if nested:
+                    arg_types = self.check_unpacks_in_list(arg_types)
             # If there were multiple (invalid) unpacks, the arg types list will become shorter,
             # we need to trim the kinds/names as well to avoid crashes.
             arg_kinds = t.arg_kinds[: len(arg_types)]
@@ -1387,8 +1392,9 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
         names: list[str | None] = []
         seen_unpack = False
         unpack_types: list[Type] = []
-        invalid_unpacks = []
-        for arg in arglist.items:
+        invalid_unpacks: list[Type] = []
+        second_unpack_last = False
+        for i, arg in enumerate(arglist.items):
             if isinstance(arg, CallableArgument):
                 args.append(arg.typ)
                 names.append(arg.name)
@@ -1415,6 +1421,11 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
             ):
                 if seen_unpack:
                     # Multiple unpacks, preserve them, so we can give an error later.
+                    if i == len(arglist.items) - 1 and not invalid_unpacks:
+                        # Special case: if there are just two unpacks, and the second one appears
+                        # as last type argument, it can be still valid, if the second unpacked type
+                        # is a TypedDict. This should be checked by the caller.
+                        second_unpack_last = True
                     invalid_unpacks.append(arg)
                     continue
                 seen_unpack = True
@@ -1442,7 +1453,7 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
             names.append(None)
         for arg in invalid_unpacks:
             args.append(arg)
-            kinds.append(ARG_STAR)
+            kinds.append(ARG_STAR2 if second_unpack_last else ARG_STAR)
             names.append(None)
         # Note that arglist below is only used for error context.
         check_arg_names(names, [arglist] * len(args), self.fail, "Callable")
@@ -1559,32 +1570,32 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
         yield
         self.tvar_scope = old_scope
 
-    def find_type_var_likes(self, t: Type, include_callables: bool = True) -> TypeVarLikeList:
-        return t.accept(
-            TypeVarLikeQuery(self.api, self.tvar_scope, include_callables=include_callables)
-        )
+    def find_type_var_likes(self, t: Type) -> TypeVarLikeList:
+        visitor = FindTypeVarVisitor(self.api, self.tvar_scope)
+        t.accept(visitor)
+        return visitor.type_var_likes
 
-    def infer_type_variables(self, type: CallableType) -> list[tuple[str, TypeVarLikeExpr]]:
-        """Return list of unique type variables referred to in a callable."""
-        names: list[str] = []
-        tvars: list[TypeVarLikeExpr] = []
+    def infer_type_variables(
+        self, type: CallableType
+    ) -> tuple[list[tuple[str, TypeVarLikeExpr]], bool]:
+        """Infer type variables from a callable.
+
+        Return tuple with these items:
+         - list of unique type variables referred to in a callable
+         - whether there is a reference to the Self type
+        """
+        visitor = FindTypeVarVisitor(self.api, self.tvar_scope)
         for arg in type.arg_types:
-            for name, tvar_expr in self.find_type_var_likes(arg):
-                if name not in names:
-                    names.append(name)
-                    tvars.append(tvar_expr)
+            arg.accept(visitor)
+
         # When finding type variables in the return type of a function, don't
         # look inside Callable types.  Type variables only appearing in
         # functions in the return type belong to those functions, not the
         # function we're currently analyzing.
-        for name, tvar_expr in self.find_type_var_likes(type.ret_type, include_callables=False):
-            if name not in names:
-                names.append(name)
-                tvars.append(tvar_expr)
+        visitor.include_callables = False
+        type.ret_type.accept(visitor)
 
-        if not names:
-            return []  # Fast path
-        return list(zip(names, tvars))
+        return visitor.type_var_likes, visitor.has_self_type
 
     def bind_function_type_variables(
         self, fun_type: CallableType, defn: Context
@@ -1604,10 +1615,7 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
                 binding = self.tvar_scope.bind_new(var.name, var_expr)
                 defs.append(binding)
             return defs, has_self_type
-        typevars = self.infer_type_variables(fun_type)
-        has_self_type = find_self_type(
-            fun_type, lambda name: self.api.lookup_qualified(name, defn, suppress_errors=True)
-        )
+        typevars, has_self_type = self.infer_type_variables(fun_type)
         # Do not define a new type variable if already defined in scope.
         typevars = [
             (name, tvar) for name, tvar in typevars if not self.is_defined_type_var(name, defn)
@@ -2051,67 +2059,6 @@ def flatten_tvars(lists: list[list[T]]) -> list[T]:
     return result
 
 
-class TypeVarLikeQuery(TypeQuery[TypeVarLikeList]):
-    """Find TypeVar and ParamSpec references in an unbound type."""
-
-    def __init__(
-        self,
-        api: SemanticAnalyzerCoreInterface,
-        scope: TypeVarLikeScope,
-        *,
-        include_callables: bool = True,
-    ) -> None:
-        super().__init__(flatten_tvars)
-        self.api = api
-        self.scope = scope
-        self.include_callables = include_callables
-        # Only include type variables in type aliases args. This would be anyway
-        # that case if we expand (as target variables would be overridden with args)
-        # and it may cause infinite recursion on invalid (diverging) recursive aliases.
-        self.skip_alias_target = True
-
-    def _seems_like_callable(self, type: UnboundType) -> bool:
-        if not type.args:
-            return False
-        return isinstance(type.args[0], (EllipsisType, TypeList, ParamSpecType))
-
-    def visit_unbound_type(self, t: UnboundType) -> TypeVarLikeList:
-        name = t.name
-        node = None
-        # Special case P.args and P.kwargs for ParamSpecs only.
-        if name.endswith("args"):
-            if name.endswith(".args") or name.endswith(".kwargs"):
-                base = ".".join(name.split(".")[:-1])
-                n = self.api.lookup_qualified(base, t)
-                if n is not None and isinstance(n.node, ParamSpecExpr):
-                    node = n
-                    name = base
-        if node is None:
-            node = self.api.lookup_qualified(name, t)
-        if (
-            node
-            and isinstance(node.node, TypeVarLikeExpr)
-            and self.scope.get_binding(node) is None
-        ):
-            assert isinstance(node.node, TypeVarLikeExpr)
-            return [(name, node.node)]
-        elif not self.include_callables and self._seems_like_callable(t):
-            return []
-        elif node and node.fullname in LITERAL_TYPE_NAMES:
-            return []
-        elif node and node.fullname in ANNOTATED_TYPE_NAMES and t.args:
-            # Don't query the second argument to Annotated for TypeVars
-            return self.query_types([t.args[0]])
-        else:
-            return super().visit_unbound_type(t)
-
-    def visit_callable_type(self, t: CallableType) -> TypeVarLikeList:
-        if self.include_callables:
-            return super().visit_callable_type(t)
-        else:
-            return []
-
-
 class DivergingAliasDetector(TrivialSyntheticTypeTranslator):
     """See docstring of detect_diverging_alias() for details."""
 
@@ -2348,3 +2295,149 @@ def unknown_unpack(t: Type) -> bool:
         if isinstance(unpacked, AnyType) and unpacked.type_of_any == TypeOfAny.special_form:
             return True
     return False
+
+
+class FindTypeVarVisitor(SyntheticTypeVisitor[None]):
+    """Type visitor that looks for type variable types and self types."""
+
+    def __init__(self, api: SemanticAnalyzerCoreInterface, scope: TypeVarLikeScope) -> None:
+        self.api = api
+        self.scope = scope
+        self.type_var_likes: list[tuple[str, TypeVarLikeExpr]] = []
+        self.has_self_type = False
+        self.seen_aliases: set[TypeAliasType] | None = None
+        self.include_callables = True
+
+    def _seems_like_callable(self, type: UnboundType) -> bool:
+        if not type.args:
+            return False
+        return isinstance(type.args[0], (EllipsisType, TypeList, ParamSpecType))
+
+    def visit_unbound_type(self, t: UnboundType) -> None:
+        name = t.name
+        node = None
+
+        # Special case P.args and P.kwargs for ParamSpecs only.
+        if name.endswith("args"):
+            if name.endswith((".args", ".kwargs")):
+                base = ".".join(name.split(".")[:-1])
+                n = self.api.lookup_qualified(base, t)
+                if n is not None and isinstance(n.node, ParamSpecExpr):
+                    node = n
+                    name = base
+        if node is None:
+            node = self.api.lookup_qualified(name, t)
+        if node and node.fullname in SELF_TYPE_NAMES:
+            self.has_self_type = True
+        if (
+            node
+            and isinstance(node.node, TypeVarLikeExpr)
+            and self.scope.get_binding(node) is None
+        ):
+            if (name, node.node) not in self.type_var_likes:
+                self.type_var_likes.append((name, node.node))
+        elif not self.include_callables and self._seems_like_callable(t):
+            if find_self_type(
+                t, lambda name: self.api.lookup_qualified(name, t, suppress_errors=True)
+            ):
+                self.has_self_type = True
+            return
+        elif node and node.fullname in LITERAL_TYPE_NAMES:
+            return
+        elif node and node.fullname in ANNOTATED_TYPE_NAMES and t.args:
+            # Don't query the second argument to Annotated for TypeVars
+            self.process_types([t.args[0]])
+        elif t.args:
+            self.process_types(t.args)
+
+    def visit_type_list(self, t: TypeList) -> None:
+        self.process_types(t.items)
+
+    def visit_callable_argument(self, t: CallableArgument) -> None:
+        t.typ.accept(self)
+
+    def visit_any(self, t: AnyType) -> None:
+        pass
+
+    def visit_uninhabited_type(self, t: UninhabitedType) -> None:
+        pass
+
+    def visit_none_type(self, t: NoneType) -> None:
+        pass
+
+    def visit_erased_type(self, t: ErasedType) -> None:
+        pass
+
+    def visit_deleted_type(self, t: DeletedType) -> None:
+        pass
+
+    def visit_type_var(self, t: TypeVarType) -> None:
+        self.process_types([t.upper_bound, t.default] + t.values)
+
+    def visit_param_spec(self, t: ParamSpecType) -> None:
+        self.process_types([t.upper_bound, t.default])
+
+    def visit_type_var_tuple(self, t: TypeVarTupleType) -> None:
+        self.process_types([t.upper_bound, t.default])
+
+    def visit_unpack_type(self, t: UnpackType) -> None:
+        self.process_types([t.type])
+
+    def visit_parameters(self, t: Parameters) -> None:
+        self.process_types(t.arg_types)
+
+    def visit_partial_type(self, t: PartialType) -> None:
+        pass
+
+    def visit_instance(self, t: Instance) -> None:
+        self.process_types(t.args)
+
+    def visit_callable_type(self, t: CallableType) -> None:
+        # FIX generics
+        self.process_types(t.arg_types)
+        t.ret_type.accept(self)
+
+    def visit_tuple_type(self, t: TupleType) -> None:
+        self.process_types(t.items)
+
+    def visit_typeddict_type(self, t: TypedDictType) -> None:
+        self.process_types(list(t.items.values()))
+
+    def visit_raw_expression_type(self, t: RawExpressionType) -> None:
+        pass
+
+    def visit_literal_type(self, t: LiteralType) -> None:
+        pass
+
+    def visit_union_type(self, t: UnionType) -> None:
+        self.process_types(t.items)
+
+    def visit_overloaded(self, t: Overloaded) -> None:
+        self.process_types(t.items)  # type: ignore[arg-type]
+
+    def visit_type_type(self, t: TypeType) -> None:
+        t.item.accept(self)
+
+    def visit_ellipsis_type(self, t: EllipsisType) -> None:
+        pass
+
+    def visit_placeholder_type(self, t: PlaceholderType) -> None:
+        return self.process_types(t.args)
+
+    def visit_type_alias_type(self, t: TypeAliasType) -> None:
+        # Skip type aliases in already visited types to avoid infinite recursion.
+        if self.seen_aliases is None:
+            self.seen_aliases = set()
+        elif t in self.seen_aliases:
+            return
+        self.seen_aliases.add(t)
+        self.process_types(t.args)
+
+    def process_types(self, types: list[Type] | tuple[Type, ...]) -> None:
+        # Redundant type check helps mypyc.
+        if isinstance(types, list):
+            for t in types:
+                t.accept(self)
+        else:
+            for t in types:
+                t.accept(self)
