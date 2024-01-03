@@ -6598,4 +6598,5 @@ class TheClass:
         self.enum_type = pyenum
 [out]
 [out2]
-tmp/a.py:3: note: Revealed type is "def (value: builtins.object) -> lib.TheClass.pyenum@6"
+--zuban-diff tmp/a.py:3: note: Revealed type is "def (value: builtins.object) -> lib.TheClass.pyenum@6"
+tmp/a.py:3: note: Revealed type is "Any"
