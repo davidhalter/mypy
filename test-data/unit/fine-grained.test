@@ -10040,7 +10040,8 @@ class C(Generic[Ts]): ...
 [builtins fixtures/tuple.pyi]
 [out]
 ==
-main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff 
 lib.py:5: error: Free type variable expected in Generic[...]
 
 [case testVariadicClassFineUpdateValidToInvalid-only_when_nocache]
@@ -10066,7 +10067,8 @@ class C(Generic[Ts]): ...
 [out]
 ==
 lib.py:5: error: Free type variable expected in Generic[...]
-main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff 
 
 [case testVariadicClassFineUpdateInvalidToValid]
 from typing import Any
@@ -10090,7 +10092,8 @@ class C(Generic[Unpack[Ts]]): ...
 [builtins fixtures/tuple.pyi]
 [out]
 lib.py:5: error: Free type variable expected in Generic[...]
-main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff main:4: error: "C" expects no type arguments, but 2 given
+--zuban-diff 
 ==
 
 [case testUnpackKwargsUpdateFine]
