@@ -1451,7 +1451,8 @@ civ: C[Unpack[Tuple[int, ...]]]
 
 ff(cii)
 ff(cis)  # E: Argument 1 to "ff" has incompatible type "C[int, str]"; expected "B[int, int, int]"
-ff(civ)  # E: Argument 1 to "ff" has incompatible type "C[Unpack[Tuple[int, ...]]]"; expected "B[int, int, int]"
+--zuban-diff ff(civ)  # E: Argument 1 to "ff" has incompatible type "C[Unpack[Tuple[int, ...]]]"; expected "B[int, int, int]"
+ff(civ)  # E: Argument 1 to "ff" has incompatible type "C[Unpack[Tuple[int, ...]], int]"; expected "B[int, int, int]"
 
 fv(cii)
 fv(cis)  # E: Argument 1 to "fv" has incompatible type "C[int, str]"; expected "B[Unpack[Tuple[int, ...]]]"
