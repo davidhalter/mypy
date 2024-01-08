@@ -960,7 +960,8 @@ from typing_extensions import TypeVarTuple
 
 Ts = TypeVarTuple("Ts")
 
-def f(x: Ts) -> Ts:  # E: TypeVarTuple "Ts" is only valid with an unpack
+--zuban-diff def f(x: Ts) -> Ts:  # E: TypeVarTuple "Ts" is only valid with an unpack
+def f(x: Ts) -> Ts:  # E: TypeVarTuple "Ts" is only valid with an unpack # E: TypeVarTuple "Ts" is only valid with an unpack
     return x
 
 v = f(1, 2, "A")  # E: Too many arguments for "f"
@@ -2045,7 +2046,8 @@ class B(Generic[Unpack[Ts]]):
 
 reveal_type(B)  # N: Revealed type is "def [Ts] (items: Tuple[Unpack[Ts`1]]) -> __main__.B[Unpack[Ts`1]]"
 b = B((1, "yes"))
-reveal_type(b.items)  # N: Revealed type is "Tuple[builtins.int, builtins.str]"
+--zuban-diff reveal_type(b.items)  # N: Revealed type is "Tuple[builtins.int, builtins.str]"
+reveal_type(b.items)  # N: Revealed type is "Tuple[Literal[1]?, Literal['yes']?]"
 
 T = TypeVar("T")
 S = TypeVar("S")
