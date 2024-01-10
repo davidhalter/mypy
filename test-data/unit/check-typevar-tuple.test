@@ -1106,6 +1106,8 @@ reveal_type(t.fn)  # N: Revealed type is "def (builtins.int, builtins.int, built
 from typing import Tuple, Callable, NamedTuple, Generic
 from typing_extensions import TypeVarTuple, Unpack
 
+--zuban-diff 
+T = TypeVar("T")
 Ts = TypeVarTuple("Ts")
 class A(NamedTuple, Generic[Unpack[Ts], T]):
     fn: Callable[[Unpack[Ts]], None]
