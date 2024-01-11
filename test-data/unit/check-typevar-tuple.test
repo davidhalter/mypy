@@ -492,8 +492,10 @@ def foo4(*args: Unpack[Tuple[str, Unpack[Ts], bool, bool]]) -> None:
 
 foo2("bar", 1, 2, 3, False, True)
 foo2(0, 1, 2, 3, False, True)  # E: Argument 1 to "foo2" has incompatible type "int"; expected "str"
-foo2("bar", "bar", 2, 3, False, True)  # E: Argument 2 to "foo2" has incompatible type "str"; expected "Unpack[Tuple[Unpack[Tuple[int, ...]], bool, bool]]"
-foo2("bar", 1, 2, 3, 4, True)  # E: Argument 5 to "foo2" has incompatible type "int"; expected "Unpack[Tuple[Unpack[Tuple[int, ...]], bool, bool]]"
+--zuban-diff foo2("bar", "bar", 2, 3, False, True)  # E: Argument 2 to "foo2" has incompatible type "str"; expected "Unpack[Tuple[Unpack[Tuple[int, ...]], bool, bool]]"
+foo2("bar", "bar", 2, 3, False, True)  # E: Argument 2 to "foo2" has incompatible type "str"; expected "int"
+--zuban-diff foo2("bar", 1, 2, 3, 4, True)  # E: Argument 5 to "foo2" has incompatible type "int"; expected "Unpack[Tuple[Unpack[Tuple[int, ...]], bool, bool]]"
+foo2("bar", 1, 2, 3, 4, True)  # E: Argument 5 to "foo2" has incompatible type "int"; expected "bool"
 foo2(*("bar", 1, 2, 3, False, True))
 [builtins fixtures/tuple.pyi]
 
