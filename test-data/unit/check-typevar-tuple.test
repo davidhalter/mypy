@@ -2188,13 +2188,18 @@ cb2(1, 2, 3, a="a", b="b")
 cb2(1, a="a", b="b")  # E: Too few arguments
 cb2(1, 2, 3, a="a")  # E: Missing named argument "b"
 
-bad1: Callable[[Unpack[Ints], Unpack[Ints]], None]  # E: More than one Unpack in a type is not allowed
+--zuban-diff bad1: Callable[[Unpack[Ints], Unpack[Ints]], None]  # E: More than one Unpack in a type is not allowed
+bad1: Callable[[Unpack[Ints], Unpack[Ints]], None]  # E: Var args may not appear after named or var args
 reveal_type(bad1)  # N: Revealed type is "def (*builtins.int)"
-bad2: Callable[[Unpack[Keywords], Unpack[Keywords]], None]  # E: "Keywords" cannot be unpacked (must be tuple or TypeVarTuple)
-reveal_type(bad2)  # N: Revealed type is "def (*Any, **Unpack[TypedDict('__main__.Keywords', {'a': builtins.str, 'b': builtins.str})])"
-bad3: Callable[[Unpack[Keywords], Unpack[Ints]], None]  # E: "Keywords" cannot be unpacked (must be tuple or TypeVarTuple) \
-                                                        # E: More than one Unpack in a type is not allowed
-reveal_type(bad3)  # N: Revealed type is "def (*Any)"
+--zuban-diff bad2: Callable[[Unpack[Keywords], Unpack[Keywords]], None]  # E: "Keywords" cannot be unpacked (must be tuple or TypeVarTuple)
+bad2: Callable[[Unpack[Keywords], Unpack[Keywords]], None]  # E: You may only have one **kwargs argument
+--zuban-diff reveal_type(bad2)  # N: Revealed type is "def (*Any, **Unpack[TypedDict('__main__.Keywords', {'a': builtins.str, 'b': builtins.str})])"
+reveal_type(bad2)  # N: Revealed type is "def (**Unpack[TypedDict('__main__.Keywords', {'a': builtins.str, 'b': builtins.str})])"
+--zuban-diff bad3: Callable[[Unpack[Keywords], Unpack[Ints]], None]  # E: "Keywords" cannot be unpacked (must be tuple or TypeVarTuple) \
+--zuban-diff                                                         # E: More than one Unpack in a type is not allowed
+--zuban-diff reveal_type(bad3)  # N: Revealed type is "def (*Any)"
+bad3: Callable[[Unpack[Keywords], Unpack[Ints]], None]  # E: Var args may not appear after named or var args
+reveal_type(bad3)  # N: Revealed type is "def (**Unpack[TypedDict('__main__.Keywords', {'a': str, 'b': str})])"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleBothUnpacksApplication]
