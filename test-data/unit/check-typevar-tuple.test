@@ -2220,7 +2220,8 @@ def test(
     **kwargs: Unpack[Keywords],
 ) -> T:
     if bool():
-        func(*args, **kwargs)  # E: Extra argument "a" from **args
+--zuban-diff         func(*args, **kwargs)  # E: Extra argument "a" from **args
+        func(*args, **kwargs)  # E: Extra argument "a" from **args  # E: Extra argument "b" from **args
     return func(*args)
 def test2(
     x: int,
