@@ -592,8 +592,10 @@ reveal_type(y)  # N: Revealed type is "def (builtins.str, *Unpack[Tuple[Unpack[b
 
 P = ParamSpec("P")
 class C(Generic[P]): ...
-bad: C[[int, *Tuple[int, ...], int]]  # E: Unpack is only valid in a variadic position
-reveal_type(bad)  # N: Revealed type is "__main__.C[[builtins.int, *Any]]"
+--zuban-diff bad: C[[int, *Tuple[int, ...], int]]  # E: Unpack is only valid in a variadic position
+--zuban-diff reveal_type(bad)  # N: Revealed type is "__main__.C[[builtins.int, *Any]]"
+bad: C[[int, *Tuple[int, ...], int]]
+reveal_type(bad)  # N: Revealed type is "__main__.C[[builtins.int, *Unpack[tuple[Unpack[Tuple[int, ...]], int]]]]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTuplePep646UnspecifiedParameters]
