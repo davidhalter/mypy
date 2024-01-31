@@ -3088,11 +3088,14 @@ def id1(x: UB) -> UB:
 def id2(x: V) -> V:
     ...
 
-reveal_type(dec1(id1))  # N: Revealed type is "def [S <: __main__.B] (S`1) -> builtins.list[S`1]"
-reveal_type(dec1(id2))  # N: Revealed type is "def [S in (builtins.int, builtins.str)] (S`3) -> builtins.list[S`3]"
+--zuban-diff reveal_type(dec1(id1))  # N: Revealed type is "def [S <: __main__.B] (S`1) -> builtins.list[S`1]"
+reveal_type(dec1(id1))  # N: Revealed type is "def [UB <: __main__.B] (UB`1) -> builtins.list[UB`1]"
+--zuban-diff reveal_type(dec1(id2))  # N: Revealed type is "def [S in (builtins.int, builtins.str)] (S`3) -> builtins.list[S`3]"
+reveal_type(dec1(id2))  # N: Revealed type is "def [V in (builtins.int, builtins.str)] (V`3) -> builtins.list[V`3]"
 reveal_type(dec2(id1))  # N: Revealed type is "def [UC <: __main__.C] (UC`5) -> builtins.list[UC`5]"
 reveal_type(dec2(id2))  # N: Revealed type is "def (Never) -> builtins.list[Never]" \
-                        # E: Argument 1 to "dec2" has incompatible type "Callable[[V], V]"; expected "Callable[[Never], Never]"
+--zuban-diff                         # E: Argument 1 to "dec2" has incompatible type "Callable[[V], V]"; expected "Callable[[Never], Never]"
+                        # E: Incompatible callable argument with type vars
 
 [case testInferenceAgainstGenericLambdas]
 # flags: --new-type-inference
