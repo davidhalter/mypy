@@ -682,11 +682,13 @@ a: Union[Tuple[int, int], Tuple[int, object]]
 --zuban-diff                  # E: Incompatible types in assignment (expression has type "object", variable has type "int")
 (x[0], b.x) = a  # E: No overload variant of "__setitem__" of "list" matches argument types "int", "int" \
                  # N: Possible overload variants: \
-                 # N:     def __setitem__(self, int, A, /) -> None \
+--zuban-diff                  # N:     def __setitem__(self, int, A, /) -> None \
+                 # N:     def __setitem__(self, SupportsIndex, A, /) -> None \
                  # N:     def __setitem__(self, slice, Iterable[A], /) -> None \
                  # E: No overload variant of "__setitem__" of "list" matches argument types "int", "int" \
                  # N: Possible overload variants: \
-                 # N:     def __setitem__(self, int, A, /) -> None \
+--zuban-diff                  # N:     def __setitem__(self, int, A, /) -> None \
+                 # N:     def __setitem__(self, SupportsIndex, A, /) -> None \
                  # N:     def __setitem__(self, slice, Iterable[A], /) -> None \
                  # E: Incompatible types in assignment (expression has type "object", variable has type "int")
 reveal_type(x[0])  # N: Revealed type is "__main__.A"

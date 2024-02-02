@@ -233,7 +233,8 @@ from typing import List
 --zuban-diff ([1]['']) # E:6: Invalid index type "str" for "List[int]"; expected type "int"
 ([1]['']) # E:6: No overload variant of "__getitem__" of "list" matches argument type "str" \
           # N:6: Possible overload variants: \
-          # N:6:     def __getitem__(self, int, /) -> int \
+--zuban-diff           # N:6:     def __getitem__(self, int, /) -> int \
+          # N:6:     def __getitem__(self, SupportsIndex, /) -> int \
           # N:6:     def __getitem__(self, slice, /) -> list[int]
 (1[1]) # E:2: Value of type "int" is not indexable
 def f() -> None:
