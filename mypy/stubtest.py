@@ -10,6 +10,7 @@ import argparse
 import collections.abc
 import copy
 import enum
+import functools
 import importlib
 import importlib.machinery
 import inspect
@@ -310,34 +311,22 @@ def _verify_exported_names(
     )
 
 
-def _get_imported_symbol_names(runtime: types.ModuleType) -> frozenset[str] | None:
-    """Retrieve the names in the global namespace which are known to be imported.
+@functools.lru_cache
+def _module_symbol_table(runtime: types.ModuleType) -> symtable.SymbolTable | None:
+    """Retrieve the symbol table for the module (or None on failure).
 
-    1). Use inspect to retrieve the source code of the module
-    2). Use symtable to parse the source and retrieve names that are known to be imported
-        from other modules.
-
-    If either of the above steps fails, return `None`.
-
-    Note that if a set of names is returned,
-    it won't include names imported via `from foo import *` imports.
+    1) Use inspect to retrieve the source code of the module
+    2) Use symtable to parse the source (and use what symtable knows for its purposes)
     """
     try:
         source = inspect.getsource(runtime)
     except (OSError, TypeError, SyntaxError):
         return None
 
-    if not source.strip():
-        # The source code for the module was an empty file,
-        # no point in parsing it with symtable
-        return frozenset()
-
     try:
-        module_symtable = symtable.symtable(source, runtime.__name__, "exec")
+        return symtable.symtable(source, runtime.__name__, "exec")
     except SyntaxError:
         return None
-
-    return frozenset(sym.get_name() for sym in module_symtable.get_symbols() if sym.is_imported())
 
 
 @verify.register(nodes.MypyFile)
@@ -369,25 +358,37 @@ def verify_mypyfile(
         if not o.module_hidden and (not is_probably_private(m) or hasattr(runtime, m))
     }
 
-    imported_symbols = _get_imported_symbol_names(runtime)
-
     def _belongs_to_runtime(r: types.ModuleType, attr: str) -> bool:
         """Heuristics to determine whether a name originates from another module."""
         obj = getattr(r, attr)
         if isinstance(obj, types.ModuleType):
             return False
-        if callable(obj):
-            # It's highly likely to be a class or a function if it's callable,
-            # so the __module__ attribute will give a good indication of which module it comes from
+
+        symbol_table = _module_symbol_table(r)
+        if symbol_table is not None:
             try:
-                obj_mod = obj.__module__
-            except Exception:
+                symbol = symbol_table.lookup(attr)
+            except KeyError:
                 pass
             else:
-                if isinstance(obj_mod, str):
-                    return bool(obj_mod == r.__name__)
-        if imported_symbols is not None:
-            return attr not in imported_symbols
+                if symbol.is_imported():
+                    # symtable says we got this from another module
+                    return False
+                # But we can't just return True here, because symtable doesn't know about symbols
+                # that come from `from module import *`
+                if symbol.is_assigned():
+                    # symtable knows we assigned this symbol in the module
+                    return True
+
+        # The __module__ attribute is unreliable for anything except functions and classes,
+        # but it's our best guess at this point
+        try:
+            obj_mod = obj.__module__
+        except Exception:
+            pass
+        else:
+            if isinstance(obj_mod, str):
+                return bool(obj_mod == r.__name__)
         return True
 
     runtime_public_contents = (
@@ -826,7 +827,10 @@ class Signature(Generic[T]):
                 # argument. To accomplish this, we just make up a fake index-based name.
                 name = (
                     f"__{index}"
-                    if arg.variable.name.startswith("__") or assume_positional_only
+                    if arg.variable.name.startswith("__")
+                    or arg.pos_only
+                    or assume_positional_only
+                    or arg.variable.name.strip("_") == "self"
                     else arg.variable.name
                 )
                 all_args.setdefault(name, []).append((arg, index))
@@ -870,6 +874,7 @@ class Signature(Generic[T]):
                 type_annotation=None,
                 initializer=None,
                 kind=get_kind(arg_name),
+                pos_only=all(arg.pos_only for arg, _ in all_args[arg_name]),
             )
             if arg.kind.is_positional():
                 sig.pos.append(arg)
@@ -905,6 +910,7 @@ def _verify_signature(
         if (
             runtime_arg.kind != inspect.Parameter.POSITIONAL_ONLY
             and (stub_arg.pos_only or stub_arg.variable.name.startswith("__"))
+            and stub_arg.variable.name.strip("_") != "self"
             and not is_dunder(function_name, exclude_special=True)  # noisy for dunder methods
         ):
             yield (
@@ -1087,6 +1093,13 @@ def verify_var(
         if isinstance(runtime, enum.Enum):
             runtime_type = get_mypy_type_of_runtime_value(runtime.value)
             if runtime_type is not None and is_subtype_helper(runtime_type, stub.type):
+                should_error = False
+            # We always allow setting the stub value to ...
+            proper_type = mypy.types.get_proper_type(stub.type)
+            if (
+                isinstance(proper_type, mypy.types.Instance)
+                and proper_type.type.fullname == "builtins.ellipsis"
+            ):
                 should_error = False
 
         if should_error:
@@ -1506,9 +1519,11 @@ def safe_inspect_signature(runtime: Any) -> inspect.Signature | None:
                 sig = inspect._signature_fromstr(inspect.Signature, runtime, sig)  # type: ignore[attr-defined]
                 assert isinstance(sig, inspect.Signature)
                 new_params = [
-                    parameter.replace(default=UNREPRESENTABLE)
-                    if parameter.default is ...
-                    else parameter
+                    (
+                        parameter.replace(default=UNREPRESENTABLE)
+                        if parameter.default is ...
+                        else parameter
+                    )
                     for parameter in sig.parameters.values()
                 ]
                 return sig.replace(parameters=new_params)

@@ -2090,9 +2090,7 @@ def __getattr__(name): ...
 
 [builtins fixtures/module.pyi]
 
-[case testModuleLevelGetattrNotStub37]
-# flags: --python-version 3.7
-
+[case testModuleLevelGetattrNotStub]
 import has_getattr
 reveal_type(has_getattr.any_attribute)  # N: Revealed type is "builtins.str"
 
@@ -2124,8 +2122,7 @@ def __getattr__(name: str) -> int: ...
 
 [builtins fixtures/module.pyi]
 
-[case testModuleLevelGetattrImportFromNotStub37]
-# flags: --python-version 3.7
+[case testModuleLevelGetattrImportFromNotStub]
 from non_stub import name
 reveal_type(name)  # N: Revealed type is "Any"
 
@@ -2160,7 +2157,6 @@ def __getattr__(name: str) -> int: ...
 
 
 [case testModuleLevelGetattrAssignedGood]
-# flags: --python-version 3.7
 import non_stub
 reveal_type(non_stub.name)  # N: Revealed type is "builtins.int"
 
@@ -2171,7 +2167,6 @@ def make_getattr_good() -> Callable[[str], int]: ...
 __getattr__ = make_getattr_good()  # OK
 
 [case testModuleLevelGetattrAssignedBad]
-# flags: --python-version 3.7
 import non_stub
 reveal_type(non_stub.name)
 
@@ -2183,12 +2178,11 @@ __getattr__ = make_getattr_bad()
 
 [out]
 tmp/non_stub.py:4: error: Invalid signature "Callable[[], int]" for "__getattr__"
-main:3: note: Revealed type is "builtins.int"
+main:2: note: Revealed type is "builtins.int"
 --zuban-diff
-main:3: error: Too many arguments
+main:2: error: Too many arguments
 
 [case testModuleLevelGetattrImportedGood]
-# flags: --python-version 3.7
 import non_stub
 reveal_type(non_stub.name)  # N: Revealed type is "builtins.int"
 
@@ -2199,7 +2193,6 @@ from has_getattr import __getattr__
 def __getattr__(name: str) -> int: ...
 
 [case testModuleLevelGetattrImportedBad]
-# flags: --python-version 3.7
 import non_stub
 reveal_type(non_stub.name)
 
@@ -2212,9 +2205,9 @@ def __getattr__() -> int: ...
 [out]
 tmp/has_getattr.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
 non_stub.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
-main:3: note: Revealed type is "builtins.int"
+main:2: note: Revealed type is "builtins.int"
 --zuban-diff 
-main:3: error: Too many arguments for "__getattr__"
+main:2: error: Too many arguments for "__getattr__"
 
 [builtins fixtures/module.pyi]
 
