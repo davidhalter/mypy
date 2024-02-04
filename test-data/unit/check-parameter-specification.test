@@ -1658,8 +1658,10 @@ class A: ...
 TA = TypeVar("TA", bound=A)
 
 def test_with_bound(x: TA) -> TA: ...
-reveal_type(dec(test_with_bound))  # N: Revealed type is "def [T <: __main__.A] (x: T`4) -> builtins.list[T`4]"
-dec(test_with_bound)(0)  # E: Value of type variable "T" of function cannot be "int"
+--zuban-diff reveal_type(dec(test_with_bound))  # N: Revealed type is "def [T <: __main__.A] (x: T`4) -> builtins.list[T`4]"
+reveal_type(dec(test_with_bound))  # N: Revealed type is "def [TA <: __main__.A] (x: TA) -> builtins.list[TA]"
+--zuban-diff dec(test_with_bound)(0)  # E: Value of type variable "T" of function cannot be "int"
+dec(test_with_bound)(0)  # E: Value of type variable "TA" of function cannot be "int"
 dec(test_with_bound)(A())  # OK
 [builtins fixtures/paramspec.pyi]
 
