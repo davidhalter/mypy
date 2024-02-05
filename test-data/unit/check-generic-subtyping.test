@@ -450,8 +450,7 @@ class C(B[A[T, str]], Generic[T, U]): pass
 C(1, A(1, 'a', 0), 'z')
 C(1, A('1', 'a', 0), 'z')
 C('1', A(1, 'a', 0), 'z')  # E: Argument 1 to "C" has incompatible type "str"; expected "int"
---zuban-diff C(1, A(1, 1, 0), 'z')  # E: Argument 2 to "A" has incompatible type "int"; expected "str"
-C(1, A(1, 1, 0), 'z')  # E: Argument 2 to "C" has incompatible type "A[int, int]"; expected "A[T, str]"
+C(1, A(1, 1, 0), 'z')  # E: Argument 2 to "A" has incompatible type "int"; expected "str"
 
 -- Subtyping with a generic abstract base class
 -- --------------------------------------------
