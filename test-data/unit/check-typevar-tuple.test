@@ -1872,7 +1872,8 @@ def foo3(func: Callable[[int, Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
    return submit2(func, 1, *args)
 
 def foo_bad(func: Callable[[Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
-   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Args2])], T]"
+--zuban-diff    return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Args2])], T]"
+   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Tuple[Never, ...]])], T]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleParamSpecInteraction]
