@@ -1363,7 +1363,8 @@ T = TypeVar("T")
 def f(x: Tuple[int, Unpack[Tuple[T, ...]]]) -> T: ...
 
 vt0: Tuple[int, ...]
-f(vt0)  # E: Argument 1 to "f" has incompatible type "Tuple[int, ...]"; expected "Tuple[int, Unpack[Tuple[int, ...]]]"
+--zuban-diff f(vt0)  # E: Argument 1 to "f" has incompatible type "Tuple[int, ...]"; expected "Tuple[int, Unpack[Tuple[int, ...]]]"
+f(vt0)  # E: Argument 1 to "f" has incompatible type "tuple[int, ...]"; expected "tuple[int, Unpack[Tuple[Never, ...]]]"
 
 vt1: Tuple[Unpack[Tuple[int, ...]], int]
 reveal_type(f(vt1))  # N: Revealed type is "builtins.int"
@@ -1371,7 +1372,8 @@ reveal_type(f(vt1))  # N: Revealed type is "builtins.int"
 S = TypeVar("S")
 Ts = TypeVarTuple("Ts")
 def g(x: Tuple[T, Unpack[Ts], S]) -> Tuple[T, Unpack[Ts], S]: ...
-g(vt0)  # E: Argument 1 to "g" has incompatible type "Tuple[int, ...]"; expected "Tuple[int, Unpack[Tuple[int, ...]], int]"
+--zuban-diff g(vt0)  # E: Argument 1 to "g" has incompatible type "Tuple[int, ...]"; expected "Tuple[int, Unpack[Tuple[int, ...]], int]"
+g(vt0)  # E: Argument 1 to "g" has incompatible type "tuple[int, ...]"; expected "tuple[Never, Never]"
 
 U = TypeVar("U")
 def h(x: List[Tuple[T, S, U]]) -> Tuple[T, S, U]: ...
