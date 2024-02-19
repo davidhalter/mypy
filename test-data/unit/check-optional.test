@@ -292,7 +292,8 @@ from typing import Optional
 def f(a: Optional[int], b: int) -> int:
     return b or a
 [out]
-main:3: error: Incompatible return value type (got "Optional[int]", expected "int")
+--zuban-diff main:3: error: Incompatible return value type (got "Optional[int]", expected "int")
+main:3: error: Incompatible return value type (got "int | None", expected "int")
 
 [case testOptionalTypeOrTypeNoTriggerTypeVar]
 from typing import Optional, TypeVar
@@ -300,7 +301,8 @@ T = TypeVar('T')
 def f(a: Optional[T], b: T) -> T:
     return b or a
 [out]
-main:4: error: Incompatible return value type (got "Optional[T]", expected "T")
+--zuban-diff main:4: error: Incompatible return value type (got "Optional[T]", expected "T")
+main:4: error: Incompatible return value type (got "T | None", expected "T")
 
 [case testNoneOrStringIsString]
 def f() -> str:
