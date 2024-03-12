@@ -1681,8 +1681,10 @@ reveal_type(func1)      # N: Revealed type is "def [TLiteral <: Literal[3]] (x: 
 
 reveal_type(func1(3))   # N: Revealed type is "Literal[3]"
 reveal_type(func1(a))   # N: Revealed type is "Literal[3]"
-reveal_type(func1(4))   # E: Value of type variable "TLiteral" of "func1" cannot be "Literal[4]" \
-                        # N: Revealed type is "Literal[4]"
+--zuban-diff reveal_type(func1(4))   # E: Value of type variable "TLiteral" of "func1" cannot be "Literal[4]" \
+--zuban-diff                         # N: Revealed type is "Literal[4]"
+reveal_type(func1(4))   # E: Value of type variable "TLiteral" of "func1" cannot be "int" \
+                        # N: Revealed type is "Literal[4]?"
 reveal_type(func1(b))   # E: Value of type variable "TLiteral" of "func1" cannot be "Literal[4]" \
                         # N: Revealed type is "Literal[4]"
 reveal_type(func1(c))   # E: Value of type variable "TLiteral" of "func1" cannot be "int" \
