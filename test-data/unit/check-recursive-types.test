@@ -951,7 +951,8 @@ x: A[int, str]
 
 *_, last = x
 if last is not None:
-    reveal_type(last)  # N: Revealed type is "Tuple[builtins.int, builtins.str, Union[Tuple[builtins.int, builtins.str, Union[..., None]], None]]"
+--zuban-diff     reveal_type(last)  # N: Revealed type is "Tuple[builtins.int, builtins.str, Union[Tuple[builtins.int, builtins.str, Union[..., None]], None]]"
+    reveal_type(last)  # N: Revealed type is "Tuple[builtins.int, builtins.str, Union[..., None]]"
 [builtins fixtures/tuple.pyi]
 
 [case testRecursiveAliasLiteral]
