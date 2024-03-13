@@ -1859,12 +1859,15 @@ if isinstance(x, (set, (list, T))):
 [builtins fixtures/isinstancelist.pyi]
 
 [case testIsInstanceTooFewArgs]
-isinstance() # E: Missing positional arguments "x", "t" in call to "isinstance"
+--zuban-diff isinstance() # E: Missing positional arguments "x", "t" in call to "isinstance"
+isinstance() # E: Too few arguments for "isinstance"
 x: object
-if isinstance(): # E: Missing positional arguments "x", "t" in call to "isinstance"
+--zuban-diff if isinstance(): # E: Missing positional arguments "x", "t" in call to "isinstance"
+if isinstance(): # E: Too few arguments for "isinstance"
     x = 1
     reveal_type(x) # N: Revealed type is "builtins.int"
-if isinstance(x): # E: Missing positional argument "t" in call to "isinstance"
+--zuban-diff if isinstance(x): # E: Missing positional argument "t" in call to "isinstance"
+if isinstance(x): # E: Too few arguments for "isinstance"
     x = 1
     reveal_type(x) # N: Revealed type is "builtins.int"
 [builtins fixtures/isinstancelist.pyi]
@@ -1872,18 +1875,22 @@ if isinstance(x): # E: Missing positional argument "t" in call to "isinstance"
 [case testIsSubclassTooFewArgs]
 from typing import Type
 
-issubclass() # E: Missing positional arguments "x", "t" in call to "issubclass"
+--zuban-diff issubclass() # E: Missing positional arguments "x", "t" in call to "issubclass"
+issubclass() # E: Too few arguments for "issubclass"
 y: Type[object]
-if issubclass(): # E: Missing positional arguments "x", "t" in call to "issubclass"
+--zuban-diff if issubclass(): # E: Missing positional arguments "x", "t" in call to "issubclass"
+if issubclass(): # E: Too few arguments for "issubclass"
     reveal_type(y) # N: Revealed type is "Type[builtins.object]"
-if issubclass(y): # E: Missing positional argument "t" in call to "issubclass"
+--zuban-diff if issubclass(y): # E: Missing positional argument "t" in call to "issubclass"
+if issubclass(y): # E: Too few arguments for "issubclass"
     reveal_type(y) # N: Revealed type is "Type[builtins.object]"
 
 [builtins fixtures/isinstancelist.pyi]
 
 [case testIsInstanceTooManyArgs]
 isinstance(1, 1, 1) # E: Too many arguments for "isinstance" \
-         # E: Argument 2 to "isinstance" has incompatible type "int"; expected "Union[type, Tuple[Any, ...]]"
+--zuban-diff          # E: Argument 2 to "isinstance" has incompatible type "int"; expected "Union[type, Tuple[Any, ...]]"
+         # E: Argument 2 to "isinstance" has incompatible type "int"; expected "Type[Any] | UnionType | tuple[_ClassInfo, ...]"
 x: object
 if isinstance(x, str, 1): # E: Too many arguments for "isinstance"
     reveal_type(x) # N: Revealed type is "builtins.object"
