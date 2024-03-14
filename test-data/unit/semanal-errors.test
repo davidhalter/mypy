@@ -804,7 +804,8 @@ main:14: error: Incompatible types in assignment (expression has type "int", var
 [case testTestExtendPrimitives]
 # Extending bool is not checked here as it should be typed
 # as final meaning the type checker will detect it.
-class C(bool): pass # ok
+--zuban-diff class C(bool): pass # ok
+class C(bool): pass # ok  # E: Cannot inherit from final class "bool"
 class A(int): pass # ok
 class B(float): pass # ok
 class D(str): pass # ok

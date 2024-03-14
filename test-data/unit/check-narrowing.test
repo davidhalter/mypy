@@ -895,10 +895,12 @@ z: Default
 # enough to declare itself to be equal to None and so permit this narrowing,
 # since it's often convenient in practice.
 if 1 == x == y:
-    reveal_type(x)   # N: Revealed type is "Union[Literal[1], Literal[2]]"
+--zuban-diff     reveal_type(x)   # N: Revealed type is "Union[Literal[1], Literal[2]]"
+    reveal_type(x)   # N: Revealed type is "Literal[1]"
     reveal_type(y)   # N: Revealed type is "__main__.Custom"
 else:
-    reveal_type(x)   # N: Revealed type is "Union[Literal[1], Literal[2], None]"
+--zuban-diff     reveal_type(x)   # N: Revealed type is "Union[Literal[1], Literal[2], None]"
+    reveal_type(x)   # N: Revealed type is "Union[Literal[2], None]"
     reveal_type(y)   # N: Revealed type is "__main__.Custom"
 
 # No contamination here

@@ -976,7 +976,8 @@ from typing import final
 class B: ...
 class C(B):  # E: Cannot inherit from final class "B"
     pass
-class D(C):  # E: Cannot inherit from final class "B"
+--zuban-diff class D(C):  # E: Cannot inherit from final class "B"
+class D(C):  # E: Cannot inherit from final class "C"
     pass
 [out]
 
