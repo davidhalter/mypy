@@ -38,7 +38,8 @@ from typing import Union, List, Tuple, Dict
 def f(x: Union[int, str, List]) -> None:
     if isinstance(x, (str, (int,))):
         reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
-        x[1]  # E: Value of type "Union[int, str]" is not indexable
+--zuban-diff         x[1]  # E: Value of type "Union[int, str]" is not indexable
+        x[1]  # E: Value of type "int" is not indexable
     else:
         reveal_type(x)  # N: Revealed type is "builtins.list[Any]"
         x[1]
