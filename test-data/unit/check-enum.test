@@ -98,7 +98,8 @@ class Truth(Enum):
     false = False
 
 def infer_truth(truth: Truth) -> None:
-    reveal_type(truth.value) # N: Revealed type is "Union[Literal[True]?, Literal[False]?]"
+--zuban-diff     reveal_type(truth.value) # N: Revealed type is "Union[Literal[True]?, Literal[False]?]"
+    reveal_type(truth.value) # N: Revealed type is "bool"
 [builtins fixtures/bool.pyi]
 
 [case testEnumValueAllAuto]
@@ -131,7 +132,8 @@ class Truth(Enum):
         return 'bar'
 
 def infer_truth(truth: Truth) -> None:
-    reveal_type(truth.value) # N: Revealed type is "Union[Literal[True]?, Literal[False]?]"
+--zuban-diff     reveal_type(truth.value) # N: Revealed type is "Union[Literal[True]?, Literal[False]?]"
+    reveal_type(truth.value) # N: Revealed type is "bool"
 [builtins fixtures/bool.pyi]
 
 [case testEnumValueCustomAuto]
