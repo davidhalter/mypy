@@ -430,7 +430,8 @@ def f(x: Union[List[int], List[str], int]) -> None:
     else:
         x[0] # E: Value of type "int" is not indexable
         x + 1
-    x[0] # E: Value of type "Union[List[int], List[str], int]" is not indexable
+--zuban-diff     x[0] # E: Value of type "Union[List[int], List[str], int]" is not indexable
+    x[0] # E: Value of type "int" is not indexable
     x + 1 # E: Unsupported operand types for + ("List[int]" and "int") \
           # E: Unsupported operand types for + ("List[str]" and "int") \
           # N: Left operand is of type "Union[List[int], List[str], int]"
@@ -1488,7 +1489,8 @@ from typing import Union
 
 def f(x: Union[int, str]) -> None:
     if isinstance(x, ()):
-        reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
+        reveal_type(x)  # Unreachable
     else:
         reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
 [builtins fixtures/isinstancelist.pyi]
@@ -1853,10 +1855,12 @@ if isinstance(x, T):
     reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
 
 if isinstance(x, U):
-    reveal_type(x)  # N: Revealed type is "Union[builtins.list[Any], builtins.int, builtins.str]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[builtins.list[Any], builtins.int, builtins.str]"
+    reveal_type(x)  # N: Revealed type is "Union[builtins.list, builtins.int, builtins.str]"
 
 if isinstance(x, (set, (list, T))):
-    reveal_type(x)  # N: Revealed type is "Union[builtins.set[Any], builtins.list[Any], builtins.int, builtins.str]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[builtins.set[Any], builtins.list[Any], builtins.int, builtins.str]"
+    reveal_type(x)  # N: Revealed type is "Union[builtins.set, builtins.list, builtins.int, builtins.str]"
 [builtins fixtures/isinstancelist.pyi]
 
 [case testIsInstanceTooFewArgs]
