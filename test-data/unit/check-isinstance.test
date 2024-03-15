@@ -1480,7 +1480,8 @@ def f(x: Union[int, A], a: Type[A]) -> None:
     if isinstance(x, (a, int)):
         reveal_type(x)  # N: Revealed type is "Union[builtins.int, __main__.A]"
     else:
-        reveal_type(x)  # N: Revealed type is "__main__.A"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "__main__.A"
+        reveal_type(x)  # Unreachable
     reveal_type(x) # N: Revealed type is "Union[builtins.int, __main__.A]"
 [builtins fixtures/isinstancelist.pyi]
 
@@ -1506,7 +1507,8 @@ def f(x: Union[int, A], a: Type[A]) -> None:
     elif isinstance(x, int):
         reveal_type(x)  # N: Revealed type is "builtins.int"
     else:
-        reveal_type(x)  # N: Revealed type is "__main__.A"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "__main__.A"
+        reveal_type(x)  # Unreachable
     reveal_type(x)  # N: Revealed type is "Union[builtins.int, __main__.A]"
 [builtins fixtures/isinstancelist.pyi]
 
