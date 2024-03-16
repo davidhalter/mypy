@@ -3958,10 +3958,8 @@ class A:
 [out1]
 [out2]
 tmp/b.py:3: note: Revealed type is "def (a: builtins.int) -> a.A"
---zuban-diff tmp/b.py:4: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
-tmp/b.py:4: note: Revealed type is "def (self: builtins.object, builtins.object) -> builtins.bool"
---zuban-diff tmp/b.py:5: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
-tmp/b.py:5: note: Revealed type is "def (self: builtins.object, builtins.object) -> builtins.bool"
+tmp/b.py:4: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
+tmp/b.py:5: note: Revealed type is "def (builtins.object, builtins.object) -> builtins.bool"
 --zuban-diff tmp/b.py:6: note: Revealed type is "def [_DT] (self: _DT`1, other: _DT`1) -> builtins.bool"
 --zuban-diff tmp/b.py:7: note: Revealed type is "def [_DT] (self: _DT`2, other: _DT`2) -> builtins.bool"
 --zuban-diff tmp/b.py:8: note: Revealed type is "def [_DT] (self: _DT`3, other: _DT`3) -> builtins.bool"
