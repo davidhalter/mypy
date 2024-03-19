@@ -496,7 +496,8 @@ if x.key is Key.A:
     reveal_type(x)      # N: Revealed type is "Union[__main__.Object1, Any]"
 else:
     # TODO: Is this a bug? Should we skip inferring Any for singleton types?
-    reveal_type(x.key)  # N: Revealed type is "Union[Any, Literal[__main__.Key.B]]"
+--zuban-diff     reveal_type(x.key)  # N: Revealed type is "Union[Any, Literal[__main__.Key.B]]"
+    reveal_type(x.key)  # N: Revealed type is "Union[Literal[__main__.Key.B], Any]"
     reveal_type(x)      # N: Revealed type is "Union[__main__.Object1, __main__.Object2, Any]"
 [builtins fixtures/tuple.pyi]
 
