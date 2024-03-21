@@ -1892,7 +1892,8 @@ tup1[idx5]                    # E: Tuple index out of range
 reveal_type(tup1[idx2:idx4])  # N: Revealed type is "Tuple[Union[__main__.C, None], __main__.D]"
 reveal_type(tup1[::idx2])     # N: Revealed type is "Tuple[__main__.A, Union[__main__.C, None], __main__.E]"
 if tup1[idx2] is not None:
-    reveal_type(tup1[idx2])   # N: Revealed type is "Union[__main__.C, None]"
+--zuban-diff     reveal_type(tup1[idx2])   # N: Revealed type is "Union[__main__.C, None]"
+    reveal_type(tup1[idx2])   # N: Revealed type is "__main__.C"
 if tup1[idx_final] is not None:
     reveal_type(tup1[idx_final]) # N: Revealed type is "__main__.C"
 
