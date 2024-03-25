@@ -3572,7 +3572,8 @@ def f(x: a.N) -> None:
 [out]
 ==
 ==
-c.py:4: note: Revealed type is "Tuple[Union[Tuple[Union[..., None], builtins.int, fallback=b.M], None], builtins.int, fallback=a.N]"
+--zuban-diff c.py:4: note: Revealed type is "Tuple[Union[Tuple[Union[..., None], builtins.int, fallback=b.M], None], builtins.int, fallback=a.N]"
+c.py:4: note: Revealed type is "tuple[tuple[tuple[tuple[... | None, int, fallback=b.M] | None, int, fallback=a.N] | None, int, fallback=b.M] | None, int, fallback=a.N]"
 c.py:5: error: Incompatible types in assignment (expression has type "Optional[N]", variable has type "int")
 
 [case testTypeAliasUpdateNonRecursiveToRecursiveFine]

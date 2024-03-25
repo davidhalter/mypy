@@ -77,7 +77,8 @@ from test import A
 
 x: A
 if isinstance(x, list):
-    reveal_type(x[0])  # N: Revealed type is "Union[builtins.int, builtins.list[Union[builtins.int, builtins.list[...]]]]"
+--zuban-diff     reveal_type(x[0])  # N: Revealed type is "Union[builtins.int, builtins.list[Union[builtins.int, builtins.list[...]]]]"
+    reveal_type(x[0])  # N: Revealed type is "int | list[...]"
 else:
     reveal_type(x)  # N: Revealed type is "builtins.int"
 
@@ -277,10 +278,12 @@ b: NestedB
 aa: NestedA
 
 x: int
-x = a  # E: Incompatible types in assignment (expression has type "NestedA", variable has type "int")
+--zuban-diff x = a  # E: Incompatible types in assignment (expression has type "NestedA", variable has type "int")
+x = a  # E: Incompatible types in assignment (expression has type "Sequence[A | NestedA]", variable has type "int")
 a = b
 x = a  # E: Incompatible types in assignment (expression has type "Sequence[Union[B, NestedB]]", variable has type "int")
-b = aa  # E: Incompatible types in assignment (expression has type "NestedA", variable has type "NestedB")
+--zuban-diff b = aa  # E: Incompatible types in assignment (expression has type "NestedA", variable has type "NestedB")
+b = aa  # E: Incompatible types in assignment (expression has type "Sequence[A | NestedA]", variable has type "Sequence[B | NestedB]")
 if isinstance(b[0], Sequence):
     a = b[0]
     x = a  # E: Incompatible types in assignment (expression has type "Sequence[Union[B, NestedB]]", variable has type "int")
@@ -440,10 +443,8 @@ from typing import NamedTuple, Optional
 NT = NamedTuple("NT", [("x", Optional[NT]), ("y", int)])
 nt: NT
 reveal_type(nt)  # N: Revealed type is "Tuple[Union[..., None], builtins.int, fallback=__main__.NT]"
---zuban-diff reveal_type(nt.x)  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
-reveal_type(nt.x)  # N: Revealed type is "Optional[Tuple[Optional[NT], builtins.int, fallback=__main__.NT]]"
---zuban-diff reveal_type(nt[0])  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
-reveal_type(nt[0])  # N: Revealed type is "Optional[Tuple[Optional[NT], builtins.int, fallback=__main__.NT]]"
+reveal_type(nt.x)  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
+reveal_type(nt[0])  # N: Revealed type is "Union[Tuple[Union[..., None], builtins.int, fallback=__main__.NT], None]"
 y: str
 if nt.x is not None:
     y = nt.x[0]  # E: Incompatible types in assignment (expression has type "Optional[NT]", variable has type "str")
@@ -455,8 +456,10 @@ from typing import NamedTuple, TypeVar, Tuple
 NT = NamedTuple("NT", [("x", NT), ("y", int)])
 nt: NT
 reveal_type(nt)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
-reveal_type(nt.x)  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
-reveal_type(nt[0])  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
+--zuban-diff reveal_type(nt.x)  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
+reveal_type(nt.x)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
+--zuban-diff reveal_type(nt[0])  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
+reveal_type(nt[0])  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
 y: str
 if nt.x is not None:
     y = nt.x[0]  # E: Incompatible types in assignment (expression has type "NT", variable has type "str")
@@ -466,8 +469,10 @@ def f(a: T, b: T) -> T: ...
 tnt: Tuple[NT]
 
 # TODO: these should be tuple[object] instead.
-reveal_type(f(nt, tnt))  # N: Revealed type is "builtins.tuple[Any, ...]"
-reveal_type(f(tnt, nt))  # N: Revealed type is "builtins.tuple[Any, ...]"
+--zuban-diff reveal_type(f(nt, tnt))  # N: Revealed type is "builtins.tuple[Any, ...]"
+reveal_type(f(nt, tnt))  # N: Revealed type is "builtins.tuple[object, ...]"
+--zuban-diff reveal_type(f(tnt, nt))  # N: Revealed type is "builtins.tuple[Any, ...]"
+reveal_type(f(tnt, nt))  # N: Revealed type is "builtins.tuple[object, ...]"
 [builtins fixtures/tuple.pyi]
 
 [case testBasicRecursiveNamedTupleClass]
