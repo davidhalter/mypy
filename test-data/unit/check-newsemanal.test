@@ -2162,7 +2162,8 @@ class C:
     def frob(self, foos: Dict[Any, Foos]) -> None:
         foo = foos.get(1)
         assert foo
-        dict(foo)
+--zuban-diff         dict(foo)
+        dict(foo) # E: Argument 1 to "dict" has incompatible type "Foos"; expected "Iterable[tuple[Never, Never]]"
 [builtins fixtures/dict.pyi]
 
 [case testNewAnalyzerForwardTypeAliasInBase]
