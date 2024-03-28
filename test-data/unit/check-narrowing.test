@@ -1288,7 +1288,8 @@ def f(t: Type[T], a: A, b: B) -> None:
         reveal_type(a)  # N: Revealed type is "__main__.A"
 
     if type(b) is t:
-        reveal_type(b)  # N: Revealed type is "Never"
+--zuban-diff         reveal_type(b)  # N: Revealed type is "Never"
+        reveal_type(b)  # Is unreachable
     else:
         reveal_type(b)  # N: Revealed type is "__main__.B"
 
