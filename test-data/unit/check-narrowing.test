@@ -1854,9 +1854,11 @@ from typing import Tuple, Optional
 
 x: Optional[Tuple[int, ...]]
 if x:
-    reveal_type(x)  # N: Revealed type is "builtins.tuple[builtins.int, ...]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "builtins.tuple[builtins.int, ...]"
+    reveal_type(x)  # N: Revealed type is "tuple[int, Unpack[Tuple[int, ...]]]"
 else:
-    reveal_type(x)  # N: Revealed type is "Union[builtins.tuple[builtins.int, ...], None]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[builtins.tuple[builtins.int, ...], None]"
+    reveal_type(x)  # N: Revealed type is "tuple[()] | None"
 [builtins fixtures/len.pyi]
 
 [case testNarrowingLenMixWithAnyPrecise]
