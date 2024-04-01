@@ -853,7 +853,8 @@ b: NoReturn
 c: None
 
 fa(lit)
-fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "NoReturn"
+--zuban-diff fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "NoReturn"
+fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "Never"
 fc(lit)  # E: Argument 1 to "fc" has incompatible type "Literal[1]"; expected "None"
 
 f_lit(a)
@@ -879,7 +880,8 @@ b: NoReturn
 c: None
 
 fa(lit)
-fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "NoReturn"
+--zuban-diff fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "NoReturn"
+fb(lit)  # E: Argument 1 to "fb" has incompatible type "Literal[1]"; expected "Never"
 fc(lit)  # E: Argument 1 to "fc" has incompatible type "Literal[1]"; expected "None"
 
 f_lit(a)
