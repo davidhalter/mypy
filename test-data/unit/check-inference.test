@@ -1939,7 +1939,8 @@ reveal_type(dd)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int
 [case testInferFromEmptyDictWhenUsingInSpecialCase]
 # flags: --no-strict-optional
 d = None
-if 'x' in d:  # E: "None" has no attribute "__iter__" (not iterable)
+--zuban-diff if 'x' in d:  # E: "None" has no attribute "__iter__" (not iterable)
+if 'x' in d:  # E: Unsupported right operand type for in ("None")
     pass
 reveal_type(d)  # N: Revealed type is "None"
 [builtins fixtures/dict.pyi]
