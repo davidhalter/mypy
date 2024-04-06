@@ -1329,7 +1329,8 @@ def test_untyped_fn(obj):
     obj.reload()
 
     assert obj.prop is False
-    reveal_type(obj.prop)
+--zuban-diff     reveal_type(obj.prop)
+    reveal_type(obj.prop)  # N: Revealed type is "Any" # N: 'reveal_type' always outputs 'Any' in unchecked functions
 
 def test_typed_fn(obj) -> None:
     assert obj.prop is True
