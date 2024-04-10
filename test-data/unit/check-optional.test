@@ -328,7 +328,8 @@ def f() -> Generator[None, None, None]:
 [case testNoneAndStringIsNone]
 a = None
 b = "foo"
-reveal_type(a and b)  # N: Revealed type is "None"
+--zuban-diff reveal_type(a and b)  # N: Revealed type is "None"
+reveal_type(a and b)  # E: Right operand of "and" is never evaluated # N: Revealed type is "None"
 
 [case testNoneMatchesObjectInOverload]
 import a
@@ -587,7 +588,8 @@ x is not None and x + '42'  # E: Unsupported operand types for + ("int" and "str
 from typing import Optional
 
 x = None
-x is not None and x + 42
+--zuban-diff x is not None and x + 42
+x is not None and x + 42  # E: Right operand of "and" is never evaluated
 [builtins fixtures/isinstance.pyi]
 
 [case testOptionalLambdaInference]
