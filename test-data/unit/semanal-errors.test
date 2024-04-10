@@ -1387,6 +1387,8 @@ class A:
     [x for i in z if y]
 [out]
 main:5: error: Name "x" is not defined
+--zuban-diff 
+main:5: error: "int" object is not iterable
 main:5: error: Name "y" is not defined
 
 [case testTypeRedeclarationNoSpuriousWarnings]
