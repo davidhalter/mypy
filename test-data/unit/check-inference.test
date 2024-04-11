@@ -3444,7 +3444,8 @@ if x:
 
 [case testSuggestPep604AnnotationForPartialNone]
 # flags: --local-partial-types --python-version 3.10
-x = None # E: Need type annotation for "x" (hint: "x: <type> | None = ...")
+--zuban-diff x = None # E: Need type annotation for "x" (hint: "x: <type> | None = ...")
+x = None # E: Need type annotation for "x" (hint: "x: Optional[<type>] = ...")
 
 [case testTupleContextFromIterable]
 from typing import TypeVar, Iterable, List, Union
