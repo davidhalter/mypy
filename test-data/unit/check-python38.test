@@ -216,27 +216,34 @@ from typing import NamedTuple, Optional, List
 from typing_extensions import Final
 
 if a := 2:
-    reveal_type(a)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(a)  # N: Revealed type is "builtins.int"
+    reveal_type(a)  # N: Revealed type is "Literal[2]?"
 
 while b := "x":
-    reveal_type(b)  # N: Revealed type is "builtins.str"
+--zuban-diff     reveal_type(b)  # N: Revealed type is "builtins.str"
+    reveal_type(b)  # N: Revealed type is "Literal['x']?"
 
 l = [y2 := 1, y2 + 2, y2 + 3]
-reveal_type(y2)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(y2)  # N: Revealed type is "builtins.int"
+reveal_type(y2)  # N: Revealed type is "Literal[1]?"
 reveal_type(l)  # N: Revealed type is "builtins.list[builtins.int]"
 
 filtered_data = [y3 for x in l if (y3 := a) is not None]
 reveal_type(filtered_data)  # N: Revealed type is "builtins.list[builtins.int]"
-reveal_type(y3)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(y3)  # N: Revealed type is "builtins.int"
+reveal_type(y3)  # N: Revealed type is "Literal[2]?"
 
 d = {'a': (a2 := 1), 'b': a2 + 1, 'c': a2 + 2}
 reveal_type(d)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
-reveal_type(a2)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(a2)  # N: Revealed type is "builtins.int"
+reveal_type(a2)  # N: Revealed type is "Literal[1]?"
 
 d2 = {(prefix := 'key_') + 'a': (start_val := 1), prefix + 'b': start_val + 1, prefix + 'c': start_val + 2}
 reveal_type(d2)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
-reveal_type(prefix)  # N: Revealed type is "builtins.str"
-reveal_type(start_val)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(prefix)  # N: Revealed type is "builtins.str"
+reveal_type(prefix)  # N: Revealed type is "Literal['key_']?"
+--zuban-diff reveal_type(start_val)  # N: Revealed type is "builtins.int"
+reveal_type(start_val)  # N: Revealed type is "Literal[1]?"
 
 filtered_dict = {k: new_v for k, v in [('a', 1), ('b', 2), ('c', 3)] if (new_v := v + 1) == 2}
 reveal_type(filtered_dict)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
@@ -244,32 +251,41 @@ reveal_type(new_v)  # N: Revealed type is "builtins.int"
 
 def f(x: int = (c := 4)) -> int:
     if a := 2:
-        reveal_type(a)  # N: Revealed type is "builtins.int"
+--zuban-diff         reveal_type(a)  # N: Revealed type is "builtins.int"
+        reveal_type(a)  # N: Revealed type is "Literal[2]?"
 
     while b := "x":
-        reveal_type(b)  # N: Revealed type is "builtins.str"
+--zuban-diff         reveal_type(b)  # N: Revealed type is "builtins.str"
+        reveal_type(b)  # N: Revealed type is "Literal['x']?"
 
     x = (y := 1) + (z := 2)
     reveal_type(x)  # N: Revealed type is "builtins.int"
-    reveal_type(y)  # N: Revealed type is "builtins.int"
-    reveal_type(z)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y)  # N: Revealed type is "builtins.int"
+    reveal_type(y)  # N: Revealed type is "Literal[1]?"
+--zuban-diff     reveal_type(z)  # N: Revealed type is "builtins.int"
+    reveal_type(z)  # N: Revealed type is "Literal[2]?"
 
     l = [y2 := 1, y2 + 2, y2 + 3]
-    reveal_type(y2)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y2)  # N: Revealed type is "builtins.int"
+    reveal_type(y2)  # N: Revealed type is "Literal[1]?"
     reveal_type(l)  # N: Revealed type is "builtins.list[builtins.int]"
 
     filtered_data = [y3 for x in l if (y3 := a) is not None]
     reveal_type(filtered_data)  # N: Revealed type is "builtins.list[builtins.int]"
-    reveal_type(y3)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y3)  # N: Revealed type is "builtins.int"
+    reveal_type(y3)  # N: Revealed type is "Literal[2]?"
 
     d = {'a': (a2 := 1), 'b': a2 + 1, 'c': a2 + 2}
     reveal_type(d)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
-    reveal_type(a2)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(a2)  # N: Revealed type is "builtins.int"
+    reveal_type(a2)  # N: Revealed type is "Literal[1]?"
 
     d2 = {(prefix := 'key_') + 'a': (start_val := 1), prefix + 'b': start_val + 1, prefix + 'c': start_val + 2}
     reveal_type(d2)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
-    reveal_type(prefix)  # N: Revealed type is "builtins.str"
-    reveal_type(start_val)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(prefix)  # N: Revealed type is "builtins.str"
+    reveal_type(prefix)  # N: Revealed type is "Literal['key_']?"
+--zuban-diff     reveal_type(start_val)  # N: Revealed type is "builtins.int"
+    reveal_type(start_val)  # N: Revealed type is "Literal[1]?"
 
     filtered_dict = {k: new_v for k, v in [('a', 1), ('b', 2), ('c', 3)] if (new_v := v + 1) == 2}
     reveal_type(filtered_dict)  # N: Revealed type is "builtins.dict[builtins.str, builtins.int]"
@@ -277,14 +293,18 @@ def f(x: int = (c := 4)) -> int:
 
     # https://www.python.org/dev/peps/pep-0572/#exceptional-cases
     (y4 := 3)
-    reveal_type(y4)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y4)  # N: Revealed type is "builtins.int"
+    reveal_type(y4)  # N: Revealed type is "Literal[3]?"
 
     y5 = (y6 := 3)
-    reveal_type(y5)  # N: Revealed type is "builtins.int"
-    reveal_type(y6)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y5)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y6)  # N: Revealed type is "builtins.int"
+    reveal_type(y5)  # N: Revealed type is "Literal[3]?"
+    reveal_type(y6)  # N: Revealed type is "Literal[3]?"
 
     f(x=(y7 := 3))
-    reveal_type(y7)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(y7)  # N: Revealed type is "builtins.int"
+    reveal_type(y7)  # N: Revealed type is "Literal[3]?"
 
     reveal_type((lambda: (y8 := 3) and y8)())  # N: Revealed type is "builtins.int"
     y8  # E: Name "y8" is not defined
@@ -304,16 +324,20 @@ def f(x: int = (c := 4)) -> int:
                    # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
     if (reveal_type(y9 := 3) and   # N: Revealed type is "Literal[3]?"
-            reveal_type(y9)):       # N: Revealed type is "builtins.int"
-        reveal_type(y9)            # N: Revealed type is "builtins.int"
+--zuban-diff             reveal_type(y9)):       # N: Revealed type is "builtins.int"
+--zuban-diff         reveal_type(y9)            # N: Revealed type is "builtins.int"
+            reveal_type(y9)):       # N: Revealed type is "Literal[3]?"
+        reveal_type(y9)            # N: Revealed type is "Literal[3]?"
 
     return (y10 := 3) + y10
 
-reveal_type(c)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(c)  # N: Revealed type is "builtins.int"
+reveal_type(c)  # N: Revealed type is "Literal[4]?"
 
 def check_final() -> None:
     x: Final = 3
 
+    if x := 4:  # E: Cannot assign to final name "x"
     if x := 4:  # E: Cannot assign to final name "x"
         pass
 
@@ -364,21 +388,25 @@ def check_narrow(x: Optional[int], s: List[int]) -> None:
 
 class AssignmentExpressionsClass:
     x = (y := 1) + (z := 2)
-    reveal_type(z)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(z)  # N: Revealed type is "builtins.int"
+    reveal_type(z)  # N: Revealed type is "Literal[2]?"
 
     l = [x2 := 1, 2, 3]
-    reveal_type(x2)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(x2)  # N: Revealed type is "builtins.int"
+    reveal_type(x2)  # N: Revealed type is "Literal[1]?"
 
     def __init__(self) -> None:
         reveal_type(self.z)  # N: Revealed type is "builtins.int"
 
         l = [z2 := 1, z2 + 2, z2 + 3]
-        reveal_type(z2)  # N: Revealed type is "builtins.int"
+--zuban-diff         reveal_type(z2)  # N: Revealed type is "builtins.int"
+        reveal_type(z2)  # N: Revealed type is "Literal[1]?"
         reveal_type(l)  # N: Revealed type is "builtins.list[builtins.int]"
 
         filtered_data = [z3 for x in l if (z3 := 1) is not None]
         reveal_type(filtered_data)  # N: Revealed type is "builtins.list[builtins.int]"
-        reveal_type(z3)  # N: Revealed type is "builtins.int"
+--zuban-diff         reveal_type(z3)  # N: Revealed type is "builtins.int"
+        reveal_type(z3)  # N: Revealed type is "Literal[1]?"
 
 # Assignment expressions from inside the class should not escape the class scope.
 reveal_type(x2)  # E: Name "x2" is not defined  # N: Revealed type is "Any"
@@ -465,9 +493,11 @@ def check_partial_list() -> None:
 if (x := 0):
     reveal_type(x)  # E: Statement is unreachable
 else:
-    reveal_type(x)  # N: Revealed type is "builtins.int"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "builtins.int"
+    reveal_type(x)  # N: Revealed type is "Literal[0]?"
 
-reveal_type(x)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(x)  # N: Revealed type is "builtins.int"
+reveal_type(x)  # N: Revealed type is "Literal[0]?"
 
 [case testWalrusAssignmentAndConditionScopeForProperty]
 # flags: --warn-unreachable
