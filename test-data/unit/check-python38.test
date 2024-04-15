@@ -294,16 +294,20 @@ def f(x: int = (c := 4)) -> int:
         pass
 
     # Just make sure we don't crash on this sort of thing.
-    if NT := NamedTuple("NT", [("x", int)]):  # E: "int" not callable
-        z2: NT  # E: Variable "NT" is not valid as a type \
+--zuban-diff     if NT := NamedTuple("NT", [("x", int)]):  # E: "int" not callable
+    if NT := NamedTuple("NT", [("x", int)]):
+--zuban-diff         z2: NT  # E: Variable "NT" is not valid as a type \
+        z2: NT  # E: Variable "__main__.NT" is not valid as a type \
                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
     if Alias := int:  # E: Function "Alias" could always be true in boolean context \
                       # E: Function "int" could always be true in boolean context
-        z3: Alias  # E: Variable "Alias" is not valid as a type \
+--zuban-diff         z3: Alias  # E: Variable "Alias" is not valid as a type \
+        z3: Alias  # E: Variable "__main__.Alias" is not valid as a type \
                    # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
-    if (reveal_type(y9 := 3) and   # N: Revealed type is "Literal[3]?"
+--zuban-diff     if (reveal_type(y9 := 3) and   # N: Revealed type is "Literal[3]?"
+    if (reveal_type(y9 := 3) and   # N: Revealed type is "builtins.int"
             reveal_type(y9)):       # N: Revealed type is "builtins.int"
         reveal_type(y9)            # N: Revealed type is "builtins.int"
 
@@ -333,7 +337,8 @@ def check_binder(x: Optional[int], y: Optional[int], z: Optional[int], a: Option
     if (a := 1) and x:
         reveal_type(a)  # N: Revealed type is "builtins.int"
 
-    if (b := 1) or x:
+--zuban-diff     if (b := 1) or x:
+    if (b := 1) or x:  # E: Right operand of "or" is never evaluated
         reveal_type(b)  # N: Revealed type is "builtins.int"
 
     if z := 1:
