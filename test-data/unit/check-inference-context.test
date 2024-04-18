@@ -377,8 +377,7 @@ ao: List[object]
 a: A
 def f(): a, aa, ao # Prevent redefinition
 
---zuban-diff a = [] # E: Incompatible types in assignment (expression has type "List[Never]", variable has type "A")
-a = [] # E: Incompatible types in assignment (expression has type "List[Any]", variable has type "A")
+a = [] # E: Incompatible types in assignment (expression has type "List[Never]", variable has type "A")
 
 aa = []
 ao = []
