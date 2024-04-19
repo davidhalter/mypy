@@ -1696,9 +1696,10 @@ a() # E: "Dict[str, int]" not callable
 
 [case testInferDictInitializedToEmptyUsingUpdateError]
 a = {}  # E: Need type annotation for "a" (hint: "a: Dict[<type>, <type>] = ...")
-a.update([1, 2])  # E: Argument 1 to "update" of "dict" has incompatible type "List[int]"; expected "SupportsKeysAndGetItem[Any, Any]" \
-                  # N: "list" is missing following "SupportsKeysAndGetItem" protocol member: \
-                  # N:     keys
+--zuban-diff a.update([1, 2])  # E: Argument 1 to "update" of "dict" has incompatible type "List[int]"; expected "SupportsKeysAndGetItem[Any, Any]" \
+--zuban-diff                   # N: "list" is missing following "SupportsKeysAndGetItem" protocol member: \
+--zuban-diff                   # N:     keys
+a.update([1, 2])  # E: Argument 1 to "update" of "MutableMapping" has incompatible type "List[int]"; expected "Iterable[tuple[Any, Any]]"
 a()  # E: "Dict[Any, Any]" not callable
 [builtins fixtures/dict.pyi]
 
