@@ -2418,8 +2418,7 @@ def make_list() -> List[T]: pass
 
 l: List[int] = make_list()
 
---zuban-diff bad = make_list()  # E: Need type annotation for "bad" (hint: "bad: List[<type>] = ...")
-bad = make_list()  # E: Need type annotation for "bad"
+bad = make_list()  # E: Need type annotation for "bad" (hint: "bad: List[<type>] = ...")
 [builtins fixtures/list.pyi]
 
 [case testAnonymousArgumentError]
