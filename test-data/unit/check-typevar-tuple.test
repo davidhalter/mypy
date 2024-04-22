@@ -452,11 +452,13 @@ def foo2(*args: Unpack[Tuple[bool, Unpack[Tuple[int, str]], bool]]) -> None:
 
 # It is hard to normalize callable types in definition, because there is deep relation between `FuncDef.type`
 # and `FuncDef.arguments`, therefore various typeops need to be sure to normalize Callable types before using them.
-reveal_type(foo2)  # N: Revealed type is "def (*args: Unpack[Tuple[builtins.bool, builtins.int, builtins.str, builtins.bool]])"
+--zuban-diff reveal_type(foo2)  # N: Revealed type is "def (*args: Unpack[Tuple[builtins.bool, builtins.int, builtins.str, builtins.bool]])"
+reveal_type(foo2)  # N: Revealed type is "def (builtins.bool, builtins.int, builtins.str, builtins.bool)"
 
 class C:
     def foo2(self, *args: Unpack[Tuple[bool, Unpack[Tuple[int, str]], bool]]) -> None: ...
-reveal_type(C().foo2)  # N: Revealed type is "def (*args: Unpack[Tuple[builtins.bool, builtins.int, builtins.str, builtins.bool]])"
+--zuban-diff reveal_type(C().foo2)  # N: Revealed type is "def (*args: Unpack[Tuple[builtins.bool, builtins.int, builtins.str, builtins.bool]])"
+reveal_type(C().foo2)  # N: Revealed type is "def (builtins.bool, builtins.int, builtins.str, builtins.bool)"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTuplePep646TypeVarStarArgsVariableLengthTuple]
