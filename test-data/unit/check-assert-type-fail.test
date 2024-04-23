@@ -4,7 +4,8 @@ import array as arr
 class array:
     pass
 def f(si: arr.array[int]):
-    typing.assert_type(si, array) # E: Expression is of type "array.array[int]", not "__main__.array"
+--zuban-diff     typing.assert_type(si, array) # E: Expression is of type "array.array[int]", not "__main__.array"
+    typing.assert_type(si, array) # E: Expression is of type "array[int]", not "array"
 [builtins fixtures/tuple.pyi]
 
 [case testAssertTypeFail2]
@@ -14,7 +15,8 @@ class array:
     class array:
         i = 1
 def f(si: arr.array[int]):
-    typing.assert_type(si, array.array) # E: Expression is of type "array.array[int]", not "__main__.array.array"
+--zuban-diff     typing.assert_type(si, array.array) # E: Expression is of type "array.array[int]", not "__main__.array.array"
+    typing.assert_type(si, array.array) # E: Expression is of type "array[int]", not "array"
 [builtins fixtures/tuple.pyi]
 
 [case testAssertTypeFail3]
