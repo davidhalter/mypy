@@ -150,7 +150,8 @@ from typing_extensions import TypeIs
 class C:
     def main(self, a: object) -> None:
         if self.is_float(a):
-            reveal_type(self)  # N: Revealed type is "__main__.C"
+--zuban-diff             reveal_type(self)  # N: Revealed type is "__main__.C"
+            reveal_type(self)  # N: Revealed type is "Self"
             reveal_type(a)  # N: Revealed type is "builtins.float"
     def is_float(self, a: object) -> TypeIs[float]: pass
 [builtins fixtures/tuple.pyi]
