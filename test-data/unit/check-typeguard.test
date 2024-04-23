@@ -699,6 +699,8 @@ if typeguard(y="42", x=x):
 [case testGenericAliasWithTypeGuard]
 from typing import Callable, List, TypeVar
 from typing_extensions import TypeGuard, TypeAlias
+--zuban-diff 
+T = TypeVar("T")
 
 A = Callable[[object], TypeGuard[List[T]]]
 def foo(x: object) -> TypeGuard[List[str]]: ...
