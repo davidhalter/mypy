@@ -58,15 +58,18 @@ Ts2 = TypeVarTuple("Ts2", default=Unpack[Tuple[int, ...]])
 from typing import TypeVar, ParamSpec, Tuple
 from typing_extensions import TypeVarTuple, Unpack
 
-T1 = TypeVar("T1", default=2)  # E: TypeVar "default" must be a type
+--zuban-diff T1 = TypeVar("T1", default=2)  # E: TypeVar "default" must be a type
+T1 = TypeVar("T1", default=2)  # E: Invalid type: try using Literal[2] instead?
 T2 = TypeVar("T2", default=[int])  # E: Bracketed expression "[...]" is not valid as a type \
                                    # N: Did you mean "List[...]"? \
-                                   # E: TypeVar "default" must be a type
+--zuban-diff                                    # E: TypeVar "default" must be a type
+--zuban-diff 
 
 P1 = ParamSpec("P1", default=int)  # E: The default argument to ParamSpec must be a list expression, ellipsis, or a ParamSpec
 P2 = ParamSpec("P2", default=2)  # E: The default argument to ParamSpec must be a list expression, ellipsis, or a ParamSpec
 P3 = ParamSpec("P3", default=(2, int))  # E: The default argument to ParamSpec must be a list expression, ellipsis, or a ParamSpec
-P4 = ParamSpec("P4", default=[2, int])  # E: Argument 0 of ParamSpec default must be a type
+--zuban-diff P4 = ParamSpec("P4", default=[2, int])  # E: Argument 0 of ParamSpec default must be a type
+P4 = ParamSpec("P4", default=[2, int])  # E: Invalid type: try using Literal[2] instead?
 
 Ts1 = TypeVarTuple("Ts1", default=2) # E: The default argument to TypeVarTuple must be an Unpacked tuple
 Ts2 = TypeVarTuple("Ts2", default=int)  # E: The default argument to TypeVarTuple must be an Unpacked tuple
