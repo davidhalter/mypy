@@ -216,8 +216,10 @@ def func_a1(
     reveal_type(l)  # N: Revealed type is "__main__.ClassA1[builtins.float, builtins.str]"
     m = ClassA1[float, float]()
     reveal_type(m)  # N: Revealed type is "__main__.ClassA1[builtins.float, builtins.float]"
-    n = ClassA1[float, float, float]()  # E: Type application has too many types (expected between 0 and 2)
-    reveal_type(n)  # N: Revealed type is "Any"
+--zuban-diff     n = ClassA1[float, float, float]()  # E: Type application has too many types (expected between 0 and 2)
+--zuban-diff     reveal_type(n)  # N: Revealed type is "Any"
+    n = ClassA1[float, float, float]()  # E: "ClassA1" expects between 0 and 2 type arguments, but 3 given
+    reveal_type(n)  # N: Revealed type is "__main__.ClassA1[int, str]"
 
 class ClassA2(Generic[T1, T2, T3]): ...
 
@@ -242,8 +244,10 @@ def func_a2(
     reveal_type(m)  # N: Revealed type is "__main__.ClassA2[builtins.float, builtins.float, builtins.str]"
     n = ClassA2[float, float, float]()
     reveal_type(n)  # N: Revealed type is "__main__.ClassA2[builtins.float, builtins.float, builtins.float]"
-    o = ClassA2[float, float, float, float]()  # E: Type application has too many types (expected between 1 and 3)
-    reveal_type(o)  # N: Revealed type is "Any"
+--zuban-diff     o = ClassA2[float, float, float, float]()  # E: Type application has too many types (expected between 1 and 3)
+--zuban-diff     reveal_type(o)  # N: Revealed type is "Any"
+    o = ClassA2[float, float, float, float]()  # E: "ClassA2" expects between 1 and 3 type arguments, but 4 given
+    reveal_type(o)  # N: Revealed type is "__main__.ClassA2[Any, int, str]"
 
 class ClassA3(Generic[T1, T2]):
     @overload
@@ -269,8 +273,10 @@ def func_a3(
     reveal_type(l)  # N: Revealed type is "__main__.ClassA3[builtins.float, builtins.int]"
     m = ClassA3[float, float]()
     reveal_type(m)  # N: Revealed type is "__main__.ClassA3[builtins.float, builtins.float]"
-    n = ClassA3[float, float, float]()  # E: Type application has too many types (expected between 1 and 2)
-    reveal_type(n)  # N: Revealed type is "Any"
+--zuban-diff     n = ClassA3[float, float, float]()  # E: Type application has too many types (expected between 1 and 2)
+--zuban-diff     reveal_type(n)  # N: Revealed type is "Any"
+    n = ClassA3[float, float, float]()  # E: "ClassA3" expects between 1 and 2 type arguments, but 3 given
+    reveal_type(n)  # N: Revealed type is "__main__.ClassA3[Any, builtins.int]"
 
 class ClassA4(Generic[T4]): ...
 
