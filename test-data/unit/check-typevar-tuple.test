@@ -65,7 +65,7 @@ f(bad_args)  # E: Argument 1 to "f" has incompatible type "Tuple[str, str]"; exp
 # The reason for error in subtle: actual can be empty, formal cannot.
 --zuban-diff reveal_type(f(var_len_tuple))  # N: Revealed type is "Tuple[builtins.str, Unpack[builtins.tuple[builtins.int, ...]]]" \
 --zuban-diff                                # E: Argument 1 to "f" has incompatible type "Tuple[int, ...]"; expected "Tuple[int, Unpack[Tuple[int, ...]]]"
-reveal_type(f(var_len_tuple))  # N: Revealed type is "tuple[str]" \
+reveal_type(f(var_len_tuple))  # N: Revealed type is "tuple[str, Unpack[Tuple[Never, ...]]]" \
                                # E: Argument 1 to "f" has incompatible type "Tuple[int, ...]"; expected "Tuple[int]"
 
 g_args: Tuple[str, int]
