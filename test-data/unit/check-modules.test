@@ -656,7 +656,8 @@ try:
 except:
     pass
 
-import m as f  # E: Incompatible import of "f" (imported name has type "object", local name has type "Callable[[Any], Any]")
+--zuban-diff import m as f  # E: Incompatible import of "f" (imported name has type "object", local name has type "Callable[[Any], Any]")
+import m as f  # E: Incompatible import of "f" (imported name has type Module, local name has type "Callable[[Any], Any]")
 
 [file m.py]
 def f(x): pass
