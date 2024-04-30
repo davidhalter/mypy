@@ -910,8 +910,6 @@ import typing
 None[1] = 1 # type: int
 [out]
 main:2: error: Unexpected type declaration
---zuban-diff
-main:2: error: Unsupported target for indexed assignment ("None")
 
 [case testNonSelfMemberAssignmentWithTypeDeclaration]
 import typing
@@ -994,8 +992,6 @@ a.x = None # type: int \
     # E: Type cannot be declared in assignment to non-self attribute
 [out]
 --zuban-diff
-main:2: error: Unsupported target for indexed assignment ("int")
---zuban-diff
 main:3: error: "int" has no attribute "x"
 
 [case testInvalidLvalueWithExplicitType3]
@@ -1011,10 +1007,6 @@ main:2: error: "int" has no attribute "y"
 main:2: error: Type cannot be declared in assignment to non-self attribute
 main:2: error: "int" has no attribute "x"
 main:4: error: Unexpected type declaration
---zuban-diff
-main:4: error: Unsupported target for indexed assignment ("int")
---zuban-diff
-main:4: error: Unsupported target for indexed assignment ("int")
 
 [case testMissingGenericImport]
 from typing import TypeVar
@@ -1312,8 +1304,6 @@ def f() -> None:
     1[2] = 1  # type: int
 [out]
 main:3: error: Unexpected type declaration
---zuban-diff
-main:3: error: Unsupported target for indexed assignment ("int")
 
 [case testInvalidTypeAnnotation2]
 import typing

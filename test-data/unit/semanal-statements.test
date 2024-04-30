@@ -16,8 +16,7 @@ MypyFile:1(
       ReturnStmt:2())))
 
 [case testRaise]
---zuban-diff raise object()
-raise Exception()
+raise object()
 [out]
 MypyFile:1(
   RaiseStmt:1(
@@ -159,11 +158,9 @@ MypyFile:1(
 
 [case testReusingForLoopIndexVariable]
 # flags: --allow-redefinition
---zuban-diff for x in None:
-for x in []:
+for x in None:
     pass
---zuban-diff for x in None:
-for x in []:
+for x in None:
     pass
 [out]
 MypyFile:1(
@@ -181,11 +178,9 @@ MypyFile:1(
 [case testReusingForLoopIndexVariable2]
 # flags: --allow-redefinition
 def f():
---zuban-diff     for x in None:
-    for x in []:
+    for x in None:
         pass
---zuban-diff     for x in None:
-    for x in []:
+    for x in None:
         pass
 [out]
 MypyFile:1(
@@ -321,14 +316,10 @@ x = y = 1
 xx = 1
 --zuban-diff x.m = 1
 x.m = 1  # E: "int" has no attribute "m"
---zuban-diff x[y] = 1
-x[y] = 1 # E: Unsupported target for indexed assignment ("int")
---zuban-diff x2, y2 = 1
-x2, y2 = (1, 2)
---zuban-diff [x3, y3] = 1
-[x3, y3] = (1, 2)
---zuban-diff (x4, y4) = 1
-(x4, y4) = (1, 2)
+x[y] = 1
+x2, y2 = 1
+[x3, y3] = 1
+(x4, y4) = 1
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -368,12 +359,9 @@ MypyFile:1(
 
 [case testStarLvalues]
 # flags: --allow-redefinition
---zuban-diff *x, y = 1
-*x, y = (1, 2, 3)
---zuban-diff *x, (y, *z) = 1
-*x, (y, *z) = (1, (2, 3, 4, 5))
---zuban-diff *(x, q), r = 1
-*(x, q), r = ((1,2),)
+*x, y = 1
+*x, (y, *z) = 1
+*(x, q), r = 1
 [out]
 MypyFile:1(
   AssignmentStmt:2(
@@ -402,10 +390,8 @@ MypyFile:1(
 
 [case testMultipleDefinition]
 # flags: --allow-redefinition
---zuban-diff x, y = 1
-x, y = (1, 1)
---zuban-diff x, y = 2
-x, y = (2, 2)
+x, y = 1
+x, y = 2
 [out]
 MypyFile:1(
   AssignmentStmt:2(
@@ -451,7 +437,7 @@ MypyFile:1(
 
 [case testMultipleDefOnlySomeNew]
 x = 1
---zuban-diff y, x = 1
+y, x = 1
 y, x = (1, 1)
 [out]
 MypyFile:1(
@@ -467,8 +453,7 @@ MypyFile:1(
 
 [case testMultipleDefOnlySomeNewNestedTuples]
 x = 1
---zuban-diff y, (x, z) = 1
-y, (x, z) = (1, (1, 1))
+y, (x, z) = 1
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -486,10 +471,8 @@ MypyFile:1(
 [case testMultipleDefOnlySomeNewNestedLists]
 x = 1
 if x:
---zuban-diff     y, [x, z] = 1
-    y, [x, z] = (1, (1, 2))
---zuban-diff     [p, [x, r]] = 1
-    [p, [x, r]] = (1, (1, 2))
+    y, [x, z] = 1
+    [p, [x, r]] = 1
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -583,12 +566,10 @@ main:2: error: cannot delete operator
 main:2: error: cannot delete expression
 
 [case testTry]
---zuban-diff class c: pass
-class c(Exception): pass
+class c: pass
 try:
   c
---zuban-diff except object:
-except object:  # E: Exception type must be derived from BaseException (or be a tuple of exception classes)
+except object:
   c
 except c as e:
   e
@@ -656,8 +637,7 @@ MypyFile:1(
 class c: pass
 try:
   pass
---zuban-diff except (c, object) as e:
-except (IndexError, AttributeError) as e:
+except (c, object) as e:
   e
 [out]
 MypyFile:1(
@@ -784,8 +764,7 @@ MypyFile:1(
 [case testVariableInExceptHandler]
 try:
   pass
---zuban-diff except object as o:
-except Exception as o:
+except object as o:
   x = None
   o = x
 [out]
@@ -806,8 +785,7 @@ MypyFile:1(
 [case testCallInExceptHandler]
 try:
   pass
---zuban-diff except object as o:
-except Exception as o:
+except object as o:
   o = object()
 [out]
 MypyFile:1(
@@ -905,8 +883,7 @@ MypyFile:1(
 def f() -> None:
     try:
         pass
---zuban-diff     except object as o:
-    except object as o:  # E: Exception type must be derived from BaseException (or be a tuple of exception classes)
+    except object as o:
         pass
 [out]
 MypyFile:1(
@@ -926,11 +903,9 @@ MypyFile:1(
 def f() -> None:
     try:
         pass
---zuban-diff     except object as o:
-    except Exception as o:
+    except object as o:
         pass
---zuban-diff     except object as o:
-    except Exception as o:
+    except object as o:
         pass
 [out]
 MypyFile:1(

@@ -26,8 +26,7 @@ MypyFile:1(
 
 [case testIndexExpr]
 x = y = 1
---zuban-diff x[y]
-x[y]  # E: Value of type "int" is not indexable
+x[y]
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -105,12 +104,9 @@ MypyFile:1(
 
 [case testSlices]
 x = y = z = 1
---zuban-diff x[y:z:x]
-x[y:z:x] # E: Value of type "int" is not indexable
---zuban-diff x[:]
-x[:] # E: Value of type "int" is not indexable
---zuban-diff x[:y]
-x[:y] # E: Value of type "int" is not indexable
+x[y:z:x]
+x[:]
+x[:y]
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -189,8 +185,7 @@ MypyFile:1(
       NameExpr(x [__main__.x]))))
 
 [case testListComprehension]
---zuban-diff a = 0
-a = []
+a = 0
 ([x + 1 for x in a])
 [out]
 MypyFile:1(
@@ -227,8 +222,7 @@ MypyFile:1(
             NameExpr(a [l])))))))
 
 [case testListComprehensionWithCondition]
---zuban-diff a = 0
-a = []
+a = 0
 b = [x for x in a if x]
 [out]
 MypyFile:1(
@@ -246,8 +240,7 @@ MypyFile:1(
         NameExpr(x [l])))))
 
 [case testSetComprehension]
---zuban-diff a = 0
-a = []
+a = 0
 ({x + 1 for x in a})
 [out]
 MypyFile:1(
@@ -266,8 +259,7 @@ MypyFile:1(
         NameExpr(a [__main__.a])))))
 
 [case testSetComprehensionWithCondition]
---zuban-diff a = 0
-a = []
+a = 0
 b = {x for x in a if x}
 [out]
 MypyFile:1(
@@ -285,8 +277,7 @@ MypyFile:1(
         NameExpr(x [l])))))
 
 [case testDictionaryComprehension]
---zuban-diff a = 0
-a = []
+a = 0
 ({x: x + 1 for x in a})
 [out]
 MypyFile:1(
@@ -305,8 +296,7 @@ MypyFile:1(
       NameExpr(a [__main__.a]))))
 
 [case testDictionaryComprehensionWithCondition]
---zuban-diff a = 0
-a = []
+a = 0
 b = {x: x + 1 for x in a if x}
 [out]
 MypyFile:1(
@@ -327,8 +317,7 @@ MypyFile:1(
       NameExpr(x [l]))))
 
 [case testGeneratorExpression]
---zuban-diff a = 0
-a = [1]
+a = 0
 (x for x in a)
 [out]
 MypyFile:1(
@@ -343,8 +332,7 @@ MypyFile:1(
       NameExpr(a [__main__.a]))))
 
 [case testGeneratorExpressionNestedIndex]
---zuban-diff a = 0
-a = []
+a = 0
 (x for x, (y, z) in a)
 [out]
 MypyFile:1(
