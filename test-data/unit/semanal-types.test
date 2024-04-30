@@ -22,8 +22,7 @@ MypyFile:1(
 [case testLocalVarWithType]
 class A: pass
 def f():
---zuban-diff   x = None # type: A
-  x = None # type: A  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+  x = None # type: A
   y = x
 [out]
 MypyFile:1(
@@ -60,8 +59,7 @@ MypyFile:1(
 import typing
 class A:
   def __init__(self):
---zuban-diff     self.x = None # type: int
-    self.x = None # type: int  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+    self.x = None # type: int
 [out]
 MypyFile:1(
   Import:1(typing)
@@ -241,8 +239,7 @@ class A: pass
 a = None # type: A
 a = 1
 def f():
---zuban-diff   b = None # type: A
-  b = None # type: A  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+  b = None # type: A
   b = 1
 [out]
 MypyFile:1(
@@ -395,8 +392,7 @@ MypyFile:1(
 
 [case testAssertType]
 from typing import assert_type
---zuban-diff assert_type(1, int)
-assert_type(1, int) # E: Expression is of type "Literal[1]", not "int"
+assert_type(1, int)
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [assert_type])
@@ -552,8 +548,7 @@ MypyFile:1(
 [case testGenericFunctionTypeVariableInReturnType]
 from typing import TypeVar
 t = TypeVar('t')
---zuban-diff def f() -> t: pass
-def f() -> t: pass # E: A function returning TypeVar should receive at least one argument containing the same Typevar
+def f() -> t: pass
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])
@@ -586,8 +581,7 @@ MypyFile:1(
 from typing import TypeVar
 t = TypeVar('t')
 def f() -> None:
---zuban-diff     def g() -> t: pass
-    def g() -> t: pass  # E: A function returning TypeVar should receive at least one argument containing the same Typevar
+    def g() -> t: pass
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])
@@ -745,8 +739,7 @@ from typing import overload, Any
 @overload
 def f(a: object) -> int: a
 @overload
---zuban-diff def f(a: str) -> object: a
-def f(a: str) -> object: a  # E: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+def f(a: str) -> object: a
 
 def f(a: Any) -> Any: return a
 
@@ -794,8 +787,7 @@ def f() -> None: pass
 @overload
 def f(x: int) -> None: pass
 
---zuban-diff def f(*args) -> None: pass
-def f(*args) -> None: pass  # E: Overloaded function implementation does not accept all possible arguments of signature 2
+def f(*args) -> None: pass
 
 x = f
 [builtins fixtures/tuple.pyi]
@@ -992,8 +984,7 @@ MypyFile:1(
 from typing import TypeVar
 t = TypeVar('t')
 def f(x: t) -> None: pass
---zuban-diff f[int](1)
-f[int](1)  # E: Type application is only supported for generic classes
+f[int](1)
 [out]
 MypyFile:1(
   ImportFrom:1(typing, [TypeVar])

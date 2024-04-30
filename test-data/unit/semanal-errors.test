@@ -452,8 +452,7 @@ main:3: error: Two starred expressions in assignment
 main:4: error: Two starred expressions in assignment
 
 [case testTwoStarExpressionsInForStmt]
---zuban-diff z = 1
-z: Any
+z = 1
 for a, *b, *c in z:
     pass
 for *a, (*b, c) in z:
@@ -724,8 +723,7 @@ y = 1
 [case testImportScope4]
 import typing
 class A:
---zuban-diff     from x import *
-    from x import *  # E: Unsupported class scoped import
+    from x import *
     y
 y # E: Name "y" is not defined
 [file x.py]
@@ -782,8 +780,7 @@ class A(Generic[t]):
 [case testTestExtendPrimitives]
 # Extending bool is not checked here as it should be typed
 # as final meaning the type checker will detect it.
---zuban-diff class C(bool): pass # ok
-class C(bool): pass # ok  # E: Cannot inherit from final class "bool"
+class C(bool): pass # ok
 class A(int): pass # ok
 class B(float): pass # ok
 class D(str): pass # ok
@@ -852,14 +849,11 @@ cast(str, target=None) # E: "cast" must be called with 2 positional arguments
 [case testInvalidAssertType]
 from typing import assert_type
 assert_type(1, type=int) # E: "assert_type" must be called with 2 positional arguments
---zuban-diff assert_type(1, *int) # E: "assert_type" must be called with 2 positional arguments
-assert_type(1, *[1]) # E: "assert_type" must be called with 2 positional arguments
+assert_type(1, *int) # E: "assert_type" must be called with 2 positional arguments
 assert_type() # E: "assert_type" expects 2 arguments
 assert_type(1, int, "hello") # E: "assert_type" expects 2 arguments
 assert_type(int, 1)  # E: Invalid type: try using Literal[1] instead?
-assert_type(1, int[int])  # E: "int" expects no type arguments, but 1 given \
---zuban-diff 
-                          # E: Expression is of type "Literal[1]", not "int"
+assert_type(1, int[int])  # E: "int" expects no type arguments, but 1 given
 
 [case testInvalidAnyCall]
 from typing import Any
@@ -1454,15 +1448,11 @@ from typing import Dict, TypeVar
 T = TypeVar('T')
 
 def f():  # Note no annotation
---zuban-diff     x: Dict[str, T] = {}
---zuban-diff     y: T
---zuban-diff     z: x
-    x: Dict[str, T] = {}  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
-    y: T  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
-    z: x  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+    x: Dict[str, T] = {}
+    y: T
+    z: x
     def nested(): pass
---zuban-diff     t: nested
-    t: nested  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs
+    t: nested
 
 def g() -> None:
     x: Dict[str, T] = {}  # E: Type variable "__main__.T" is unbound \
