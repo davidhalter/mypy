@@ -82,8 +82,7 @@ MypyFile:1(
         NameExpr(y [__main__.y])))))
 
 [case testFor]
---zuban-diff for x in object:
-for x in object: # E: "Type[object]" object is not iterable
+for x in object:
   x
 [out]
 MypyFile:1(
@@ -422,8 +421,7 @@ MypyFile:1(
 
 [case testComplexDefinitions]
 (x) = 1
---zuban-diff ([y]) = 2
-([y]) = 2  # E: "int" object is not iterable
+([y]) = 2
 [out]
 MypyFile:1(
   AssignmentStmt:1(

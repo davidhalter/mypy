@@ -450,14 +450,6 @@ a, (*b, *c) = 1
 main:1: error: Two starred expressions in assignment
 main:3: error: Two starred expressions in assignment
 main:4: error: Two starred expressions in assignment
---zuban-diff 
---zuban-diff 
---zuban-diff 
---zuban-diff 
-main:1: error: "int" object is not iterable
-main:2: error: "int" object is not iterable
-main:3: error: "int" object is not iterable
-main:4: error: "int" object is not iterable
 
 [case testTwoStarExpressionsInForStmt]
 --zuban-diff z = 1
@@ -856,8 +848,6 @@ from typing import cast
 cast(str, *None) # E: "cast" must be called with 2 positional arguments
 cast(str, target=None) # E: "cast" must be called with 2 positional arguments
 [out]
---zuban-diff
-main:2: error: "None" object is not iterable
 
 [case testInvalidAssertType]
 from typing import assert_type
@@ -1373,8 +1363,6 @@ class A:
     [x for i in z if y]
 [out]
 main:5: error: Name "x" is not defined
---zuban-diff 
-main:5: error: "int" object is not iterable
 main:5: error: Name "y" is not defined
 
 [case testTypeRedeclarationNoSpuriousWarnings]
