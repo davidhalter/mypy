@@ -228,9 +228,8 @@ class B(A): pass
 class A(NamedTuple('N', [1])): pass
 class B(A): pass
 [out]
---zuban-diff main:2: error: Unsupported dynamic base class "NamedTuple"
---zuban-diff main:2: error: Name "NamedTuple" is not defined
 main:2: error: Name "NamedTuple" is not defined
+--zuban-diff main:2: error: Unsupported dynamic base class "NamedTuple"
 main:2: note: Did you forget to import it from "typing"? (Suggestion: "from typing import NamedTuple")
 
 [case testNamedTupleWithDecorator]

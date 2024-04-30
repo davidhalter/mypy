@@ -11,8 +11,7 @@ MypyFile:1(
 
 [case testMemberExpr]
 x = 1
---zuban-diff x.y
-x.y  # E: "int" has no attribute "y"
+x.y
 [out]
 MypyFile:1(
   AssignmentStmt:1(

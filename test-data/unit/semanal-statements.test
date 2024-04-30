@@ -314,8 +314,7 @@ MypyFile:1(
 [case testLvalues]
 x = y = 1
 xx = 1
---zuban-diff x.m = 1
-x.m = 1  # E: "int" has no attribute "m"
+x.m = 1
 x[y] = 1
 x2, y2 = 1
 [x3, y3] = 1
@@ -500,8 +499,7 @@ MypyFile:1(
 
 [case testIndexedDel]
 x = y = 1
---zuban-diff del x[y]
-del x[y]  # E: "int" has no attribute "__delitem__"
+del x[y]
 [out]
 MypyFile:1(
   AssignmentStmt:1(
@@ -662,8 +660,7 @@ MypyFile:1(
   RaiseStmt:1())
 
 [case testWith]
---zuban-diff with object:
-with object:  # E: "Type[object]" has no attribute "__enter__" # E: "Type[object]" has no attribute "__exit__"
+with object:
   object
 [out]
 MypyFile:1(
@@ -675,8 +672,7 @@ MypyFile:1(
         NameExpr(object [builtins.object])))))
 
 [case testWithAndVariable]
---zuban-diff with object as x:
-with object as x:  # E: "Type[object]" has no attribute "__enter__" # E: "Type[object]" has no attribute "__exit__"
+with object as x:
   x
 [out]
 MypyFile:1(
@@ -708,16 +704,9 @@ MypyFile:1(
             NameExpr(x [l])))))))
 
 [case testComplexWith]
---zuban-diff 
---zuban-diff 
-from typing import Any
-any: Any
-
---zuban-diff with object, object:
-with any, any:
+with object, object:
   pass
---zuban-diff with object as a, object as b:
-with any as a, any as b:
+with object as a, object as b:
   pass
 [out]
 MypyFile:1(
@@ -1084,15 +1073,9 @@ MypyFile:1(
     StrExpr()))
 
 [case testSimpleWithRenaming]
---zuban-diff 
-from typing import Any
-a: Any
-
---zuban-diff with 0 as y:
-with a as y:
+with 0 as y:
     z = y
---zuban-diff with 1 as y:
-with a as y:
+with 1 as y:
     y = 1
 [out]
 MypyFile:1(
@@ -1116,16 +1099,10 @@ MypyFile:1(
         IntExpr(1)))))
 
 [case testSimpleWithRenamingFailure]
---zuban-diff 
-from typing import Any
-a: Any
-
---zuban-diff with 0 as y:
-with a as y:
+with 0 as y:
     z = y
 zz = y
---zuban-diff with 1 as y:
-with a as y:
+with 1 as y:
     y = 1
 [out]
 MypyFile:1(
