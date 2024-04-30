@@ -239,8 +239,7 @@ MypyFile:1(
 
 class A: pass
 a = None # type: A
---zuban-diff a = 1
-a = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "A")
+a = 1
 def f():
 --zuban-diff   b = None # type: A
   b = None # type: A  # N: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs

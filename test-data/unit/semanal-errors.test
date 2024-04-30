@@ -48,8 +48,6 @@ class A(Generic[t]): pass
 x = 0 # type: A[y]
 [out]
 main:4: error: Name "y" is not defined
---zuban-diff
-main:4: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
 
 [case testInvalidNumberOfGenericArgsInTypeDecl]
 from typing import TypeVar, Generic
@@ -60,11 +58,7 @@ x = 0 # type: B[A, A]
 y = 0 # type: A[A]
 [out]
 main:5: error: "B" expects 1 type argument, but 2 given
---zuban-diff
-main:5: error: Incompatible types in assignment (expression has type "int", variable has type "B[Any]")
 main:6: error: "A" expects no type arguments, but 1 given
---zuban-diff
-main:6: error: Incompatible types in assignment (expression has type "int", variable has type "A")
 
 [case testInvalidNumberOfGenericArgsInUndefinedArg]
 
@@ -792,14 +786,6 @@ class A(Generic[t]):
                                   # N: (Hint: Use "s" in function signature to bind "s" inside a function)
     a = 0 # type: A[t]
 [out]
---zuban-diff
-main:7: error: Incompatible types in assignment (expression has type "int", variable has type "A[s]")
---zuban-diff
-main:8: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
---zuban-diff
-main:11: error: Incompatible types in assignment (expression has type "int", variable has type "A[Any]")
---zuban-diff
-main:14: error: Incompatible types in assignment (expression has type "int", variable has type "A[t]")
 
 [case testTestExtendPrimitives]
 # Extending bool is not checked here as it should be typed

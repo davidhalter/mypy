@@ -810,8 +810,7 @@ try:
   pass
 --zuban-diff except object as o:
 except Exception as o:
---zuban-diff   o = object()
-  o = object()  # E: Incompatible types in assignment (expression has type "object", variable has type "Exception")
+  o = object()
 [out]
 MypyFile:1(
   TryStmt:1(
@@ -833,8 +832,7 @@ try:
 except BaseException as e:
     pass
 except Err as f:
---zuban-diff    f = BaseException() # Fail
-    f = BaseException() # E: Incompatible types in assignment (expression has type "BaseException", variable has type "Err")
+    f = BaseException() # Fail
     f = Err()
 [builtins fixtures/exception.pyi]
 [out]
