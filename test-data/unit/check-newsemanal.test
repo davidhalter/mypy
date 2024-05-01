@@ -286,7 +286,8 @@ if MYPY:
     from b import x as y
 x = 0
 
-def y(): pass # E: Name "y" already defined on line 4
+--zuban-diff def y(): pass # E: Name "y" already defined on line 4
+def y(): pass # E: Name "y" already defined (possibly by an import)
 reveal_type(y) # N: Revealed type is "builtins.int"
 
 y2 = y
@@ -313,7 +314,8 @@ import a
 from b import x as y
 x = 0
 
-def y(): pass # E: Name "y" already defined on line 2
+--zuban-diff def y(): pass # E: Name "y" already defined on line 2
+def y(): pass # E: Name "y" already defined (possibly by an import)
 reveal_type(y) # N: Revealed type is "builtins.int"
 
 y2 = y
@@ -341,7 +343,8 @@ MYPY = False
 if MYPY:  # Tweak processing order
     from b import C as C2
 class C: pass
-class C2: pass # E: Name "C2" already defined on line 4
+--zuban-diff class C2: pass # E: Name "C2" already defined on line 4
+class C2: pass # E: Name "C2" already defined (possibly by an import)
 
 [file b.py]
 from a import C
@@ -353,7 +356,8 @@ import a
 from b import C as C2
 class C: pass
 
-class C2: pass # E: Name "C2" already defined on line 2
+--zuban-diff class C2: pass # E: Name "C2" already defined on line 2
+class C2: pass # E: Name "C2" already defined (possibly by an import)
 [file b.py]
 MYPY = False
 if MYPY:  # Tweak processing order
@@ -368,7 +372,8 @@ def f(): pass
 
 a, *b = g()
 class b(): pass # E: Name "b" already defined on line 4
-reveal_type(b) # N: Revealed type is "Any"
+--zuban-diff reveal_type(b) # N: Revealed type is "Any"
+reveal_type(b) # N: Revealed type is "list[Any]"
 
 [file b.py]
 from a import f
