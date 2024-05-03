@@ -1483,7 +1483,8 @@ if x:
     def f(x: int) -> None: pass
 else:
     @dec
-    def f(): pass
+--zuban-diff     def f(): pass
+    def f(): pass  # E: Incompatible redefinition (redefinition with type "Callable[[int], None]", original type "Callable[[Arg(int, 'x')], None]")
 
 [case testConditionalFunctionDefinitionUsingDecorator4]
 
@@ -1497,7 +1498,8 @@ if x:
 else:
     # TODO: Complain about incompatible redefinition
     @dec
-    def f(): pass
+--zuban-diff     def f(): pass
+    def f(): pass  # E: Incompatible redefinition (redefinition with type "Callable[[int], None]", original type "Callable[[str], None]")
 
 [case testConditionalFunctionDefinitionUnreachable]
 def bar() -> None:

@@ -1918,7 +1918,8 @@ if int():
     from m import f
 else:
     @dec
-    def f(x: int) -> None:
+--zuban-diff     def f(x: int) -> None:
+    def f(x: int) -> None:  # E: Incompatible redefinition (redefinition with type "Callable[[str], None]", original type "Callable[[Arg(str, 'x')], None]")
         1()  # E: "int" not callable
 reveal_type(f) # N: Revealed type is "def (x: builtins.str)"
 [file m.py]
