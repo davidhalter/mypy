@@ -25,7 +25,8 @@ PY2 = f()
 if PY2:
     x = object() + 'x'
 else:
-    y = 'x' / 1 # E: Unsupported left operand type for / ("str")
+--zuban-diff     y = 'x' / 1 # E: Unsupported left operand type for / ("str")
+    y = 'x' / 1 # E: Unsupported operand types for / ("str" and "int")
 y
 
 [case testConditionalImport]
@@ -62,7 +63,8 @@ main:6: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missin
 import typing
 MYPY = 0
 if MYPY:
-    None + 1 # E: Unsupported left operand type for + ("None")
+--zuban-diff     None + 1 # E: Unsupported left operand type for + ("None")
+    None + 1 # E: Unsupported operand types for + ("None" and "int")
 else:
     None + ''
 [builtins fixtures/bool.pyi]
