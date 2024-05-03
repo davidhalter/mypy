@@ -1506,7 +1506,8 @@ def bar() -> None:
     if False:
         foo = 1
     else:
-        def foo(obj): ...
+--zuban-diff         def foo(obj): ...
+        def foo(obj): ... # E: Incompatible redefinition (redefinition with type "Callable[[Any], Any]", original type "int") 
 
 def baz() -> None:
     if False:
@@ -1591,7 +1592,8 @@ if g(C()):
 [case testRedefineFunctionDefinedAsVariableInitializedToEmptyList]
 f = [] # E: Need type annotation for "f" (hint: "f: List[<type>] = ...")
 if object():
-    def f(): pass # E: Incompatible redefinition
+--zuban-diff     def f(): pass # E: Incompatible redefinition
+    def f(): pass # E: Incompatible redefinition (redefinition with type "Callable[[], Any]", original type "list[Any]")
 f()  # E: "List[Any]" not callable
 f(1)  # E: "List[Any]" not callable
 [builtins fixtures/list.pyi]

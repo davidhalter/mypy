@@ -7529,7 +7529,8 @@ class A:
     def x(self): ...
     @x.setter
     def x(self, value) -> None: ...
-    def x(self) -> None: ...  # E: Unexpected definition for property "x"
+--zuban-diff     def x(self) -> None: ...  # E: Unexpected definition for property "x"
+    def x(self) -> None: ...  # E: Unexpected definition for property "x"  # E: Name "x" already defined on line 5
 
     @property
     def y(self) -> int: ...

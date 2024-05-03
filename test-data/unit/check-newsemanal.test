@@ -2487,7 +2487,8 @@ if int():
     def f(x: int) -> None:
         pass
 else:
-    @overload  # E: Name "f" already defined on line 6
+--zuban-diff     @overload  # E: Name "f" already defined on line 6
+    @overload
     def f(x: int) -> None: ...
     @overload
     def f(x: str) -> None: ...
