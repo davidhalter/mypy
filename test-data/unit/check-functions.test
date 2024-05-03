@@ -1706,9 +1706,11 @@ class A:
     else:
         def f(self, x): pass # E: All conditional function variants must have identical signatures \
                              # N: Original: \
-                             # N:     def f(self: A, x: int) -> None \
+--zuban-diff                              # N:     def f(self: A, x: int) -> None \
+                             # N:     def f(self, x: int) -> None \
                              # N: Redefinition: \
-                             # N:     def f(self: A, x: Any) -> Any
+--zuban-diff                              # N:     def f(self: A, x: Any) -> Any
+                             # N:     def f(self, x: Any) -> Any
 [out]
 
 [case testConditionalFunctionDefinitionInTry]
