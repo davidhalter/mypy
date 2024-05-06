@@ -521,6 +521,8 @@ main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; e
 main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str | None"
 --zuban-diff 
 main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Type[Any] | None"
+--zuban-diff 
+main:20: error: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "FlagBoundary | None"
 main:22: error: "Type[W]" has no attribute "c"
 
 [case testFunctionalEnumFlag]
