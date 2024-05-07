@@ -708,7 +708,8 @@ def bar() -> None: pass
 import sys
 if sys.version_info[0] >= 2:
     assert sys.platform == 'lol'
-    reveal_type('')  # N: Revealed type is "Literal['']?"
+--zuban-diff     reveal_type('')  # N: Revealed type is "Literal['']?"
+    reveal_type('')
 reveal_type('')  # N: Revealed type is "Literal['']?"
 [builtins fixtures/ops.pyi]
 
