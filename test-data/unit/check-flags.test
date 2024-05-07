@@ -2072,12 +2072,13 @@ x.trim()
 y.trim()  # E: Name "y" is not defined  [name-defined]
 
 [case testEnableMultipleErrorCode]
-# flags: \
-    --disable-error-code attr-defined \
-    --disable-error-code return-value \
-    --disable-error-code call-arg \
-    --enable-error-code attr-defined \
-    --enable-error-code return-value --show-error-codes
+--zuban-diff # flags: \
+--zuban-diff     --disable-error-code attr-defined \
+--zuban-diff     --disable-error-code return-value \
+--zuban-diff     --disable-error-code call-arg \
+--zuban-diff     --enable-error-code attr-defined \
+--zuban-diff     --enable-error-code return-value --show-error-codes
+# flags: --disable-error-code attr-defined --disable-error-code return-value --disable-error-code call-arg --enable-error-code attr-defined --enable-error-code return-value --show-error-codes
 x = 'should be fine'
 x.trim()  # E: "str" has no attribute "trim"  [attr-defined]
 
