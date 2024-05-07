@@ -716,7 +716,8 @@ if sys.version_info[0] >= 2:
     assert sys.platform == 'lol'
 --zuban-diff     reveal_type('')  # N: Revealed type is "Literal['']?"
     reveal_type('')
-reveal_type('')  # N: Revealed type is "Literal['']?"
+--zuban-diff reveal_type('')  # N: Revealed type is "Literal['']?"
+reveal_type('')
 [builtins fixtures/ops.pyi]
 
 [case testUnreachableFlagWithBadControlFlow1]
