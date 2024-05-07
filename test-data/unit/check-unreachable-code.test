@@ -111,6 +111,8 @@ else:
 [builtins fixtures/bool.pyi]
 [out]
 main:1: error: Name "TYPE_CHECKING" is not defined
+--zuban-diff 
+main:1: note: Did you forget to import it from "typing"? (Suggestion: "from typing import TYPE_CHECKING")
 main:4: error: Cannot find implementation or library stub for module named "xyz753"
 main:4: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 
