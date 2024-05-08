@@ -940,7 +940,8 @@ def f0() -> None:
 # flags: --enable-error-code used-before-def
 
 def f0() -> None:
-    s = type(123)  # E: Name "type" is used before definition
+--zuban-diff     s = type(123)  # E: Name "type" is used before definition
+    s = type(123)  # E: Name "type" is used before definition  # E: "str" not callable
     type = "abc"
     a = type
 
