@@ -44,8 +44,9 @@ main:2: note: Use "-> None" if function does not return a value
 # flags: --disallow-untyped-defs
 def f(self): pass
 [out]
-main:2: error: Function is missing a return type annotation
-main:2: note: Use "-> None" if function does not return a value
+--zuban-diff main:2: error: Function is missing a return type annotation
+--zuban-diff main:2: note: Use "-> None" if function does not return a value
+main:2: error: Function is missing a type annotation
 
 [case testUnannotatedReturnWithNontrivialReturn]
 # flags: --disallow-untyped-defs
