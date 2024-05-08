@@ -184,7 +184,8 @@ MypyFile:1(
     NameExpr(x [__main__.x])))
 
 [case testArgumentInitializers]
-def f(x = f, y = object):
+--zuban-diff def f(x = f, y = object):
+def f(x = f, y = object):  # E: Name "f" is used before definition
   x, y
 [out]
 MypyFile:1(

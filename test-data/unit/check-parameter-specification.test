@@ -1473,7 +1473,8 @@ reveal_type(y)  # N: Revealed type is "def (builtins.int, builtins.int, builtins
 from typing import ParamSpec, Callable, Union
 
 P = ParamSpec("P")
-C = Callable[P, Union[int, C[P]]]
+--zuban-diff C = Callable[P, Union[int, C[P]]]
+C = Callable[P, Union[int, C[P]]]  # E: Name "C" is used before definition
 def f(n: C[P]) -> C[P]: ...
 
 @f

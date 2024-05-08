@@ -2410,7 +2410,8 @@ assert a == c  # E: Non-overlapping equality check (left operand type: "Dict[str
 [typing fixtures/typing-full.pyi]
 
 [case testStrictEqualityWithRecursiveListTypes]
-# flags: --strict-equality
+--zuban-diff # flags: --strict-equality
+# flags: --strict-equality --disable-error-code used-before-def
 from typing import List, Union
 
 R = List[Union[str, R]]

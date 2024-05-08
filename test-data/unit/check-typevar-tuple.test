@@ -792,6 +792,8 @@ reveal_type(z)  # N: Revealed type is "__main__.G[Any, Unpack[builtins.tuple[Any
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicAliasRecursiveUnpack]
+--zuban-diff 
+# flags: --disable-error-code used-before-def
 from typing import Tuple, Optional
 from typing_extensions import Unpack, TypeVarTuple
 

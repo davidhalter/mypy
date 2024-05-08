@@ -496,7 +496,8 @@ if int():
 
 class A:
     def g(self) -> None:
-        a = self.f(a)
+--zuban-diff         a = self.f(a)
+        a = self.f(a)  # E: Name "a" is used before definition
     def f(self, x): pass
 
 if int():
@@ -532,7 +533,8 @@ class B:
         pass
 class A(B):
     def g(self) -> None:
-        a = self.f(a)
+--zuban-diff         a = self.f(a)
+        a = self.f(a) # E: Name "a" is used before definition
 
 [case testEmptyReturnWithImplicitSignature]
 import typing
