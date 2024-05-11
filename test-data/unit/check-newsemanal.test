@@ -2587,7 +2587,8 @@ def C(): pass
 [case testNewSemanticAnalyzerModulePrivateRefInMiddleOfQualified]
 import m
 
-x: m.n.C # E: Name "m.n.C" is not defined
+--zuban-diff x: m.n.C # E: Name "m.n.C" is not defined
+x: m.n.C # E: Name "m.n" is not defined
 reveal_type(x) # N: Revealed type is "Any"
 
 [file m.pyi]
