@@ -137,6 +137,8 @@ cua.raw  # E: Array attribute "raw" is only available with element type "c_char"
 [typing fixtures/typing-medium.pyi]
 
 [case testCtypesAnyArrayAttrs]
+--zuban-diff 
+from typing import Any
 import ctypes
 
 aa: ctypes.Array[Any]

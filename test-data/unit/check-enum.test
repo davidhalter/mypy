@@ -144,7 +144,7 @@ class AutoName(Enum):
     # but I have lied a bit to keep the test stubs lean.
 --zuban-diff     def _generate_next_value_(self) -> str:
     @staticmethod
-    def _generate_next_value_(name: str, start: int, count: int, last_values: list[Any]) -> str:
+    def _generate_next_value_(name: str, start: int, count: int, last_values: list[object]) -> str:
         return "name"
 
 class Truth(AutoName):

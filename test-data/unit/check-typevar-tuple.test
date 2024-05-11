@@ -1144,7 +1144,8 @@ nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callab
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicTypedDict]
-from typing import Tuple, Callable, Generic
+--zuban-diff from typing import Tuple, Callable, Generic
+from typing import Tuple, Callable, Generic, TypeVar
 from typing_extensions import TypeVarTuple, Unpack, TypedDict
 
 --zuban-diff 

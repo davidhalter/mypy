@@ -1009,6 +1009,8 @@ T = TypeVar('T')
 class A(Generic[T]): pass
 [out]
 main:3: error: Name "Generic" is not defined
+--zuban-diff 
+main:3: note: Did you forget to import it from "typing"? (Suggestion: "from typing import Generic")
 
 [case testInvalidTypeWithinGeneric]
 from typing import Generic
