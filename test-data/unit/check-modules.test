@@ -1928,8 +1928,7 @@ class C:
 
 [case testReExportChildStubs3]
 from util import mod
---zuban-diff reveal_type(mod)  # N: Revealed type is "def () -> package.mod.mod"
-reveal_type(mod)  # N: Revealed type is "Type[package.mod.mod]"
+reveal_type(mod)  # N: Revealed type is "def () -> package.mod.mod"
 
 from util import internal_detail  # E: Module "util" does not explicitly export attribute "internal_detail"
 

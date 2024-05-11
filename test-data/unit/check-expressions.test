@@ -2433,8 +2433,10 @@ def f(x: Any) -> None:  # E: Name "Any" is not defined \
 
 
 [case testUnimportedHintAnyLower]
-def f(x: any) -> None:  # E: Name "any" is not defined \
-                        # N: Did you forget to import it from "typing"? (Suggestion: "from typing import Any")
+--zuban-diff def f(x: any) -> None:  # E: Name "any" is not defined \
+--zuban-diff                         # N: Did you forget to import it from "typing"? (Suggestion: "from typing import Any")
+def f(x: any) -> None:  # E: Function "any" is not valid as a type \
+                        # N: Perhaps you meant "typing.Any" instead of "any"?
     pass
 
 
