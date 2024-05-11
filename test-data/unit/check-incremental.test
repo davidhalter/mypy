@@ -5464,7 +5464,8 @@ import p.util
 class N(p.util.Test):
     ...
 [out2]
-tmp/a.py:2: error: "object" has no attribute "N"
+--zuban-diff tmp/a.py:2: error: "object" has no attribute "N"
+tmp/a.py:2: error: Module has no attribute "N"
 
 [case testIncrementalIndirectSkipWarnUnused]
 # flags: --follow-imports=skip --warn-unused-ignores
