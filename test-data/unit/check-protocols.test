@@ -2904,7 +2904,11 @@ class Proto(Protocol):
     def method(self) -> None: ...
 
 def g(h: Proto) -> None: pass
-g(None)  # E: Argument 1 to "g" has incompatible type "None"; expected "Proto"
+g(None)  # E: Argument 1 to "g" has incompatible type "None"; expected "Proto" \
+--zuban-diff 
+--zuban-diff 
+         # N: "None" is missing following "Proto" protocol member: \
+         # N:     method
 
 class Proto2(Protocol):
     def hash(self) -> None: ...
