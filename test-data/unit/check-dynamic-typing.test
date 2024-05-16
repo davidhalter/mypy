@@ -497,7 +497,7 @@ if int():
 class A:
     def g(self) -> None:
 --zuban-diff         a = self.f(a)
-        a = self.f(a)  # E: Name "a" is used before definition
+        a = self.f(a)  # E: Name "a" is used before definition # E: Cannot resolve name "a" (possible cyclic definition)
     def f(self, x): pass
 
 if int():
@@ -534,7 +534,7 @@ class B:
 class A(B):
     def g(self) -> None:
 --zuban-diff         a = self.f(a)
-        a = self.f(a) # E: Name "a" is used before definition
+        a = self.f(a) # E: Name "a" is used before definition  # E: Cannot resolve name "a" (possible cyclic definition)
 
 [case testEmptyReturnWithImplicitSignature]
 import typing
