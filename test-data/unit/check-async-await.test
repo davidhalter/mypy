@@ -981,7 +981,8 @@ async def get_generator() -> AsyncGenerator[int, None]:
 from m import L
 
 async def func(l: L) -> None:
-    reveal_type(l.get_iterator)
+--zuban-diff     reveal_type(l.get_iterator)
+    reveal_type(l.get_iterator)  # N: Revealed type is "def () -> typing.AsyncIterator[str]" 
 
 [file m.py]
 # mypy: ignore-errors=True
