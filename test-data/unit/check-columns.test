@@ -417,6 +417,9 @@ f(g(
 ))
 x[0]
 [out]
-main:2:10:2:17: error: Incompatible types in assignment (expression has type "str", variable has type "int")
-main:6:3:7:1: error: Argument 1 to "f" has incompatible type "int"; expected "str"
-main:8:1:8:4: error: Value of type "int" is not indexable
+--zuban-diff main:2:10:2:17: error: Incompatible types in assignment (expression has type "str", variable has type "int")
+--zuban-diff main:6:3:7:1: error: Argument 1 to "f" has incompatible type "int"; expected "str"
+--zuban-diff main:8:1:8:4: error: Value of type "int" is not indexable
+main:2:10:2:18: error: Incompatible types in assignment (expression has type "str", variable has type "int")
+main:6:3:7:2: error: Argument 1 to "f" has incompatible type "int"; expected "str"
+main:8:1:8:5: error: Value of type "int" is not indexable
