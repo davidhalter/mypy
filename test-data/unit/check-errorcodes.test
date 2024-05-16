@@ -1104,7 +1104,8 @@ def unsafe_func(x: object) -> Union[int, str]:
 ###
 
 [case testUnimportedRevealType]
-# flags: --enable-error-code=unimported-reveal
+--zuban-diff # flags: --enable-error-code=unimported-reveal
+# flags: --enable-error-code=unimported-reveal --python-version 3.10
 x = 1
 reveal_type(x)
 [out]
@@ -1130,7 +1131,8 @@ def unchecked():
     reveal_type(x)
 [out]
 main:4: error: Name "reveal_type" is not defined  [unimported-reveal]
-main:4: note: Did you forget to import it from "typing_extensions"? (Suggestion: "from typing_extensions import reveal_type")
+--zuban-diff main:4: note: Did you forget to import it from "typing_extensions"? (Suggestion: "from typing_extensions import reveal_type")
+main:4: note: Did you forget to import it from "typing"? (Suggestion: "from typing import reveal_type")
 main:4: note: Revealed type is "Any"
 main:4: note: 'reveal_type' always outputs 'Any' in unchecked functions
 [builtins fixtures/isinstancelist.pyi]
