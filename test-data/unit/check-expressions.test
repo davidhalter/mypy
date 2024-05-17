@@ -2319,7 +2319,8 @@ f: FileId
 
 if u == 0:  # OK
     ...
-if f == 0:  # E: Non-overlapping equality check (left operand type: "FileId", right operand type: "Literal[0]")
+--zuban-diff if f == 0:  # E: Non-overlapping equality check (left operand type: "FileId", right operand type: "Literal[0]")
+if f == 0:  # E: Non-overlapping equality check (left operand type: "FileId", right operand type: "int")
     ...
 [builtins fixtures/bool.pyi]
 
