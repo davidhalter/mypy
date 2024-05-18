@@ -480,13 +480,13 @@ J = IntEnum('I', 42)  # E: Argument 2 to "IntEnum" has incompatible type "int"; 
 K = IntEnum('I', 'p q', 'x', 'y', 'z', 'p', 'q')  # E: Too many positional arguments for "IntEnum"
 L = Enum('L', ' ')  # E: Enum() needs at least one item
 M = Enum('M', ())  # E: Enum() needs at least one item
-N = IntEnum('M', [])  # E: IntEnum() needs at least one item
+N = IntEnum('M', [])  # E: IntEnum() needs at least one item  # E: String argument 1 "M" to enum.IntEnum(...) does not match variable name "N"
 --zuban-diff P = Enum('P', [42])  # E: Enum() with tuple or list expects strings or (name, value) pairs
 P = Enum('P', [42])  # E: Argument 2 to "Enum" has incompatible type "list[int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
 Q = Enum('Q', [('a', 42, 0)])  # E: Enum() with tuple or list expects strings or (name, value) pairs
 R = IntEnum('R', [[0, 42]])  # E: IntEnum() with tuple or list expects strings or (name, value) pairs
 --zuban-diff S = Enum('S', {1: 1})  # E: Enum() with dict literal requires string literals
-S = Enum('S', {1: 1})  # E: Argument 2 to "Enum" has incompatible type "list[int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+S = Enum('S', {1: 1})  # E: Argument 2 to "Enum" has incompatible type "dict[int, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
 --zuban-diff T = Enum('T', keyword='a b')  # E: Unexpected keyword argument "keyword"
 T = Enum('T', keyword='a b')  # E: Unexpected keyword argument "keyword" for "Enum"
 U = Enum('U', *['a'])  # E: Unexpected arguments to Enum()
@@ -503,8 +503,10 @@ V = Enum('U', **{'a': 1})  # E: Argument 2 to "Enum" has incompatible type "**di
 W = Enum('W', 'a b')
 W.c  # E: "Type[W]" has no attribute "c"
 X = Enum('Something', 'a b')  # E: String argument 1 "Something" to enum.Enum(...) does not match variable name "X"
-reveal_type(X.a)  # N: Revealed type is "Literal[__main__.Something@23.a]?"
-X.asdf  # E: "Type[Something@23]" has no attribute "asdf"
+--zuban-diff reveal_type(X.a)  # N: Revealed type is "Literal[__main__.Something@23.a]?"
+reveal_type(X.a)  # N: Revealed type is "Literal[__main__.Something.a]?"
+--zuban-diff X.asdf  # E: "Type[Something@23]" has no attribute "asdf"
+X.asdf  # E: "Type[Something]" has no attribute "asdf"
 
 [typing fixtures/typing-medium.pyi]
 
