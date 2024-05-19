@@ -1127,7 +1127,8 @@ tmp/foo.pyi:17: note:          def f(self, x: StrSub) -> str
 [case testOverloadingAndDucktypeCompatibility]
 from foo import *
 [file foo.pyi]
-from typing import overload, _promote
+--zuban-diff from typing import overload, _promote
+from typing import overload, _promote  # E: Module "typing" does not explicitly export attribute "_promote"
 
 class A: pass
 
@@ -5019,7 +5020,8 @@ def bar(x: Any) -> int: ...
 [out]
 
 [case testOverloadsIgnorePromotions]
-from typing import overload, List, Union, _promote
+--zuban-diff from typing import overload, List, Union, _promote
+from typing import overload, List, Union
 
 class Parent: pass
 class Child(Parent): pass
