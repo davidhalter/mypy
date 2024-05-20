@@ -2115,7 +2115,8 @@ class B:
         ...
 
 # Don't report non-overlapping check if there is already and error.
-A() == B()  # E: Unsupported operand types for == ("A" and "B")
+--zuban-diff A() == B()  # E: Unsupported operand types for == ("A" and "B")
+A() == B()  # E: Argument 1 to "__eq__" of "A" has incompatible type "B"; expected "A"
 [builtins fixtures/bool.pyi]
 
 [case testStrictEqualitySequenceAndCustomEq]
