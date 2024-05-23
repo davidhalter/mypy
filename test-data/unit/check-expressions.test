@@ -2395,7 +2395,8 @@ assert a == b
 [typing fixtures/typing-full.pyi]
 
 [case testStrictEqualityWithRecursiveMapTypes]
-# flags: --strict-equality
+--zuban-diff # flags: --strict-equality
+# flags: --strict-equality --disable-error-code used-before-def
 from typing import Dict
 
 R = Dict[str, R]
@@ -2423,7 +2424,8 @@ assert a == b
 
 R2 = List[Union[int, R2]]
 c: R2
-assert a == c
+--zuban-diff assert a == c
+assert a == c  # E: Non-overlapping equality check (left operand type: "list[str | R]", right operand type: "list[int | R2]")
 [builtins fixtures/list.pyi]
 [typing fixtures/typing-full.pyi]
 
