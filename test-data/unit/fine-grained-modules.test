@@ -2212,11 +2212,15 @@ import jack
 a.py:1: error: Library stubs not installed for "requests"
 a.py:1: note: Hint: "python3 -m pip install types-requests"
 a.py:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff 
+a.py:1: note: (or run "mypy --install-types" to install all missing stub packages)
 ==
 ==
 a.py:1: error: Library stubs not installed for "jack"
 a.py:1: note: Hint: "python3 -m pip install types-JACK-Client"
 a.py:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+--zuban-diff 
+a.py:1: note: (or run "mypy --install-types" to install all missing stub packages)
 
 [case testIgnoreErrorsFromTypeshed]
 # flags: --custom-typeshed-dir tmp/ts --follow-imports=normal
