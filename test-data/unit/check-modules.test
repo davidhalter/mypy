@@ -162,8 +162,10 @@ import typing
 
 class A: pass
 m()      # E: Module not callable
-a = m # type: A  # E: Incompatible types in assignment (expression has type Module, variable has type "A")
-m + None # E: Unsupported left operand type for + (Module)
+--zuban-diff a = m # type: A  # E: Incompatible types in assignment (expression has type Module, variable has type "A")
+a = m # type: A  # E: Incompatible types in assignment (expression has type "ModuleType", variable has type "A")
+--zuban-diff m + None # E: Unsupported left operand type for + (Module)
+m + None # E: Unsupported left operand type for + ("ModuleType")
 [file m.py]
 [builtins fixtures/module.pyi]
 
@@ -762,7 +764,8 @@ def f(x: str) -> None: pass
 if object():
     import m
 else:
-    m = 1 # E: Incompatible types in assignment (expression has type "int", variable has type Module)
+--zuban-diff     m = 1 # E: Incompatible types in assignment (expression has type "int", variable has type Module)
+    m = 1 # E: Incompatible types in assignment (expression has type "int", variable has type "ModuleType")
 [file m.py]
 [builtins fixtures/module.pyi]
 [out]
