@@ -134,8 +134,7 @@ class C:
     from m import f  # E: Unsupported class scoped import
     f()
     # ideally, the following should error:
---zuban-diff     f(C)
-    f(C)  # E: Too many arguments for "f"
+    f(C)
 [file m.py]
 def f() -> None: pass
 [out]

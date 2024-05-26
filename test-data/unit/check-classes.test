@@ -7785,7 +7785,8 @@ class Foo:
     from mod2 import foo
 
     from mod1 import meth1  # E: Unsupported class scoped import
-    def meth1(self, a: str) -> str: ...  # E: Name "meth1" already defined on line 5
+--zuban-diff     def meth1(self, a: str) -> str: ...  # E: Name "meth1" already defined on line 5
+    def meth1(self, a: str) -> str: ...  # E: Name "meth1" already defined (possibly by an import)
 
     def meth2(self, a: str) -> str: ...
     from mod1 import meth2  # E: Incompatible import of "meth2" (imported name has type "Callable[[int], int]", local name has type "Callable[[Foo, str], str]")
