@@ -3107,8 +3107,7 @@ class SupportsRound(Protocol[_T_co]):
 
 class C:
     # This matches both overload items of SupportsRound
---zuban-diff     def __round__(self, __ndigits: int = ...) -> int: ...
-    def __round__(self, __ndigits: int = ...) -> int: ...  # E: Incompatible default for argument "__ndigits" (default has type "ellipsis", argument has type "int")
+    def __round__(self, __ndigits: int = ...) -> int: ...
 
 def round(number: SupportsRound[_T], ndigits: int) -> _T: ...
 
