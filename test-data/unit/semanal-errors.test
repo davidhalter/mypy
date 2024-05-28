@@ -585,7 +585,8 @@ def f() -> None:
     global x
     x = None
 [out]
-main:4: error: Name "x" is not defined
+--zuban-diff main:4: error: Name "x" is not defined
+main:3: error: Name "x" is not defined
 
 [case testInvalidNonlocalDecl]
 import typing
