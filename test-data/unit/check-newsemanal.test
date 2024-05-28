@@ -2991,7 +2991,8 @@ def g() -> None:
 
     def foo() -> None:
         nonlocal bar
-        bar = []  # type: typing.List[int] # E: Name "bar" already defined on line 12
+--zuban-diff         bar = []  # type: typing.List[int] # E: Name "bar" already defined on line 12
+        bar = []  # type: typing.List[int] # E: Name "bar" already defined on line 15
 [builtins fixtures/list.pyi]
 
 [case testNewAnalyzerMoreInvalidTypeVarArgumentsDeferred]
