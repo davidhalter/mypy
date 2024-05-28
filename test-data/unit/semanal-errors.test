@@ -596,7 +596,8 @@ def f():
        x = None
 [out]
 main:4: error: No binding for nonlocal "x" found
-main:5: error: Name "x" is not defined
+--zuban-diff main:5: error: Name "x" is not defined
+--zuban-diff 
 
 [case testNonlocalDeclNotMatchingGlobal]
 import typing
@@ -606,7 +607,8 @@ def f() -> None:
     x = None
 [out]
 main:4: error: No binding for nonlocal "x" found
-main:5: error: Name "x" is not defined
+--zuban-diff main:5: error: Name "x" is not defined
+--zuban-diff 
 
 [case testNonlocalDeclConflictingWithParameter]
 import typing
