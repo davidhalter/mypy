@@ -2871,7 +2871,8 @@ class B: ...
 [out]
 tmp/a/__init__.py:5: note: Revealed type is "builtins.int"
 tmp/a/__init__.py:6: note: Revealed type is "def () -> a.b.B"
-main:2: note: Revealed type is "def () -> builtins.int"
+--zuban-diff main:2: note: Revealed type is "def () -> builtins.int"
+main:2: note: Revealed type is "Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int)"
 
 [case testNewAnalyzerImportAmbiguousWithTopLevelFunction]
 import a.b  # This works at runtime
