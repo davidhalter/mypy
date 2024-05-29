@@ -2895,7 +2895,10 @@ class B: ...
 [out]
 tmp/a/__init__.py:4: note: Revealed type is "def ()"
 tmp/a/__init__.py:5: note: Revealed type is "a.b.B"
-main:2: error: Name "a.b.B" is not defined
+--zuban-diff main:2: error: Name "a.b.B" is not defined
+--zuban-diff 
+main:2: error: Function "a.b" is not valid as a type
+main:2: note: Perhaps you need "Callable[...]" or a callback protocol?
 main:3: note: Revealed type is "def ()"
 
 [case testNewAnalyzerConfusingImportConflictingNames]
