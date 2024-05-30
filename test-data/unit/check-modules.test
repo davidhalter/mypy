@@ -3198,7 +3198,8 @@ from b import no_such_export
 [file b.py]
 from a import *
 [out]
-tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff 
 tmp/a.py:1: error: Module "b" has no attribute "no_such_export"
 
 [case testCyclicUndefinedImportWithStar2]
@@ -3210,8 +3211,10 @@ from c import *
 [file c.py]
 from a import *
 [out]
-tmp/c.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
-tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff tmp/c.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff 
+--zuban-diff 
 tmp/a.py:1: error: Module "b" has no attribute "no_such_export"
 
 [case testCyclicUndefinedImportWithStar3]
