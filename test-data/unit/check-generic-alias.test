@@ -166,7 +166,8 @@ t16: collections.abc.MutableMapping[int, str]
 t17: collections.abc.Sequence[int]
 t18: collections.abc.MutableSequence[int]
 t19: collections.abc.ByteString
-t20: collections.abc.MappingView[int, int]
+--zuban-diff t20: collections.abc.MappingView[int, int]
+t20: collections.abc.MappingView
 t21: collections.abc.KeysView[int]
 t22: collections.abc.ItemsView[int, str]
 t23: collections.abc.ValuesView[str]
