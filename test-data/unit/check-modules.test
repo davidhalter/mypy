@@ -3187,9 +3187,11 @@ from bleach.abc import fgh
 [case testCyclicUndefinedImportWithName]
 import a
 [file a.py]
-from b import no_such_export
+--zuban-diff from b import no_such_export
+from b import no_such_export  # E: Module "b" has no attribute "no_such_export"
 [file b.py]
-from a import no_such_export  # E: Module "a" has no attribute "no_such_export"
+--zuban-diff from a import no_such_export  # E: Module "a" has no attribute "no_such_export"
+from a import no_such_export
 
 [case testCyclicUndefinedImportWithStar1]
 import a
