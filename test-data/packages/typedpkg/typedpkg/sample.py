@@ -1,7 +1,8 @@
 from typing import Iterable, Tuple
 
 
-def ex(a):
-    # type: (Iterable[str]) -> Tuple[str, ...]
+# --zuban-diff def ex(a):
+# --zuban-diff     # type: (Iterable[str]) -> Tuple[str, ...]
+def ex(a: Iterable[str]) -> Tuple[str, ...]:
     """Example typed package."""
     return list(a)
