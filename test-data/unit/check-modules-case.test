@@ -127,7 +127,8 @@ x = 0
 
 [file mypy.ini]
 \[mypy]
-mypy_path = TmP/xX, TmP/yY
+--zuban-diff mypy_path = TmP/xX, TmP/yY
+mypy_path = tmp/xX, tmp/yY
 
 
 [case testClassicPackageInsideNamespacePackageCasePyProjectTOML]
@@ -147,4 +148,5 @@ x = 0
 
 [file pyproject.toml]
 \[tool.mypy]
-mypy_path = ["TmP/xX", "TmP/yY"]
+--zuban-diff mypy_path = ["TmP/xX", "TmP/yY"]
+mypy_path = ["tmp/xX", "tmp/yY"]
