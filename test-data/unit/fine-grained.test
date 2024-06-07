@@ -8579,9 +8579,11 @@ a.py:3: error: Cannot override final attribute "meth" (previously declared in ba
 a.py:3: error: Signature of "meth" incompatible with supertype "C"
 a.py:3: note:      Superclass:
 a.py:3: note:          @overload
-a.py:3: note:          def meth(x: int) -> int
+--zuban-diff a.py:3: note:          def meth(x: int) -> int
+a.py:3: note:          def meth(self, x: int) -> int
 a.py:3: note:          @overload
-a.py:3: note:          def meth(x: str) -> str
+--zuban-diff a.py:3: note:          def meth(x: str) -> str
+a.py:3: note:          def meth(self, x: str) -> str
 a.py:3: note:      Subclass:
 a.py:3: note:          def meth(self) -> None
 
