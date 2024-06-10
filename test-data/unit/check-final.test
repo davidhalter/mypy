@@ -253,9 +253,11 @@ class C(Generic[T]):
         self.y: Final = 1
 
 reveal_type(C((1, 2)).x)  # N: Revealed type is "Tuple[builtins.int, builtins.int]"
-C.x  # E: Cannot access final instance attribute "x" on class object \
-     # E: Access to generic instance variables via class is ambiguous
-C.y  # E: Cannot access final instance attribute "y" on class object
+--zuban-diff C.x  # E: Cannot access final instance attribute "x" on class object \
+--zuban-diff      # E: Access to generic instance variables via class is ambiguous
+--zuban-diff C.y  # E: Cannot access final instance attribute "y" on class object
+C.x  # E: "Type[C]" has no attribute "x"
+C.y  # E: "Type[C]" has no attribute "y"
 [builtins fixtures/tuple.pyi]
 [out]
 
@@ -409,10 +411,12 @@ def f2() -> None:
     global x2
     x2 = 1  # E: Cannot assign to final name "x2"
 
-y = 1 # E: Cannot assign to final name "y"
+--zuban-diff y = 1 # E: Cannot assign to final name "y"
+y = 1
 y
 y: Final = 2  # E: Cannot redefine an existing name as final
-y = 3  # E: Cannot assign to final name "y"
+--zuban-diff y = 3  # E: Cannot assign to final name "y"
+y = 3
 
 z: Final = 1
 z: Final = 2  # E: Cannot redefine an existing name as final
@@ -476,7 +480,8 @@ class C:
     x: Final = 1
     x = 2  # E: Cannot assign to final name "x"
 
-    y = 1  # E: Cannot assign to final name "y"
+--zuban-diff     y = 1  # E: Cannot assign to final name "y"
+    y = 1
     y: Final = 2  # E: Cannot redefine an existing name as final
 [out]
 
@@ -521,7 +526,8 @@ class C:
     @classmethod
     def cm(cls) -> None:
         cls.x = 2  # E: Cannot assign to final attribute "x"
-        cls.y  # E: Cannot access final instance attribute "y" on class object
+--zuban-diff         cls.y  # E: Cannot access final instance attribute "y" on class object
+        cls.y  # E: "Type[C]" has no attribute "y"
 [builtins fixtures/classmethod.pyi]
 [out]
 
@@ -537,8 +543,9 @@ class D(C): pass
 
 C.x = 2  # E: Cannot assign to final attribute "x"
 D.x = 2  # E: Cannot assign to final attribute "x"
-D.y = 2  # E: Cannot access final instance attribute "y" on class object \
-         # E: Cannot assign to final attribute "y"
+--zuban-diff D.y = 2  # E: Cannot access final instance attribute "y" on class object \
+--zuban-diff          # E: Cannot assign to final attribute "y"
+D.y = 2  # E: "Type[D]" has no attribute "y"
 [out]
 
 [case testFinalReassignInstanceVarExternalInstance]
@@ -727,8 +734,9 @@ class B:
     def x(self) -> int: ...
 class C(A, B): ...
 class D(B, A): ...  # E: Cannot override final attribute "x" (previously declared in base class "A")
-C.x = 3  # E: Cannot access final instance attribute "x" on class object \
-         # E: Cannot assign to final attribute "x"
+--zuban-diff C.x = 3  # E: Cannot access final instance attribute "x" on class object \
+--zuban-diff          # E: Cannot assign to final attribute "x"
+C.x = 3  # E: "Type[C]" has no attribute "x"
 C().x = 4  # E: Cannot assign to final attribute "x"
 [builtins fixtures/property.pyi]
 [out]
