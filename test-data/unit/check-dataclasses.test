@@ -2114,9 +2114,9 @@ a_or_b: Union[A[int], B]
 _ = replace(a_or_b, x=42, y=True, init_var=42)
 --zuban-diff _ = replace(a_or_b, x=42, y=True)  # E: Missing named argument "init_var" for "replace" of "Union[A[int], B]"
 _ = replace(a_or_b, x=42, y=True)  # E: Missing named argument "init_var" for "replace" of "A[int]"
---zuban-diff _ = replace(a_or_b, x=42, y=True, z='42', init_var=42)  # E: Argument "z" to "replace" of "Union[A[int], B]" has incompatible type "str"; expected Never
+--zuban-diff _ = replace(a_or_b, x=42, y=True, z='42', init_var=42)  # E: Argument "z" to "replace" of "Union[A[int], B]" has incompatible type "str"; expected "Never"
 _ = replace(a_or_b, x=42, y=True, z='42', init_var=42)  # E: Argument "z" to "replace" of "B" has incompatible type "str"; expected "bytes"
---zuban-diff _ = replace(a_or_b, x=42, y=True, w={}, init_var=42)  # E: Argument "w" to "replace" of "Union[A[int], B]" has incompatible type "Dict[Never, Never]"; expected Never
+--zuban-diff _ = replace(a_or_b, x=42, y=True, w={}, init_var=42)  # E: Argument "w" to "replace" of "Union[A[int], B]" has incompatible type "Dict[Never, Never]"; expected "Never"
 _ = replace(a_or_b, x=42, y=True, w={}, init_var=42)  # E: Unexpected keyword argument "w" for "replace" of "B"
 --zuban-diff _ = replace(a_or_b, y=42, init_var=42)  # E: Argument "y" to "replace" of "Union[A[int], B]" has incompatible type "int"; expected "bool"
 _ = replace(a_or_b, y=42, init_var=42)  # E: Argument "y" to "replace" of "A[int]" has incompatible type "int"; expected "bool"
