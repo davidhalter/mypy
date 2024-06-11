@@ -2386,7 +2386,9 @@ higher_order(bad4)  # E: Argument 1 to "higher_order" has incompatible type "Cal
 from typing import Any, Callable, List, Tuple, TypeVar, Unpack
 
 T = TypeVar("T")
-Ts = TypeVarTuple("Ts")  # E: Name "TypeVarTuple" is not defined
+Ts = TypeVarTuple("Ts")  # E: Name "TypeVarTuple" is not defined \
+--zuban-diff 
+# N: Did you forget to import it from "typing"? (Suggestion: "from typing import TypeVarTuple")
 
 def good(*x: int) -> int: ...
 def bad(*x: int, y: int) -> int: ...
