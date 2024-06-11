@@ -349,7 +349,8 @@ class F(Generic[T], Enum):  # E: Enum class cannot be generic
     x: T
     y: T
 
-reveal_type(F[int].x)  # N: Revealed type is "__main__.F[builtins.int]"
+--zuban-diff reveal_type(F[int].x)  # N: Revealed type is "__main__.F[builtins.int]"
+reveal_type(F[int].x)  # E: Argument 1 to "__getitem__" of "EnumMeta" has incompatible type "Type[int]"; expected "str" # N: Revealed type is "Any"
 
 [case testEnumFlag]
 from enum import Flag
