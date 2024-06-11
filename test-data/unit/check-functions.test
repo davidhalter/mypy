@@ -3390,9 +3390,11 @@ class B:
 class C(B):
     def meth(self, **kwargs: Unpack[Other]) -> None:  # E: Signature of "meth" incompatible with supertype "B" \
                                                       # N:      Superclass: \
-                                                      # N:          def meth(*, x: int, y: str) -> None \
+--zuban-diff                                                       # N:          def meth(*, x: int, y: str) -> None \
+                                                      # N:          def meth(self, **kwargs: Unpack[Params]) -> None \
                                                       # N:      Subclass: \
-                                                      # N:          def meth(*, x: int, y: int) -> None
+--zuban-diff                                                       # N:          def meth(*, x: int, y: int) -> None
+                                                      # N:          def meth(self, **kwargs: Unpack[Other]) -> None
 
         ...
 [builtins fixtures/tuple.pyi]
