@@ -343,7 +343,8 @@ class P(Protocol):
         ...
 
     def meth2(self) -> None:
-        var3: Final[ClassVar[int]] = 0 # E: Variable should not be annotated with both ClassVar and Final # E: ClassVar can only be used for assignments in class body
+--zuban-diff         var3: Final[ClassVar[int]] = 0 # E: Variable should not be annotated with both ClassVar and Final # E: ClassVar can only be used for assignments in class body
+        var3: Final[ClassVar[int]] = 0 # E: ClassVar can only be used for assignments in class body
 
 [out]
 
