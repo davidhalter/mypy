@@ -1801,7 +1801,8 @@ class EI(IntEnum):
     __annotations__ = {'a': int}
     __dict__ = {'a': 1}
 
-E._order_ = 'a'  # E: Cannot assign to final attribute "_order_"
+--zuban-diff E._order_ = 'a'  # E: Cannot assign to final attribute "_order_"
+E._order_ = 'a'  # E: "Type[E]" has no attribute "_order_"
 EI.value = 2     # E: Cannot assign to final attribute "value"
 [builtins fixtures/dict.pyi]
 
