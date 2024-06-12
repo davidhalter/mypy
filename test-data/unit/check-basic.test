@@ -418,7 +418,8 @@ D = TypedDict('D', {'y': int})
 
 def foo() -> Optional[A]:
     b = True
-    return a.A() if b else None  # E: Incompatible return value type (got "Optional[a.A]", expected "Optional[b.A]")
+--zuban-diff     return a.A() if b else None  # E: Incompatible return value type (got "Optional[a.A]", expected "Optional[b.A]")
+    return a.A() if b else None  # E: Incompatible return value type (got "a.A | None", expected "Optional[b.A]")
 
 def bar() -> List[A]:
     l = [a.A()]
@@ -462,8 +463,10 @@ def typeddict() -> Sequence[D]:
     x = [{'x': 0}]  # type: List[a.D]
     return x  # E: Incompatible return value type (got "List[a.D]", expected "Sequence[b.D]")
 
-a = (a.A(), A())
-a.x  # E: "Tuple[a.A, b.A]" has no attribute "x"
+--zuban-diff a = (a.A(), A())
+--zuban-diff a.x  # E: "Tuple[a.A, b.A]" has no attribute "x"
+a_ = (a.A(), A())
+a_.x  # E: "Tuple[a.A, b.A]" has no attribute "x"
 
 [builtins fixtures/dict.pyi]
 
