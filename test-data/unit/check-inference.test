@@ -2474,7 +2474,8 @@ T = TypeVar('T')
 class C(Sequence[T], Generic[T]): pass
 C[0] = 0
 [out]
-main:4: error: Unsupported target for indexed assignment ("Type[C[Any]]")
+--zuban-diff main:4: error: Unsupported target for indexed assignment ("Type[C[Any]]")
+main:4: error: Unsupported target for indexed assignment ("Type[C]")
 --zuban-diff main:4: error: Invalid type: try using Literal[0] instead?
 --zuban-diff 
 
