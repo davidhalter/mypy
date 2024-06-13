@@ -1205,7 +1205,7 @@ Alias = Tuple[int, ...]
 --zuban-diff reveal_type(x)  # N: Revealed type is "__main__.C[Any, Any, Any, Any]"
 reveal_type(x)  # N: Revealed type is "__main__.C[int, Any, str, str]"
 --zuban-diff y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined
-y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined # E: "C" expects 4 type arguments, but 2 given
+y: C[int, Unpack[Undefined]]  # E: Name "Undefined" is not defined # E: "C" expects 4 type arguments, but 2 given  # E: Unpack is only valid in a variadic position
 reveal_type(y)  # N: Revealed type is "__main__.C[Any, Any, Any, Any]"
 [builtins fixtures/tuple.pyi]
 
