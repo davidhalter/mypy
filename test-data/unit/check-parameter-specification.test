@@ -41,7 +41,7 @@ def foo6(x: Callable[[P], int]) -> None: ...  # E: Invalid location for ParamSpe
 --zuban-diff
 main:9: error: Invalid location for ParamSpec "P"
 --zuban-diff
-main:9: note: You can use ParamSpec as the first argument to Callable, e.g., 'Callable[P, int]'
+main:9: note: You can use ParamSpec as the first argument to Callable, e.g., "Callable[P, int]"
 
 [case testParamSpecImports]
 import lib
@@ -112,7 +112,7 @@ def bad(fn: Callable[Concatenate[P, int], None]):  # E: The last parameter to Co
 --zuban-diff 
 --zuban-diff 
                                                    # E: Invalid location for ParamSpec "P" \
-                                                   # N: You can use ParamSpec as the first argument to Callable, e.g., 'Callable[P, int]'
+                                                   # N: You can use ParamSpec as the first argument to Callable, e.g., "Callable[P, int]"
     ...
 [builtins fixtures/paramspec.pyi]
 
