@@ -3497,12 +3497,16 @@ class Point(TypedDict, total=False):
     y: int
 
 def func(cls: Type[Point]) -> None:
-    reveal_type(cls)  # N: Revealed type is "Type[TypedDict('__main__.Point', {'x': builtins.int, 'y'?: builtins.int})]"
+--zuban-diff     reveal_type(cls)  # N: Revealed type is "Type[TypedDict('__main__.Point', {'x': builtins.int, 'y'?: builtins.int})]"
+    reveal_type(cls)  # N: Revealed type is "def (*, x: int, y: int = ...) -> TypedDict('__main__.Point', {'x': int, 'y'?: int})"
     cls(x=1, y=2)
-    cls(1, 2)  # E: Too many positional arguments
+--zuban-diff     cls(1, 2)  # E: Too many positional arguments
+    cls(1, 2)  # E: Expected keyword arguments, {...}, or dict(...) in TypedDict constructor
     cls(x=1)
-    cls(y=2)  # E: Missing named argument "x"
-    cls(x=1, y=2, error="")  # E: Unexpected keyword argument "error"
+--zuban-diff     cls(y=2)  # E: Missing named argument "x"
+    cls(y=2)  # E: Missing key "x" for TypedDict "Point"
+--zuban-diff     cls(x=1, y=2, error="")  # E: Unexpected keyword argument "error"
+    cls(x=1, y=2, error="")  # E: Extra key "error" for TypedDict "Point"
 [typing fixtures/typing-full.pyi]
 [builtins fixtures/tuple.pyi]
 
@@ -3523,7 +3527,8 @@ class A(Generic[T]):
     def func(self) -> T:
         reveal_type(self.a)  # N: Revealed type is "Type[T`1]"
         self.a(x=1, y=2)
-        self.a(y=2)  # E: Missing named argument "x"
+--zuban-diff         self.a(y=2)  # E: Missing named argument "x"
+        self.a(y=2)  # E: Missing key "x" for TypedDict "Point"
         return self.a(x=1)
 [typing fixtures/typing-full.pyi]
 [builtins fixtures/tuple.pyi]
