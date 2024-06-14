@@ -1549,15 +1549,22 @@ import typing_extensions as indirect
 
 Alias = Literal[3]
 
-Literal[3]()           # E: The type "Type[Literal]" is not generic and not indexable
-Renamed[3]()           # E: The type "Type[Literal]" is not generic and not indexable
-indirect.Literal[3]()  # E: The type "Type[Literal]" is not generic and not indexable
-Alias()                # E: "object" not callable
+--zuban-diff Literal[3]()           # E: The type "Type[Literal]" is not generic and not indexable
+--zuban-diff Renamed[3]()           # E: The type "Type[Literal]" is not generic and not indexable
+--zuban-diff indirect.Literal[3]()  # E: The type "Type[Literal]" is not generic and not indexable
+--zuban-diff Alias()                # E: "object" not callable
+Literal[3]()           # E: "_SpecialForm" not callable
+Renamed[3]()           # E: "_SpecialForm" not callable
+indirect.Literal[3]()  # E: "_SpecialForm" not callable
+Alias()                # E: "_SpecialForm" not callable
 
 # TODO: Add appropriate error messages to the following lines
-Literal()
-Renamed()
-indirect.Literal()
+--zuban-diff Literal()
+--zuban-diff Renamed()
+--zuban-diff indirect.Literal()
+Literal()  # E: "_SpecialForm" not callable
+Renamed()  # E: "_SpecialForm" not callable
+indirect.Literal()  # E: "_SpecialForm" not callable
 [builtins fixtures/isinstancelist.pyi]
 [out]
 
