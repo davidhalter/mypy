@@ -6859,7 +6859,8 @@ b = B(2) # E: Cannot instantiate abstract class "B" with abstract attribute "__i
 B.c # E: "Type[B]" has no attribute "c"
 c = C(3)
 c.c
-C.c
+--zuban-diff C.c
+C.c # E: "Type[C]" has no attribute "c"
 
 [case testDecoratedConstructors]
 from typing import TypeVar, Callable, Any
