@@ -151,7 +151,8 @@ reveal_type(myclass3)  # N: Revealed type is "Any"
 from typing import Any, Callable, List, Tuple, TypeVar, Unpack
 
 T = TypeVar("T")
-Ts = TypeVarTuple("Ts")  # E: Name "TypeVarTuple" is not defined
+--zuban-diff Ts = TypeVarTuple("Ts")  # E: Name "TypeVarTuple" is not defined
+Ts = TypeVarTuple("Ts")  # E: Name "TypeVarTuple" is not defined  # N: Did you forget to import it from "typing"? (Suggestion: "from typing import TypeVarTuple")
 
 def good(*x: int) -> int: ...
 def bad(*x: int, y: int) -> int: ...
@@ -164,7 +165,8 @@ x1 = good
 x1 = bad  # E: Incompatible types in assignment (expression has type "Callable[[VarArg(int), NamedArg(int, 'y')], int]", variable has type "Callable[[VarArg(Any)], int]")
 
 Alias2 = Callable[[*T], int]  # E: "T" cannot be unpacked (must be tuple or TypeVarTuple)
-x2: Alias2[int]
+--zuban-diff x2: Alias2[int]
+x2: Alias2[int]  # E: Bad number of arguments for type alias, expected 0, given 1
 reveal_type(x2)  # N: Revealed type is "def (*Any) -> builtins.int"
 
 Unknown = Any
