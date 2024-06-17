@@ -9,9 +9,14 @@ class ModuleType:
     __file__: str
     def __getattr__(self, name: str) -> Any: pass
 
+class GenericAlias: ...
+
 if sys.version_info >= (3, 10):
     class Union:
         def __or__(self, x) -> Union: ...
 
     class NoneType:
+        ...
+
+    class UnionType:
         ...

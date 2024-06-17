@@ -125,6 +125,7 @@ from mypy.nodes import (
     TryStmt,
     TupleExpr,
     TypeAlias,
+    TypeAliasStmt,
     TypeInfo,
     TypeVarExpr,
     UnaryExpr,
@@ -5289,6 +5290,9 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
                     if node not in inferred_types or not is_subtype(typ, inferred_types[node]):
                         del type_map[expr]
 
+    def visit_type_alias_stmt(self, o: TypeAliasStmt) -> None:
+        self.expr_checker.accept(o.value)
+
     def make_fake_typeinfo(
         self,
         curr_module_fullname: str,
@@ -7323,6 +7327,8 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
             elif isinstance(typ, Instance) and typ.type.fullname == "builtins.type":
                 object_type = Instance(typ.type.mro[-1], [])
                 types.append(TypeRange(object_type, is_upper_bound=True))
+            elif isinstance(typ, Instance) and typ.type.fullname == "types.UnionType" and typ.args:
+                types.append(TypeRange(UnionType(typ.args), is_upper_bound=False))
             elif isinstance(typ, AnyType):
                 types.append(TypeRange(typ, is_upper_bound=False))
             else:  # we didn't see an actual type, but rather a variable with unknown value

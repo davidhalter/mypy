@@ -59,6 +59,7 @@ from mypy.constant_fold import constant_fold_expr
 from mypy.errorcodes import PROPERTY_DECORATOR, ErrorCode
 from mypy.errors import Errors, report_internal_error
 from mypy.exprtotype import TypeTranslationError, expr_to_unanalyzed_type
+from mypy.message_registry import ErrorMessage
 from mypy.messages import (
     SUGGESTED_TEST_FIXTURES,
     TYPES_FOR_UNIMPORTED_HINTS,
@@ -1709,7 +1710,7 @@ class SemanticAnalyzer(
         self.scope_stack.append(SCOPE_ANNOTATION)
         tvs: list[tuple[str, TypeVarLikeExpr]] = []
         for p in type_args:
-            tv = self.analyze_type_param(p)
+            tv = self.analyze_type_param(p, context)
             if tv is None:
                 return None
             tvs.append((p.name, tv))
@@ -1732,7 +1733,9 @@ class SemanticAnalyzer(
                     return True
         return False
 
-    def analyze_type_param(self, type_param: TypeParam) -> TypeVarLikeExpr | None:
+    def analyze_type_param(
+        self, type_param: TypeParam, context: Context
+    ) -> TypeVarLikeExpr | None:
         fullname = self.qualified_name(type_param.name)
         if type_param.upper_bound:
             upper_bound = self.anal_type(type_param.upper_bound)
@@ -1757,6 +1760,7 @@ class SemanticAnalyzer(
                 default=default,
                 variance=VARIANCE_NOT_READY,
                 is_new_style=True,
+                line=context.line,
             )
         elif type_param.kind == PARAM_SPEC_KIND:
             return ParamSpecExpr(
@@ -1765,6 +1769,7 @@ class SemanticAnalyzer(
                 upper_bound=upper_bound,
                 default=default,
                 is_new_style=True,
+                line=context.line,
             )
         else:
             assert type_param.kind == TYPE_VAR_TUPLE_KIND
@@ -1777,6 +1782,7 @@ class SemanticAnalyzer(
                 tuple_fallback=tuple_fallback,
                 default=default,
                 is_new_style=True,
+                line=context.line,
             )
 
     def pop_type_args(self, type_args: list[TypeParam] | None) -> None:
@@ -3760,6 +3766,10 @@ class SemanticAnalyzer(
                     last_tvar_name_with_default = tvar_def.name
                 tvar_defs.append(tvar_def)
 
+            if python_3_12_type_alias:
+                with self.allow_unbound_tvars_set():
+                    rvalue.accept(self)
+
             analyzed, depends_on = analyze_type_alias(
                 typ,
                 self,
@@ -4613,7 +4623,7 @@ class SemanticAnalyzer(
             self.fail("TypeVar cannot be both covariant and contravariant", context)
             return None
         elif num_values == 1:
-            self.fail("TypeVar cannot have only a single constraint", context)
+            self.fail(message_registry.TYPE_VAR_TOO_FEW_CONSTRAINED_TYPES, context)
             return None
         elif covariant:
             variance = COVARIANT
@@ -5354,7 +5364,7 @@ class SemanticAnalyzer(
             tag = self.track_incomplete_refs()
             res, alias_tvars, depends_on, qualified_tvars, empty_tuple_index = self.analyze_alias(
                 s.name.name,
-                s.value,
+                s.value.expr(),
                 allow_placeholder=True,
                 declared_type_vars=type_params,
                 all_declared_type_params_names=all_type_params_names,
@@ -5437,6 +5447,7 @@ class SemanticAnalyzer(
             current_node = existing.node if existing else alias_node
             assert isinstance(current_node, TypeAlias)
             self.disable_invalid_recursive_aliases(s, current_node, s.value)
+            s.name.accept(self)
         finally:
             self.pop_type_args(s.type_args)
 
@@ -5451,7 +5462,11 @@ class SemanticAnalyzer(
 
     def bind_name_expr(self, expr: NameExpr, sym: SymbolTableNode) -> None:
         """Bind name expression to a symbol table node."""
-        if isinstance(sym.node, TypeVarExpr) and self.tvar_scope.get_binding(sym):
+        if (
+            isinstance(sym.node, TypeVarExpr)
+            and self.tvar_scope.get_binding(sym)
+            and not self.allow_unbound_tvars
+        ):
             self.fail(f'"{expr.name}" is a type variable and only valid in type context', expr)
         elif isinstance(sym.node, PlaceholderNode):
             self.process_placeholder(expr.name, "name", expr)
@@ -7029,7 +7044,7 @@ class SemanticAnalyzer(
 
     def fail(
         self,
-        msg: str,
+        msg: str | ErrorMessage,
         ctx: Context,
         serious: bool = False,
         *,
@@ -7040,6 +7055,10 @@ class SemanticAnalyzer(
             return
         # In case it's a bug and we don't really have context
         assert ctx is not None, msg
+        if isinstance(msg, ErrorMessage):
+            if code is None:
+                code = msg.code
+            msg = msg.value
         self.errors.report(ctx.line, ctx.column, msg, blocker=blocker, code=code)
 
     def note(self, msg: str, ctx: Context, code: ErrorCode | None = None) -> None:

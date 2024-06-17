@@ -1653,10 +1653,10 @@ class TypeAliasStmt(Statement):
 
     name: NameExpr
     type_args: list[TypeParam]
-    value: Expression  # Will get translated into a type
+    value: LambdaExpr  # Return value will get translated into a type
     invalid_recursive_alias: bool
 
-    def __init__(self, name: NameExpr, type_args: list[TypeParam], value: Expression) -> None:
+    def __init__(self, name: NameExpr, type_args: list[TypeParam], value: LambdaExpr) -> None:
         super().__init__()
         self.name = name
         self.type_args = type_args
@@ -2535,8 +2535,9 @@ class TypeVarLikeExpr(SymbolNode, Expression):
         default: mypy.types.Type,
         variance: int = INVARIANT,
         is_new_style: bool = False,
+        line: int = -1,
     ) -> None:
-        super().__init__()
+        super().__init__(line=line)
         self._name = name
         self._fullname = fullname
         self.upper_bound = upper_bound
@@ -2582,8 +2583,9 @@ class TypeVarExpr(TypeVarLikeExpr):
         default: mypy.types.Type,
         variance: int = INVARIANT,
         is_new_style: bool = False,
+        line: int = -1,
     ) -> None:
-        super().__init__(name, fullname, upper_bound, default, variance, is_new_style)
+        super().__init__(name, fullname, upper_bound, default, variance, is_new_style, line=line)
         self.values = values
 
     def accept(self, visitor: ExpressionVisitor[T]) -> T:
@@ -2661,8 +2663,9 @@ class TypeVarTupleExpr(TypeVarLikeExpr):
         default: mypy.types.Type,
         variance: int = INVARIANT,
         is_new_style: bool = False,
+        line: int = -1,
     ) -> None:
-        super().__init__(name, fullname, upper_bound, default, variance, is_new_style)
+        super().__init__(name, fullname, upper_bound, default, variance, is_new_style, line=line)
         self.tuple_fallback = tuple_fallback
 
     def accept(self, visitor: ExpressionVisitor[T]) -> T:

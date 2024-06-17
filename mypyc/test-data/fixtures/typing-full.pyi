@@ -10,6 +10,9 @@ from abc import abstractmethod, ABCMeta
 
 class GenericMeta(type): pass
 
+class _SpecialForm:
+    def __getitem__(self, index): ...
+
 cast = 0
 overload = 0
 Any = 0
@@ -19,7 +22,6 @@ TypeVar = 0
 Generic = 0
 Protocol = 0
 Tuple = 0
-Callable = 0
 _promote = 0
 NamedTuple = 0
 Type = 0
@@ -30,6 +32,7 @@ Literal = 0
 TypedDict = 0
 NoReturn = 0
 NewType = 0
+Callable: _SpecialForm
 
 T = TypeVar('T')
 T_co = TypeVar('T_co', covariant=True)
@@ -167,3 +170,6 @@ class _TypedDict(Mapping[str, object]):
     def pop(self, k: NoReturn, default: T = ...) -> object: ...
     def update(self: T, __m: T) -> None: ...
     def __delitem__(self, k: NoReturn) -> None: ...
+
+class TypeAliasType:
+    pass

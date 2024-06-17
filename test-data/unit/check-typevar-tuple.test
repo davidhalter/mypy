@@ -1114,10 +1114,9 @@ reveal_type(t.fn)  # N: Revealed type is "def (builtins.int, builtins.int, built
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicNamedTuple]
-from typing import Tuple, Callable, NamedTuple, Generic
+from typing import Tuple, Callable, NamedTuple, Generic, TypeVar
 from typing_extensions import TypeVarTuple, Unpack
 
---zuban-diff 
 T = TypeVar("T")
 Ts = TypeVarTuple("Ts")
 class A(NamedTuple, Generic[Unpack[Ts], T]):
@@ -1145,11 +1144,9 @@ nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callab
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicTypedDict]
---zuban-diff from typing import Tuple, Callable, Generic
 from typing import Tuple, Callable, Generic, TypeVar
 from typing_extensions import TypeVarTuple, Unpack, TypedDict
 
---zuban-diff 
 T = TypeVar("T")
 Ts = TypeVarTuple("Ts")
 class A(TypedDict, Generic[Unpack[Ts], T]):

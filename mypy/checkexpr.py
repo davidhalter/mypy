@@ -411,7 +411,9 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             result = self.alias_type_in_runtime_context(
                 node, ctx=e, alias_definition=e.is_alias_rvalue or lvalue
             )
-        elif isinstance(node, (TypeVarExpr, ParamSpecExpr, TypeVarTupleExpr)):
+        elif isinstance(node, TypeVarExpr):
+            return self.named_type("typing.TypeVar")
+        elif isinstance(node, (ParamSpecExpr, TypeVarTupleExpr)):
             result = self.object_type()
         else:
             if isinstance(node, PlaceholderNode):
@@ -527,6 +529,10 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                     and node
                     and isinstance(node.node, TypeAlias)
                     and not node.node.no_args
+                    and not (
+                        isinstance(union_target := get_proper_type(node.node.target), UnionType)
+                        and union_target.uses_pep604_syntax
+                    )
                 ):
                     self.msg.type_arguments_not_allowed(e)
                 if isinstance(typ, RefExpr) and isinstance(typ.node, TypeInfo):
@@ -4762,6 +4768,12 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             return TypeType(item, line=item.line, column=item.column)
         elif isinstance(item, AnyType):
             return AnyType(TypeOfAny.from_another_any, source_any=item)
+        elif (
+            isinstance(item, UnionType)
+            and item.uses_pep604_syntax
+            and self.chk.options.python_version >= (3, 10)
+        ):
+            return self.chk.named_generic_type("types.UnionType", item.items)
         else:
             if alias_definition:
                 return AnyType(TypeOfAny.special_form)

@@ -2471,7 +2471,8 @@ def f() -> int:  # E: Missing return statement
 from typing import TypeVar
 T = TypeVar("T")
 x: int
---zuban-diff x + T  # E: Unsupported operand types for + ("int" and "object")
+--zuban-diff x + T  # E: Unsupported left operand type for + ("int")
 x + T  # E: Unsupported operand types for + ("int" and "TypeVar")
---zuban-diff T()  # E: "object" not callable
 T()  # E: "TypeVar" not callable
+[builtins fixtures/tuple.pyi]
+[typing fixtures/typing-full.pyi]
