@@ -3565,7 +3565,8 @@ class B(A):
                                                 # N:      Superclass: \
                                                 # N:          def g(self, *, x: float) -> None \
                                                 # N:      Subclass: \
-                                                # N:          def g(*, x: int = ..., y: str = ...) -> None
+--zuban-diff                                                 # N:          def g(*, x: int = ..., y: str = ...) -> None
+                                                # N:          def g(self, **kwargs: Unpack[TD]) -> None
         z  # E: Name "z" is not defined
 reveal_type(B.f)  # N: Revealed type is "def (self: __main__.B, **kwargs: Unpack[TypedDict('__main__.TD', {'x'?: builtins.int, 'y'?: builtins.str})])"
 B().f(x=1.0)  # E: Argument "x" to "f" of "B" has incompatible type "float"; expected "int"
