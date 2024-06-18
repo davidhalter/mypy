@@ -185,9 +185,11 @@ import a
 N1 = NewType('N1', a.A)
 
 [case testNewAnalyzerInheritanceForwardRef]
-class C(B):
+--zuban-diff class C(B):
+class C(B):  # E: Name "B" is used before definition
     pass
-class B(A):
+--zuban-diff class B(A):
+class B(A):  # E: Name "A" is used before definition
     pass
 class A:
     def __init__(self, x: str) -> None: pass
@@ -256,7 +258,8 @@ main:6: note: Revealed type is "TypedDict('__main__.T1', {'x': __main__.A})"
 [case testNewAnalyzerTypedDictClassInheritance]
 from mypy_extensions import TypedDict
 
-class T2(T1):
+--zuban-diff class T2(T1):
+class T2(T1):  # E: Name "T1" is used before definition
     y: int
 
 class T1(TypedDict):
@@ -570,7 +573,8 @@ reveal_type(c3) # N: Revealed type is "__main__.C[Any]"
 [case testNewAnalyzerGenericsTypeVarForwardRef]
 from typing import TypeVar, Generic
 
-class C(Generic[T]):
+--zuban-diff class C(Generic[T]):
+class C(Generic[T]):  # E: Name "T" is used before definition
     def __init__(self, x: T) -> None:
         self.x = x
 
@@ -606,7 +610,8 @@ reveal_type(g) # N: Revealed type is "__main__.D[builtins.int, __main__.C]"
 [case testNewAnalyzerTypeAlias2]
 from typing import Union
 
-class C(D): pass
+--zuban-diff class C(D): pass
+class C(D): pass  # E: Name "D" is used before definition
 
 A = Union[C, int]
 x: A
@@ -754,8 +759,10 @@ class C(Generic[T]): pass
 
 class D(C[XY], Generic[XY]): pass
 
-class X(Defer): pass
-class Y(Defer): pass
+--zuban-diff class X(Defer): pass
+--zuban-diff class Y(Defer): pass
+class X(Defer): pass  # E: Name "Defer" is used before definition
+class Y(Defer): pass  # E: Name "Defer" is used before definition
 class Defer: ...
 
 x: D[int]  # E: Value of type variable "XY" of "D" cannot be "int"
@@ -772,7 +779,8 @@ class C(Generic[T]): pass
 
 class D(C[TY], Generic[TY]): pass
 
-class Y(Defer): pass
+--zuban-diff class Y(Defer): pass
+class Y(Defer): pass  # E: Name "Defer" is used before definition
 class Defer: ...
 
 x: D[int]  # E: Type argument "int" of "D" must be a subtype of "Y"
@@ -781,7 +789,8 @@ y: D[Y]
 [case testNewAnalyzerTypeVarForwardReferenceErrors]
 from typing import TypeVar, Generic
 
-class C(Generic[T]):
+--zuban-diff class C(Generic[T]):
+class C(Generic[T]):  # E: Name "T" is used before definition
     def __init__(self, x: T) -> None: ...
 def func(x: U) -> U: ...
 
@@ -811,7 +820,8 @@ T = TypeVar('T')
 
 class A(Generic[T]): pass
 
-class C(A[C]):
+--zuban-diff class C(A[C]):
+class C(A[C]):  # E: Name "C" is used before definition
     pass
 
 class D(A['D']):
@@ -842,7 +852,8 @@ import a
 [file a.py]
 from b import f
 
-class C(D): pass
+--zuban-diff class C(D): pass
+class C(D): pass  # E: Name "D" is used before definition
 class D: pass
 
 [file b.py]
@@ -856,7 +867,8 @@ import a
 [file a.py]
 from b import f
 
-class C(D): pass
+--zuban-diff class C(D): pass
+class C(D): pass  # E: Name "D" is used before definition
 class D: pass
 
 [file b.py]
@@ -1093,7 +1105,8 @@ from b import C  # E: Incompatible import of "C" (imported name has type "Type[C
 [file b.py]
 import a
 
-class C(B): ...
+--zuban-diff class C(B): ...
+class C(B): ...  # E: Name "B" is used before definition
 class B: ...
 
 [case testNewAnalyzerImportOverExistingInCycleStar1]
@@ -1131,7 +1144,8 @@ x: Tuple[int]  # E: Name "tuple" is not defined
 [builtins fixtures/complex.pyi]
 
 [case testNewAnalyzerMetaclass1]
-class A(metaclass=B):
+--zuban-diff class A(metaclass=B):
+class A(metaclass=B):  # E: Name "B" is used before definition
     pass
 
 class B(type):
@@ -1155,7 +1169,8 @@ class AA(metaclass=C): # E: Metaclasses not inheriting from "type" are not suppo
 
 reveal_type(A.f()) # N: Revealed type is "builtins.int"
 [case testNewAnalyzerMetaclassPlaceholder]
-class B(C): pass
+--zuban-diff class B(C): pass
+class B(C): pass  # E: Name "C" is used before definition
 
 class A(metaclass=B):
     pass
@@ -1278,7 +1293,8 @@ class Defer:
 [case testNewAnalyzerFinalDefiningModuleVar]
 from typing import Final
 
-class D(C): ...
+--zuban-diff class D(C): ...
+class D(C): ...  # E: Name "C" is used before definition
 class C: ...
 
 x: Final = C()
@@ -1291,7 +1307,8 @@ reveal_type(y)  # N: Revealed type is "__main__.C"
 from typing import Final
 
 class D: ...
-class E(C): ...
+--zuban-diff class E(C): ...
+class E(C): ...  # E: Name "C" is used before definition
 
 class C:
     def __init__(self, x: D) -> None:
@@ -1371,7 +1388,8 @@ A = B
 from typing import List
 from a import x
 
-class B(List[B]): pass
+--zuban-diff class B(List[B]): pass
+class B(List[B]): pass  # E: Name "B" is used before definition
 
 reveal_type(x[0][0])  # N: Revealed type is "b.B"
 [builtins fixtures/list.pyi]
@@ -1381,7 +1399,8 @@ from typing import List
 
 x: A
 
-class A(List[B]): pass
+--zuban-diff class A(List[B]): pass
+class A(List[B]): pass  # E: Name "B" is used before definition
 B = A
 
 reveal_type(x[0][0])  # N: Revealed type is "__main__.A"
@@ -1440,7 +1459,8 @@ A = B[Tuple[T, T]]
 from typing import List, Generic, TypeVar
 from a import x
 
-class B(List[B], Generic[T]): pass
+--zuban-diff class B(List[B], Generic[T]): pass
+class B(List[B], Generic[T]): pass  # E: Name "B" is used before definition  # E: Name "T" is used before definition
 T = TypeVar('T')
 reveal_type(x)  # N: Revealed type is "b.B[Tuple[builtins.int, builtins.int]]"
 [builtins fixtures/list.pyi]
@@ -1457,7 +1477,8 @@ A = Tuple[B, B]
 from typing import List
 from a import x
 
-class B(List[B]): pass
+--zuban-diff class B(List[B]): pass
+class B(List[B]): pass  # E: Name "B" is used before definition
 
 reveal_type(x)  # N: Revealed type is "Tuple[b.B, b.B]"
 [builtins fixtures/list.pyi]
@@ -1566,8 +1587,10 @@ reveal_type(f)  # N: Revealed type is "def (x: builtins.list[a.C]) -> builtins.l
 from typing import List, Union
 x: A
 
-class B(List[A]): pass
-class C(List[A]): pass
+--zuban-diff class B(List[A]): pass
+--zuban-diff class C(List[A]): pass
+class B(List[A]): pass  # E: Name "A" is used before definition
+class C(List[A]): pass  # E: Name "A" is used before definition
 
 A = Union[B, C]
 
@@ -1615,12 +1638,14 @@ class B: pass
 [case testNewAnalyzerTypeArgBoundCheck]
 from typing import TypeVar, Generic
 
-class F(E): pass
+--zuban-diff class F(E): pass
+class F(E): pass  # E: Name "E" is used before definition
 class E: pass
 T = TypeVar('T', bound=E)
 class C(Generic[T]): pass
 
-class D(B): pass
+--zuban-diff class D(B): pass
+class D(B): pass  # E: Name "B" is used before definition
 
 x: C[D] # E: Type argument "D" of "C" must be a subtype of "E"
 y: C[F]
@@ -1630,12 +1655,14 @@ class B: pass
 [case testNewAnalyzerTypeArgValueRestriction]
 from typing import TypeVar, Generic
 
-class F(E): pass
+--zuban-diff class F(E): pass
+class F(E): pass  # E: Name "E" is used before definition
 class E: pass
 T = TypeVar('T', E, str)
 class C(Generic[T]): pass
 
-class D(B): pass
+--zuban-diff class D(B): pass
+class D(B): pass  # E: Name "B" is used before definition
 
 x: C[D] # E: Value of type variable "T" of "C" cannot be "D"
 y: C[E]
@@ -1944,7 +1971,8 @@ def C() -> None:  # E: Name "C" already defined on line 1
 [case testNewAnalyzerTupleIteration]
 from typing import Union, Tuple, NamedTuple
 
-class T(Tuple[B, C]):
+--zuban-diff class T(Tuple[B, C]):
+class T(Tuple[B, C]):  # E: Name "B" is used before definition  # E: Name "C" is used before definition
     pass
 
 class A: pass
@@ -2002,14 +2030,16 @@ reveal_type(t.__iter__) # N: Revealed type is "def () -> typing.Iterator[__main_
 [builtins fixtures/tuple.pyi]
 
 [case testNewAnalyzerClassKeywordsForward]
-class C(B, other=A): ...
+--zuban-diff class C(B, other=A): ...
+class C(B, other=A): ...  # E: Name "B" is used before definition  # E: Name "A" is used before definition
 class B: ...
 class A: ...
 
 [case testNewAnalyzerClassKeywordsCyclic]
 from typing import List
 
-class C(List[C], other=C): ...
+--zuban-diff class C(List[C], other=C): ...
+class C(List[C], other=C): ...  # E: Name "C" is used before definition  # E: Name "C" is used before definition
 [builtins fixtures/list.pyi]
 
 [case testNewAnalyzerClassKeywordsError]
@@ -2557,7 +2587,8 @@ force1(reveal_type(var1))            # N: Revealed type is "Literal[1]"
 [builtins fixtures/tuple.pyi]
 
 [case testNewAnalyzerReportLoopInMRO]
-class A(A): ... # E: Cannot resolve name "A" (possible cyclic definition)
+--zuban-diff class A(A): ... # E: Cannot resolve name "A" (possible cyclic definition)
+class A(A): ... # E: Cannot resolve name "A" (possible cyclic definition)  # E: Name "A" is used before definition
 [out]
 
 [case testNewSemanticAnalyzerUnimportedSpecialCase]
@@ -2788,7 +2819,8 @@ class Something:
 import b
 [file a.py]
 import b
-class A(B): ...
+--zuban-diff class A(B): ...
+class A(B): ...  # E: Name "B" is used before definition
 class B: ...
 
 [file b.py]

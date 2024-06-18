@@ -1115,7 +1115,8 @@ from typing import List
 class B:
     x: C
 
-class C(List[C]):
+--zuban-diff class C(List[C]):
+class C(List[C]):  # E: Name "C" is used before definition
     pass
 
 reveal_type(B)  # N: Revealed type is "def (x: __main__.C) -> __main__.B"
@@ -1774,11 +1775,13 @@ T = TypeVar("T")
 # defined here in reversed order to simulate this.
 
 @dataclass
-class Child1(Parent["Child2"]):
+--zuban-diff class Child1(Parent["Child2"]):
+class Child1(Parent["Child2"]):  # E: Name "Parent" is used before definition
     x: int
 
 @dataclass
-class Child2(Parent["Child1"]):
+--zuban-diff class Child2(Parent["Child1"]):
+class Child2(Parent["Child1"]):  # E: Name "Parent" is used before definition
     y: int
 
 @dataclass

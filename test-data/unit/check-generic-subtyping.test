@@ -113,7 +113,8 @@ class F: pass
 from typing import TypeVar, Generic
 t = TypeVar('t')
 class I(Generic[t]): pass
-class A(I[C], I[object]): pass # E: Duplicate base class "I"
+--zuban-diff class A(I[C], I[object]): pass # E: Duplicate base class "I"
+class A(I[C], I[object]): pass # E: Duplicate base class "I"  # E: Name "C" is used before definition
 class C: pass
 
 
@@ -492,7 +493,8 @@ id: I[D]
 ie: I[E]
 
 class I(Generic[S]): pass
-class B(I[C]): pass
+--zuban-diff class B(I[C]): pass
+class B(I[C]): pass  # E: Name "C" is used before definition
 class A(B): pass
 
 if int():
@@ -562,7 +564,8 @@ class I(Generic[T]):
     def f(self, a: T) -> None: pass
     @abstractmethod
     def g(self, a: T) -> None: pass
-class A(I[C]):
+--zuban-diff class A(I[C]):
+class A(I[C]):  # E: Name "C" is used before definition
     def f(self, a: 'D') -> None: pass \
         # E: Argument 1 of "f" is incompatible with supertype "I"; supertype defines the argument type as "C" \
         # N: This violates the Liskov substitution principle \

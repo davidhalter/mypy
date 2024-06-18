@@ -818,8 +818,10 @@ g(c)
 from typing import TypeVar
 from abc import abstractmethod, ABCMeta
 class A: pass
-class B(A, I, J): pass
-class C(A, I, J): pass
+--zuban-diff class B(A, I, J): pass
+--zuban-diff class C(A, I, J): pass
+class B(A, I, J): pass  # E: Name "I" is used before definition  # E: Name "J" is used before definition
+class C(A, I, J): pass  # E: Name "I" is used before definition  # E: Name "J" is used before definition
 
 def f(a: T, b: T) -> T: pass
 

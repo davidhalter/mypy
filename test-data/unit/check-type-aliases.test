@@ -803,7 +803,8 @@ from typing import TypeVar, List, Generic
 import a
 
 S = TypeVar("S")
-class C(Generic[S], List[Defer]): ...
+--zuban-diff class C(Generic[S], List[Defer]): ...
+class C(Generic[S], List[Defer]): ...  # E: Name "Defer" is used before definition
 class Defer: ...
 [builtins fixtures/list.pyi]
 

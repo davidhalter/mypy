@@ -752,7 +752,8 @@ class C(B): pass
 a = A(C(), B()) # type: A  # E: Argument 2 to "A" has incompatible type "B"; expected "C"
 
 [case testInheritedConstructor]
-class B(A): pass
+--zuban-diff class B(A): pass
+class B(A): pass  # E: Name "A" is used before definition
 class C: pass
 class D: pass
 

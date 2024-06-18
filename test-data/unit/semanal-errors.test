@@ -793,14 +793,15 @@ class D(str): pass # ok
 
 [case testCyclicInheritance1]
 
-class A(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
+--zuban-diff class A(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
+class A(A): pass # E: Cannot resolve name "A" (possible cyclic definition)  # E: Name "A" is used before definition
 [out]
 
 [case testCyclicInheritance2]
 
 --zuban-diff class A(B): pass # E: Cannot resolve name "B" (possible cyclic definition)
 --zuban-diff class B(A): pass
-class A(B): pass
+class A(B): pass # E: Name "B" is used before definition
 class B(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 [out]
 

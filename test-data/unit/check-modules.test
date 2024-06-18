@@ -2481,7 +2481,8 @@ from b import f
 from c import B
 [file b.py]
 from c import y
-class A(B): pass
+--zuban-diff class A(B): pass
+class A(B): pass  # E: Name "B" is used before definition
 reveal_type(A().x) # N: Revealed type is "builtins.int"
 from a import B
 def f() -> None: pass

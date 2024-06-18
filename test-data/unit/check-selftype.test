@@ -1816,7 +1816,8 @@ reveal_type(C().foo(42))  # N: Revealed type is "Tuple[__main__.C, builtins.int]
 [case testTypingSelfTypeVarClashAttr]
 from typing import Self, TypeVar, Tuple, Callable
 
-class Defer(This): ...
+--zuban-diff class Defer(This): ...
+class Defer(This): ...  # E: Name "This" is used before definition
 
 S = TypeVar("S")
 class C:
