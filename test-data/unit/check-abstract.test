@@ -1044,7 +1044,7 @@ from typing import NewType, Mapping
 Config = NewType('Config', Mapping[str, str])
 
 --zuban-diff bad = Mapping[str, str]()  # E: Cannot instantiate abstract class "Mapping" with abstract attribute "__iter__"
-bad = Mapping[str, str]()  # E: Cannot instantiate abstract class "Mapping" with abstract attributes "__getitem__", "__len__" and "__iter__"
+bad = Mapping[str, str]()  # E: Cannot instantiate abstract class "Mapping" with abstract attributes "__getitem__", "__iter__" and "__len__"
 default = Config({'cannot': 'modify'})  # OK
 
 default[1] = 2  # E: Unsupported target for indexed assignment ("Config")
