@@ -4992,8 +4992,10 @@ class A(metaclass=M):
 
 reveal_type(A.g1)  # N: Revealed type is "def () -> __main__.A"
 reveal_type(A.g2)  # N: Revealed type is "def () -> __main__.A"
-reveal_type(A.g3)  # N: Revealed type is "def () -> def () -> __main__.A"
-reveal_type(A.g4)  # N: Revealed type is "def () -> def () -> __main__.A"
+--zuban-diff reveal_type(A.g3)  # N: Revealed type is "def () -> def () -> __main__.A"
+--zuban-diff reveal_type(A.g4)  # N: Revealed type is "def () -> def () -> __main__.A"
+reveal_type(A.g3)  # N: Revealed type is "def () -> Type[__main__.A]"
+reveal_type(A.g4)  # N: Revealed type is "def () -> Type[__main__.A]"
 
 class B(metaclass=M):
     def foo(self): pass
@@ -5001,7 +5003,8 @@ class B(metaclass=M):
 B.g1  # E: Invalid self argument "Type[B]" to attribute function "g1" with type "Callable[[Type[A]], A]"
 B.g2  # E: Invalid self argument "Type[B]" to attribute function "g2" with type "Callable[[Type[TA]], TA]"
 B.g3  # E: Invalid self argument "Type[B]" to attribute function "g3" with type "Callable[[TTA], TTA]"
-reveal_type(B.g4)  # N: Revealed type is "def () -> def () -> __main__.B"
+--zuban-diff reveal_type(B.g4)  # N: Revealed type is "def () -> def () -> __main__.B"
+reveal_type(B.g4)  # N: Revealed type is "def () -> Type[__main__.B]"
 
 # 4 examples of unsoundness - instantiation, classmethod, staticmethod and ClassVar:
 
