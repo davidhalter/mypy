@@ -317,7 +317,8 @@ void = type(None)
 x: int
 y: Union[int, void]
 z: Optional[int]
-x = y  # E: Incompatible types in assignment (expression has type "Optional[int]", variable has type "int")
+--zuban-diff x = y  # E: Incompatible types in assignment (expression has type "Optional[int]", variable has type "int")
+x = y  # E: Incompatible types in assignment (expression has type "int | None", variable has type "int")
 y = z
 [builtins fixtures/bool.pyi]
 
