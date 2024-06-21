@@ -5282,6 +5282,8 @@ def func(x):
     return x
 [out]
 tmp/lib.pyi:1: error: Name "overload" is not defined
+--zuban-diff 
+tmp/lib.pyi:1: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 tmp/lib.pyi:4: error: Name "func" already defined on line 1
 main:2: note: Revealed type is "Any"
 
@@ -5297,8 +5299,12 @@ def func(x: int) -> int: ...
 def func(x: str) -> str: ...
 [out]
 tmp/lib.pyi:1: error: Name "overload" is not defined
+--zuban-diff 
+tmp/lib.pyi:1: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 tmp/lib.pyi:3: error: Name "func" already defined on line 1
 tmp/lib.pyi:3: error: Name "overload" is not defined
+--zuban-diff 
+tmp/lib.pyi:3: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 main:3: note: Revealed type is "Any"
 
 [case testLiteralSubtypeOverlap]
