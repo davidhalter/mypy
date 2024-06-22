@@ -3567,8 +3567,7 @@ def process(cls: Type[U]):
     obj = cls()
     reveal_type(cls.bar(obj))  # N: Revealed type is "builtins.int"
     cls.mro()  # Defined in class type
---zuban-diff     cls.error  # E: "Type[U]" has no attribute "error"
-    cls.error  # E: "Type[User]" has no attribute "error"
+    cls.error  # E: "Type[U]" has no attribute "error"
 [builtins fixtures/classmethod.pyi]
 [out]
 
