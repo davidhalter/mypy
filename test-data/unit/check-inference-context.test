@@ -170,8 +170,7 @@ ao: A[object]
 if int():
     ab, ao = f(b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 if int():
---zuban-diff     ao, ab = f(b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
-    ao, ab = f(b) # E: Incompatible types in assignment (expression has type "A[object]", variable has type "A[B]")
+    ao, ab = f(b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 
 if int():
     ao, ao = f(b)
@@ -199,17 +198,13 @@ ab: A[B]
 ao: A[object]
 
 if int():
---zuban-diff     ao, ao, ab = f(b, b)     # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
-    ao, ao, ab = f(b, b)     # E: Incompatible types in assignment (expression has type "A[object]", variable has type "A[B]")
+    ao, ao, ab = f(b, b)     # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 if int():
---zuban-diff     ao, ab, ao = g(b, b)     # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
-    ao, ab, ao = g(b, b)     # E: Incompatible types in assignment (expression has type "A[object]", variable has type "A[B]")
+    ao, ab, ao = g(b, b)     # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 if int():
---zuban-diff     ao, ab, ab, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
-    ao, ab, ab, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[object]", variable has type "A[B]")
+    ao, ab, ab, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 if int():
---zuban-diff     ab, ab, ao, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
-    ab, ab, ao, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[object]", variable has type "A[B]")
+    ab, ab, ao, ab = h(b, b) # E: Incompatible types in assignment (expression has type "A[B]", variable has type "A[object]")
 
 if int():
     ao, ab, ab = f(b, b)

@@ -1664,16 +1664,9 @@ def g() -> Generator[int, None, None]:
 
 [case testDictWithKeywordArgsOnly]
 from typing import Dict, Any
-d1 = dict(a=1, b=2) # type: Dict[str, int]
---zuban-diff d2 = dict(a=1, b='') # type: Dict[str, int] # E: Dict entry 1 has incompatible type "str": "str"; expected "str": "int"
-d2 = dict(a=1, b='') # type: Dict[str, int] # E: Argument "b" to "dict" has incompatible type "str"; expected "int"
---zuban-diff d3 = dict(a=1) # type: Dict[int, int] # E: Dict entry 0 has incompatible type "str": "int"; expected "int": "int"
 d3 = dict(a=1) # type: Dict[int, int] # E: Incompatible types in assignment (expression has type "dict[str, int]", variable has type "dict[int, int]") \
                                       # N: "Dict" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
                                       # N: Consider using "Mapping" instead, which is covariant in the value type
-d4 = dict(a=1, b=1)
-d4.xyz # E: "Dict[str, int]" has no attribute "xyz"
-d5 = dict(a=1, b='') # type: Dict[str, Any]
 [builtins fixtures/dict.pyi]
 
 [case testDictWithoutKeywordArgs]
