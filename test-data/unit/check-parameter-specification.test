@@ -1433,9 +1433,11 @@ def wrong_name_constructor(b: bool) -> SomeClass:
     return SomeClass("a")
 
 func(SomeClass, constructor)
-reveal_type(func(SomeClass, wrong_constructor))  # N: Revealed type is "def (a: Never) -> __main__.SomeClass"
+--zuban-diff reveal_type(func(SomeClass, wrong_constructor))  # N: Revealed type is "def (a: Never) -> __main__.SomeClass"
+reveal_type(func(SomeClass, wrong_constructor))  # E: Argument 2 to "func" has incompatible type "Callable[[bool], SomeClass]"; expected "Callable[[str], SomeClass]" # N: Revealed type is "def (*Any, **Any) -> __main__.SomeClass"
 reveal_type(func_regular(SomeClass, wrong_constructor))  # N: Revealed type is "def (Never) -> __main__.SomeClass"
-reveal_type(func(SomeClass, wrong_name_constructor))  # N: Revealed type is "def (Never) -> __main__.SomeClass"
+--zuban-diff reveal_type(func(SomeClass, wrong_name_constructor))  # N: Revealed type is "def (Never) -> __main__.SomeClass"
+reveal_type(func(SomeClass, wrong_name_constructor))  # E: Argument 2 to "func" has incompatible type "Callable[[bool], SomeClass]"; expected "Callable[[str], SomeClass]" # N: Revealed type is "def (*Any, **Any) -> __main__.SomeClass"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecInTypeAliasBasic]
