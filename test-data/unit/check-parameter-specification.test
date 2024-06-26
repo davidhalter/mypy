@@ -2136,7 +2136,8 @@ def d(f: Callable[P, None], fn: Callable[Concatenate[Callable[P, None], P], None
 
 reveal_type(d(a, f1))  # N: Revealed type is "def (i: builtins.int)"
 reveal_type(d(a, f2))  # N: Revealed type is "def (i: builtins.int)"
-reveal_type(d(b, f1))  # E: Cannot infer type argument 1 of "d" \
+--zuban-diff reveal_type(d(b, f1))  # E: Cannot infer type argument 1 of "d" \
+reveal_type(d(b, f1))  # E: Argument 2 to "d" has incompatible type "Callable[[WithName, int], None]"; expected "Callable[[Callable[[int], None], int], None]" \
                        # N: Revealed type is "def (*Any, **Any)"
 reveal_type(d(b, f2))  # N: Revealed type is "def (builtins.int)"
 [builtins fixtures/paramspec.pyi]
