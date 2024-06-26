@@ -1057,7 +1057,8 @@ a2 = Job(f4)  # E: Argument 1 to "Job" has incompatible type "Callable[[bytes], 
 
 # nor is this:
 a4: Job[[int]]
-a4 = Job(f3)  # E: Argument 1 to "Job" has incompatible type "Callable[[bool], None]"; expected "Callable[[int], None]"
+--zuban-diff a4 = Job(f3)  # E: Argument 1 to "Job" has incompatible type "Callable[[bool], None]"; expected "Callable[[int], None]"
+a4 = Job(f3)  # E: Incompatible types in assignment (expression has type "Job[[bool]]", variable has type "Job[[int]]")
 a4 = Job(f2)
 a4 = Job(f1)
 
