@@ -2161,8 +2161,10 @@ reveal_type(submit(  # N: Revealed type is "__main__.Result"
     run_portal,
     backend="asyncio",
 ))
-submit(
-    run,  # E: Argument 1 to "submit" has incompatible type "Callable[[Callable[[], R], VarArg(object), DefaultNamedArg(str, 'backend')], R]"; expected "Callable[[Callable[[], Result], int], Result]"
+--zuban-diff submit(
+--zuban-diff     run,  # E: Argument 1 to "submit" has incompatible type "Callable[[Callable[[], R], VarArg(object), DefaultNamedArg(str, 'backend')], R]"; expected "Callable[[Callable[[], Result], int], Result]"
+submit(  # E: Incompatible callable argument with type vars
+    run,
     run_portal,
     backend=int(),
 )
