@@ -1688,7 +1688,8 @@ class Foo(Generic[P]):
 def test(*args: P.args, **kwargs: P.kwargs) -> Foo[P]: ...
 
 reveal_type(test(1, 2))  # N: Revealed type is "__main__.Foo[[Literal[1]?, Literal[2]?]]"
-reveal_type(test(x=1, y=2))  # N: Revealed type is "__main__.Foo[[x: Literal[1]?, y: Literal[2]?]]"
+--zuban-diff reveal_type(test(x=1, y=2))  # N: Revealed type is "__main__.Foo[[x: Literal[1]?, y: Literal[2]?]]"
+reveal_type(test(x=1, y=2))  # N: Revealed type is "__main__.Foo[[*, x: Literal[1]?, y: Literal[2]?]]"
 ints = [1, 2, 3]
 reveal_type(test(*ints))  # N: Revealed type is "__main__.Foo[[*builtins.int]]"
 [builtins fixtures/paramspec.pyi]
@@ -2186,7 +2187,8 @@ class SomeClass:
         pass
 
 # Error message is confusing, but this is a known issue, see #4530.
-@smoke_testable(name=42, size="bad", flt=0.5)  # E: Argument 1 has incompatible type "Type[OtherClass]"; expected "Callable[[int, str, float], OtherClass]"
+--zuban-diff @smoke_testable(name=42, size="bad", flt=0.5)  # E: Argument 1 has incompatible type "Type[OtherClass]"; expected "Callable[[int, str, float], OtherClass]"
+@smoke_testable(name=42, size="bad", flt=0.5)  # E: Argument 1 has incompatible type "Type[OtherClass]"; expected "Callable[[NamedArg(int, 'name'), NamedArg(str, 'size'), NamedArg(float, 'flt')], OtherClass]"
 class OtherClass:
     def __init__(self, size: int, name: str, flt: float) -> None:
         pass
