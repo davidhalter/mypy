@@ -148,8 +148,7 @@ from typing_extensions import ParamSpec
 P = ParamSpec('P')
 
 def f(x: Callable[P, int]) -> None: ...
---zuban-diff reveal_type(f)  # N: Revealed type is "def [P] (x: def (*P.args, **P.kwargs) -> builtins.int)"
-reveal_type(f)  # N: Revealed type is "def (x: def [P] (*P.args, **P.kwargs) -> builtins.int)"
+reveal_type(f)  # N: Revealed type is "def [P] (x: def (*P.args, **P.kwargs) -> builtins.int)"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecSimpleFunction]
