@@ -3317,7 +3317,8 @@ def transform(
 
 def dec(f: Callable[W, U]) -> Callable[W, U]: ...
 def dec2(f: Callable[Concatenate[str, W], U]) -> Callable[Concatenate[bytes, W], U]: ...
-reveal_type(transform(dec))  # N: Revealed type is "def [P, T] (def (builtins.int, *P.args, **P.kwargs) -> T`9) -> def (builtins.int, *P.args, **P.kwargs) -> T`9"
+--zuban-diff reveal_type(transform(dec))  # N: Revealed type is "def [P, T] (def (builtins.int, *P.args, **P.kwargs) -> T`9) -> def (builtins.int, *P.args, **P.kwargs) -> T`9"
+reveal_type(transform(dec))  # N: Revealed type is "def [Q, T] (def (builtins.int, *Q.args, **Q.kwargs) -> T`9) -> def (builtins.int, *Q.args, **Q.kwargs) -> T`9"
 reveal_type(transform(dec2))  # N: Revealed type is "def [W, T] (def (builtins.int, builtins.str, *W.args, **W.kwargs) -> T`13) -> def (builtins.int, builtins.bytes, *W.args, **W.kwargs) -> T`13"
 [builtins fixtures/tuple.pyi]
 
