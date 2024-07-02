@@ -513,11 +513,13 @@ class D:
 
 class E:
     def __new__(cls) -> E:
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+        reveal_type(cls)  # N: Revealed type is "Type[Self]"
         return cls()
 
     def __init_subclass__(cls) -> None:
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+        reveal_type(cls)  # N: Revealed type is "Type[Self]"
 
 [case testSelfTypeNew_explicit]
 from typing import TypeVar, Type
@@ -562,12 +564,14 @@ class D:
 class E:
     @staticmethod
     def __new__(cls) -> E:
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+        reveal_type(cls)  # N: Revealed type is "Type[Self]"
         return cls()
 
     @classmethod
     def __init_subclass__(cls) -> None:
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.E]"
+        reveal_type(cls)  # N: Revealed type is "Type[Self]"
 
 [builtins fixtures/classmethod.pyi]
 
