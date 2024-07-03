@@ -2483,10 +2483,12 @@ class CM(Generic[R]): ...
 def cm(fn: Callable[P, List[R]]) -> Callable[P, CM[R]]: ...
 
 Ts = TypeVarTuple("Ts")
-@cm  # E: Argument 1 to "cm" has incompatible type "Callable[[VarArg(Unpack[Ts])], Tuple[Unpack[Ts]]]"; expected "Callable[[VarArg(Never)], List[Never]]"
+--zuban-diff @cm  # E: Argument 1 to "cm" has incompatible type "Callable[[VarArg(Unpack[Ts])], Tuple[Unpack[Ts]]]"; expected "Callable[[VarArg(Never)], List[Never]]"
+@cm  # E: Argument 1 to "cm" has incompatible type "Callable[[VarArg(Unpack[Ts])], Tuple[Unpack[Ts]]]"; expected "Callable[Never, List[Never]]"
 def test(*args: Unpack[Ts]) -> Tuple[Unpack[Ts]]: ...
 
-reveal_type(test)  # N: Revealed type is "def (*args: Never) -> __main__.CM[Never]"
+--zuban-diff reveal_type(test)  # N: Revealed type is "def (*args: Never) -> __main__.CM[Never]"
+reveal_type(test)  # N: Revealed type is "def [Ts] (*args: Unpack[Ts]) -> __main__.CM[Never]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleAgainstParamSpecActualPrefix]
