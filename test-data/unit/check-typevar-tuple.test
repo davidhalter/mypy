@@ -2518,10 +2518,20 @@ reveal_type(a)  # N: Revealed type is "__main__.A[[builtins.int, builtins.str], 
 b: B[int, str, [int, str]]
 reveal_type(b)  # N: Revealed type is "__main__.B[builtins.int, builtins.str, [builtins.int, builtins.str]]"
 
-x: A[int, str, [int, str]]  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
-reveal_type(x)  # N: Revealed type is "__main__.A[Any, Unpack[builtins.tuple[Any, ...]]]"
-y: B[[int, str], int, str]  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
-reveal_type(y)  # N: Revealed type is "__main__.B[Unpack[builtins.tuple[Any, ...]], Any]"
+x: A[int, str, [int, str]]  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int" \
+--zuban-diff 
+--zuban-diff 
+                            # E: Bracketed expression "[...]" is not valid as a type \
+                            # N: Did you mean "List[...]"?
+--zuban-diff reveal_type(x)  # N: Revealed type is "__main__.A[Any, Unpack[builtins.tuple[Any, ...]]]"
+reveal_type(x)  # N: Revealed type is "__main__.A[Any, str, Any]"
+y: B[[int, str], int, str]  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str" \
+--zuban-diff 
+--zuban-diff 
+                            # E: Bracketed expression "[...]" is not valid as a type \
+                            # N: Did you mean "List[...]"?
+--zuban-diff reveal_type(y)  # N: Revealed type is "__main__.B[Unpack[builtins.tuple[Any, ...]], Any]"
+reveal_type(y)  # N: Revealed type is "__main__.B[Any, int, Any]"
 
 R = TypeVar("R")
 class C(Generic[P, R]):
