@@ -556,7 +556,7 @@ lst = [m, n]
 
 # Unfortunately, join of two recursive types is not very precise.
 --zuban-diff reveal_type(lst[0]) # N: Revealed type is "builtins.object"
-reveal_type(lst[0]) # N: Revealed type is "tuple[typing.Sequence[object], object]"
+reveal_type(lst[0]) # N: Revealed type is "tuple[typing.Sequence[str | tuple[str, tuple[tuple[..., int], int, fallback=__main__.B], fallback=__main__.A] | int], object]"
 
 # These just should not crash
 lst1 = [m]

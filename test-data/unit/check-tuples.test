@@ -1430,7 +1430,8 @@ y = ""
 reveal_type(t[x])  # N: Revealed type is "Union[builtins.int, builtins.str]"
 t[y]  # E: No overload variant of "__getitem__" of "tuple" matches argument type "str" \
       # N: Possible overload variants: \
-      # N:     def __getitem__(self, int, /) -> Union[int, str] \
+--zuban-diff       # N:     def __getitem__(self, int, /) -> Union[int, str] \
+      # N:     def __getitem__(self, SupportsIndex, /) -> Union[int, str] \
       # N:     def __getitem__(self, slice, /) -> Tuple[Union[int, str], ...]
 
 [builtins fixtures/tuple.pyi]
