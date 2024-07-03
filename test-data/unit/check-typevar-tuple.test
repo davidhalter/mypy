@@ -2199,7 +2199,8 @@ g: Callable[[int, *Tuple[str, ...], int], None]
 reveal_type([f, g])  # N: Revealed type is "builtins.list[def (builtins.int, *Unpack[Tuple[Unpack[builtins.tuple[builtins.str, ...]], builtins.int]])]"
 
 h: Callable[[int, *Tuple[str, ...], str], None]
-reveal_type([f, h])  # N: Revealed type is "builtins.list[def (builtins.int, *Unpack[Tuple[Unpack[builtins.tuple[builtins.str, ...]], Never]])]"
+--zuban-diff reveal_type([f, h])  # N: Revealed type is "builtins.list[def (builtins.int, *Unpack[Tuple[Unpack[builtins.tuple[builtins.str, ...]], Never]])]"
+reveal_type([f, h])  # N: Revealed type is "list[def (int, *Unpack[tuple[Unpack[Tuple[str, ...]], int | str]])]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleBothUnpacksSimple]

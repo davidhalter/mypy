@@ -466,9 +466,9 @@ tnt: Tuple[NT]
 
 # TODO: these should be tuple[object] instead.
 --zuban-diff reveal_type(f(nt, tnt))  # N: Revealed type is "builtins.tuple[Any, ...]"
-reveal_type(f(nt, tnt))  # N: Revealed type is "builtins.tuple[object, ...]"
+reveal_type(f(nt, tnt))  # N: Revealed type is "tuple[tuple[..., int, fallback=__main__.NT] | int, ...]"
 --zuban-diff reveal_type(f(tnt, nt))  # N: Revealed type is "builtins.tuple[Any, ...]"
-reveal_type(f(tnt, nt))  # N: Revealed type is "builtins.tuple[object, ...]"
+reveal_type(f(tnt, nt))  # N: Revealed type is "tuple[tuple[..., int, fallback=__main__.NT] | int, ...]"
 [builtins fixtures/tuple.pyi]
 
 [case testBasicRecursiveNamedTupleClass]
@@ -556,7 +556,7 @@ lst = [m, n]
 
 # Unfortunately, join of two recursive types is not very precise.
 --zuban-diff reveal_type(lst[0]) # N: Revealed type is "builtins.object"
-reveal_type(lst[0]) # N: Revealed type is "tuple[typing.Sequence[str | tuple[str, tuple[tuple[..., int], int, fallback=__main__.B], fallback=__main__.A] | int], object]"
+reveal_type(lst[0]) # N: Revealed type is "tuple[str | tuple[tuple[str, tuple[tuple[..., int], int, fallback=__main__.B], fallback=__main__.A], int], tuple[tuple[tuple[str, ..., fallback=__main__.A], int], int, fallback=__main__.B] | int]"
 
 # These just should not crash
 lst1 = [m]
