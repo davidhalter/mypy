@@ -300,10 +300,8 @@ def f(x: int = (c := 4)) -> int:
         z2: NT  # E: Variable "__main__.NT" is not valid as a type \
                 # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
-    if Alias := int:  # E: Function "Alias" could always be true in boolean context \
-                      # E: Function "int" could always be true in boolean context
---zuban-diff         z3: Alias  # E: Variable "Alias" is not valid as a type \
-        z3: Alias  # E: Variable "__main__.Alias" is not valid as a type \
+    if Alias := int:  # E: Function "Alias" could always be true in boolean context
+        z3: Alias  # E: Variable "Alias" is not valid as a type \
                    # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
 --zuban-diff     if (reveal_type(y9 := 3) and   # N: Revealed type is "Literal[3]?"

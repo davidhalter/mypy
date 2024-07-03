@@ -36,6 +36,7 @@ from mypy.nodes import (
     ARG_STAR,
     ARG_STAR2,
     IMPLICITLY_ABSTRACT,
+    LAMBDA_NAME,
     LITERAL_TYPE,
     REVEAL_LOCALS,
     REVEAL_TYPE,
@@ -428,6 +429,9 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         if var.type:
             var_type = get_proper_type(var.type)
             if isinstance(var_type, Instance):
+                if var.fullname == "typing.Any":
+                    # The typeshed type is 'object'; give a more useful type in runtime context
+                    return self.named_type("typing._SpecialForm")
                 if self.is_literal_context() and var_type.last_known_value is not None:
                     return var_type.last_known_value
                 if var.name in {"True", "False"}:
@@ -596,6 +600,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             and self.chk.in_checked_function()
             and isinstance(callee_type, CallableType)
             and callee_type.implicit
+            and callee_type.name != LAMBDA_NAME
         ):
             if fullname is None and member is not None:
                 assert object_type is not None
@@ -1225,6 +1230,8 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 formal_arg_exprs[formal].append(args[actual])
                 if arg_names:
                     formal_arg_names[formal].append(arg_names[actual])
+                else:
+                    formal_arg_names[formal].append(None)
                 formal_arg_kinds[formal].append(arg_kinds[actual])
 
         if object_type is None:
@@ -3261,7 +3268,9 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             if isinstance(base, RefExpr) and isinstance(base.node, MypyFile):
                 module_symbol_table = base.node.names
             if isinstance(base, RefExpr) and isinstance(base.node, Var):
-                is_self = base.node.is_self
+                # This is needed to special case self-types, so we don't need to track
+                # these flags separately in checkmember.py.
+                is_self = base.node.is_self or base.node.is_cls
             else:
                 is_self = False
 
@@ -4329,16 +4338,25 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 return self.nonliteral_tuple_index_helper(left_type, index)
         elif isinstance(left_type, TypedDictType):
             return self.visit_typeddict_index_expr(left_type, e.index)
-        elif (
-            isinstance(left_type, FunctionLike)
-            and left_type.is_type_obj()
-            and left_type.type_object().is_enum
-        ):
-            return self.visit_enum_index_expr(left_type.type_object(), e.index, e)
-        elif isinstance(left_type, TypeVarType) and not self.has_member(
+        elif isinstance(left_type, FunctionLike) and left_type.is_type_obj():
+            if left_type.type_object().is_enum:
+                return self.visit_enum_index_expr(left_type.type_object(), e.index, e)
+            elif left_type.type_object().type_vars:
+                return self.named_type("types.GenericAlias")
+            elif (
+                left_type.type_object().fullname == "builtins.type"
+                and self.chk.options.python_version >= (3, 9)
+            ):
+                # builtins.type is special: it's not generic in stubs, but it supports indexing
+                return self.named_type("typing._SpecialForm")
+
+        if isinstance(left_type, TypeVarType) and not self.has_member(
             left_type.upper_bound, "__getitem__"
         ):
             return self.visit_index_with_type(left_type.upper_bound, e, original_type)
+        elif isinstance(left_type, Instance) and left_type.type.fullname == "typing._SpecialForm":
+            # Allow special forms to be indexed and used to create union types
+            return self.named_type("typing._SpecialForm")
         else:
             result, method_type = self.check_method_call_by_name(
                 "__getitem__", left_type, [e.index], [ARG_POS], e, original_type=original_type
@@ -5567,8 +5585,13 @@ class ExpressionChecker(ExpressionVisitor[Type]):
 
     def visit_generator_expr(self, e: GeneratorExpr) -> Type:
         # If any of the comprehensions use async for, the expression will return an async generator
-        # object, or if the left-side expression uses await.
-        if any(e.is_async) or has_await_expression(e.left_expr):
+        # object, or await is used anywhere but in the leftmost sequence.
+        if (
+            any(e.is_async)
+            or has_await_expression(e.left_expr)
+            or any(has_await_expression(sequence) for sequence in e.sequences[1:])
+            or any(has_await_expression(cond) for condlist in e.condlists for cond in condlist)
+        ):
             typ = "typing.AsyncGenerator"
             # received type is always None in async generator expressions
             additional_args: list[Type] = [NoneType()]
@@ -5743,16 +5766,15 @@ class ExpressionChecker(ExpressionVisitor[Type]):
                 context=if_type_fallback,
                 allow_none_return=allow_none_return,
             )
-
-        # Only create a union type if the type context is a union, to be mostly
-        # compatible with older mypy versions where we always did a join.
-        #
-        # TODO: Always create a union or at least in more cases?
-        if isinstance(get_proper_type(self.type_context[-1]), UnionType):
-            res: Type = make_simplified_union([if_type, full_context_else_type])
-        else:
-            res = join.join_types(if_type, else_type)
-
+        res: Type = make_simplified_union([if_type, else_type])
+        if has_uninhabited_component(res) and not isinstance(
+            get_proper_type(self.type_context[-1]), UnionType
+        ):
+            # In rare cases with empty collections join may give a better result.
+            alternative = join.join_types(if_type, else_type)
+            p_alt = get_proper_type(alternative)
+            if not isinstance(p_alt, Instance) or p_alt.type.fullname != "builtins.object":
+                res = alternative
         return res
 
     def analyze_cond_branch(

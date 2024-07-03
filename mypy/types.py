@@ -501,7 +501,7 @@ class TypeVarId:
     # function type variables.
 
     # Metavariables are allocated unique ids starting from 1.
-    raw_id: int = 0
+    raw_id: int
 
     # Level of the variable in type inference. Currently either 0 for
     # declared types, or 1 for type inference metavariables.
@@ -544,6 +544,10 @@ class TypeVarId:
 
     def is_meta_var(self) -> bool:
         return self.meta_level > 0
+
+    def is_self(self) -> bool:
+        # This is a special value indicating typing.Self variable.
+        return self.raw_id == 0
 
 
 class TypeVarLikeType(ProperType):
@@ -1413,8 +1417,7 @@ class Instance(ProperType):
         self._hash = -1
 
         # Additional attributes defined per instance of this type. For example modules
-        # have different attributes per instance of types.ModuleType. This is intended
-        # to be "short-lived", we don't serialize it, and even don't store as variable type.
+        # have different attributes per instance of types.ModuleType.
         self.extra_attrs = extra_attrs
 
     def accept(self, visitor: TypeVisitor[T]) -> T:
@@ -2080,6 +2083,17 @@ class CallableType(FunctionLike):
         prefix = Parameters(self.arg_types[:-2], self.arg_kinds[:-2], self.arg_names[:-2])
         return arg_type.copy_modified(flavor=ParamSpecFlavor.BARE, prefix=prefix)
 
+    def normalize_trivial_unpack(self) -> None:
+        # Normalize trivial unpack in var args as *args: *tuple[X, ...] -> *args: X in place.
+        if self.is_var_arg:
+            star_index = self.arg_kinds.index(ARG_STAR)
+            star_type = self.arg_types[star_index]
+            if isinstance(star_type, UnpackType):
+                p_type = get_proper_type(star_type.type)
+                if isinstance(p_type, Instance):
+                    assert p_type.type.fullname == "builtins.tuple"
+                    self.arg_types[star_index] = p_type.args[0]
+
     def with_unpacked_kwargs(self) -> NormalizedCallableType:
         if not self.unpack_kwargs:
             return cast(NormalizedCallableType, self)
@@ -2109,7 +2123,7 @@ class CallableType(FunctionLike):
         if not isinstance(unpacked, TupleType):
             # Note that we don't normalize *args: *tuple[X, ...] -> *args: X,
             # this should be done once in semanal_typeargs.py for user-defined types,
-            # and we ourselves should never construct such type.
+            # and we ourselves rarely construct such type.
             return self
         unpack_index = find_unpack_in_list(unpacked.items)
         if unpack_index == 0 and len(unpacked.items) > 1:
@@ -3095,8 +3109,7 @@ def get_proper_type(typ: Type | None) -> ProperType | None:
 
 
 @overload
-def get_proper_types(types: list[Type] | tuple[Type, ...]) -> list[ProperType]:  # type: ignore[overload-overlap]
-    ...
+def get_proper_types(types: list[Type] | tuple[Type, ...]) -> list[ProperType]: ...
 
 
 @overload

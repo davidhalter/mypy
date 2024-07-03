@@ -1049,6 +1049,7 @@ _empty: Final = Empty.token
 def func(x: Union[int, None, Empty] = _empty) -> int:
 --zuban-diff     boom = x + 42       # E: Unsupported left operand type for + ("None") \
 --zuban-diff                         # E: Unsupported left operand type for + ("Empty") \
+--zuban-diff                         # N: Left operand is of type "Union[int, Empty, None]"
     boom = x + 42       # E: Unsupported operand types for + ("None" and "int") \
                         # E: Unsupported operand types for + ("Empty" and "int") \
                         # N: Left operand is of type "Union[int, None, Empty]"
@@ -1097,6 +1098,7 @@ _empty = Empty.token
 def func(x: Union[int, None, Empty] = _empty) -> int:
 --zuban-diff     boom = x + 42       # E: Unsupported left operand type for + ("None") \
 --zuban-diff                         # E: Unsupported left operand type for + ("Empty") \
+--zuban-diff                         # N: Left operand is of type "Union[int, Empty, None]"
     boom = x + 42       # E: Unsupported operand types for + ("None" and "int") \
                         # E: Unsupported operand types for + ("Empty" and "int") \
                         # N: Left operand is of type "Union[int, None, Empty]"
@@ -1127,6 +1129,7 @@ _empty = Empty.token
 def func(x: Union[int, None, Empty] = _empty) -> int:
 --zuban-diff     boom = x + 42       # E: Unsupported left operand type for + ("None") \
 --zuban-diff                         # E: Unsupported left operand type for + ("Empty") \
+--zuban-diff                         # N: Left operand is of type "Union[int, Empty, None]"
     boom = x + 42       # E: Unsupported operand types for + ("None" and "int") \
                         # E: Unsupported operand types for + ("Empty" and "int") \
                         # N: Left operand is of type "Union[int, None, Empty]"

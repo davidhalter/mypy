@@ -453,7 +453,6 @@ from typing import NamedTuple, TypeVar, Tuple
 NT = NamedTuple("NT", [("x", NT), ("y", int)])
 nt: NT
 reveal_type(nt)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
---zuban-diff reveal_type(nt.x)  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
 reveal_type(nt.x)  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
 --zuban-diff reveal_type(nt[0])  # N: Revealed type is "Tuple[Tuple[..., builtins.int, fallback=__main__.NT], builtins.int, fallback=__main__.NT]"
 reveal_type(nt[0])  # N: Revealed type is "Tuple[..., builtins.int, fallback=__main__.NT]"
