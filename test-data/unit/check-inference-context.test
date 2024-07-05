@@ -1488,7 +1488,8 @@ from typing import Any, Tuple, Union
 i: Union[Tuple[Any, ...], int]
 b: Any
 i = i if isinstance(i, int) else b
-reveal_type(i)  # N: Revealed type is "Union[Any, builtins.int]"
+--zuban-diff reveal_type(i)  # N: Revealed type is "Union[Any, builtins.int]"
+reveal_type(i)  # N: Revealed type is "Union[builtins.int, Any]"
 [builtins fixtures/isinstance.pyi]
 
 [case testLambdaInferenceUsesNarrowedTypes]
