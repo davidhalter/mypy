@@ -1399,7 +1399,8 @@ from typing import Union, List, Any
 
 def f(x: Union[List[str], Any]) -> None:
     a = x if x else []
-    reveal_type(a)  # N: Revealed type is "Union[builtins.list[builtins.str], Any, builtins.list[Union[builtins.str, Any]]]"
+--zuban-diff     reveal_type(a)  # N: Revealed type is "Union[builtins.list[builtins.str], Any, builtins.list[Union[builtins.str, Any]]]"
+    reveal_type(a)  # N: Revealed type is "Union[builtins.list[builtins.str], Any]"
 [builtins fixtures/list.pyi]
 
 [case testConditionalExpressionWithEmptyIteableAndUnionWithAny]
@@ -1407,7 +1408,8 @@ from typing import Union, Iterable, Any
 
 def f(x: Union[Iterable[str], Any]) -> None:
     a = x if x else []
-    reveal_type(a)  # N: Revealed type is "Union[typing.Iterable[builtins.str], Any, builtins.list[Union[builtins.str, Any]]]"
+--zuban-diff     reveal_type(a)  # N: Revealed type is "Union[typing.Iterable[builtins.str], Any, builtins.list[Union[builtins.str, Any]]]"
+    reveal_type(a)  # N: Revealed type is "Union[typing.Iterable[builtins.str], Any]"
 [builtins fixtures/list.pyi]
 
 [case testInferMultipleAnyUnionCovariant]
