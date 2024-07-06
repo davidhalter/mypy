@@ -434,7 +434,8 @@ reveal_type(register(lambda: f(1)))  # N: Revealed type is "def ()"
 reveal_type(register(lambda x: f(x), x=1))  # N: Revealed type is "def (x: Literal[1]?)"
 register(lambda x: f(x))  # E: Cannot infer type of lambda \
                           # E: Argument 1 to "register" has incompatible type "Callable[[Any], None]"; expected "Callable[[], None]"
-register(lambda x: f(x), y=1)  # E: Argument 1 to "register" has incompatible type "Callable[[Arg(int, 'x')], None]"; expected "Callable[[Arg(int, 'y')], None]"
+--zuban-diff register(lambda x: f(x), y=1)  # E: Argument 1 to "register" has incompatible type "Callable[[Arg(int, 'x')], None]"; expected "Callable[[Arg(int, 'y')], None]"
+register(lambda x: f(x), y=1)  # E: Argument 1 to "register" has incompatible type "Callable[[Any], None]"; expected "Callable[[NamedArg(int, 'y')], None]"  # E: Cannot infer type of lambda
 reveal_type(register(lambda x: f(x), 1))  # N: Revealed type is "def (Literal[1]?)"
 reveal_type(register(lambda x, y: g(x, y), 1, "a"))  # N: Revealed type is "def (Literal[1]?, Literal['a']?)"
 reveal_type(register(lambda x, y: g(x, y), 1, y="a"))  # N: Revealed type is "def (Literal[1]?, y: Literal['a']?)"
