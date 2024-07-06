@@ -1228,10 +1228,8 @@ for a, b in x.items():
 [out]
 _testNoCrashOnGenericUnionUnpacking.py:6: note: Revealed type is "builtins.str"
 _testNoCrashOnGenericUnionUnpacking.py:7: note: Revealed type is "builtins.str"
---zuban-diff _testNoCrashOnGenericUnionUnpacking.py:10: note: Revealed type is "Union[builtins.str, builtins.int]"
-_testNoCrashOnGenericUnionUnpacking.py:10: note: Revealed type is "Union[builtins.str, Literal[1]?]"
---zuban-diff _testNoCrashOnGenericUnionUnpacking.py:11: note: Revealed type is "Union[builtins.str, builtins.int]"
-_testNoCrashOnGenericUnionUnpacking.py:11: note: Revealed type is "Union[builtins.str, Literal[2]?]"
+_testNoCrashOnGenericUnionUnpacking.py:10: note: Revealed type is "Union[builtins.str, builtins.int]"
+_testNoCrashOnGenericUnionUnpacking.py:11: note: Revealed type is "Union[builtins.str, builtins.int]"
 _testNoCrashOnGenericUnionUnpacking.py:15: note: Revealed type is "Union[builtins.int, builtins.str]"
 _testNoCrashOnGenericUnionUnpacking.py:16: note: Revealed type is "Union[builtins.int, builtins.str]"
 
