@@ -551,7 +551,8 @@ aa: List[A]
 if int():
     a, b = f(*aa)    # E: Argument 1 to "f" has incompatible type "*List[A]"; expected "B"
 if int():
-    b, b = f(*aa)    # E: Argument 1 to "f" has incompatible type "*List[A]"; expected "B"
+--zuban-diff     b, b = f(*aa)    # E: Argument 1 to "f" has incompatible type "*List[A]"; expected "B"
+    b, b = f(*aa)    # E: Argument 1 to "f" has incompatible type "*List[A]"; expected "B"  # E: Argument 1 to "f" has incompatible type "*list[A]"; expected "B"
 if int():
     a, a = f(b, *aa) # E: Argument 1 to "f" has incompatible type "B"; expected "A"
 if int():
@@ -559,9 +560,11 @@ if int():
 if int():
     b, b = f(b, b, *aa) # E: Argument 3 to "f" has incompatible type "*List[A]"; expected "B"
 if int():
-    a, b = f(a, *a)  # E: List or tuple expected as variadic arguments
+--zuban-diff     a, b = f(a, *a)  # E: List or tuple expected as variadic arguments
+    a, b = f(a, *a)  # E: "A" object is not iterable
 if int():
-    a, b = f(*a)     # E: List or tuple expected as variadic arguments
+--zuban-diff     a, b = f(*a)     # E: List or tuple expected as variadic arguments
+    a, b = f(*a)     # E: "A" object is not iterable
 
 if int():
     a, a = f(*aa)
