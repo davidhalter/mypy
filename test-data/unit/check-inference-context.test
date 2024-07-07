@@ -706,11 +706,14 @@ class B(A): pass
 class C(A): pass
 def f(func: Callable[[T], S], *z: T, r: Optional[S] = None) -> S: pass
 reveal_type(f(lambda x: 0 if isinstance(x, B) else 1))  # N: Revealed type is "Union[Literal[0]?, Literal[1]?]"
-f(lambda x: 0 if isinstance(x, B) else 1, A())() # E: "int" not callable
+--zuban-diff f(lambda x: 0 if isinstance(x, B) else 1, A())() # E: "int" not callable
+f(lambda x: 0 if isinstance(x, B) else 1, A())() # E: "int" not callable  # E: "int" not callable 
 f(lambda x: x if isinstance(x, B) else B(), A(), r=B())() # E: "B" not callable
 f(
-    lambda x:  # E: Argument 1 to "f" has incompatible type "Callable[[A], A]"; expected "Callable[[A], B]"
-        B() if isinstance(x, B) else x, # E: Incompatible return value type (got "A", expected "B")
+--zuban-diff     lambda x:  # E: Argument 1 to "f" has incompatible type "Callable[[A], A]"; expected "Callable[[A], B]"
+--zuban-diff         B() if isinstance(x, B) else x, # E: Incompatible return value type (got "A", expected "B")
+    lambda x:
+        B() if isinstance(x, B) else x,
     A(), r=B())
 [builtins fixtures/isinstance.pyi]
 
