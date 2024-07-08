@@ -1019,12 +1019,16 @@ D = TypedDict('D', {'x': int, 'y': str})
 d: D
 d.get() # E: All overload variants of "get" of "Mapping" require at least one argument \
         # N: Possible overload variants: \
-        # N:     def get(self, k: str) -> object \
-        # N:     def [V] get(self, k: str, default: object) -> object
+--zuban-diff         # N:     def get(self, k: str) -> object \
+--zuban-diff         # N:     def [V] get(self, k: str, default: object) -> object
+        # N:     def get(self, str, /) -> object \
+        # N:     def [_T] get(self, str, /, default: object) -> object
 d.get('x', 1, 2) # E: No overload variant of "get" of "Mapping" matches argument types "str", "int", "int" \
                  # N: Possible overload variants: \
-                 # N:     def get(self, k: str) -> object \
-                 # N:     def [V] get(self, k: str, default: Union[int, V]) -> object
+--zuban-diff                  # N:     def get(self, k: str) -> object \
+--zuban-diff                  # N:     def [V] get(self, k: str, default: Union[int, V]) -> object
+                 # N:     def get(self, str, /) -> object \
+                 # N:     def [_T] get(self, str, /, default: object) -> object
 x = d.get('z')
 reveal_type(x) # N: Revealed type is "builtins.object"
 s = ''
