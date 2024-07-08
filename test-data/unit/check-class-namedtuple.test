@@ -622,7 +622,13 @@ reveal_type(Documented(1).x)  # N: Revealed type is "builtins.int"
 
 class BadDoc(NamedTuple):
     x: int
-    def __doc__(self) -> str:
+--zuban-diff     def __doc__(self) -> str:
+    def __doc__(self) -> str:  # E: Signature of "__doc__" incompatible with supertype "object" \
+                               # N:      Superclass: \
+                               # N:          str | None \
+                               # N:      Subclass: \
+                               # N:          callable[[], str]
+
         return ''
 
 reveal_type(BadDoc(1).__doc__())  # N: Revealed type is "builtins.str"
