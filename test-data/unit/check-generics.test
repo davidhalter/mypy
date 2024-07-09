@@ -217,7 +217,8 @@ x: B
 class B: pass
 [out]
 main:7: error: Argument 1 to "f" of "A" has incompatible type "B"; expected "T"
-main:8: error: Incompatible types in assignment (expression has type "A[T]", variable has type "A[B]")
+--zuban-diff main:8: error: Incompatible types in assignment (expression has type "A[T]", variable has type "A[B]")
+main:8: error: Incompatible types in assignment (expression has type "Self", variable has type "A[B]")
 
 [case testGenericTypeBodyWithMultipleVariables]
 from typing import TypeVar, Generic
