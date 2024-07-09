@@ -620,11 +620,13 @@ def foo(x: Bogus[int]) -> None:
 [builtins fixtures/dict.pyi]
 
 [case testOverrideByIdemAliasCorrectType]
-C = C
+--zuban-diff C = C
+C = C  # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)
 class C:  # type: ignore
     pass
 x: C
-reveal_type(x)  # N: Revealed type is "__main__.C"
+--zuban-diff reveal_type(x)  # N: Revealed type is "__main__.C"
+reveal_type(x)  # N: Revealed type is "Any"
 [out]
 
 [case testOverrideByIdemAliasCorrectTypeReversed]
@@ -647,14 +649,16 @@ class C:
 [case testConditionalExceptionAlias]
 
 try:
-    E = E
+--zuban-diff     E = E
+    E = E  # E: Name "E" is used before definition  # E: Cannot resolve name "E" (possible cyclic definition)
 except BaseException:
     class E(BaseException): pass  # type: ignore
 
 try:
     pass
 except E as e:
-    reveal_type(e)  # N: Revealed type is "__main__.E"
+--zuban-diff     reveal_type(e)  # N: Revealed type is "__main__.E"
+    reveal_type(e)  # N: Revealed type is "Any"
 [builtins fixtures/exception.pyi]
 [out]
 

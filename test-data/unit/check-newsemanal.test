@@ -3296,6 +3296,9 @@ class b:
 [builtins fixtures/tuple.pyi]
 
 [case testSelfReferentialSubscriptExpression]
-x = x[1]  # E: Cannot resolve name "x" (possible cyclic definition)
-y = 1[y]  # E: Value of type "int" is not indexable \
-          # E: Cannot determine type of "y"
+--zuban-diff x = x[1]  # E: Cannot resolve name "x" (possible cyclic definition)
+--zuban-diff y = 1[y]  # E: Value of type "int" is not indexable \
+--zuban-diff           # E: Cannot determine type of "y"
+x = x[1]  # E: Name "x" is used before definition
+y = 1[y]  # E: Name "y" is used before definition \
+          # E: Value of type "int" is not indexable
