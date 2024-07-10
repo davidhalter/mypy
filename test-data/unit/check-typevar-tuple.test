@@ -2177,16 +2177,20 @@ reveal_type(get_items(g))  # N: Revealed type is "Tuple[builtins.int, builtins.s
 reveal_type(match(g))  # N: Revealed type is "Tuple[builtins.int, builtins.str]"
 
 b: Bad
-get_items(b)  # E: Argument 1 to "get_items" has incompatible type "Bad"; expected "P[Unpack[Tuple[Never, ...]]]" \
+--zuban-diff get_items(b)  # E: Argument 1 to "get_items" has incompatible type "Bad"; expected "P[Unpack[Tuple[Never, ...]]]" \
+get_items(b)  # E: Argument 1 to "get_items" has incompatible type "Bad"; expected "P[]" \
               # N: Following member(s) of "Bad" have conflicts: \
               # N:     Expected: \
-              # N:         def items(self) -> Tuple[Never, ...] \
+--zuban-diff               # N:         def items(self) -> Tuple[Never, ...] \
+              # N:         def items(self) -> Tuple[Unpack[Ts]] \
               # N:     Got: \
               # N:         def items(self) -> List[int]
-match(b)  # E: Argument 1 to "match" has incompatible type "Bad"; expected "PC[Unpack[Tuple[Never, ...]]]" \
+--zuban-diff match(b)  # E: Argument 1 to "match" has incompatible type "Bad"; expected "PC[Unpack[Tuple[Never, ...]]]" \
+match(b)  # E: Argument 1 to "match" has incompatible type "Bad"; expected "PC[()]" \
           # N: Following member(s) of "Bad" have conflicts: \
           # N:     Expected: \
-          # N:         def meth(self, *args: Never) -> None \
+--zuban-diff           # N:         def meth(self, *args: Never) -> None \
+          # N:         def meth(self, *args: Unpack[Ts]) -> None \
           # N:     Got: \
           # N:         def meth(self, *, named: int) -> None
 [builtins fixtures/tuple.pyi]
