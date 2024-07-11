@@ -1233,10 +1233,12 @@ Ta2 = TypeAliasType("Ta2", None, type_params=(Unpack[Ts],))  # E: Free type vari
 [case testAliasInstanceNameClash]
 from lib import func
 class A: ...
-func(A())  # E: Argument 1 to "func" has incompatible type "__main__.A"; expected "lib.A"
+--zuban-diff func(A())  # E: Argument 1 to "func" has incompatible type "__main__.A"; expected "lib.A"
+func(A())  # E: Argument 1 to "func" has incompatible type "__main__.A"; expected "int | list[A]"
 [file lib.py]
 from typing import List, Union
 
-A = Union[int, List[A]]
+--zuban-diff A = Union[int, List[A]]
+A = Union[int, List[A]]  # E: Name "A" is used before definition
 def func(x: A) -> int: ...
 [builtins fixtures/tuple.pyi]
