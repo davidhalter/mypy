@@ -243,11 +243,14 @@ def join(a: T, b: T) -> T: ...
 x: int
 
 y1 = join(a, b)
-x = y1  # E: Incompatible types in assignment (expression has type "Sequence[Union[A, NestedA]]", variable has type "int")
+--zuban-diff x = y1  # E: Incompatible types in assignment (expression has type "Sequence[Union[A, NestedA]]", variable has type "int")
+x = y1  # E: Incompatible types in assignment (expression has type "Sequence[A | Sequence[A | NestedA]]", variable has type "int")
 y2 = join(a, lb)
-x = y2  # E: Incompatible types in assignment (expression has type "Sequence[Union[A, NestedA]]", variable has type "int")
+--zuban-diff x = y2  # E: Incompatible types in assignment (expression has type "Sequence[Union[A, NestedA]]", variable has type "int")
+x = y2  # E: Incompatible types in assignment (expression has type "Sequence[Sequence[A | NestedA] | A]", variable has type "int")
 y3 = join(la, b)
-x = y3  # E: Incompatible types in assignment (expression has type "Sequence[Union[Sequence[A], B, NestedB]]", variable has type "int")
+--zuban-diff x = y3  # E: Incompatible types in assignment (expression has type "Sequence[Union[Sequence[A], B, NestedB]]", variable has type "int")
+x = y3  # E: Incompatible types in assignment (expression has type "Sequence[Sequence[A] | B | Sequence[B | NestedB]]", variable has type "int")
 [builtins fixtures/isinstancelist.pyi]
 
 [case testRecursiveAliasesRestrictions]
