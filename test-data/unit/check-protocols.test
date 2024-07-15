@@ -831,15 +831,19 @@ n2: NonProtoShape = s
 main:26: error: Incompatible types in assignment (expression has type "Triangle", variable has type "Shape")
 main:26: note: Following member(s) of "Triangle" have conflicts:
 main:26: note:     Expected:
-main:26: note:         def combine(self, other: Triangle) -> Triangle
+--zuban-diff main:26: note:         def combine(self, other: Triangle) -> Triangle
+main:26: note:         def [T: Shape] combine(self: T, other: T) -> T
 main:26: note:     Got:
-main:26: note:         def combine(self, other: Shape) -> Shape
+--zuban-diff main:26: note:         def combine(self, other: Shape) -> Shape
+main:26: note:         def combine(self: Triangle, other: Shape) -> Shape
 main:27: error: Incompatible types in assignment (expression has type "Bad", variable has type "Shape")
 main:27: note: Following member(s) of "Bad" have conflicts:
 main:27: note:     Expected:
-main:27: note:         def combine(self, other: Bad) -> Bad
+--zuban-diff main:27: note:         def combine(self, other: Bad) -> Bad
+main:27: note:         def [T: Shape] combine(self: T, other: T) -> T
 main:27: note:     Got:
-main:27: note:         def combine(self, other: int) -> str
+--zuban-diff main:27: note:         def combine(self, other: int) -> str
+main:27: note:         def combine(self: Bad, other: int) -> str
 main:29: error: Incompatible types in assignment (expression has type "Shape", variable has type "NonProtoShape")
 
 [case testBadVarianceInProtocols]

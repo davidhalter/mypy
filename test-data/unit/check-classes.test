@@ -5254,8 +5254,7 @@ Foos = NewType('Foos', List[Foo]) # type: ignore
 def frob(foos: Dict[Any, Foos]) -> None:
     foo = foos.get(1)
     assert foo
---zuban-diff     dict(foo)
-    dict(foo) # E: Argument 1 to "dict" has incompatible type "Foos"; expected "Iterable[tuple[Never, Never]]"
+    dict(foo)
 [builtins fixtures/dict.pyi]
 [out]
 
@@ -5270,8 +5269,7 @@ class C:
     def frob(self, foos: Dict[Any, Foos]) -> None:
         foo = foos.get(1)
         assert foo
---zuban-diff         dict(foo)
-        dict(foo) # E: Argument 1 to "dict" has incompatible type "Foos"; expected "Iterable[tuple[Never, Never]]"
+        dict(foo)
 
 reveal_type(x.frob) # N: Revealed type is "def (foos: builtins.dict[Any, __main__.Foos])"
 [builtins fixtures/dict.pyi]
