@@ -4627,8 +4627,10 @@ class Child(Parent):
     def child_only(self) -> int: pass
 
 x: Union[int, str]
-reveal_type(Parent.foo(3))                  # N: Revealed type is "Type[__main__.Parent]"
-reveal_type(Child.foo(3))                   # N: Revealed type is "Type[__main__.Child]"
+--zuban-diff reveal_type(Parent.foo(3))                  # N: Revealed type is "Type[__main__.Parent]"
+reveal_type(Parent.foo(3))                  # N: Revealed type is "def () -> __main__.Parent"
+--zuban-diff reveal_type(Child.foo(3))                   # N: Revealed type is "Type[__main__.Child]"
+reveal_type(Child.foo(3))                   # N: Revealed type is "def () -> __main__.Child"
 reveal_type(Child.foo("..."))               # N: Revealed type is "builtins.str"
 reveal_type(Child.foo(x))                   # N: Revealed type is "Union[Type[__main__.Child], builtins.str]"
 reveal_type(Child.foo(3)().child_only())    # N: Revealed type is "builtins.int"
