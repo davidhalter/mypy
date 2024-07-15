@@ -1076,9 +1076,11 @@ bad: HasDoX = Bad()
 main:21: error: Incompatible types in assignment (expression has type "Bad", variable has type "HasDoX")
 main:21: note: Following member(s) of "Bad" have conflicts:
 main:21: note:     Expected:
-main:21: note:         def do_x(cls) -> Bad
+--zuban-diff main:21: note:         def do_x(cls) -> Bad
+main:21: note:         def do_x() -> Bad
 main:21: note:     Got:
-main:21: note:         def do_x(cls) -> Good
+--zuban-diff main:21: note:         def do_x(cls) -> Good
+main:21: note:         def do_x() -> Good
 
 [case testSelfTypeNotSelfType]
 # Friendlier error messages for common mistakes. See #2950
