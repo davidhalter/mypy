@@ -2239,7 +2239,8 @@ class B(A[T], Generic[T, S]):
         reveal_type(A[T].foo)  # N: Revealed type is "def () -> Tuple[T`1, __main__.A[T`1]]"
     @classmethod
     def other(cls) -> None:
-        reveal_type(cls.foo)  # N: Revealed type is "def () -> Tuple[T`1, __main__.B[T`1, S`2]]"
+--zuban-diff         reveal_type(cls.foo)  # N: Revealed type is "def () -> Tuple[T`1, __main__.B[T`1, S`2]]"
+        reveal_type(cls.foo)  # N: Revealed type is "def () -> Tuple[T`1, Self]"
 reveal_type(B.foo)  # N: Revealed type is "def [T, S] () -> Tuple[T`1, __main__.B[T`1, S`2]]"
 [builtins fixtures/classmethod.pyi]
 
