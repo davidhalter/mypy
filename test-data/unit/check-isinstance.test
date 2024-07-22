@@ -1420,7 +1420,8 @@ else:
     f = 0
 reveal_type(x1) # N: Revealed type is "__main__.A"
 x2 = A()
-if isinstance(x2, A) or isinstance(x2, C):
+--zuban-diff if isinstance(x2, A) or isinstance(x2, C):
+if isinstance(x2, A) or isinstance(x2, C):  # E: Right operand of "or" is never evaluated
     reveal_type(x2) # N: Revealed type is "__main__.A"
     f = x2.flag # E: "A" has no attribute "flag"
 else:
