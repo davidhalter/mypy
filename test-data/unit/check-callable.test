@@ -155,7 +155,8 @@ x = 5  # type: Union[int, Callable[[], str]]
 if callable(x) and x() == 'test':
     x()
 else:
-    x + 5  # E: Unsupported left operand type for + ("Callable[[], str]") \
+--zuban-diff     x + 5  # E: Unsupported left operand type for + ("Callable[[], str]") \
+    x + 5  # E: Unsupported operand types for + ("Callable[[], str]" and "int") \
            # N: Left operand is of type "Union[int, Callable[[], str]]"
 
 [builtins fixtures/callable.pyi]
@@ -495,7 +496,8 @@ def g(o: Thing) -> None:
 
 [case testCallableNoArgs]
 
-if callable():  # E: Missing positional argument "x" in call to "callable"
+--zuban-diff if callable():  # E: Missing positional argument "x" in call to "callable"
+if callable():  # E: Too few arguments for "callable"
     pass
 
 [builtins fixtures/callable.pyi]
@@ -527,9 +529,11 @@ else:
 [case testBuiltinsTypeAsCallable]
 from __future__ import annotations
 
-reveal_type(type)  # N: Revealed type is "def (x: Any) -> builtins.type"
+--zuban-diff reveal_type(type)  # N: Revealed type is "def (x: Any) -> builtins.type"
+reveal_type(type)  # N: Revealed type is "Type[Any]"
 _TYPE = type
-reveal_type(_TYPE)  # N: Revealed type is "def (x: Any) -> builtins.type"
+--zuban-diff reveal_type(_TYPE)  # N: Revealed type is "def (x: Any) -> builtins.type"
+reveal_type(_TYPE)  # N: Revealed type is "Type[Any]"
 _TYPE('bar')
 
 [builtins fixtures/callable.pyi]
@@ -575,7 +579,8 @@ Some.bad_st_method(1)  # E: Too many arguments for "bad_st_method" of "Some"
 
 [case testClassMethodAliasStub]
 from a import f
-f("no")  # E: Argument 1 has incompatible type "str"; expected "int"
+--zuban-diff f("no")  # E: Argument 1 has incompatible type "str"; expected "int"
+f("no")  # E: Argument 1 to "f" of "C" has incompatible type "str"; expected "int"
 [file a.pyi]
 from b import C
 f = C.f
