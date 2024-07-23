@@ -1618,7 +1618,8 @@ if isinstance(obj, Awaitable):
     reveal_type(obj)
 [out]
 _testSpecialTypingProtocols.py:6: note: Revealed type is "Tuple[builtins.int]"
-_testSpecialTypingProtocols.py:8: error: Statement is unreachable
+--zuban-diff _testSpecialTypingProtocols.py:8: error: Statement is unreachable
+_testSpecialTypingProtocols.py:8: note: Revealed type is "<subclass of "tuple" and "Awaitable"> | <subclass of "list" and "Awaitable">"
 
 [case testEnumValueWithPlaceholderNodeType]
 # https://github.com/python/mypy/issues/11971
