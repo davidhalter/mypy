@@ -420,7 +420,8 @@ class Foo(object):
 def g(o: Foo) -> None:
     o.bar()
     if callable(o):
-        o.foo()  # E: "Foo" has no attribute "foo"
+--zuban-diff         o.foo()  # E: "Foo" has no attribute "foo"
+        o.foo()  # E: "<callable subtype of Foo>" has no attribute "foo"
         o.bar()
         o(1,2,3)
     else:
@@ -456,7 +457,8 @@ class Test(Generic[T]):
 
 def g(o: Test[T], x: T) -> T:
     if callable(o):
-        o.foo()  # E: "Test[T]" has no attribute "foo"
+--zuban-diff         o.foo()  # E: "Test[T]" has no attribute "foo"
+        o.foo()  # E: "<callable subtype of Test[T]>" has no attribute "foo"
         o(1,2,3)
         o.x = x
         o.x = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "T")
