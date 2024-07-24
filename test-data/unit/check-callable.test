@@ -271,7 +271,8 @@ else:
 if callable(s4):
     1 + 'a'  # E: Unsupported operand types for + ("int" and "str")
 else:
-    2 + 'b'  # E: Unsupported operand types for + ("int" and "str")
+--zuban-diff     2 + 'b'  # E: Unsupported operand types for + ("int" and "str")
+    2 + 'b'
 [builtins fixtures/callable.pyi]
 
 [case testCallableNestedUnions]
