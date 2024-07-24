@@ -1867,14 +1867,16 @@ from typing import Any
 
 x: Any
 if isinstance(x, (list, tuple)) and len(x) == 0:
-    reveal_type(x)  # N: Revealed type is "Union[Tuple[()], builtins.list[Any]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Tuple[()], builtins.list[Any]]"
+    reveal_type(x)  # N: Revealed type is "builtins.list | Tuple[()]"
 else:
     reveal_type(x)  # N: Revealed type is "Any"
 reveal_type(x)  # N: Revealed type is "Any"
 
 x1: Any
 if isinstance(x1, (list, tuple)) and len(x1) > 1:
-    reveal_type(x1)  # N: Revealed type is "Union[Tuple[Any, Any, Unpack[builtins.tuple[Any, ...]]], builtins.list[Any]]"
+--zuban-diff     reveal_type(x1)  # N: Revealed type is "Union[Tuple[Any, Any, Unpack[builtins.tuple[Any, ...]]], builtins.list[Any]]"
+    reveal_type(x1)  # N: Revealed type is "builtins.list | Tuple[Any, Any, Unpack[builtins.tuple[Any, ...]]]"
 else:
     reveal_type(x1)  # N: Revealed type is "Any"
 reveal_type(x1)  # N: Revealed type is "Any"
@@ -1885,14 +1887,16 @@ from typing import Any
 
 x: Any
 if isinstance(x, (list, tuple)) and len(x) == 0:
-    reveal_type(x)  # N: Revealed type is "Union[Tuple[()], builtins.list[Any]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Tuple[()], builtins.list[Any]]"
+    reveal_type(x)  # N: Revealed type is "list | Tuple[()]"
 else:
     reveal_type(x)  # N: Revealed type is "Any"
 reveal_type(x)  # N: Revealed type is "Any"
 
 x1: Any
 if isinstance(x1, (list, tuple)) and len(x1) > 1:
-    reveal_type(x1)  # N: Revealed type is "Union[builtins.tuple[Any, ...], builtins.list[Any]]"
+--zuban-diff     reveal_type(x1)  # N: Revealed type is "Union[builtins.tuple[Any, ...], builtins.list[Any]]"
+    reveal_type(x1)  # N: Revealed type is "list | tuple[Any, ...]"
 else:
     reveal_type(x1)  # N: Revealed type is "Any"
 reveal_type(x1)  # N: Revealed type is "Any"
