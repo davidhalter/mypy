@@ -1565,13 +1565,15 @@ def f(x: Type[Union[int, str, List]]) -> None:
         reveal_type(x)  # N: Revealed type is "Type[builtins.list[Any]]"
         reveal_type(x())  # N: Revealed type is "builtins.list[Any]"
         x()[1]
-    reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+    reveal_type(x)  # N: Revealed type is "Type[int | str | list[Any]]"
     reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.list[Any]]"
     if issubclass(x, (str, (list,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.str], Type[builtins.list[Any]]]"
         reveal_type(x())  # N: Revealed type is "Union[builtins.str, builtins.list[Any]]"
         x()[1]
-    reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+    reveal_type(x)  # N: Revealed type is "Type[int | str | list[Any]]"
     reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.list[Any]]"
 [builtins fixtures/isinstancelist.pyi]
 
@@ -1579,7 +1581,8 @@ def f(x: Type[Union[int, str, List]]) -> None:
 from typing import Union, List, Tuple, Dict, Type
 
 def f(x: Type[Union[int, str, List]]) -> None:
-    reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+    reveal_type(x)  # N: Revealed type is "Type[int | str | list[Any]]"
     reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.list[Any]]"
     if issubclass(x, (str, (int,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str]]"
@@ -1590,13 +1593,15 @@ def f(x: Type[Union[int, str, List]]) -> None:
         reveal_type(x)  # N: Revealed type is "Type[builtins.list[Any]]"
         reveal_type(x())  # N: Revealed type is "builtins.list[Any]"
         x()[1]
-    reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+    reveal_type(x)  # N: Revealed type is "Type[int | str | list[Any]]"
     reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.list[Any]]"
     if issubclass(x, (str, (list,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.str], Type[builtins.list[Any]]]"
         reveal_type(x())  # N: Revealed type is "Union[builtins.str, builtins.list[Any]]"
         x()[1]
-    reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str], Type[builtins.list[Any]]]"
+    reveal_type(x)  # N: Revealed type is "Type[int | str | list[Any]]"
     reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.list[Any]]"
 [builtins fixtures/isinstancelist.pyi]
 
