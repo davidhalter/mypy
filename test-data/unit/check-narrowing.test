@@ -2031,7 +2031,8 @@ from typing import Type, Union
 
 def f(cls: Type[Union[None, int]]) -> None:
     if issubclass(cls, int):
-        reveal_type(cls)  # N: Revealed type is "Type[builtins.int]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[builtins.int]"
+        reveal_type(cls)  # N: Revealed type is "Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int)"
     else:
         reveal_type(cls)  # N: Revealed type is "Type[None]"
 [builtins fixtures/isinstance.pyi]

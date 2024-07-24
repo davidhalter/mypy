@@ -1536,7 +1536,8 @@ def f(x: Union[Type[int], Type[str], Type[List]]) -> None:
     if issubclass(x, (str, (int,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str]]"
         reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str]"
-        x()[1]  # E: Value of type "Union[int, str]" is not indexable
+--zuban-diff         x()[1]  # E: Value of type "Union[int, str]" is not indexable
+        x()[1]  # E: Value of type "int" is not indexable
     else:
         reveal_type(x)  # N: Revealed type is "Type[builtins.list[Any]]"
         reveal_type(x())  # N: Revealed type is "builtins.list[Any]"
@@ -1558,7 +1559,8 @@ def f(x: Type[Union[int, str, List]]) -> None:
     if issubclass(x, (str, (int,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str]]"
         reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str]"
-        x()[1]  # E: Value of type "Union[int, str]" is not indexable
+--zuban-diff         x()[1]  # E: Value of type "Union[int, str]" is not indexable
+        x()[1]  # E: Value of type "int" is not indexable
     else:
         reveal_type(x)  # N: Revealed type is "Type[builtins.list[Any]]"
         reveal_type(x())  # N: Revealed type is "builtins.list[Any]"
@@ -1582,7 +1584,8 @@ def f(x: Type[Union[int, str, List]]) -> None:
     if issubclass(x, (str, (int,))):
         reveal_type(x)  # N: Revealed type is "Union[Type[builtins.int], Type[builtins.str]]"
         reveal_type(x())  # N: Revealed type is "Union[builtins.int, builtins.str]"
-        x()[1]  # E: Value of type "Union[int, str]" is not indexable
+--zuban-diff         x()[1]  # E: Value of type "Union[int, str]" is not indexable
+        x()[1]  # E: Value of type "int" is not indexable
     else:
         reveal_type(x)  # N: Revealed type is "Type[builtins.list[Any]]"
         reveal_type(x())  # N: Revealed type is "builtins.list[Any]"
@@ -1608,7 +1611,8 @@ class GoblinAmbusher(Goblin):
 
 def test_issubclass(cls: Type[Goblin]) -> None:
     if issubclass(cls, GoblinAmbusher):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
         cls.level
         cls.job
         ga = cls()
@@ -1637,14 +1641,16 @@ class GoblinAmbusher(Goblin):
 
 def test_issubclass(cls: Type[Mob]) -> None:
     if issubclass(cls, Goblin):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.Goblin]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.Goblin]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.Goblin"
         cls.level
         cls.job  # E: "Type[Goblin]" has no attribute "job"
         g = cls()
         g.level = 15
         g.job  # E: "Goblin" has no attribute "job"
         if issubclass(cls, GoblinAmbusher):
-            reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff             reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+            reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
             cls.level
             cls.job
             g = cls()
@@ -1659,7 +1665,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
         m.level = 15  # E: "Mob" has no attribute "level"
         m.job  # E: "Mob" has no attribute "job"
         if issubclass(cls, GoblinAmbusher):
-            reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff             reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+            reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
             cls.job
             cls.level
             ga = cls()
@@ -1668,7 +1675,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
             ga.job = 'Warrior' # E: Cannot assign to class variable "job" via instance
 
     if issubclass(cls, GoblinAmbusher):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
         cls.level
         cls.job
         ga = cls()
@@ -1693,7 +1701,8 @@ class GoblinDigger(Goblin):
 
 def test_issubclass(cls: Type[Mob]) -> None:
     if issubclass(cls, (Goblin, GoblinAmbusher)):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.Goblin]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.Goblin]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.Goblin"
         cls.level
         cls.job  # E: "Type[Goblin]" has no attribute "job"
         g = cls()
@@ -1701,7 +1710,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
         g.job  # E: "Goblin" has no attribute "job"
         if issubclass(cls, GoblinAmbusher):
             cls.level
-            reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff             reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+            reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
             cls.job
             ga = cls()
             ga.level = 15
@@ -1715,7 +1725,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
         m.level = 15  # E: "Mob" has no attribute "level"
         m.job  # E: "Mob" has no attribute "job"
         if issubclass(cls, GoblinAmbusher):
-            reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+--zuban-diff             reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinAmbusher]"
+            reveal_type(cls)  # N: Revealed type is "def () -> __main__.GoblinAmbusher"
             cls.job
             cls.level
             ga = cls()
@@ -1724,7 +1735,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
             ga.job = "Warrior"  # E: Cannot assign to class variable "job" via instance
 
     if issubclass(cls, (GoblinDigger, GoblinAmbusher)):
-        reveal_type(cls)  # N: Revealed type is "Union[Type[__main__.GoblinDigger], Type[__main__.GoblinAmbusher]]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Union[Type[__main__.GoblinDigger], Type[__main__.GoblinAmbusher]]"
+        reveal_type(cls)  # N: Revealed type is "Type[__main__.GoblinDigger | __main__.GoblinAmbusher]"
         cls.level
         cls.job
         g = cls()
@@ -1741,14 +1753,16 @@ class MyIntList(List[int]): pass
 
 def f(cls: Type[object]) -> None:
     if issubclass(cls, MyList):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.MyList]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.MyList]"
+        reveal_type(cls)  # N: Revealed type is "Overload(def () -> __main__.MyList, def (typing.Iterable[Any]) -> __main__.MyList)"
         cls()[0]
     else:
         reveal_type(cls)  # N: Revealed type is "Type[builtins.object]"
         cls()[0]  # E: Value of type "object" is not indexable
 
     if issubclass(cls, MyIntList):
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.MyIntList]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.MyIntList]"
+        reveal_type(cls)  # N: Revealed type is "Overload(def () -> __main__.MyIntList, def (typing.Iterable[int]) -> __main__.MyIntList)"
         cls()[0] + 1
 [builtins fixtures/isinstancelist.pyi]
 
@@ -1800,6 +1814,7 @@ class Bar: ...
 fm: FooMetaclass
 reveal_type(fm)  # N: Revealed type is "__main__.FooMetaclass"
 if issubclass(fm, Foo):
+--zuban-diff     reveal_type(fm)  # N: Revealed type is "def () -> __main__.Foo"
     reveal_type(fm)  # N: Revealed type is "Type[__main__.Foo]"
 if issubclass(fm, Bar):
     reveal_type(fm)  # N: Revealed type is "None"
@@ -1815,7 +1830,8 @@ class Baz: ...
 fm: FooMetaclass
 reveal_type(fm)  # N: Revealed type is "__main__.FooMetaclass"
 if issubclass(fm, Foo):
-    reveal_type(fm)  # N: Revealed type is "Type[__main__.Foo]"
+--zuban-diff     reveal_type(fm)  # N: Revealed type is "Type[__main__.Foo]"
+    reveal_type(fm)  # N: Revealed type is "def () -> __main__.Foo"
 if issubclass(fm, Bar):
     reveal_type(fm)  # N: Revealed type is "Never"
 if issubclass(fm, Baz):

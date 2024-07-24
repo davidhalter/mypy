@@ -6848,11 +6848,13 @@ class C(Generic[T]):
     def meth(self, cls: Type[T]) -> None:
         if not issubclass(cls, Sub):
             return
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.Sub]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.Sub]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.Sub"
     def other(self, cls: Type[T]) -> None:
         if not issubclass(cls, Sub):
             return
-        reveal_type(cls)  # N: Revealed type is "Type[__main__.Sub]"
+--zuban-diff         reveal_type(cls)  # N: Revealed type is "Type[__main__.Sub]"
+        reveal_type(cls)  # N: Revealed type is "def () -> __main__.Sub"
 
 [builtins fixtures/isinstancelist.pyi]
 
@@ -6872,7 +6874,8 @@ def test() -> None:
         x = Other
     else:
         return
-    reveal_type(x)  # N: Revealed type is "Union[def () -> __main__.One, def () -> __main__.Other]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "Union[def () -> __main__.One, def () -> __main__.Other]"
+    reveal_type(x)  # N: Revealed type is "Type[__main__.Other] | Type[__main__.One]"
     reveal_type(x.x)  # N: Revealed type is "builtins.int"
 [builtins fixtures/isinstancelist.pyi]
 
@@ -7547,14 +7550,16 @@ TypeT1 = TypeVar("TypeT1", bound=Type[Base])
 class C1:
     def method(self, other: type) -> int:
         if issubclass(other, Base):
-            reveal_type(other)  # N: Revealed type is "Type[__main__.Base]"
+--zuban-diff             reveal_type(other)  # N: Revealed type is "Type[__main__.Base]"
+            reveal_type(other)  # N: Revealed type is "def () -> __main__.Base"
             return other.field
         return 0
 
 class C2(Generic[TypeT]):
     def method(self, other: TypeT) -> int:
         if issubclass(other, Base):
-            reveal_type(other)  # N: Revealed type is "Type[__main__.Base]"
+--zuban-diff             reveal_type(other)  # N: Revealed type is "Type[__main__.Base]"
+            reveal_type(other)  # N: Revealed type is "def () -> __main__.Base"
             return other.field
         return 0
 
