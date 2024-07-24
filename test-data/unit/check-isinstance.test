@@ -1747,7 +1747,8 @@ def test_issubclass(cls: Type[Mob]) -> None:
         g = cls()
         g.level = 15
         g.job
-        g.job = "Warrior" # E: Cannot assign to class variable "job" via instance
+--zuban-diff         g.job = "Warrior" # E: Cannot assign to class variable "job" via instance
+        g.job = "Warrior" # E: Cannot assign to class variable "job" via instance  # E: Cannot assign to class variable "job" via instance
 [builtins fixtures/isinstancelist.pyi]
 
 [case testIssubclassBuiltins]
