@@ -737,8 +737,7 @@ x = make_tuple()
 a, b = x # E: Too many values to unpack (2 expected, 3 provided)
 a, b, c = x # E: Need more than 2 values to unpack (3 expected)
 c, *d = x
---zuban-diff reveal_type(c) # N: Revealed type is "builtins.int"
-reveal_type(c) # N: Revealed type is "Any | builtins.int"
+reveal_type(c) # N: Revealed type is "builtins.int"
 reveal_type(d) # N: Revealed type is "builtins.list[builtins.int]"
 [builtins fixtures/tuple.pyi]
 
