@@ -629,21 +629,25 @@ from typing import Any
 Parent: Any
 class Child(Parent):
     def foo(self) -> int:
-        reveal_type(self)       # N: Revealed type is "__main__.Child"
+--zuban-diff         reveal_type(self)       # N: Revealed type is "__main__.Child"
+        reveal_type(self)       # N: Revealed type is "Self"
         if self is None:
             reveal_type(self)
             return None
-        reveal_type(self)       # N: Revealed type is "__main__.Child"
+--zuban-diff         reveal_type(self)       # N: Revealed type is "__main__.Child"
+        reveal_type(self)       # N: Revealed type is "Self"
         return 3
 
     def bar(self) -> int:
         if 1:
             self = super(Child, self).something()
-            reveal_type(self)       # N: Revealed type is "__main__.Child"
+--zuban-diff             reveal_type(self)       # N: Revealed type is "__main__.Child"
+            reveal_type(self)       # N: Revealed type is "Self"
             if self is None:
                 reveal_type(self)
                 return None
-            reveal_type(self)       # N: Revealed type is "__main__.Child"
+--zuban-diff             reveal_type(self)       # N: Revealed type is "__main__.Child"
+            reveal_type(self)       # N: Revealed type is "Self"
             return 3
 [builtins fixtures/isinstance.pyi]
 
