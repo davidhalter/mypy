@@ -1775,9 +1775,9 @@ if bool():
 else:
     x = n
 
-reveal_type(x.nope)  # N: Revealed type is "Any"
---zuban-diff reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
-reveal_type(x.__file__)  # N: Revealed type is "builtins.str | None"
+--zuban-diff reveal_type(x.nope)  # N: Revealed type is "Any"
+reveal_type(x.nope)  # E: Module has no attribute "nope"  # E: Module has no attribute "nope"  # N: Revealed type is "Any"
+reveal_type(x.__file__)  # N: Revealed type is "builtins.str"
 
 [file m.py]
 a = 'foo'
