@@ -802,7 +802,8 @@ async def imprecise1(futures: Iterable[Task[Any]]) -> None:
     done: Any
     pending: Any
     done, pending = await wait(futures)
-    reveal_type(done)  # N: Revealed type is "Any"
+--zuban-diff     reveal_type(done)  # N: Revealed type is "Any"
+    reveal_type(done)  # N: Revealed type is "builtins.list[__main__.Task[Any]]"
 
 async def imprecise2(futures: Iterable[Awaitable[Any]]) -> None:
     done, pending = await wait(futures)

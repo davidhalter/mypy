@@ -334,7 +334,8 @@ class C(Generic[P]):
         a = kwargs
         args = kwargs  # E: Incompatible types in assignment (expression has type "P.kwargs", variable has type "P.args")
         kwargs = args  # E: Incompatible types in assignment (expression has type "P.args", variable has type "P.kwargs")
-        args = a
+--zuban-diff         args = a
+        args = a  # E: Incompatible types in assignment (expression has type "P.kwargs", variable has type "P.args")
         kwargs = a
 [builtins fixtures/dict.pyi]
 

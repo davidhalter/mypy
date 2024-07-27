@@ -320,7 +320,8 @@ d = None # All ok
 d = t
 d = g
 d = A
-t = d
+--zuban-diff t = d
+t = d  # E: Incompatible types in assignment (expression has type "Type[A]", variable has type "tuple[A, A]")
 f = d
 [builtins fixtures/tuple.pyi]
 
