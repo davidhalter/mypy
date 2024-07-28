@@ -1300,14 +1300,18 @@ class AsyncManager:
 def noop() -> None: ...
 
 async def f_bad_1() -> int:
-    async with RegularManager():  # E: "RegularManager" has no attribute "__aenter__"; maybe "__enter__"? \
-                                  # E: "RegularManager" has no attribute "__aexit__"; maybe "__exit__"?
+--zuban-diff     async with RegularManager():  # E: "RegularManager" has no attribute "__aenter__"; maybe "__enter__"? \
+--zuban-diff                                   # E: "RegularManager" has no attribute "__aexit__"; maybe "__exit__"?
+    async with RegularManager():  # E: "RegularManager" has no attribute "__aenter__" \
+                                  # E: "RegularManager" has no attribute "__aexit__"
         return 3
     noop()                        # E: Statement is unreachable
 
 def f_bad_2() -> int:
-    with AsyncManager():  # E: "AsyncManager" has no attribute "__enter__"; maybe "__aenter__"? \
-                          # E: "AsyncManager" has no attribute "__exit__"; maybe "__aexit__"?
+--zuban-diff     with AsyncManager():  # E: "AsyncManager" has no attribute "__enter__"; maybe "__aenter__"? \
+--zuban-diff                           # E: "AsyncManager" has no attribute "__exit__"; maybe "__aexit__"?
+    with AsyncManager():  # E: "AsyncManager" has no attribute "__enter__" \
+                          # E: "AsyncManager" has no attribute "__exit__"
         return 3
     noop()                # E: Statement is unreachable
 
