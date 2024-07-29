@@ -842,8 +842,10 @@ try: pass
 except E1 as e: pass
 try: pass
 except E2 as e: pass
-e + 1 # E: Trying to read deleted variable "e"  # E: Name "e" is used before definition
-e = E1() # E: Assignment to variable "e" outside except: block
+--zuban-diff e + 1 # E: Trying to read deleted variable "e"  # E: Name "e" is used before definition
+e + 1 # E: Trying to read deleted variable "e"
+--zuban-diff e = E1() # E: Assignment to variable "e" outside except: block
+e = E1()
 [builtins fixtures/exception.pyi]
 
 [case testReuseDefinedTryExceptionVariable]
@@ -855,8 +857,10 @@ def f(): e  # Prevent redefinition
 e = 1
 try: pass
 except E1 as e: pass
-e = 1 # E: Assignment to variable "e" outside except: block
-e = E1() # E: Assignment to variable "e" outside except: block
+--zuban-diff e = 1 # E: Assignment to variable "e" outside except: block
+--zuban-diff e = E1() # E: Assignment to variable "e" outside except: block
+e = 1
+e = E1() # E: Incompatible types in assignment (expression has type "E1", variable has type "int")
 [builtins fixtures/exception.pyi]
 
 [case testExceptionVariableReuseInDeferredNode1]
