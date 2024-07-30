@@ -629,11 +629,12 @@ try:
     from m import f, g
 except:
     def f(x): pass
-    def g(x): pass # E: All conditional function variants must have identical signatures \
-                   # N: Original: \
-                   # N:     def g(x: Any, y: Any) -> Any \
-                   # N: Redefinition: \
-                   # N:     def g(x: Any) -> Any
+--zuban-diff     def g(x): pass # E: All conditional function variants must have identical signatures \
+--zuban-diff                    # N: Original: \
+--zuban-diff                    # N:     def g(x: Any, y: Any) -> Any \
+--zuban-diff                    # N: Redefinition: \
+--zuban-diff                    # N:     def g(x: Any) -> Any
+    def g(x): pass # E: Incompatible redefinition (redefinition with type "Callable[[Any], Any]", original type "Callable[[Any, Any], Any]")
 [file m.py]
 def f(x): pass
 def g(x, y): pass
