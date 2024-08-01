@@ -3868,6 +3868,8 @@ def test_narrow_none() -> None:
 [case testOverloadsAndNoReturnNarrowTypeNoStrictOptional3]
 # flags: --no-strict-optional
 from typing import overload, TypeVar, NoReturn, Optional
+--zuban-diff 
+T = TypeVar("T")
 
 @overload
 def narrow_none_v2(x: None) -> NoReturn: ...
@@ -3898,6 +3900,8 @@ def test_narrow_none_v2() -> None:
 
 [case testOverloadsAndNoReturnNarrowTypeWithStrictOptional3]
 from typing import overload, TypeVar, NoReturn, Optional
+--zuban-diff 
+T = TypeVar("T")
 
 @overload
 def narrow_none_v2(x: None) -> NoReturn: ...
