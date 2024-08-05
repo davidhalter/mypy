@@ -1034,7 +1034,8 @@ while isinstance(x, int):
     x = 'a'
 else:
     reveal_type(x)  # N: Revealed type is "builtins.str"
-reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
+--zuban-diff reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str]"
+reveal_type(x)  # N: Revealed type is "Union[builtins.str, builtins.int]"
 [builtins fixtures/isinstance.pyi]
 
 [case testWhileLinkedList]
