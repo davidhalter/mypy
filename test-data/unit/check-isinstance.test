@@ -720,8 +720,7 @@ while bool():
     x + 'a'           # E: Unsupported operand types for + ("List[int]" and "str")
 x + [1]               # E: Unsupported operand types for + ("int" and "List[int]") \
                       # E: Unsupported operand types for + ("str" and "List[int]") \
---zuban-diff                       # N: Left operand is of type "Union[int, str, List[int]]"
-                      # N: Left operand is of type "Union[List[int], int, str]"
+                      # N: Left operand is of type "Union[int, str, List[int]]"
 [builtins fixtures/isinstancelist.pyi]
 
 [case testIsInstanceThreeUnion3]
@@ -840,8 +839,7 @@ for i in [1]:
       x = 'a'
 
 x + 1    # E: Unsupported operand types for + ("str" and "int") \
---zuban-diff          # N: Left operand is of type "Union[int, str]"
-         # N: Left operand is of type "Union[str, int]"
+         # N: Left operand is of type "Union[int, str]"
 [builtins fixtures/isinstancelist.pyi]
 
 [case testModifyLoop3]
