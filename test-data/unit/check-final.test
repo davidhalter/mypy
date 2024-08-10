@@ -1172,7 +1172,8 @@ from typing import Final
 
 class MyClass:
     a: None
-    a: Final[int] = 1  # E: Cannot redefine an existing name as final  # E: Name "a" already defined on line 5
+--zuban-diff     a: Final[int] = 1  # E: Cannot redefine an existing name as final  # E: Name "a" already defined on line 5
+    a: Final[int] = 1  # E: Cannot redefine an existing name as final
 
 [case testFinalOverrideAllowedForPrivate]
 from typing import Final, final
