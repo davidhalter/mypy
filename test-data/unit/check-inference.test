@@ -1961,8 +1961,7 @@ reveal_type(d)  # N: Revealed type is "None"
 [case testInferFromEmptyListWhenUsingInWithStrictEquality]
 # flags: --strict-equality
 def f() -> None:
---zuban-diff     a = []
-    a = []  # E: Need type annotation for "a" (hint: "a: List[<type>] = ...")
+    a = []
     if 1 in a:  # TODO: This should be an error
         a.append('x')
 [builtins fixtures/list.pyi]
