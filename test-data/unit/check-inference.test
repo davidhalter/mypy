@@ -2276,8 +2276,7 @@ y = ''
 [case testMultipassAndCircularDependency]
 class A:
     def f(self) -> None:
---zuban-diff         self.x = self.y # E: Cannot determine type of "y"
-        self.x = self.y # E: Cannot determine type of "x"
+        self.x = self.y # E: Cannot determine type of "y"
 
     def g(self) -> None:
         self.y = self.x
