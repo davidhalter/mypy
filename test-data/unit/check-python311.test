@@ -97,11 +97,13 @@ class C(Generic[T, *Ts]):
 
     def test(self) -> None:
         reveal_type(self.attr)  # N: Revealed type is "Tuple[builtins.int, Unpack[Ts`2], builtins.str]"
-        self.attr = ci  # E: Incompatible types in assignment (expression has type "C[*Tuple[int, ...]]", variable has type "Tuple[int, *Ts, str]")
+--zuban-diff         self.attr = ci  # E: Incompatible types in assignment (expression has type "C[*Tuple[int, ...]]", variable has type "Tuple[int, *Ts, str]")
+        self.attr = ci  # E: Incompatible types in assignment (expression has type "C[int, Unpack[Tuple[int, ...]]]", variable has type "tuple[int, Unpack[Ts], str]")
     def meth(self, *args: *Ts) -> T: ...
 
 ci: C[*tuple[int, ...]]
-reveal_type(ci)  # N: Revealed type is "__main__.C[Unpack[builtins.tuple[builtins.int, ...]]]"
+--zuban-diff reveal_type(ci)  # N: Revealed type is "__main__.C[Unpack[builtins.tuple[builtins.int, ...]]]"
+reveal_type(ci)  # N: Revealed type is "__main__.C[int, Unpack[builtins.tuple[builtins.int, ...]]]"
 reveal_type(ci.meth)  # N: Revealed type is "def (*args: builtins.int) -> builtins.int"
 c3: C[str, str, str]
 reveal_type(c3)  # N: Revealed type is "__main__.C[builtins.str, builtins.str, builtins.str]"
