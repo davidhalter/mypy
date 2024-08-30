@@ -151,8 +151,7 @@ A().x.append(1)
 A().x.append('')
 [builtins fixtures/list.pyi]
 [out]
---zuban-diff main:4: error: List item 0 has incompatible type "str"; expected "int"
-main:4: error: Incompatible types in assignment (expression has type "list[str]", variable has type "list[int]")
+main:4: error: List item 0 has incompatible type "str"; expected "int"
 main:6: error: Argument 1 to "append" of "list" has incompatible type "str"; expected "int"
 
 [case testClassVarWithUnion]
