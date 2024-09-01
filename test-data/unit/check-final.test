@@ -311,10 +311,12 @@ class P(Protocol):
 
     @final # E: Protocol member cannot be final
     def meth1(self) -> None:
-        var2: Final = 0
+--zuban-diff        var2: Final = 0
+        var2: Final = 0  # E: Can only declare a final attribute in class body or __init__
 
     def meth2(self) -> None:
-        var3: Final = 0
+--zuban-diff        var3: Final = 0
+        var3: Final = 0  # E: Can only declare a final attribute in class body or __init__
 
     def meth3(self) -> None:
         class Inner:
@@ -344,7 +346,7 @@ class P(Protocol):
 
     def meth2(self) -> None:
 --zuban-diff         var3: Final[ClassVar[int]] = 0 # E: Variable should not be annotated with both ClassVar and Final # E: ClassVar can only be used for assignments in class body
-        var3: Final[ClassVar[int]] = 0 # E: ClassVar can only be used for assignments in class body
+        var3: Final[ClassVar[int]] = 0 # E: ClassVar can only be used for assignments in class body  # E: Can only declare a final attribute in class body or __init__
 
 [out]
 
