@@ -66,9 +66,11 @@ reveal_type(C().x)  # N: Revealed type is "builtins.float"
 # Errors are shown in a different order with the new analyzer.
 from typing import Final, Any
 
-x = y = 1  # type: Final[float]  # E: Invalid final declaration
+--zuban-diff x = y = 1  # type: Final[float]  # E: Invalid final declaration
+x = y = 1  # type: Final[float]
 z: Any
-z[0]: Final[int]  # E: Invalid final declaration \
+--zuban-diff z[0]: Final[int]  # E: Invalid final declaration \
+z[0]: Final[int]  # E: Final name must be initialized with a value \
                   # E: Unexpected type declaration
 [out]
 
