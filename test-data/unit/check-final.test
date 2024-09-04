@@ -767,8 +767,9 @@ class C(A, B): ...
 class D(B, A): ...  # E: Cannot override final attribute "x" (previously declared in base class "A")
 C.x = 3  # E: Cannot assign to final attribute "x"
 C().x = 4  # E: Cannot assign to final attribute "x"
-D().x = 4  # E: Cannot assign to final attribute "x" \
-           # E: Property "x" defined in "B" is read-only
+--zuban-diff D().x = 4  # E: Cannot assign to final attribute "x" \
+--zuban-diff            # E: Property "x" defined in "B" is read-only
+D().x = 4  # E: Property "x" defined in "B" is read-only
 [builtins fixtures/property.pyi]
 [out]
 
@@ -783,10 +784,10 @@ class B:
     def x(self) -> int: ...
 class C(A, B): ...
 class D(B, A): ...  # E: Cannot override final attribute "x" (previously declared in base class "A")
---zuban-diff C.x = 3  # E: Cannot access final instance attribute "x" on class object \
---zuban-diff          # E: Cannot assign to final attribute "x"
-C.x = 3  # E: "Type[C]" has no attribute "x"
-C().x = 4  # E: Cannot assign to final attribute "x"
+--zuban-diff C.x = 3  # E: "Type[C]" has no attribute "x"
+--zuban-diff C().x = 4  # E: Cannot assign to final attribute "x"
+C.x = 3  # E: Cannot assign to a method  # E: Incompatible types in assignment (expression has type "int", variable has type "Callable[[B], int]")
+C().x = 4  # E: Property "x" defined in "B" is read-only
 [builtins fixtures/property.pyi]
 [out]
 
@@ -905,9 +906,11 @@ class A:
 class B(A):
     def __init__(self) -> None:
         self.f: Any  # E: Cannot assign to final attribute "f" \
-                     # E: Cannot override final attribute "f" (previously declared in base class "A")
+--zuban-diff                      # E: Cannot override final attribute "f" (previously declared in base class "A")
+--zuban-diff 
         self.c: Any  # E: Cannot assign to final attribute "c" \
-                     # E: Cannot override final attribute "c" (previously declared in base class "A")
+--zuban-diff                      # E: Cannot override final attribute "c" (previously declared in base class "A")
+--zuban-diff 
 
 B().f = a  # E: Cannot assign to final attribute "f"
 B().c = a  # E: Cannot assign to final attribute "c"

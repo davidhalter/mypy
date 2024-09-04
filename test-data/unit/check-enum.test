@@ -1836,7 +1836,8 @@ class B2(A2):  # E: Cannot extend enum with existing members: "A2"
 class A3(Enum):
     x: Final[int]  # type: ignore
 class B3(A3):
-    x = 1  # E: Cannot override final attribute "x" (previously declared in base class "A3")
+--zuban-diff     x = 1  # E: Cannot override final attribute "x" (previously declared in base class "A3")
+    x = 1  # E: Cannot assign to final name "x"
 [builtins fixtures/bool.pyi]
 
 [case testEnumNotFinalWithMethodsAndUninitializedValuesStub]
