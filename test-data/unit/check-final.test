@@ -282,9 +282,11 @@ class U:
 class C:
     def __init__(self, x: Tuple[int, Any]) -> None:
         slf = U()
-        slf.x: Final = x  # E: Final can be only applied to a name or an attribute on self
+--zuban-diff         slf.x: Final = x  # E: Final can be only applied to a name or an attribute on self
+        slf.x: Final = x  # E: Type cannot be declared in assignment to non-self attribute
         slf.y: Final[float] = 1  # E: Type cannot be declared in assignment to non-self attribute \
-                                 # E: Final can be only applied to a name or an attribute on self
+--zuban-diff                                  # E: Final can be only applied to a name or an attribute on self
+--zuban-diff 
 [builtins fixtures/tuple.pyi]
 [out]
 
