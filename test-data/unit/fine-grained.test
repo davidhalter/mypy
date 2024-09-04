@@ -8393,7 +8393,8 @@ class C:
 ==
 main:5: error: Cannot override final attribute "meth" (previously declared in base class "C")
 main:7: error: Cannot assign to final attribute "other"
-main:7: error: Cannot override final attribute "other" (previously declared in base class "C")
+--zuban-diff main:7: error: Cannot override final attribute "other" (previously declared in base class "C")
+--zuban-diff 
 
 [case testFinalAddFinalMethodOverrideOverloadFine]
 from typing import overload
@@ -8458,7 +8459,8 @@ class C:
 ==
 main:5: error: Cannot override final attribute "p" (previously declared in base class "C")
 main:8: error: Cannot assign to final attribute "p"
-main:8: error: Cannot override final attribute "p" (previously declared in base class "C")
+--zuban-diff main:8: error: Cannot override final attribute "p" (previously declared in base class "C")
+--zuban-diff 
 
 [case testFinalBodyReprocessedAndStillFinal]
 import a
