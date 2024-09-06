@@ -581,31 +581,42 @@ class XMethBad(NamedTuple):
 
 class MagicalFields(NamedTuple):
     x: int
-    def __slots__(self) -> None: pass  # E: Cannot overwrite NamedTuple attribute "__slots__"
+--zuban-diff     def __slots__(self) -> None: pass  # E: Cannot overwrite NamedTuple attribute "__slots__"
+    def __slots__(self) -> None: pass  # E: Cannot overwrite NamedTuple attribute "__slots__"  # E: Invalid type for "__slots__" (actual type "Callable[[MagicalFields], None]", expected type "str | Iterable[str]")
     def __new__(cls) -> MagicalFields: pass  # E: Cannot overwrite NamedTuple attribute "__new__"
     def _source(self) -> int: pass  # E: Cannot overwrite NamedTuple attribute "_source"
-    __annotations__ = {'x': float}  # E: NamedTuple field name cannot start with an underscore: __annotations__ \
+--zuban-diff     __annotations__ = {'x': float}  # E: NamedTuple field name cannot start with an underscore: __annotations__ \
+    __annotations__ = {'x': float}  \
         # E: Invalid statement in NamedTuple definition; expected "field_name: field_type [= default]" \
         # E: Cannot overwrite NamedTuple attribute "__annotations__"
 
 class AnnotationsAsAMethod(NamedTuple):
     x: int
     # This fails at runtime because typing.py assumes that __annotations__ is a dictionary.
-    def __annotations__(self) -> float:  # E: Cannot overwrite NamedTuple attribute "__annotations__"
+    def __annotations__(self) -> float:  # E: Cannot overwrite NamedTuple attribute "__annotations__" \
+--zuban-diff 
+                                         # E: Signature of "__annotations__" incompatible with supertype "object" \
+                                         # N:      Superclass: \
+                                         # N:          dict[str, Any] \
+                                         # N:      Subclass: \
+                                         # N:          def __annotations__(self) -> float
         return 1.0
 
 class ReuseNames(NamedTuple):
     x: int
-    def x(self) -> str:  # E: Name "x" already defined on line 22
+--zuban-diff     def x(self) -> str:  # E: Name "x" already defined on line 22
+    def x(self) -> str:  # E: Name "x" already defined on line 29
         return ''
 
     def y(self) -> int:
         return 0
-    y: str  # E: Name "y" already defined on line 26
+--zuban-diff     y: str  # E: Name "y" already defined on line 26
+    y: str  # E: Name "y" already defined on line 33
 
 class ReuseCallableNamed(NamedTuple):
     z: Callable[[ReuseNames], int]
-    def z(self) -> int:  # E: Name "z" already defined on line 31
+--zuban-diff     def z(self) -> int:  # E: Name "z" already defined on line 31
+    def z(self) -> int:  # E: Name "z" already defined on line 38
         return 0
 
 [builtins fixtures/dict.pyi]

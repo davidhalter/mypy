@@ -4505,9 +4505,19 @@ x = 0
 x = ''
 [builtins fixtures/tuple.pyi]
 [out]
-b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+--zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+b.py:5: error: Signature of "count" incompatible with supertype "tuple"
+b.py:5: note:      Superclass:
+b.py:5: note:          Callable[[Any], int]
+b.py:5: note:      Subclass:
+b.py:5: note:          int
 ==
-b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+--zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+b.py:5: error: Signature of "count" incompatible with supertype "tuple"
+b.py:5: note:      Superclass:
+b.py:5: note:          Callable[[Any], int]
+b.py:5: note:      Subclass:
+b.py:5: note:          int
 
 [case testReprocessEllipses1]
 import a
