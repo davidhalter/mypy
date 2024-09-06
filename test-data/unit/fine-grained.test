@@ -8390,6 +8390,8 @@ class C:
     @final
     def other(self) -> int: ...
 [out]
+--zuban-diff 
+main:7: error: Property "other" defined in "C" is read-only
 ==
 main:5: error: Cannot override final attribute "meth" (previously declared in base class "C")
 main:7: error: Cannot assign to final attribute "other"
