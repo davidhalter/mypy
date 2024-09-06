@@ -2975,7 +2975,8 @@ class DataArray(ObjectHashable):
     __hash__ = None
 
     def f(self, x: Hashable) -> None:
-        reveal_type([self, x])  # N: Revealed type is "builtins.list[builtins.object]"
+--zuban-diff         reveal_type([self, x])  # N: Revealed type is "builtins.list[builtins.object]"
+        reveal_type([self, x])  # N: Revealed type is "builtins.list[__main__.Hashable]"
 [builtins fixtures/tuple.pyi]
 
 
