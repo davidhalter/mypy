@@ -560,7 +560,7 @@ class Crash(NamedTuple):
 --zuban-diff     count: int  # E: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
     count: int  # E: Signature of "count" incompatible with supertype "tuple" \
                 # N:      Superclass: \
-                # N:          Callable[[Any], int] \
+                # N:          def count(self, Any, /) -> int \
                 # N:      Subclass: \
                 # N:          int
 
