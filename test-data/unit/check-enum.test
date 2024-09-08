@@ -1991,7 +1991,8 @@ class _CorrectWithMixin(Mixin, Correct2):
 class _CorrectMultipleEnumBases(Correct0, Correct5):
     pass
 
-class _MultipleEnumBasesAndMixin(int, Correct0, enum.Flag):
+--zuban-diff class _MultipleEnumBasesAndMixin(int, Correct0, enum.Flag):
+class _MultipleEnumBasesAndMixin(int, Correct0, enum.Flag):  # type: ignore
     pass
 
 class _MultipleEnumBasesWithCustomNew(int, EnumWithCustomNew, SecondEnumWithCustomNew):

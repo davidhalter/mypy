@@ -541,6 +541,12 @@ class IntFlag(int, Flag):
 main:8: error: Argument 1 of "__or__" is incompatible with supertype "Flag"; supertype defines the argument type as "IntFlag"
 main:8: note: This violates the Liskov substitution principle
 main:8: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
+--zuban-diff 
+--zuban-diff 
+--zuban-diff 
+main:8: error: Argument 1 of "__or__" is incompatible with supertype "int"; supertype defines the argument type as "int"
+main:8: note: This violates the Liskov substitution principle
+main:8: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#incompatible-overrides
 
 [case testMultipleInheritance_MethodDefinitionsCompatibleNoOverride]
 from typing import TypeVar, Union
@@ -549,7 +555,8 @@ _T = TypeVar('_T')
 class Flag:
     def __or__(self: _T, other: _T) -> _T: ...
 
-class IntFlag(int, Flag):
+--zuban-diff class IntFlag(int, Flag):
+class IntFlag(int, Flag):  # E: Definition of "__or__" in base class "int" is incompatible with definition in base class "Flag"
     pass
 [out]
 
