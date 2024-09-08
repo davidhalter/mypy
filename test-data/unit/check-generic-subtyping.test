@@ -597,7 +597,8 @@ class I(Generic[T]):
     def f(self, a: T, b: T) -> None: pass
     @abstractmethod
     def g(self, a: T, b: 'D') -> None: pass
-class B(I[C]):
+--zuban-diff class B(I[C]):
+class B(I[C]):  # E: Name "C" is used before definition
     def f(self, a: 'C', b: 'C') -> None: pass
     def g(self, a: 'C', b: Any) -> None: pass
 class A(B):
@@ -617,7 +618,8 @@ T = TypeVar('T')
 class I(Generic[T]):
     @abstractmethod
     def f(self, a: T, b: T) -> None: pass
-class B(I[C]):
+--zuban-diff class B(I[C]):
+class B(I[C]):  # E: Name "C" is used before definition
     def f(self, a: 'C', b: Any) -> None: pass
 class A(B):
     def f(self, a: 'C', b: 'D') -> None: pass \
