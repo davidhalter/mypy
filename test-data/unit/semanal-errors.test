@@ -808,7 +808,8 @@ class B(A): pass # E: Cannot resolve name "A" (possible cyclic definition)
 [case testAssignToTypeDef]
 import typing
 class A: pass
-A = None # E: Cannot assign to a type
+--zuban-diff A = None # E: Cannot assign to a type
+A = None # E: Name "A" already defined on line 2
 [out]
 
 [case testInvalidCastTargetSyntax]
@@ -1116,7 +1117,8 @@ x = TypeVar('x') # type: int # E: Cannot declare the type of a TypeVar or simila
 [case testRedefineTypevar]
 from typing import TypeVar
 t = TypeVar('t')
-t = 1 # E: Invalid assignment target
+--zuban-diff t = 1 # E: Invalid assignment target
+t = 1 # E: Name "t" already defined on line 2
 [out]
 
 [case testRedefineTypevar2]

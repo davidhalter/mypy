@@ -19,9 +19,15 @@ def r(a): pass  # E: Name "r" already defined on line 14
 r(0)
 [out]
 main:2: error: Name "overload" is not defined
+--zuban-diff 
+main:2: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 main:4: error: Name "f" already defined on line 2
 main:4: error: Name "overload" is not defined
+--zuban-diff 
+main:4: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 main:6: error: Name "f" already defined on line 2
+--zuban-diff 
+main:9: note: Did you forget to import it from "typing"? (Suggestion: "from typing import overload")
 
 [case testTypeCheckOverloadWithImplementation]
 from typing import overload, Any

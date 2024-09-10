@@ -2111,7 +2111,8 @@ def f(x: asdf) -> None:  # E: Name "asdf" is not defined
 from enum import Enum
 
 A = Enum('A', ['x', 'y'])
-A = Enum('A', ['z', 't'])  # E: Name "A" already defined on line 3
+--zuban-diff A = Enum('A', ['z', 't'])  # E: Name "A" already defined on line 3
+A = Enum('A', ['z', 't'])  # E: Incompatible types in assignment (expression has type "Type[__main__.A]", variable has type "Type[__main__.A]")
 
 [case testNewAnalyzerNewTypeRedefinition]
 from typing import NewType
@@ -2795,8 +2796,10 @@ T = TypeVar('T')
 class C(Generic[T]):
     pass
 # TODO: Error message is confusing
-C = C[int]  # E: Cannot assign to a type \
-            # E: Incompatible types in assignment (expression has type "Type[C[Any]]", variable has type "Type[C[Any]]")
+--zuban-diff C = C[int]  # E: Cannot assign to a type \
+--zuban-diff             # E: Incompatible types in assignment (expression has type "Type[C[Any]]", variable has type "Type[C[Any]]")
+C = C[int]  # E: Name "C" already defined on line 5
+
 x: C
 reveal_type(x) # N: Revealed type is "__main__.C[Any]"
 [out]
@@ -3155,42 +3158,51 @@ class C: pass
 
 [case testNewAnalyzerIdentityAssignment4]
 try:
-    C = C
+--zuban-diff     C = C
+    C = C  # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)
     C
 except:
-    class C:
+--zuban-diff     class C:
+    class C:  # E: Name "C" already defined on line 2
         pass
 
-reveal_type(C()) # N: Revealed type is "__main__.C"
+--zuban-diff reveal_type(C()) # N: Revealed type is "__main__.C"
+reveal_type(C()) # N: Revealed type is "Any"
 
 [case testNewAnalyzerIdentityAssignment5]
 forwardref: D
 
 try:
-    C = C
+--zuban-diff     C = C
+    C = C  # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)
     C
 except:
-    class C:
+--zuban-diff     class C:
+    class C:  # E: Name "C" already defined on line 4
         pass
 
 class D: pass
 
-reveal_type(C()) # N: Revealed type is "__main__.C"
+--zuban-diff reveal_type(C()) # N: Revealed type is "__main__.C"
+reveal_type(C()) # N: Revealed type is "Any"
 
 [case testNewAnalyzerIdentityAssignment6]
 x: C
 class C:
     pass
-C = C
+--zuban-diff C = C
+C = C  # E: Name "C" already defined on line 2
 
 reveal_type(C()) # N: Revealed type is "__main__.C"
 reveal_type(x) # N: Revealed type is "__main__.C"
 
 [case testNewAnalyzerIdentityAssignment7]
-C = C # E: Name "C" is not defined
+--zuban-diff C = C # E: Name "C" is not defined
+C = C # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)
 
-reveal_type(C) # E: Name "C" is not defined \
-               # N: Revealed type is "Any"
+--zuban-diff reveal_type(C) # E: Name "C" is not defined \
+--zuban-diff                # N: Revealed type is "Any"
+reveal_type(C) # N: Revealed type is "Any"
 
 [case testNewAnalyzerIdentityAssignment8]
 from typing import Final

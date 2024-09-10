@@ -1109,7 +1109,8 @@ A.f = None  # E: Cannot assign to a method \
 import typing
 class A:
     class B: pass
-A.B = None  # E: Cannot assign to a type \
+--zuban-diff A.B = None  # E: Cannot assign to a type \
+A.B = None  \
             # E: Incompatible types in assignment (expression has type "None", variable has type "Type[B]")
 [targets __main__]
 

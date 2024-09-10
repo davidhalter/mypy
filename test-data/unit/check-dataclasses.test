@@ -2522,7 +2522,8 @@ class Foo:
     def c(self) -> int:
         return 0
 
-    c: int  # E: Name "c" already defined on line 5
+--zuban-diff     c: int  # E: Name "c" already defined on line 5
+    c: int  # E: Name "c" already defined on line 5  # E: Unexpected definition for property "c"
 [builtins fixtures/dataclasses.pyi]
 
 [case testDataclassInheritanceWorksWithExplicitOverrides]

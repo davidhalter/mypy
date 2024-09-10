@@ -319,8 +319,9 @@ from typing import NewType
 
 a = 3
 def f(): a
-a = NewType('a', int) # E: Cannot redefine "a" as a NewType \
-                      # E: Name "a" already defined on line 4
+--zuban-diff a = NewType('a', int) # E: Cannot redefine "a" as a NewType \
+--zuban-diff                       # E: Name "a" already defined on line 4
+a = NewType('a', int) # E: Incompatible types in assignment (expression has type "Type[a]", variable has type "int")
 
 b = NewType('b', int)
 def g(): b
