@@ -2803,7 +2803,8 @@ C = C[int]  # E: Name "C" already defined on line 5
 x: C
 reveal_type(x) # N: Revealed type is "__main__.C[Any]"
 [out]
-[out2]
+--zuban-diff [out2]
+--zuban-diff 
 
 [case testNewAnalyzerClassVariableOrdering]
 def foo(x: str) -> None: pass
