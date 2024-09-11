@@ -319,14 +319,14 @@ from typing import NewType
 
 a = 3
 def f(): a
---zuban-diff a = NewType('a', int) # E: Cannot redefine "a" as a NewType \
---zuban-diff                       # E: Name "a" already defined on line 4
-a = NewType('a', int) # E: Incompatible types in assignment (expression has type "Type[a]", variable has type "int")
+a = NewType('a', int) # E: Cannot redefine "a" as a NewType \
+                      # E: Name "a" already defined on line 4
 
 b = NewType('b', int)
 def g(): b
 b = NewType('b', float)  # E: Cannot redefine "b" as a NewType \
-                         # E: Name "b" already defined on line 8
+--zuban-diff                          # E: Name "b" already defined on line 8
+                         # E: Name "b" already defined on line 9
 
 c = NewType('c', str)  # type: str  # E: Cannot declare the type of a NewType declaration
 
