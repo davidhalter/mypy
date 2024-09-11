@@ -1402,7 +1402,8 @@ if 1:
     def f(x: Any) -> None:
         pass
 else:
-    def f(x: str) -> None:  # E: Name "f" already defined on line 3
+--zuban-diff     def f(x: str) -> None:  # E: Name "f" already defined on line 3
+    def f(x: str) -> None:
         pass
 [out]
 
