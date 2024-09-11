@@ -83,10 +83,8 @@ reveal_type(f(B())) # N: Revealed type is "__main__.A"
 
 [case testSingleOverloadNoImplementation]
 from typing import overload, Any
---zuban-diff @overload  # E: Single overload definition, multiple required
-@overload
---zuban-diff def f(x: 'A') -> 'B': ...
-def f(x: 'A') -> 'B': ... # E: Single overload definition, multiple required
+@overload  # E: Single overload definition, multiple required
+def f(x: 'A') -> 'B': ...
 
 class A: pass
 class B: pass
@@ -1526,8 +1524,7 @@ from typing import overload
 def f(a: int) -> None: pass
 def f(a: int) -> None: pass
 [out]
---zuban-diff tmp/foo.pyi:2: error: Single overload definition, multiple required
-tmp/foo.pyi:3: error: Single overload definition, multiple required
+tmp/foo.pyi:2: error: Single overload definition, multiple required
 tmp/foo.pyi:4: error: An implementation for an overloaded function is not allowed in a stub file
 
 [case testSingleOverload2]
