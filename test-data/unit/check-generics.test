@@ -522,7 +522,8 @@ Alias[int]("a")  # E: Argument 1 to "Node" has incompatible type "str"; expected
 
 [case testTypeApplicationCrash]
 import types
-type[int] # this was crashing, see #2302 (comment)  # E: The type "Type[type]" is not generic and not indexable
+--zuban-diff type[int] # this was crashing, see #2302 (comment)  # E: The type "Type[type]" is not generic and not indexable
+type[int] # this was crashing, see #2302 (comment)
 [builtins fixtures/tuple.pyi]
 
 
