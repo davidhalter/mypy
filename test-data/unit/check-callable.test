@@ -533,10 +533,10 @@ else:
 from __future__ import annotations
 
 --zuban-diff reveal_type(type)  # N: Revealed type is "def (x: Any) -> builtins.type"
-reveal_type(type)  # N: Revealed type is "type"
+reveal_type(type)  # N: Revealed type is "Type[type]"
 _TYPE = type
 --zuban-diff reveal_type(_TYPE)  # N: Revealed type is "def (x: Any) -> builtins.type"
-reveal_type(_TYPE)  # N: Revealed type is "type"
+reveal_type(_TYPE)  # N: Revealed type is "Type[type]"
 _TYPE('bar')
 
 [builtins fixtures/callable.pyi]
