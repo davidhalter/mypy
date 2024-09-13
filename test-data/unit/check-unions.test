@@ -428,12 +428,16 @@ reveal_type(u(t_s, t_o)) # N: Revealed type is "Type[builtins.object]"
 reveal_type(u(t_o, t_s)) # N: Revealed type is "Type[builtins.object]"
 reveal_type(u(t_o, type)) # N: Revealed type is "Type[builtins.object]"
 reveal_type(u(type, t_o)) # N: Revealed type is "Type[builtins.object]"
-reveal_type(u(t_a, t)) # N: Revealed type is "builtins.type"
-reveal_type(u(t, t_a)) # N: Revealed type is "builtins.type"
+--zuban-diff reveal_type(u(t_a, t)) # N: Revealed type is "builtins.type"
+--zuban-diff reveal_type(u(t, t_a)) # N: Revealed type is "builtins.type"
+reveal_type(u(t_a, t)) # N: Revealed type is "Type[Any]"
+reveal_type(u(t, t_a)) # N: Revealed type is "Type[Any]"
 # The following should arguably not be simplified, but it's unclear how to fix then
 # without causing regressions elsewhere.
-reveal_type(u(t_o, t)) # N: Revealed type is "builtins.type"
-reveal_type(u(t, t_o)) # N: Revealed type is "builtins.type"
+--zuban-diff reveal_type(u(t_o, t)) # N: Revealed type is "builtins.type"
+--zuban-diff reveal_type(u(t, t_o)) # N: Revealed type is "builtins.type"
+reveal_type(u(t_o, t)) # N: Revealed type is "Type[Any] | Type[object]"
+reveal_type(u(t, t_o)) # N: Revealed type is "Type[object] | Type[Any]"
 
 [case testNotSimplifyingUnionWithMetaclass]
 from typing import TypeVar, Union, Type, Any
