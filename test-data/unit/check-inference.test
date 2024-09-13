@@ -2031,19 +2031,23 @@ x.append('') # E: Argument 1 to "append" of "list" has incompatible type "str"; 
 [builtins fixtures/list.pyi]
 
 [case testPartiallyInitializedToNoneAndThenReadPartialList]
-x = None
+--zuban-diff x = None
+x = None  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
 if object():
     # Promote from partial None to partial list.
-    x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+--zuban-diff     x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+    x = []
     x
 [builtins fixtures/list.pyi]
 
 [case testPartiallyInitializedToNoneAndPartialListAndLeftPartial]
 def f() -> None:
-    x = None
+--zuban-diff     x = None
+    x = None  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
     if object():
         # Promote from partial None to partial list.
-        x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+--zuban-diff         x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+        x = []
 [builtins fixtures/list.pyi]
 [out]
 
