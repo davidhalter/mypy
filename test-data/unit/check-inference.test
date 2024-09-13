@@ -2497,9 +2497,11 @@ main:4: error: Unsupported target for indexed assignment ("Type[C]")
 
 [case testNoCrashOnPartialMember]
 class C:
-    x = None
+--zuban-diff     x = None
+    x = None  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
     def __init__(self) -> None:
-        self.x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+--zuban-diff         self.x = []  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
+        self.x = []
 [builtins fixtures/list.pyi]
 [out]
 
