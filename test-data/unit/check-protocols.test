@@ -2991,7 +2991,8 @@ class MyProtocol(Protocol):
 
 class MyClass:
     text = None
-    def is_valid(self) -> bool:
+--zuban-diff     def is_valid(self) -> bool:
+    def is_valid(self) -> bool:  # E: Missing return statement
         reveal_type(self.text)  # N: Revealed type is "None"
         assert isinstance(self, MyProtocol)
 [builtins fixtures/isinstance.pyi]
@@ -3008,7 +3009,8 @@ class MyProtocol(Protocol):
 
 class MyClass:
     text = None
-    def is_valid(self) -> bool:
+--zuban-diff     def is_valid(self) -> bool:
+    def is_valid(self) -> bool:  # E: Missing return statement
         reveal_type(self.text)  # N: Revealed type is "None"
         assert isinstance(self, MyProtocol)
 [builtins fixtures/isinstance.pyi]
