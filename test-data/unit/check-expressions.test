@@ -1664,8 +1664,10 @@ def g() -> Generator[int, None, None]:
 [case testDictWithKeywordArgsOnly]
 from typing import Dict, Any
 d3 = dict(a=1) # type: Dict[int, int] # E: Incompatible types in assignment (expression has type "dict[str, int]", variable has type "dict[int, int]") \
-                                      # N: "Dict" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
-                                      # N: Consider using "Mapping" instead, which is covariant in the value type
+--zuban-diff                                       # N: "Dict" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+--zuban-diff                                       # N: Consider using "Mapping" instead, which is covariant in the value type
+--zuban-diff 
+--zuban-diff 
 [builtins fixtures/dict.pyi]
 
 [case testDictWithoutKeywordArgs]
