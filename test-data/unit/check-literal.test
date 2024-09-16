@@ -617,11 +617,13 @@ e: Literal[dummy()]             # E: Invalid type: Literal[...] cannot contain a
 
 [case testLiteralDisallowCollections]
 from typing_extensions import Literal
-a: Literal[{"a": 1, "b": 2}]    # E: Parameter 1 of Literal[...] is invalid
+--zuban-diff a: Literal[{"a": 1, "b": 2}]    # E: Parameter 1 of Literal[...] is invalid
+a: Literal[{"a": 1, "b": 2}]    # E: Invalid type: Literal[...] cannot contain arbitrary expressions
 b: Literal[{1, 2, 3}]           # E: Invalid type: Literal[...] cannot contain arbitrary expressions
-c: {"a": 1, "b": 2}             # E: Inline TypedDict is experimental, must be enabled with --enable-incomplete-feature=InlineTypedDict \
-                                # E: Invalid type: try using Literal[1] instead? \
-                                # E: Invalid type: try using Literal[2] instead?
+--zuba-diff c: {"a": 1, "b": 2}             # E: Inline TypedDict is experimental, must be enabled with --enable-incomplete-feature=InlineTypedDict \
+--zuba-diff                                 # E: Invalid type: try using Literal[1] instead? \
+--zuba-diff                                 # E: Invalid type: try using Literal[2] instead?
+c: {"a": 1, "b": 2}             # E: Invalid type comment or annotation
 d: {1, 2, 3}                    # E: Invalid type comment or annotation
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-full.pyi]
