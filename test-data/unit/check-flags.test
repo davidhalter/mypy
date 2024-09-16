@@ -2209,7 +2209,8 @@ f(memoryview(b"asdf"))
 # flags: --disable-memoryview-promotion
 def f(x: bytes) -> None: ...
 f(bytearray(b"asdf"))
-f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview"; expected "bytes"
+--zuban-diff f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview"; expected "bytes"
+f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview[int]"; expected "bytes"
 [builtins fixtures/primitives.pyi]
 
 [case testDisableBytearrayMemoryviewPromotionStrictEquality]
