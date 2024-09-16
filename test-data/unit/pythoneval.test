@@ -1145,7 +1145,8 @@ _testTypedDictMappingMethods.py:10: note: Revealed type is "_collections_abc.dic
 _testTypedDictMappingMethods.py:11: note: Revealed type is "_collections_abc.dict_values[builtins.str, builtins.object]"
 _testTypedDictMappingMethods.py:12: note: Revealed type is "TypedDict('_testTypedDictMappingMethods.Cell', {'value': builtins.int})"
 _testTypedDictMappingMethods.py:13: note: Revealed type is "builtins.int"
-_testTypedDictMappingMethods.py:15: error: Unexpected TypedDict key "invalid"
+--zuban-diff _testTypedDictMappingMethods.py:15: error: Unexpected TypedDict key "invalid"
+_testTypedDictMappingMethods.py:15: error: Extra key "invalid" for TypedDict "Cell"
 _testTypedDictMappingMethods.py:16: error: Key "value" of TypedDict "Cell" cannot be deleted
 _testTypedDictMappingMethods.py:21: note: Revealed type is "builtins.int"
 
