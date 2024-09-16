@@ -3644,7 +3644,13 @@ class C:
 
 # TODO: it is an old question whether we should allow this, for now simply don't crash.
 class D(C):
-    d = f
+--zuban-diff     d = f
+    d = f  # E: Attribute function "f" with type "Callable[[**Unpack[Kwargs]], None]" does not accept self argument \
+           # E: Signature of "d" incompatible with supertype "C" \
+           # N:      Superclass: \
+           # N:          def (**Unpack[Kwargs]) -> None \
+           # N:      Subclass: \
+           # N:          Callable[[], None]
 [builtins fixtures/tuple.pyi]
 
 [case testTypedDictInlineNoOldStyleAlias]
