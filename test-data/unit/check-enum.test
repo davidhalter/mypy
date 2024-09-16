@@ -162,7 +162,8 @@ class Truth(Enum):
     false = 0
 
 def cannot_infer_truth(truth: Truth) -> None:
-    reveal_type(truth.value) # N: Revealed type is "Any"
+--zuban-diff     reveal_type(truth.value) # N: Revealed type is "Any"
+    reveal_type(truth.value) # N: Revealed type is "Literal['True']? | Literal[0]?"
 [builtins fixtures/bool.pyi]
 
 [case testEnumValueSameType]
@@ -2082,7 +2083,8 @@ def f1(c: C) -> None:
 
 def f2(c: C, a: Any) -> None:
     x = {'x': c.value, 'y': a}
-    reveal_type(x)  # N: Revealed type is "builtins.dict[builtins.str, Any]"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "builtins.dict[builtins.str, Any]"
+    reveal_type(x)  # N: Revealed type is "builtins.dict[builtins.str, int | Any]"
     y = {'y': a, 'x': c.value}
     reveal_type(y)  # N: Revealed type is "builtins.dict[builtins.str, Any]"
 [builtins fixtures/dict.pyi]
@@ -2160,10 +2162,12 @@ class Mixed(Enum):
 
         # Inferring Any here instead of a union seems to be a deliberate
         # choice; see the testEnumValueInhomogenous case above.
-        reveal_type(self.value)  # N: Revealed type is "Any"
+--zuban-diff         reveal_type(self.value)  # N: Revealed type is "Any"
+        reveal_type(self.value)  # N: Revealed type is "list[Any] | None"
 
         for field in Mixed:
-            reveal_type(field.value)  # N: Revealed type is "Any"
+--zuban-diff             reveal_type(field.value)  # N: Revealed type is "Any"
+            reveal_type(field.value)  # N: Revealed type is "list[Any] | None"
             if field.value is None:
                 pass
 
