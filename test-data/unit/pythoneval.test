@@ -274,12 +274,7 @@ def bin(f: IO[bytes]) -> None:
 txt(sys.stdout)
 bin(sys.stdout)
 [out]
-_program.py:5: error: No overload variant of "write" of "IO" matches argument type "bytes"
-_program.py:5: note: Possible overload variants:
---zuban-diff _program.py:5: note:     def write(self, str, /) -> int
-_program.py:5: note:     def write(str, /) -> int
---zuban-diff 
-_program.py:5: note:     def write(str, /) -> int
+_program.py:5: error: Argument 1 to "write" of "IO" has incompatible type "bytes"; expected "str"
 _program.py:10: error: Argument 1 to "bin" has incompatible type "Union[TextIO, Any]"; expected "IO[bytes]"
 
 [case testBuiltinOpen]
@@ -289,7 +284,7 @@ f.write(b'x')
 f.foobar()
 [out]
 _program.py:3: error: Argument 1 to "write" of "TextIOBase" has incompatible type "bytes"; expected "str"
-_program.py:4: error: "TextIOWrapper" has no attribute "foobar"
+_program.py:4: error: "TextIOWrapper[_WrappedBuffer]" has no attribute "foobar"
 
 [case testOpenReturnTypeInference]
 reveal_type(open('x'))
@@ -298,8 +293,8 @@ reveal_type(open('x', 'rb'))
 mode = 'rb'
 reveal_type(open('x', mode))
 [out]
-_program.py:1: note: Revealed type is "io.TextIOWrapper"
-_program.py:2: note: Revealed type is "io.TextIOWrapper"
+_program.py:1: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
+_program.py:2: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
 _program.py:3: note: Revealed type is "io.BufferedReader"
 _program.py:5: note: Revealed type is "typing.IO[Any]"
 
@@ -322,8 +317,8 @@ reveal_type(p.open('rb'))
 mode = 'rb'
 reveal_type(p.open(mode))
 [out]
-_program.py:3: note: Revealed type is "io.TextIOWrapper"
-_program.py:4: note: Revealed type is "io.TextIOWrapper"
+_program.py:3: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
+_program.py:4: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
 _program.py:5: note: Revealed type is "io.BufferedReader"
 _program.py:7: note: Revealed type is "typing.IO[Any]"
 
@@ -335,8 +330,8 @@ reveal_type(p.open(errors='replace', mode='r'))
 mode = 'r'
 reveal_type(p.open(mode=mode, errors='replace'))
 [out]
-_program.py:3: note: Revealed type is "io.TextIOWrapper"
-_program.py:4: note: Revealed type is "io.TextIOWrapper"
+_program.py:3: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
+_program.py:4: note: Revealed type is "io.TextIOWrapper[io._WrappedBuffer]"
 _program.py:6: note: Revealed type is "typing.IO[Any]"
 
 [case testGenericPatterns]
@@ -1807,7 +1802,7 @@ C = str | int
 D: TypeAlias = str | int
 [out]
 _testTypeAliasNotSupportedWithNewStyleUnion.py:3: error: Invalid type alias: expression is not a valid type
-_testTypeAliasNotSupportedWithNewStyleUnion.py:3: error: Unsupported left operand type for | ("<typing special form>")
+_testTypeAliasNotSupportedWithNewStyleUnion.py:3: error: Unsupported left operand type for | ("GenericAlias")
 _testTypeAliasNotSupportedWithNewStyleUnion.py:4: error: Invalid type alias: expression is not a valid type
 _testTypeAliasNotSupportedWithNewStyleUnion.py:4: error: Unsupported left operand type for | ("Type[str]")
 _testTypeAliasNotSupportedWithNewStyleUnion.py:5: error: Invalid type alias: expression is not a valid type

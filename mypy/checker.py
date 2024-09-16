@@ -540,10 +540,11 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
             self.check_top_level(node)
         else:
             self.recurse_into_functions = True
-            if isinstance(node, LambdaExpr):
-                self.expr_checker.accept(node)
-            else:
-                self.accept(node)
+            with self.binder.top_frame_context():
+                if isinstance(node, LambdaExpr):
+                    self.expr_checker.accept(node)
+                else:
+                    self.accept(node)
 
     def check_top_level(self, node: MypyFile) -> None:
         """Check only the top-level of a module, skipping function definitions."""
@@ -682,6 +683,8 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
         inner_type = get_proper_type(inner_type)
         outer_type: CallableType | None = None
         if inner_type is not None and not isinstance(inner_type, AnyType):
+            if isinstance(inner_type, TypeVarLikeType):
+                inner_type = get_proper_type(inner_type.upper_bound)
             if isinstance(inner_type, TypeType):
                 if isinstance(inner_type.item, Instance):
                     inner_type = expand_type_by_instance(
@@ -2971,7 +2974,8 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
             self.msg.annotation_in_unchecked_function(context=s)
 
     def check_type_alias_rvalue(self, s: AssignmentStmt) -> None:
-        alias_type = self.expr_checker.accept(s.rvalue)
+        with self.msg.filter_errors():
+            alias_type = self.expr_checker.accept(s.rvalue)
         self.store_type(s.lvalues[-1], alias_type)
 
     def check_assignment(
@@ -5311,7 +5315,8 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
                         del type_map[expr]
 
     def visit_type_alias_stmt(self, o: TypeAliasStmt) -> None:
-        self.expr_checker.accept(o.value)
+        with self.msg.filter_errors():
+            self.expr_checker.accept(o.value)
 
     def make_fake_typeinfo(
         self,
@@ -5646,7 +5651,16 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
             )
         )
 
-    def _check_for_truthy_type(self, t: Type, expr: Expression) -> None:
+    def check_for_truthy_type(self, t: Type, expr: Expression) -> None:
+        """
+        Check if a type can have a truthy value.
+
+        Used in checks like::
+
+            if x: # <---
+
+            not x  # <---
+        """
         if not state.strict_optional:
             return  # if everything can be None, all bets are off
 
@@ -6009,11 +6023,16 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
                     if_map, else_map = {}, {}
 
                     if left_index in narrowable_operand_index_to_hash:
-                        # We only try and narrow away 'None' for now
-                        if is_overlapping_none(item_type):
-                            collection_item_type = get_proper_type(
-                                builtin_item_type(iterable_type)
-                            )
+                        collection_item_type = get_proper_type(builtin_item_type(iterable_type))
+                        # Narrow if the collection is a subtype
+                        if (
+                            collection_item_type is not None
+                            and collection_item_type != item_type
+                            and is_subtype(collection_item_type, item_type)
+                        ):
+                            if_map[operands[left_index]] = collection_item_type
+                        # Try and narrow away 'None'
+                        elif is_overlapping_none(item_type):
                             if (
                                 collection_item_type is not None
                                 and not is_overlapping_none(collection_item_type)
@@ -6135,7 +6154,7 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
         if in_boolean_context:
             # We don't check `:=` values in expressions like `(a := A())`,
             # because they produce two error messages.
-            self._check_for_truthy_type(original_vartype, node)
+            self.check_for_truthy_type(original_vartype, node)
         vartype = try_expanding_sum_type_to_union(original_vartype, "builtins.bool")
 
         if_type = true_only(vartype)

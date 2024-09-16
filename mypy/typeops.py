@@ -114,7 +114,11 @@ def tuple_fallback(typ: TupleType) -> Instance:
         else:
             items.append(item)
     return Instance(
-        info, [make_simplified_union(items)], extra_attrs=typ.partial_fallback.extra_attrs
+        info,
+        # Note: flattening recursive unions is dangerous, since it can fool recursive
+        # types optimization in subtypes.py and go into infinite recursion.
+        [make_simplified_union(items, handle_recursive=False)],
+        extra_attrs=typ.partial_fallback.extra_attrs,
     )
 
 
@@ -310,12 +314,14 @@ def bind_self(
     if not func.arg_types:
         # Invalid method, return something.
         return cast(F, func)
-    if func.arg_kinds[0] == ARG_STAR:
+    if func.arg_kinds[0] in (ARG_STAR, ARG_STAR2):
         # The signature is of the form 'def foo(*args, ...)'.
         # In this case we shouldn't drop the first arg,
         # since func will be absorbed by the *args.
-
         # TODO: infer bounds on the type of *args?
+
+        # In the case of **kwargs we should probably emit an error, but
+        # for now we simply skip it, to avoid crashes down the line.
         return cast(F, func)
     self_param_type = get_proper_type(func.arg_types[0])
 
@@ -438,6 +444,7 @@ def make_simplified_union(
     *,
     keep_erased: bool = False,
     contract_literals: bool = True,
+    handle_recursive: bool = True,
 ) -> ProperType:
     """Build union type with redundant union items removed.
 
@@ -463,7 +470,7 @@ def make_simplified_union(
     to_union().
     """
     # Step 1: expand all nested unions
-    items = flatten_nested_unions(items)
+    items = flatten_nested_unions(items, handle_recursive=handle_recursive)
 
     # Step 2: fast path for single item
     if len(items) == 1:
