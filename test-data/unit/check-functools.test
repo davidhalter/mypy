@@ -54,9 +54,11 @@ class Ord(object):
 
     __lt__ = 5
 
-Ord() <= Ord()  # E: Unsupported left operand type for <= ("Ord")
+--zuban-diff Ord() <= Ord()  # E: Unsupported left operand type for <= ("Ord")
+Ord() <= Ord()  # E: "int" not callable
 Ord() > Ord()  # E: "int" not callable
-Ord() >= Ord()  # E: Unsupported left operand type for >= ("Ord")
+--zuban-diff Ord() >= Ord()  # E: Unsupported left operand type for >= ("Ord")
+Ord() >= Ord()  # E: "int" not callable
 [builtins fixtures/dict.pyi]
 
 [case testTotalOrderingReturnNotBool]
