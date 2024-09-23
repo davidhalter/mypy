@@ -576,7 +576,7 @@ class C:
     def cm(cls) -> None:
         cls.x = 2  # E: Cannot assign to final attribute "x"
 --zuban-diff         cls.y  # E: Cannot access final instance attribute "y" on class object
-        cls.y  # E: "Type[C]" has no attribute "y"
+        cls.y  # E: "Type[Self]" has no attribute "y"
 [builtins fixtures/classmethod.pyi]
 [out]
 
