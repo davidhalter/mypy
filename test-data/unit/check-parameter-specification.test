@@ -455,7 +455,9 @@ class C(Generic[P, P2]):
         self.m2(*args, **kwargs)  # E: Argument 1 to "m2" of "C" has incompatible type "*P.args"; expected "P2.args" \
             # E: Argument 2 to "m2" of "C" has incompatible type "**P.kwargs"; expected "P2.kwargs"
         self.m1(*kwargs, **args)  # E: Argument 1 to "m1" of "C" has incompatible type "*P.kwargs"; expected "P.args" \
-            # E: Argument 2 to "m1" of "C" has incompatible type "**P.args"; expected "P.kwargs"
+            # E: Argument 2 to "m1" of "C" has incompatible type "**P.args"; expected "P.kwargs" \
+--zuban-diff 
+            # E: Argument after ** must be a mapping, not "P.args"
         self.m3(*args, **kwargs)  # E: Argument 1 to "m3" of "C" has incompatible type "*P.args"; expected "int" \
             # E: Argument 2 to "m3" of "C" has incompatible type "**P.kwargs"; expected "int"
         self.m4(*args, **kwargs)  # E: Argument 1 to "m4" of "C" has incompatible type "*P.args"; expected "int" \
