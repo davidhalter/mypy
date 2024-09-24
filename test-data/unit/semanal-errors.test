@@ -772,9 +772,10 @@ s = TypeVar('s')
 class A(Generic[t]):
     class B(Generic[s]):
         x = 0 # type: A[s]
-        y = 0 # type: A[t]        # E: Type variable "__main__.t" is unbound \
-                                  # N: (Hint: Use "Generic[t]" or "Protocol[t]" base class to bind "t" inside a class) \
-                                  # N: (Hint: Use "t" in function signature to bind "t" inside a function)
+--zuban-diff         y = 0 # type: A[t]        # E: Type variable "__main__.t" is unbound \
+--zuban-diff                                   # N: (Hint: Use "Generic[t]" or "Protocol[t]" base class to bind "t" inside a class) \
+--zuban-diff                                   # N: (Hint: Use "t" in function signature to bind "t" inside a function)
+        y = 0 # type: A[t]        # E: Type variable "t" is bound by an outer class
     z = 0 # type: A[s]            # E: Type variable "__main__.s" is unbound \
                                   # N: (Hint: Use "Generic[s]" or "Protocol[s]" base class to bind "s" inside a class) \
                                   # N: (Hint: Use "s" in function signature to bind "s" inside a function)
@@ -1027,7 +1028,8 @@ from typing import Generic, TypeVar
 T = TypeVar('T')
 class A(Generic[T]):
     class B(Generic[T]): pass \
-          # E: Free type variable expected in Generic[...]
+--zuban-diff           # E: Free type variable expected in Generic[...]
+          # E: Type variable "T" is bound by an outer class
 [out]
 
 [case testIncludingGenericTwiceInBaseClassList]

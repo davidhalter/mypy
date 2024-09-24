@@ -1598,10 +1598,13 @@ from typing import TypeVar, Generic
 T = TypeVar('T')
 class Outer(Generic[T]):
     class Inner:
-        x: T  # E: Invalid type "__main__.T"
-        def f(self, x: T) -> T: ...  # E: Type variable "T" is bound by an outer class
+--zuban-diff         x: T  # E: Invalid type "__main__.T"
+        x: T  # E: Type variable "T" is bound by an outer class
+--zuban-diff         def f(self, x: T) -> T: ...  # E: Type variable "T" is bound by an outer class
+        def f(self, x: T) -> T: ...  # E: Type variable "T" is bound by an outer class # E: Type variable "T" is bound by an outer class
         def g(self) -> None:
-            y: T  # E: Invalid type "__main__.T"
+--zuban-diff             y: T  # E: Invalid type "__main__.T"
+            y: T  # E: Type variable "T" is bound by an outer class
 
 [case testGenericClassInsideOtherGenericClass]
 from typing import TypeVar, Generic
