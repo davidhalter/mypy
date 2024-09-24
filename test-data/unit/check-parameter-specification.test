@@ -614,16 +614,19 @@ def transform(
 reveal_type(transform(bar)) # N: Revealed type is "def (builtins.str, *args: builtins.bool) -> builtins.bool"
 
 # CASE 4
-def expects_int_first(x: Callable[Concatenate[int, P], int]) -> None: ...
+--zuban-diff def expects_int_first(x: Callable[Concatenate[int, P], int]) -> None: ...
+def expects_int_first(x: Callable[Concatenate[int, P], int]) -> int: ...
 
 @expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[str], int]"; expected "Callable[[int], int]" \
                     # N: This is likely because "one" has named arguments: "x". Consider marking them positional-only
 def one(x: str) -> int: ...
 
-@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[NamedArg(int, 'x')], int]"; expected "Callable[[int, NamedArg(int, 'x')], int]"
+--zuban-diff @expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[NamedArg(int, 'x')], int]"; expected "Callable[[int, NamedArg(int, 'x')], int]"
+@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[NamedArg(int, 'x')], int]"; expected "Callable[[int, Never], int]"
 def two(*, x: int) -> int: ...
 
-@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[KwArg(int)], int]"; expected "Callable[[int, KwArg(int)], int]"
+--zuban-diff @expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[KwArg(int)], int]"; expected "Callable[[int, KwArg(int)], int]"
+@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[KwArg(int)], int]"; expected "Callable[[int, Never], int]"
 def three(**kwargs: int) -> int: ...
 
 @expects_int_first # Accepted
