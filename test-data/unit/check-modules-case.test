@@ -61,6 +61,9 @@ pass
 [file mypy.ini]
 \[mypy]
 mypy_path = tmp/funky
+--zuban-diff 
+[out]
+a.py:1: error: invalid syntax
 
 
 [case testPreferPackageOverFileCasePyProjectTOML]
@@ -76,6 +79,9 @@ pass
 [file pyproject.toml]
 \[tool.mypy]
 mypy_path = "tmp/funky"
+--zuban-diff 
+[out]
+a.py:1: error: invalid syntax
 
 
 [case testNotPreferPackageOverFileCase]
