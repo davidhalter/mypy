@@ -1450,11 +1450,23 @@ from typing import Dict, TypeVar
 T = TypeVar('T')
 
 def f():  # Note no annotation
-    x: Dict[str, T] = {}
-    y: T
-    z: x
+--zuban-diff     x: Dict[str, T] = {}
+--zuban-diff     y: T
+--zuban-diff     z: x
+--zuban-diff     def nested(): pass
+--zuban-diff     t: nested
+    x: Dict[str, T] = {}  # E: Type variable "__main__.T" is unbound \
+                          # N: (Hint: Use "Generic[T]" or "Protocol[T]" base class to bind "T" inside a class) \
+                          # N: (Hint: Use "T" in function signature to bind "T" inside a function)
+    y: T  # E: Type variable "__main__.T" is unbound \
+          # N: (Hint: Use "Generic[T]" or "Protocol[T]" base class to bind "T" inside a class) \
+          # N: (Hint: Use "T" in function signature to bind "T" inside a function)
+    z: x  # E: Variable "__main__.x" is not valid as a type \
+          # N: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
     def nested(): pass
-    t: nested
+    t: nested  # E: Function "__main__.nested" is not valid as a type \
+               # N: Perhaps you need "Callable[...]" or a callback protocol?
+
 
 def g() -> None:
     x: Dict[str, T] = {}  # E: Type variable "__main__.T" is unbound \
