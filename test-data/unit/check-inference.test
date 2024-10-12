@@ -2492,8 +2492,7 @@ C[0] = 0
 [out]
 --zuban-diff main:4: error: Unsupported target for indexed assignment ("Type[C[Any]]")
 main:4: error: Unsupported target for indexed assignment ("Type[C]")
---zuban-diff main:4: error: Invalid type: try using Literal[0] instead?
---zuban-diff 
+main:4: error: Invalid type: try using Literal[0] instead?
 
 [case testNoCrashOnPartialMember]
 class C:
