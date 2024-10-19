@@ -143,9 +143,9 @@ myclass3 = MyClass(float, float, float)  # E: No overload variant of "MyClass" m
 --zuban-diff                                          # N:     def [T1, T2] __init__(self) -> MyClass[None, None] \
 --zuban-diff                                          # N:     def [T1, T2] __init__(self, Type[T1], /) -> MyClass[T1, None] \
 --zuban-diff                                          # N:     def [T1, T2] __init__(Type[T1], Type[T2], /) -> MyClass[T1, T2]
-                                         # N:     def __init__(self: MyClass[None, None]) -> MyClass[Any, Any] \
-                                         # N:     def __init__(self: MyClass[Any, None], Type[Any], /) -> MyClass[Any, Any] \
-                                         # N:     def __init__(self: MyClass[Any, Any], Type[Any], Type[Any], /) -> MyClass[Any, Any]
+                                         # N:     def [T1, T2] __init__(self: MyClass[None, None]) -> MyClass[T1, T2] \
+                                         # N:     def [T1, T2] __init__(self: MyClass[T1, None], Type[T1], /) -> MyClass[T1, T2] \
+                                         # N:     def [T1, T2] __init__(self: MyClass[T1, T2], Type[T1], Type[T2], /) -> MyClass[T1, T2]
 reveal_type(myclass3)  # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
 

@@ -1744,8 +1744,8 @@ def f(blocks: object):
                               # N: Possible overload variants: \
 --zuban-diff                               # N:     def [T] __init__(self) -> List[T] \
 --zuban-diff                               # N:     def [T] __init__(self, x: Iterable[T]) -> List[T]
-                              # N:     def __init__(self) -> List[Any] \
-                              # N:     def __init__(self, Iterable[Any], /) -> List[Any]
+                              # N:     def [_T] __init__(self) -> List[_T] \
+                              # N:     def [_T] __init__(self, Iterable[_T], /) -> List[_T]
 [builtins fixtures/list.pyi]
 
 [case testInferListInitializedToEmptyAndAssigned]
