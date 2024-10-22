@@ -4471,8 +4471,7 @@ class D:
     pass
 [out]
 ==
---zuban-diff main:4: error: "N" has no attribute "y"
-main:4: error: "D" has no attribute "y"
+main:4: error: "N" has no attribute "y"
 
 [case testNamedTupleWithinFunction]
 from typing import NamedTuple
