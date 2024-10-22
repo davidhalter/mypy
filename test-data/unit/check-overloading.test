@@ -1326,7 +1326,7 @@ def g(x: U, y: V) -> None:
 --zuban-diff     f([y]) # E: Value of type variable "T" of "f" cannot be "V"
 --zuban-diff     f([x, y]) # E: Value of type variable "T" of "f" cannot be "object"
     f([y]) # E: List item 0 has incompatible type "V"; expected "str"
-    f([x, y]) # E: List item 1 has incompatible type "V"; expected "str"
+    f([x, y]) # E: List item 1 has incompatible type "V"; expected "U"
 [builtins fixtures/list.pyi]
 [out]
 
