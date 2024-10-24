@@ -3264,7 +3264,8 @@ y = defaultdict(int) # E: Need type annotation for "y"
 
 z = defaultdict(int)  # E: Need type annotation for "z"
 z[''] = ''
-reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, Any]"
+--zuban-diff reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, Any]"
+reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, int]"
 [builtins fixtures/dict.pyi]
 
 [case testPartialDefaultDictInconsistentValueTypes]
@@ -3332,8 +3333,9 @@ y = defaultdict(dict)  # E: Need type annotation for "y"
 y['x'][1] = [3]
 
 z = defaultdict(int) # E: Need type annotation for "z"
-z[1].append('')
-reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, Any]"
+z[1].append('')  # E: "int" has no attribute "append"
+--zuban-diff reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, Any]"
+reveal_type(z) # N: Revealed type is "collections.defaultdict[Any, int]"
 [builtins fixtures/dict.pyi]
 
 [case testPartialDefaultDictSpecialCase3]
