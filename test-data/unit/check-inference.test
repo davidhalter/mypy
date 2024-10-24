@@ -3305,7 +3305,8 @@ class A:
         self.x = defaultdict(list)
         self.x['x'].append(1)
         reveal_type(self.x) # N: Revealed type is "collections.defaultdict[builtins.str, builtins.list[builtins.int]]"
-        self.y = defaultdict(list)  # E: Need type annotation for "y"
+--zuban-diff         self.y = defaultdict(list)  # E: Need type annotation for "y"
+        self.y = defaultdict(list)
         s = self
         s.y['x'].append(1)
 
