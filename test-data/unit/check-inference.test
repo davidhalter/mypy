@@ -2152,7 +2152,8 @@ arr = []
 arr.append(arr.append(1))
 [builtins fixtures/list.pyi]
 [out]
-main:3: error: "append" of "list" does not return a value (it only ever returns None)
+--zuban-diff main:3: error: "append" of "list" does not return a value (it only ever returns None)
+main:3: error: Argument 1 to "append" of "list" has incompatible type "None"; expected "int"
 
 -- Multipass
 -- ---------
