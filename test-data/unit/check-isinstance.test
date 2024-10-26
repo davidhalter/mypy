@@ -1340,7 +1340,8 @@ def f1(x: Union[float, int]) -> None:
 def f2(x: Union[FloatLike, IntLike]) -> None:
     # ...but not regular subtyping relationships
     if isinstance(x, FloatLike):
-        reveal_type(x)  # N: Revealed type is "Union[__main__.FloatLike, __main__.IntLike]"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Union[__main__.FloatLike, __main__.IntLike]"
+        reveal_type(x)  # N: Revealed type is "__main__.FloatLike"
 [builtins fixtures/isinstance.pyi]
 
 [case testIsinstanceOfSuperclass]
