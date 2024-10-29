@@ -7656,8 +7656,7 @@ class A:
 class B:
     @classmethod
     @overload
---zuban-diff     def A(cls, x: int) -> Type[A]: ...
-    def A(cls, x: int) -> Type[A]: ...# E: Function "__main__.B.A" is not valid as a type  # N: Perhaps you need "Callable[...]" or a callback protocol?
+    def A(cls, x: int) -> Type[A]: ...
     @classmethod
     @overload
 --zuban-diff     def A(cls, x: str) -> Type[A]: ...
