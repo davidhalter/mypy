@@ -1915,7 +1915,8 @@ class C:
     f: ClassVar[Callable[[Self], Self]]
 class D(C): ...
 
-reveal_type(D.f)  # N: Revealed type is "def (__main__.D) -> __main__.D"
+--zuban-diff reveal_type(D.f)  # N: Revealed type is "def (__main__.D) -> __main__.D"
+reveal_type(D.f)  # N: Revealed type is "def [Self <: __main__.D] (Self) -> Self"
 reveal_type(D().f)  # N: Revealed type is "def () -> __main__.D"
 
 [case testSelfTypeCallableClassVarOldStyle]
