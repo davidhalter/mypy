@@ -1916,7 +1916,7 @@ class C:
 class D(C): ...
 
 --zuban-diff reveal_type(D.f)  # N: Revealed type is "def (__main__.D) -> __main__.D"
-reveal_type(D.f)  # N: Revealed type is "def [Self <: __main__.D] (Self) -> Self"
+reveal_type(D.f)  # N: Revealed type is "def [Self <: __main__.C] (Self) -> Self"
 reveal_type(D().f)  # N: Revealed type is "def () -> __main__.D"
 
 [case testSelfTypeCallableClassVarOldStyle]
