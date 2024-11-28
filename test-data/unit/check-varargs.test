@@ -287,7 +287,7 @@ a = None # type: A
 --zuban-diff f(*None)
 f(*None) # E: "None" has no attribute "__iter__" (not iterable)
 --zuban-diff f(*a)    # E: List or tuple expected as variadic arguments
-f(*a)    # E: "A" object is not iterable
+f(*a)    # E: "A" has no attribute "__iter__" (not iterable)
 f(*(a,))
 [builtins fixtures/tuple.pyi]
 
@@ -561,10 +561,10 @@ if int():
     b, b = f(b, b, *aa) # E: Argument 3 to "f" has incompatible type "*List[A]"; expected "B"
 if int():
 --zuban-diff     a, b = f(a, *a)  # E: List or tuple expected as variadic arguments
-    a, b = f(a, *a)  # E: "A" object is not iterable
+    a, b = f(a, *a)  # E: "A" has no attribute "__iter__" (not iterable)
 if int():
 --zuban-diff     a, b = f(*a)     # E: List or tuple expected as variadic arguments
-    a, b = f(*a)     # E: "A" object is not iterable
+    a, b = f(*a)     # E: "A" has no attribute "__iter__" (not iterable)
 
 if int():
     a, a = f(*aa)
@@ -758,7 +758,7 @@ bar(*good2)
 bar(*good3)
 bar(*bad1)  # E: Argument 1 to "bar" has incompatible type "*I[str]"; expected "float"
 --zuban-diff bar(*bad2)  # E: List or tuple expected as variadic arguments
-bar(*bad2)  # E: "Bad[float]" object is not iterable
+bar(*bad2)  # E: "Bad[float]" has no attribute "__iter__" (not iterable)
 [builtins fixtures/dict.pyi]
 
 -- Keyword arguments unpacking

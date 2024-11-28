@@ -6983,8 +6983,7 @@ class A:
     pass
 [out]
 ==
---zuban-diff main:3: error: "A" has no attribute "__iter__" (not iterable)
-main:3: error: "A" object is not iterable
+main:3: error: "A" has no attribute "__iter__" (not iterable)
 
 [case testWeAreCarefullWithBuiltinProtocolsBase]
 import a
@@ -7005,8 +7004,7 @@ class B:
         pass
 [out]
 ==
---zuban-diff main:3: error: "A" has no attribute "__iter__" (not iterable)
-main:3: error: "A" object is not iterable
+main:3: error: "A" has no attribute "__iter__" (not iterable)
 
 [case testOverloadsSimpleFrom]
 import a
