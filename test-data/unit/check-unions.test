@@ -962,8 +962,7 @@ a: Any
 d: Dict[str, Tuple[List[Tuple[str, str]], str]]
 x, _ = d.get(a, (None, None))
 
---zuban-diff for y in x: pass # E: Item "None" of "Optional[List[Tuple[str, str]]]" has no attribute "__iter__" (not iterable)
-for y in x: pass # E: "None" object is not iterable
+for y in x: pass # E: Item "None" of "Optional[List[Tuple[str, str]]]" has no attribute "__iter__" (not iterable)
 if x:
     for s, t in x:
         reveal_type(s) # N: Revealed type is "builtins.str"
@@ -978,8 +977,7 @@ x = None
 d: Dict[str, Tuple[List[Tuple[str, str]], str]]
 x, _ = d.get(a, (None, None))
 
---zuban-diff for y in x: pass # E: Item "None" of "Optional[List[Tuple[str, str]]]" has no attribute "__iter__" (not iterable)
-for y in x: pass # E: "None" object is not iterable
+for y in x: pass # E: Item "None" of "Optional[List[Tuple[str, str]]]" has no attribute "__iter__" (not iterable)
 if x:
     for s, t in x:
         reveal_type(s) # N: Revealed type is "builtins.str"

@@ -285,7 +285,7 @@ class A: pass
 a = None # type: A
 
 --zuban-diff f(*None)
-f(*None) # E: "None" object is not iterable
+f(*None) # E: "None" has no attribute "__iter__" (not iterable)
 --zuban-diff f(*a)    # E: List or tuple expected as variadic arguments
 f(*a)    # E: "A" object is not iterable
 f(*(a,))
