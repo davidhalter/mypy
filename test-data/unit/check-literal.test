@@ -1556,7 +1556,7 @@ Alias = Literal[3]
 Literal[3]()           # E: "_SpecialForm" not callable
 Renamed[3]()           # E: "_SpecialForm" not callable
 indirect.Literal[3]()  # E: "_SpecialForm" not callable
-Alias()                # E: "_SpecialForm" not callable
+Alias()                # E: "<typing special form>" not callable
 
 # TODO: Add appropriate error messages to the following lines
 --zuban-diff Literal()

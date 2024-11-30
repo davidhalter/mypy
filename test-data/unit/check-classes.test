@@ -7989,7 +7989,7 @@ class Child(Parent):
     def foo(self, val: int) -> int:  # E: Signature of "foo" incompatible with supertype "Parent" \
                                      # N:      Superclass: \
 --zuban-diff                                      # N:          None \
-                                     # N:          Type[Callable[..., int]] \
+                                     # N:          _SpecialForm \
                                      # N:      Subclass: \
                                      # N:          def foo(self, val: int) -> int
         return val
