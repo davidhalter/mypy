@@ -266,7 +266,8 @@ class Foo:
 
 Foo(a=5, b_=1)  # E: Unexpected keyword argument "a" for "Foo"
 Foo(a_=1, b_=1, noinit=1)  # E: Unexpected keyword argument "noinit" for "Foo"
-Foo(1, 2, 3)  # E: Too many positional arguments for "Foo"
+--zuban-diff Foo(1, 2, 3)  # E: Too many positional arguments for "Foo"
+Foo(1, 2, 3)
 foo = Foo(1, 2, kwonly=3)
 reveal_type(foo.noinit)  # N: Revealed type is "builtins.int"
 reveal_type(foo.unused1)  # N: Revealed type is "builtins.int"
@@ -277,7 +278,8 @@ def some_bool() -> bool: ...
 @my_dataclass
 class Bad:
     bad1: int = field(alias=some_str())  # E: "alias" argument to dataclass field must be a string literal
-    bad2: int = field(kw_only=some_bool())  # E: "kw_only" argument must be a boolean literal
+--zuban-diff     bad2: int = field(kw_only=some_bool())  # E: "kw_only" argument must be a boolean literal
+    bad2: int = field(kw_only=some_bool())  # E: "kw_only" argument must be a True or False literal
 
 reveal_type(Foo.__dataclass_fields__)  # N: Revealed type is "builtins.dict[builtins.str, Any]"
 
@@ -661,12 +663,14 @@ FunctionModel(
     present_4=4,
 )
 FunctionModel()  # E: Missing positional arguments "present_1", "present_2", "present_3", "present_4" in call to "FunctionModel"
-FunctionModel(   # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
+--zuban-diff FunctionModel(   # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
+FunctionModel(
     present_1=1,
     present_2=2,
     present_3=3,
     present_4=4,
-    skipped_1=5,
+--zuban-diff     skipped_1=5,
+    skipped_1=5, # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
 )
 
 [typing fixtures/typing-full.pyi]
