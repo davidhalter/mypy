@@ -160,7 +160,7 @@ def replacement_map_from_symbol_table(
         ):
             new_node = new[name]
             if (
-                type(new_node.node) == type(node.node)  # noqa: E721
+                type(new_node.node) == type(node.node)
                 and new_node.node
                 and node.node
                 and new_node.node.fullname == node.node.fullname
@@ -330,6 +330,7 @@ class NodeReplaceVisitor(TraverserVisitor):
     def visit_var(self, node: Var) -> None:
         node.info = self.fixup(node.info)
         self.fixup_type(node.type)
+        self.fixup_type(node.setter_type)
         super().visit_var(node)
 
     def visit_type_alias(self, node: TypeAlias) -> None:

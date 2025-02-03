@@ -140,6 +140,7 @@ cua.raw  # E: Array attribute "raw" is only available with element type "c_char"
 --zuban-diff 
 from typing import Any
 import ctypes
+from typing import Any
 
 aa: ctypes.Array[Any]
 reveal_type(aa.value)  # N: Revealed type is "Any"

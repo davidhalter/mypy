@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Sequence, overload
+from collections.abc import Sequence
+from typing import overload
 
 import mypy.typeops
 from mypy.expandtype import expand_type
@@ -317,7 +318,7 @@ class TypeJoinVisitor(TypeVisitor[ProperType]):
         if state.strict_optional:
             if isinstance(self.s, (NoneType, UninhabitedType)):
                 return t
-            elif isinstance(self.s, UnboundType):
+            elif isinstance(self.s, (UnboundType, AnyType)):
                 return AnyType(TypeOfAny.special_form)
             else:
                 return mypy.typeops.make_simplified_union([self.s, t])
@@ -354,7 +355,8 @@ class TypeJoinVisitor(TypeVisitor[ProperType]):
 
     def visit_parameters(self, t: Parameters) -> ProperType:
         if isinstance(self.s, Parameters):
-            if len(t.arg_types) != len(self.s.arg_types):
+            if not is_similar_params(t, self.s):
+                # TODO: it would be prudent to return [*object, **object] instead of Any.
                 return self.default(self.s)
             from mypy.meet import meet_types
 
@@ -631,10 +633,13 @@ class TypeJoinVisitor(TypeVisitor[ProperType]):
                 )
             }
             fallback = self.s.create_anonymous_fallback()
+            all_keys = set(items.keys())
             # We need to filter by items.keys() since some required keys present in both t and
             # self.s might be missing from the join if the types are incompatible.
-            required_keys = set(items.keys()) & t.required_keys & self.s.required_keys
-            return TypedDictType(items, required_keys, fallback)
+            required_keys = all_keys & t.required_keys & self.s.required_keys
+            # If one type has a key as readonly, we mark it as readonly for both:
+            readonly_keys = (t.readonly_keys | t.readonly_keys) & all_keys
+            return TypedDictType(items, required_keys, readonly_keys, fallback)
         elif isinstance(self.s, Instance):
             return join_types(self.s, t.fallback)
         else:
@@ -717,6 +722,15 @@ def is_similar_callables(t: CallableType, s: CallableType) -> bool:
         len(t.arg_types) == len(s.arg_types)
         and t.min_args == s.min_args
         and t.is_var_arg == s.is_var_arg
+    )
+
+
+def is_similar_params(t: Parameters, s: Parameters) -> bool:
+    # This matches the logic in is_similar_callables() above.
+    return (
+        len(t.arg_types) == len(s.arg_types)
+        and t.min_args == s.min_args
+        and (t.var_arg() is not None) == (s.var_arg() is not None)
     )
 
 
