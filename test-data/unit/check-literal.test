@@ -2070,7 +2070,9 @@ test.pop(bad_keys)              # E: Key "a" of TypedDict "Test" cannot be delet
                                 # E: TypedDict "Test" has no key "bad"
 --zuban-diff test.setdefault(good_keys, 3)   # E: Argument 2 to "setdefault" of "TypedDict" has incompatible type "int"; expected "A"
 test.setdefault(good_keys, 3)   # E: Argument 2 to "setdefault" of "TypedDict" has incompatible type "int"; expected "A"  # E: Argument 2 to "setdefault" of "TypedDict" has incompatible type "int"; expected "B"
-test.setdefault(bad_keys, 3 )   # E: Argument 2 to "setdefault" of "TypedDict" has incompatible type "int"; expected "A"
+test.setdefault(bad_keys, 3 )   # E: Argument 2 to "setdefault" of "TypedDict" has incompatible type "int"; expected "A" \
+--zuban-diff 
+                                # E: TypedDict "Test" has no key "bad"
 del test[good_keys]             # E: Key "a" of TypedDict "Test" cannot be deleted \
                                 # E: Key "b" of TypedDict "Test" cannot be deleted
 del test[bad_keys]              # E: Key "a" of TypedDict "Test" cannot be deleted \
