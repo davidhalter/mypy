@@ -236,7 +236,8 @@ from typing import List
           # N:6: Possible overload variants: \
 --zuban-diff           # N:6:     def __getitem__(self, int, /) -> int \
           # N:6:     def __getitem__(self, SupportsIndex, /) -> int \
-          # N:6:     def __getitem__(self, slice, /) -> list[int]
+--zuban-diff           # N:6:     def __getitem__(self, slice, /) -> list[int]
+          # N:6:     def __getitem__(self, slice[Any, Any, Any], /) -> list[int]
 (1[1]) # E:2: Value of type "int" is not indexable
 def f() -> None:
     1[1] = 1 # E:5: Unsupported target for indexed assignment ("int")
