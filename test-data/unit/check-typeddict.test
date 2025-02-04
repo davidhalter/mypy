@@ -4096,14 +4096,16 @@ class TP(TypedDict):
     c: NotRequired[Required[int]]           # E: "Required[]" type cannot be nested
     d: Required[NotRequired[int]]           # E: "NotRequired[]" type cannot be nested
     e: Required[ReadOnly[NotRequired[int]]] # E: "NotRequired[]" type cannot be nested
-    f: ReadOnly[ReadOnly[ReadOnly[int]]]    # E: "ReadOnly[]" type cannot be nested
+--zuban-diff     f: ReadOnly[ReadOnly[ReadOnly[int]]]    # E: "ReadOnly[]" type cannot be nested
+    f: ReadOnly[ReadOnly[ReadOnly[int]]]    # E: "ReadOnly[]" type cannot be nested  # E: "ReadOnly[]" type cannot be nested
     g: Required[Required[int]]              # E: "Required[]" type cannot be nested
     h: NotRequired[NotRequired[int]]        # E: "NotRequired[]" type cannot be nested
 
     j: NotRequired[ReadOnly[Required[ReadOnly[int]]]]  # E: "Required[]" type cannot be nested \
                                                        # E: "ReadOnly[]" type cannot be nested
 
-    k: ReadOnly  # E: "ReadOnly[]" must have exactly one type argument
+--zuban-diff     k: ReadOnly  # E: "ReadOnly[]" must have exactly one type argument
+    k: ReadOnly  # E: ReadOnly[] must have exactly one type argument
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
