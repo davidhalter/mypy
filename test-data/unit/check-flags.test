@@ -553,8 +553,10 @@ x + ""  # E: Unsupported operand types for + ("int" and "str")
 import mod
 mod.x + 0
 mod.x + ""  # E: Unsupported operand types for + ("int" and "str")
-mod.y  # E: "object" has no attribute "y"
-mod + 0  # E: Unsupported left operand type for + ("object")
+--zuban-diff mod.y  # E: "object" has no attribute "y"
+mod.y  # E: Module has no attribute "y"
+--zuban-diff mod + 0  # E: Unsupported left operand type for + ("object")
+mod + 0  # E: Unsupported operand types for + ("ModuleType" and "int")
 [file mod.py]
 1 + ""  # E: Unsupported operand types for + ("int" and "str")
 x = 0
