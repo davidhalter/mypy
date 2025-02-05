@@ -331,10 +331,8 @@ c: C
 t: T
 reveal_type(c)  # N: Revealed type is "def (*Any, **Any) -> Any"
 reveal_type(t)  # N: Revealed type is "builtins.tuple[Any, ...]"
---zuban-diff bad: C[int]  # E: Bad number of arguments for type alias, expected 0, given 1
-bad: C[int]  # E: Please use "Callable[[<parameters>], <return type>]" or "Callable"
---zuban-diff also_bad: T[int]  # E: Bad number of arguments for type alias, expected 0, given 1
-also_bad: T[int]
+bad: C[int]  # E: Bad number of arguments for type alias, expected 0, given 1
+also_bad: T[int]  # E: Bad number of arguments for type alias, expected 0, given 1
 [builtins fixtures/tuple.pyi]
 
 [case testAliasRefOnClass]
@@ -1265,7 +1263,8 @@ ImplicitFoo = Foo
 ExplicitFoo: TypeAlias = Foo
 
 x1: ImplicitFoo[str]  # E: "Foo" expects no type arguments, but 1 given
-x2: ExplicitFoo[str]  # E: "Foo" expects no type arguments, but 1 given
+--zuban-diff x2: ExplicitFoo[str]  # E: "Foo" expects no type arguments, but 1 given
+x2: ExplicitFoo[str]  # E: Bad number of arguments for type alias, expected 0, given 1
 
 def is_foo(x: object):
     if isinstance(x, ImplicitFoo):
