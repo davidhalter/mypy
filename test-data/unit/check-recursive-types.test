@@ -106,7 +106,7 @@ A = Union[B, int]
 --zuban-diff B = Union[A, int]
 B = Union[A, int]  # E: Invalid recursive alias: a union item of itself
 --zuban-diff C = Type[C]
-C = Type[C]  # E: Type[...] can't contain another Type[...]
+C = Type[C]  # E: Type[...] can't contain "Type[...]"
 
 [case testRecursiveAliasImported]
 import lib
@@ -429,7 +429,8 @@ def local() -> None:
     reveal_type(x)  # N: Revealed type is "Any"
 
 S = Type[S]  # E: Type[...] can't contain "Type[...]"
-U = Type[Union[int, U]]  # E: Type[...] can't contain "Union[Type[...], Type[...]]" \
+--zuban-diff U = Type[Union[int, U]]  # E: Type[...] can't contain "Union[Type[...], Type[...]]" \
+U = Type[Union[int, U]]  # E: \
                          # E: Type[...] can't contain "Type[...]"
 x: U
 --zuban-diff reveal_type(x)  # N: Revealed type is "Type[Any]"

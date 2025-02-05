@@ -3035,6 +3035,8 @@ from typing_extensions import Literal
 from typing import Type, Union
 
 x: Type[Literal[1]]  # E: Type[...] can't contain "Literal[...]"
-y: Type[Union[Literal[1], Literal[2]]]  # E: Type[...] can't contain "Union[Literal[...], Literal[...]]"
-z: Type[Literal[1, 2]]  # E: Type[...] can't contain "Union[Literal[...], Literal[...]]"
+--zuban-diff y: Type[Union[Literal[1], Literal[2]]]  # E: Type[...] can't contain "Union[Literal[...], Literal[...]]"
+y: Type[Union[Literal[1], Literal[2]]]  # E: Type[...] can't contain "Literal[...]"
+--zuban-diff z: Type[Literal[1, 2]]  # E: Type[...] can't contain "Union[Literal[...], Literal[...]]"
+z: Type[Literal[1, 2]]  # E: Type[...] can't contain "Literal[...]"
 [builtins fixtures/tuple.pyi]
