@@ -2409,7 +2409,8 @@ def f(x: bytes, y: bytearray, z: memoryview) -> None:
 # flags: --strict-bytes
 def f(x: bytes) -> None: ...
 f(bytearray(b"asdf"))  # E: Argument 1 to "f" has incompatible type "bytearray"; expected "bytes"
-f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview"; expected "bytes"
+--zuban-diff f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview"; expected "bytes"
+f(memoryview(b"asdf"))  # E: Argument 1 to "f" has incompatible type "memoryview[int]"; expected "bytes"
 [builtins fixtures/primitives.pyi]
 
 [case testNoStrictBytes]
