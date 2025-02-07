@@ -2187,13 +2187,15 @@ def f4(x: int | Any) -> None:
 
 def f5(x: int) -> None:
     if x is IE.X:
-        reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
+        reveal_type(x)
     else:
         reveal_type(x)  # N: Revealed type is "builtins.int"
     if x is not IE.X:
         reveal_type(x)  # N: Revealed type is "builtins.int"
     else:
-        reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
+        reveal_type(x)
 
 def f6(x: IE) -> None:
      if x == IE.X:
