@@ -2305,7 +2305,8 @@ class A:
         return []
 
 def fn() -> Iterator[int]:
-    yield from A().foo()  # E: "list?[builtins.int]" has no attribute "__iter__" (not iterable)
+--zuban-diff     yield from A().foo()  # E: "list?[builtins.int]" has no attribute "__iter__" (not iterable)
+    yield from A().foo()
 [builtins fixtures/tuple.pyi]
 
 [case testNoCrashOnStarRightHandSide]
