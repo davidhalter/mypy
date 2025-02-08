@@ -4271,10 +4271,29 @@ def g2(a: Input[bytes], b: Output[bytes]) -> None:
     f(a, b)
 
 def g3(a: Input[str], b: Output[bytes]) -> None:
-    f(a, b)  # E: Cannot infer type argument 1 of "f"
+--zuban-diff     f(a, b)  # E: Cannot infer type argument 1 of "f"
+    f(a, b)  # E: Argument 2 to "f" has incompatible type "Output[bytes]"; expected "SupportsWrite[str]" \
+             # N: Following member(s) of "Output[bytes]" have conflicts: \
+             # N:     Expected: \
+             # N:         def write(self: SupportsWrite[AnyStr], s: AnyStr) -> int \
+             # N:     Got: \
+             # N:         @overload \
+             # N:         def write(self: Output[str], s: str) -> int \
+             # N:         @overload \
+             # N:         def write(self: Output[bytes], s: bytes) -> int
+
 
 def g4(a: Input[bytes], b: Output[str]) -> None:
-    f(a, b)  # E: Cannot infer type argument 1 of "f"
+--zuba-diff     f(a, b)  # E: Cannot infer type argument 1 of "f"
+    f(a, b)  # E: Argument 2 to "f" has incompatible type "Output[str]"; expected "SupportsWrite[bytes]" \
+             # N: Following member(s) of "Output[str]" have conflicts: \
+             # N:     Expected: \
+             # N:         def write(self: SupportsWrite[AnyStr], s: AnyStr) -> int \
+             # N:     Got: \
+             # N:         @overload \
+             # N:         def write(self: Output[str], s: str) -> int \
+             # N:         @overload \
+             # N:         def write(self: Output[bytes], s: bytes) -> int
 
 [builtins fixtures/tuple.pyi]
 

@@ -1448,7 +1448,8 @@ t[y:]  # E: Slice index must be an integer, SupportsIndex or None
 [case testTupleSliceStepZeroNoCrash]
 # This was crashing: https://github.com/python/mypy/issues/18062
 # TODO: emit better error when 0 is used for step
-()[::0]  # E: Ambiguous slice of a variadic tuple
+--zuban-diff ()[::0]  # E: Ambiguous slice of a variadic tuple
+()[::0]  # E: slice step cannot be zero
 [builtins fixtures/tuple.pyi]
 
 [case testInferTupleTypeFallbackAgainstInstance]

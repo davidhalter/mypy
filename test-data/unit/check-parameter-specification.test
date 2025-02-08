@@ -15,7 +15,10 @@ P5 = ParamSpec("P5", covariant=True, bound=int)  # E: The variance and bound arg
 
 [case testParamSpecLocations]
 from typing import Any, Callable, List, Type
-from typing_extensions import ParamSpec, Concatenate
+--zuban-diff from typing_extensions import ParamSpec, Concatenate
+from typing_extensions import ParamSpec, Concatenate, TypeVar
+--zuban-diff 
+T = TypeVar('T')
 P = ParamSpec('P')
 
 x: P  # E: ParamSpec "P" is unbound

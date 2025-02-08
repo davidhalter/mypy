@@ -85,7 +85,8 @@ async def g(x: int) -> Any:
 def get_tasks(self):
     return 'whatever'
 [out]
-main:2: error: Function is missing a return type annotation
+--zuban-diff main:2: error: Function is missing a return type annotation
+main:2: error: Function is missing a type annotation
 
 [case testDisallowUntypedDefsUntypedDecorator]
 # flags: --disallow-untyped-decorators

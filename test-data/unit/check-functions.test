@@ -1521,8 +1521,7 @@ if x:
     def f(x: int, /) -> None: pass
 else:
     @dec
---zuban-diff     def f(): pass
-    def f(): pass  # E: Incompatible redefinition (redefinition with type "Callable[[int], None]", original type "Callable[[Arg(int, 'x')], None]")
+    def f(): pass
 
 [case testConditionalFunctionDefinitionUsingDecorator4]
 
