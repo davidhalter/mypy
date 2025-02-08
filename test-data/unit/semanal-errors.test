@@ -1088,7 +1088,8 @@ def f(x: T) -> None:
 class C(Generic[T]):
     Bad = TypeVar("Bad", int, List[T])    # E: TypeVar constraint type cannot be parametrized by type variables
 class D:
-    Bad = TypeVar("Bad", int, List[Self]) # E: TypeVar constraint type cannot be parametrized by type variables
+--zuban-diff     Bad = TypeVar("Bad", int, List[Self]) # E: TypeVar constraint type cannot be parametrized by type variables
+    Bad = TypeVar("Bad", int, List[Self]) # E: Self type is only allowed in annotations within class definition
 S = TypeVar("S", int, List[T])            # E: Type variable "__main__.T" is unbound \
                                           # N: (Hint: Use "Generic[T]" or "Protocol[T]" base class to bind "T" inside a class) \
                                           # N: (Hint: Use "T" in function signature to bind "T" inside a function)
