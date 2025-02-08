@@ -1399,13 +1399,15 @@ else:
     reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
 
 if val in (None,):
-    reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
+--zuban-diff     reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
+    reveal_type(val)  # N: Revealed type is "None"
 else:
     reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
 if val not in (None,):
     reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
 else:
-    reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
+--zuban-diff     reveal_type(val)  # N: Revealed type is "Union[__main__.A, None]"
+    reveal_type(val)  # N: Revealed type is "None"
 [builtins fixtures/primitives.pyi]
 
 [case testNarrowingWithTupleOfTypes]
