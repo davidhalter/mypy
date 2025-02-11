@@ -2208,7 +2208,8 @@ from __future__ import annotations
 from typing import Any, overload, Callable, TypeVar, Generic, ParamSpec
 from typing_extensions import Concatenate
 
-C = TypeVar("C", bound=Callable[..., Any])
+--zuban-diff C = TypeVar("C", bound=Callable[..., Any])
+C = TypeVar("C", bound=Callable[..., Any], covariant=True)
 S = TypeVar("S")
 P = ParamSpec("P")
 R = TypeVar("R")
