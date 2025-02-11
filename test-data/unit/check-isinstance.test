@@ -2703,7 +2703,8 @@ if type(y) is int:
 from typing import Union
 
 y: str
-if type(y) is int:  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+--zuban-diff if type(y) is int:  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+if type(y) is int:
     y # E: Statement is unreachable
 else:
     reveal_type(y) # N: Revealed type is "builtins.str"
