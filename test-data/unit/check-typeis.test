@@ -837,7 +837,8 @@ def func1(x: Any) -> Any:
 
 def func2(val: Any):
     if func1(val):
-        reveal_type(val)  # N: Revealed type is "Union[builtins.str, builtins.int]"
+--zuban-diff         reveal_type(val)  # N: Revealed type is "Union[builtins.str, builtins.int]"
+        reveal_type(val)  # N: Revealed type is "Any"
     else:
         reveal_type(val)  # N: Revealed type is "Any"
 
@@ -936,5 +937,6 @@ def is_dataclass(obj: Union[type, object]) -> bool:
 
 def func(arg: Any) -> None:
     if is_dataclass(arg):
-        reveal_type(arg)  # N: Revealed type is "Union[Type[__main__.DataclassInstance], __main__.DataclassInstance]"
+--zuban-diff         reveal_type(arg)  # N: Revealed type is "Union[Type[__main__.DataclassInstance], __main__.DataclassInstance]"
+        reveal_type(arg)  # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
