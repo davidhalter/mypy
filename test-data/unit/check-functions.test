@@ -3048,8 +3048,7 @@ class D(A):
     @property
     def f(self) -> int: pass
 
---zuban-diff     @f.setter
-    @f.setter  # E: Incompatible override of a setter type # N:  (base class "A" defined the type as "str", # N:  override has type "int")
+    @f.setter
     def f(self, value: int) -> None: pass
 [typing fixtures/typing-override.pyi]
 [builtins fixtures/property.pyi]
