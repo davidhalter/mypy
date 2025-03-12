@@ -660,7 +660,8 @@ from typing import TypedDict
 
 TD = TypedDict("TD", {"x": int, "y": TD})
 td: TD
-reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': builtins.int, 'y': ...})"
+--zuban-diff reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': builtins.int, 'y': ...})"
+reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': int, 'y': TypedDict('__main__.TD', {'x': int, 'y': ...})})"
 
 TD2 = TypedDict("TD2", {"x": int, "y": TD2})
 td2: TD2
@@ -913,7 +914,8 @@ from typing_extensions import TypedDict
 
 Example = TypedDict("Example", {"rec": List["Example"]})
 e: Example
-reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': builtins.list[...]})"
+--zuban-diff reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': builtins.list[...]})"
+reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': list[TypedDict('__main__.Example', {'rec': list[...]})]})"
 [builtins fixtures/dict.pyi]
 
 [case testRecursiveNamedTupleWithList]
