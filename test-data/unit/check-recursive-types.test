@@ -660,8 +660,7 @@ from typing import TypedDict
 
 TD = TypedDict("TD", {"x": int, "y": TD})
 td: TD
---zuban-diff reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': builtins.int, 'y': ...})"
-reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': int, 'y': TypedDict('__main__.TD', {'x': int, 'y': ...})})"
+reveal_type(td)  # N: Revealed type is "TypedDict('__main__.TD', {'x': builtins.int, 'y': ...})"
 
 TD2 = TypedDict("TD2", {"x": int, "y": TD2})
 td2: TD2
