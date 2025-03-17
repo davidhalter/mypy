@@ -2120,8 +2120,9 @@ A = Enum('A', ['z', 't'])  # E: Incompatible types in assignment (expression has
 from typing import NewType
 
 A = NewType('A', int)
-A = NewType('A', str)  # E: Cannot redefine "A" as a NewType \
-                       # E: Name "A" already defined on line 3
+--zuban-diff A = NewType('A', str)  # E: Cannot redefine "A" as a NewType \
+--zuban-diff                        # E: Name "A" already defined on line 3
+A = NewType('A', str)  # E: Name "A" already defined on line 3
 
 [case testNewAnalyzerNewTypeForwardClass]
 from typing import NewType, List
