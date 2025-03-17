@@ -145,27 +145,22 @@ MypyFile:1(
 
 [case testNamedTupleWithTooFewArguments]
 from collections import namedtuple
---zuban-diff N = namedtuple('N') # E: Too few arguments for "namedtuple()"
-N = namedtuple('N') # E: Missing positional argument "field_names" in call to "namedtuple"
+N = namedtuple('N') # E: Too few arguments for "namedtuple()"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidName]
 from collections import namedtuple
-N = namedtuple(1, ['x']) # E: "namedtuple()" expects a string literal as the first argument \
---zuban-diff 
-                         # E: Argument 1 to "namedtuple" has incompatible type "int"; expected "str"
+N = namedtuple(1, ['x']) # E: "namedtuple()" expects a string literal as the first argument
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidItems]
 from collections import namedtuple
---zuban-diff N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"
-N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"  # E: Argument 2 to "namedtuple" has incompatible type "int"; expected "str | Iterable[str]"
+N = namedtuple('N', 1) # E: List or tuple literal expected as the second argument to "namedtuple()"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithInvalidItems2]
 from collections import namedtuple
---zuban-diff N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item
-N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item  # E: List item 1 has incompatible type "int"; expected "str"
+N = namedtuple('N', ['x', 1]) # E: String literal expected as "namedtuple()" item
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleWithUnderscoreItemName]
