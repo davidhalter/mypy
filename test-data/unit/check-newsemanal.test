@@ -2228,9 +2228,9 @@ from typing import TypeVar, Generic, Any
 
 T = TypeVar('T', bound='B[Any]')
 # The "int" error is because of typing fixture.
-T = TypeVar('T', bound='C')  # E: Cannot redefine "T" as a type variable \
+--zuban-diff T = TypeVar('T', bound='C')  # E: Cannot redefine "T" as a type variable \
 --zuban-diff                            # E: Invalid assignment target
---zuban-diff 
+T = TypeVar('T', bound='C')  # E: Name "T" already defined on line 3
 
 class B(Generic[T]):
     x: T

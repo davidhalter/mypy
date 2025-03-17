@@ -1124,7 +1124,8 @@ def g(x: T) -> None: pass # E: Name "T" is not defined
 [case testRedefineVariableAsTypevar]
 from typing import TypeVar
 x = 0
-x = TypeVar('x') # E: Cannot redefine "x" as a type variable
+--zuban-diff x = TypeVar('x') # E: Cannot redefine "x" as a type variable
+x = TypeVar('x')
 [out]
 
 [case testTypevarWithType]
