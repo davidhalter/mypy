@@ -328,7 +328,7 @@ b = NewType('b', int)
 def g(): b
 --zuban-diff b = NewType('b', float)  # E: Cannot redefine "b" as a NewType \
 --zuban-diff                          # E: Name "b" already defined on line 8
-b = NewType('b', float)  # E: Name "b" already defined on line 8
+b = NewType('b', float)  # E: Incompatible types in assignment (expression has type "NewType", variable has type "Type[b]")
 
 c = NewType('c', str)  # type: str  # E: Cannot declare the type of a NewType declaration
 

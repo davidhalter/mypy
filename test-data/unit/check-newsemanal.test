@@ -2122,7 +2122,7 @@ from typing import NewType
 A = NewType('A', int)
 --zuban-diff A = NewType('A', str)  # E: Cannot redefine "A" as a NewType \
 --zuban-diff                        # E: Name "A" already defined on line 3
-A = NewType('A', str)  # E: Name "A" already defined on line 3
+A = NewType('A', str)  # E: Incompatible types in assignment (expression has type "NewType", variable has type "Type[A]")
 
 [case testNewAnalyzerNewTypeForwardClass]
 from typing import NewType, List
