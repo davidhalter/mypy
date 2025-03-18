@@ -586,44 +586,27 @@ fake_enum4 = Enum(value='fake_enum4', names=['a', 'b'] , module=__name__)
 
 [case testFunctionalEnumErrors]
 from enum import Enum, IntEnum
---zuban-diff A = Enum('A')  # E: Too few arguments for Enum()
-A = Enum('A')  # E: Missing positional argument "names" in call to "Enum"
---zuban-diff B = Enum('B', 42)  # E: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
-B = Enum('B', 42)  # E: Argument 2 to "Enum" has incompatible type "int"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
---zuban-diff C = Enum('C', 'a b', 'x', 'y', 'z', 'p', 'q')  # E: Too many arguments for Enum()
-C = Enum('C', 'a b', 'x', 'y', 'z', 'p', 'q')  # E: Too many positional arguments for "Enum"
+A = Enum('A')  # E: Too few arguments for Enum()
+B = Enum('B', 42)  # E: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
+C = Enum('C', 'a b', 'x', 'y', 'z', 'p', 'q')  # E: Too many arguments for Enum()
 D = Enum('D', foo)  # E: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members \
                     # E: Name "foo" is not defined
 bar = 'x y z'
 E = Enum('E', bar)  # E: Second argument of Enum() must be string, tuple, list or dict literal for mypy to determine Enum members
---zuban-diff I = IntEnum('I')  # E: Too few arguments for IntEnum()
-I = IntEnum('I')  # E: Missing positional argument "names" in call to "IntEnum"
+I = IntEnum('I')  # E: Too few arguments for IntEnum()
 --zuban-diff J = IntEnum('I', 42)  # E: Second argument of IntEnum() must be string, tuple, list or dict literal for mypy to determine Enum members
-J = IntEnum('I', 42)  # E: Argument 2 to "IntEnum" has incompatible type "int"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
---zuban-diff K = IntEnum('I', 'p q', 'x', 'y', 'z', 'p', 'q')  # E: Too many arguments for IntEnum()
-K = IntEnum('I', 'p q', 'x', 'y', 'z', 'p', 'q')  # E: Too many positional arguments for "IntEnum"
+J = IntEnum('I', 42)  # E: String argument 1 "I" to enum.IntEnum(...) does not match variable name "J" # E: Second argument of IntEnum() must be string, tuple, list or dict literal for mypy to determine Enum members
+K = IntEnum('I', 'p q', 'x', 'y', 'z', 'p', 'q')  # E: Too many arguments for IntEnum()
 L = Enum('L', ' ')  # E: Enum() needs at least one item
 M = Enum('M', ())  # E: Enum() needs at least one item
 N = IntEnum('M', [])  # E: IntEnum() needs at least one item  # E: String argument 1 "M" to enum.IntEnum(...) does not match variable name "N"
---zuban-diff P = Enum('P', [42])  # E: Enum() with tuple or list expects strings or (name, value) pairs
-P = Enum('P', [42])  # E: Argument 2 to "Enum" has incompatible type "list[int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+P = Enum('P', [42])  # E: Enum() with tuple or list expects strings or (name, value) pairs
 Q = Enum('Q', [('a', 42, 0)])  # E: Enum() with tuple or list expects strings or (name, value) pairs
 R = IntEnum('R', [[0, 42]])  # E: IntEnum() with tuple or list expects strings or (name, value) pairs
---zuban-diff S = Enum('S', {1: 1})  # E: Enum() with dict literal requires string literals
-S = Enum('S', {1: 1})  # E: Argument 2 to "Enum" has incompatible type "dict[int, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
---zuban-diff T = Enum('T', keyword='a b')  # E: Unexpected keyword argument "keyword"
-T = Enum('T', keyword='a b')  # E: Unexpected keyword argument "keyword" for "Enum"
+S = Enum('S', {1: 1})  # E: Enum() with dict literal requires string literals
+T = Enum('T', keyword='a b')  # E: Unexpected keyword argument "keyword"
 U = Enum('U', *['a'])  # E: Unexpected arguments to Enum()
---zuban-diff V = Enum('U', **{'a': 1})  # E: Unexpected arguments to Enum()
---zuban-diff 
---zuban-diff 
---zuban-diff 
---zuban-diff 
-V = Enum('U', **{'a': 1})  # E: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]" \
-                           # E: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str | None" \
-                           # E: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "str | None" \
-                           # E: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "Type[Any] | None" \
-                           # E: Argument 2 to "Enum" has incompatible type "**dict[str, int]"; expected "FlagBoundary | None"
+V = Enum('U', **{'a': 1})  # E: Unexpected arguments to Enum()
 W = Enum('W', 'a b')
 W.c  # E: "Type[W]" has no attribute "c"
 X = Enum('Something', 'a b')  # E: String argument 1 "Something" to enum.Enum(...) does not match variable name "X"
@@ -709,16 +692,11 @@ fn(b)
 # TODO: Needs to have enum34 stubs somehow
 from enum import Enum
 Eu = Enum(u'Eu', u'a b')
---zuban-diff Eb = Enum(b'Eb', b'a b')  # E: Enum() expects a string literal as the first argument
-Eb = Enum(b'Eb', b'a b')  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str" \
-                          # E: Argument 2 to "Enum" has incompatible type "bytes"; expected "Iterable[str] | Iterable[Iterable[str | Any]] | Mapping[str, Any]"
+Eb = Enum(b'Eb', b'a b')  # E: Enum() expects a string literal as the first argument
 Gu = Enum(u'Gu', {u'a': 1})
---zuban-diff Gb = Enum(b'Gb', {b'a': 1})  # E: Enum() expects a string literal as the first argument
---zuban-diff 
-Gb = Enum(b'Gb', {b'a': 1})  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str"
+Gb = Enum(b'Gb', {b'a': 1})  # E: Enum() expects a string literal as the first argument
 Hu = Enum(u'Hu', [u'a'])
---zuban-diff Hb = Enum(b'Hb', [b'a'])  # E: Enum() expects a string literal as the first argument
-Hb = Enum(b'Hb', [b'a'])  # E: Argument 1 to "Enum" has incompatible type "bytes"; expected "str"
+Hb = Enum(b'Hb', [b'a'])  # E: Enum() expects a string literal as the first argument
 Eu.a
 Eb.a
 Gu.a
