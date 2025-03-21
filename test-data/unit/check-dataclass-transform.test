@@ -105,8 +105,7 @@ def foo(cls: Type) -> Type:
 @dataclass_transform(eq_default=(not True)) # E: "eq_default" argument must be a True or False literal
 def bar(cls: Type) -> Type:
     return cls
---zuban-diff @dataclass_transform(eq_default=FINAL_BOOLEAN) # E: "eq_default" argument must be a True or False literal
-@dataclass_transform(eq_default=FINAL_BOOLEAN)
+@dataclass_transform(eq_default=FINAL_BOOLEAN) # E: "eq_default" argument must be a True or False literal
 def baz(cls: Type) -> Type:
     return cls
 
