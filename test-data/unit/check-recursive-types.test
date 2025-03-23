@@ -913,8 +913,7 @@ from typing_extensions import TypedDict
 
 Example = TypedDict("Example", {"rec": List["Example"]})
 e: Example
---zuban-diff reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': builtins.list[...]})"
-reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': list[TypedDict('__main__.Example', {'rec': list[...]})]})"
+reveal_type(e)  # N: Revealed type is "TypedDict('__main__.Example', {'rec': builtins.list[...]})"
 [builtins fixtures/dict.pyi]
 
 [case testRecursiveNamedTupleWithList]
