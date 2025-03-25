@@ -194,8 +194,7 @@ class A(NamedTuple('A', [('attr', List[Exp])])): pass
 class B(NamedTuple('B', [('val', object)])): pass
 
 def my_eval(exp: Exp) -> int:
---zuban-diff     reveal_type(exp) # N: Revealed type is "Union[Tuple[builtins.list[...], fallback=__main__.A], Tuple[builtins.object, fallback=__main__.B]]"
-    reveal_type(exp) # N: Revealed type is "Union[tuple[list[... | tuple[object, fallback=__main__.B]], fallback=__main__.A], tuple[object, fallback=__main__.B]]"
+    reveal_type(exp) # N: Revealed type is "Union[Tuple[builtins.list[...], fallback=__main__.A], Tuple[builtins.object, fallback=__main__.B]]"
     if isinstance(exp, A):
         my_eval(exp[0][0])
         return my_eval(exp.attr[0])
