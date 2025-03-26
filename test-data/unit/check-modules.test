@@ -2062,10 +2062,6 @@ def __getattr__(x: int, y: str) -> str: ...
 [out]
 tmp/has_getattr.pyi:1: error: Invalid signature "Callable[[int, str], str]" for "__getattr__"
 main:3: note: Revealed type is "builtins.str"
---zuban-diff 
-main:3: error: Argument 1 to "__getattr__" has incompatible type "str"; expected "int"
---zuban-diff 
-main:3: error: Missing positional argument "y" in call to "__getattr__"
 
 
 [builtins fixtures/module.pyi]
@@ -2081,8 +2077,6 @@ __getattr__ = 3
 [out]
 tmp/has_getattr.pyi:1: error: Invalid signature "int" for "__getattr__"
 main:3: note: Revealed type is "Any"
---zuban-diff
-main:3: error: "int" not callable
 
 [builtins fixtures/module.pyi]
 
@@ -2184,8 +2178,6 @@ __getattr__ = make_getattr_bad()
 [out]
 tmp/non_stub.py:4: error: Invalid signature "Callable[[], int]" for "__getattr__"
 main:2: note: Revealed type is "builtins.int"
---zuban-diff
-main:2: error: Too many arguments
 
 [case testModuleLevelGetattrImportedGood]
 import non_stub
@@ -2211,8 +2203,6 @@ def __getattr__() -> int: ...
 tmp/has_getattr.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
 non_stub.py:1: error: Invalid signature "Callable[[], int]" for "__getattr__"
 main:2: note: Revealed type is "builtins.int"
---zuban-diff 
-main:2: error: Too many arguments for "__getattr__"
 
 [builtins fixtures/module.pyi]
 
