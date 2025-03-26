@@ -3172,11 +3172,10 @@ from bleach.abc import fgh
 [case testCyclicUndefinedImportWithName]
 import a
 [file a.py]
---zuban-diff from b import no_such_export
-from b import no_such_export  # E: Module "b" has no attribute "no_such_export"
+from b import no_such_export
 [file b.py]
 --zuban-diff from a import no_such_export  # E: Module "a" has no attribute "no_such_export"
-from a import no_such_export
+from a import no_such_export  # E: Cannot resolve name "no_such_export" (possible cyclic definition)
 
 [case testCyclicUndefinedImportWithStar1]
 import a

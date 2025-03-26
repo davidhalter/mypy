@@ -74,10 +74,11 @@ from a import bad2 # E: Module "a" has no attribute "bad2"; maybe "bad"?
 [case testNewAnalyzerTypeAnnotationCycle4]
 import b
 [file a.py]
-from b import bad # E: Module "b" has no attribute "bad"
+--zuban-diff from b import bad # E: Module "b" has no attribute "bad"
+from b import bad
 [file b.py]
 # TODO: Could we generate an error here as well?
-from a import bad
+from a import bad  # E: Cannot resolve name "bad" (possible cyclic definition)
 [targets a, b, a, b, a, b, a, b, __main__]
 
 [case testNewAnalyzerExportedValuesInImportAll]
