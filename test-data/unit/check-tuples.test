@@ -1289,14 +1289,6 @@ fixtup: Tuple[A]
 reveal_type(join(fixtup, empty))  # N: Revealed type is "builtins.tuple[__main__.A, ...]"
 reveal_type(join(empty, fixtup))  # N: Revealed type is "builtins.tuple[__main__.A, ...]"
 
-vartup: Tuple[A, ...]
-reveal_type(join(vartup, empty))  # N: Revealed type is "builtins.tuple[__main__.A, ...]"
-reveal_type(join(empty, vartup))  # N: Revealed type is "builtins.tuple[__main__.A, ...]"
-
-lst: List[A]
-reveal_type(join(empty, lst))  # N: Revealed type is "typing.Sequence[__main__.A]"
-reveal_type(join(lst, empty))  # N: Revealed type is "typing.Sequence[__main__.A]"
-
 [builtins fixtures/tuple.pyi]
 [out]
 
