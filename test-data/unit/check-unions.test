@@ -506,7 +506,8 @@ class E:
 [case testUnionSimplificationWithBoolIntAndFloat]
 from typing import List, Union
 l = reveal_type([]) # type: List[Union[bool, int, float]] \
-    # N: Revealed type is "builtins.list[Union[builtins.int, builtins.float]]"
+--zuban-diff     # N: Revealed type is "builtins.list[Union[builtins.int, builtins.float]]"
+    # N: Revealed type is "builtins.list[Union[builtins.bool, builtins.int, builtins.float]]"
 reveal_type(l) \
     # N: Revealed type is "builtins.list[Union[builtins.bool, builtins.int, builtins.float]]"
 [builtins fixtures/list.pyi]
@@ -514,7 +515,8 @@ reveal_type(l) \
 [case testUnionSimplificationWithBoolIntAndFloat2]
 from typing import List, Union
 l = reveal_type([]) # type: List[Union[bool, int, float, str]] \
-    # N: Revealed type is "builtins.list[Union[builtins.int, builtins.float, builtins.str]]"
+--zuban-diff     # N: Revealed type is "builtins.list[Union[builtins.int, builtins.float, builtins.str]]"
+    # N: Revealed type is "builtins.list[Union[builtins.bool, builtins.int, builtins.float, builtins.str]]"
 reveal_type(l) \
     # N: Revealed type is "builtins.list[Union[builtins.bool, builtins.int, builtins.float, builtins.str]]"
 [builtins fixtures/list.pyi]
