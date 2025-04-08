@@ -2139,7 +2139,8 @@ def call(
     **kwargs: Any,
 ) -> U: ...
 @overload
-def call(
+--zuban-diff def call(
+def call(  # E: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
     func: Callable[Concatenate[T, U, P], V],
     x: T,
     y: U,
