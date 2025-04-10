@@ -662,14 +662,12 @@ FunctionModel(
     present_4=4,
 )
 FunctionModel()  # E: Missing positional arguments "present_1", "present_2", "present_3", "present_4" in call to "FunctionModel"
---zuban-diff FunctionModel(   # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
-FunctionModel(
+FunctionModel(   # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
     present_1=1,
     present_2=2,
     present_3=3,
     present_4=4,
---zuban-diff     skipped_1=5,
-    skipped_1=5, # E: Unexpected keyword argument "skipped_1" for "FunctionModel"
+    skipped_1=5,
 )
 
 [typing fixtures/typing-full.pyi]

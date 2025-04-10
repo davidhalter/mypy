@@ -145,8 +145,7 @@ def foobar(): pass
 [case testColumnUnexpectedOrMissingKeywordArg]
 def f(): pass  # N:1: "f" defined here
 # TODO: Point to "x" instead
---zuban-diff (f(x=1)) # E:2: Unexpected keyword argument "x" for "f"
-(f(x=1)) # E:4: Unexpected keyword argument "x" for "f"
+(f(x=1)) # E:2: Unexpected keyword argument "x" for "f"
 def g(*, x: int) -> None: pass
 (g())  # E:2: Missing named argument "x" for "g"
 
@@ -154,8 +153,7 @@ def g(*, x: int) -> None: pass
 class A: pass
 if int():
     def f(a: 'A') -> None: pass # N:5: "f" defined here
---zuban-diff     (f(b=object())) # E:6: Unexpected keyword argument "b" for "f"
-    (f(b=object())) # E:8: Unexpected keyword argument "b" for "f"
+    (f(b=object())) # E:6: Unexpected keyword argument "b" for "f"
 
 [case testColumnInvalidType]
 
