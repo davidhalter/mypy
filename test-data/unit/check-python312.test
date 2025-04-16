@@ -1251,7 +1251,8 @@ reveal_type(b)  # N: Revealed type is "Union[__main__.C[builtins.int], builtins.
 [builtins fixtures/type.pyi]
 
 [case testPEP695BadRecursiveTypeAlias]
-type A = A  # E: Cannot resolve name "A" (possible cyclic definition)
+--zuban-diff type A = A  # E: Cannot resolve name "A" (possible cyclic definition)
+type A = A  # E: Invalid recursive alias: a union item of itself
 type B = B | int  # E: Invalid recursive alias: a union item of itself
 a: A
 reveal_type(a)  # N: Revealed type is "Any"
