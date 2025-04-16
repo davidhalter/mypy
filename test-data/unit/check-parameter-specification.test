@@ -425,7 +425,8 @@ class C(Generic[P]):
         return 1
 
 c: C[Any]
-reveal_type(c)  # N: Revealed type is "__main__.C[Any]"
+--zuban-diff reveal_type(c)  # N: Revealed type is "__main__.C[Any]"
+reveal_type(c)  # N: Revealed type is "__main__.C[[*Any, **Any]]"
 --zuban-diff reveal_type(c.m)  # N: Revealed type is "def (*args: Any, **kwargs: Any) -> builtins.int"
 reveal_type(c.m)  # N: Revealed type is "def (*Any, **Any) -> builtins.int"
 c.m(4, 6, y='x')
@@ -1910,7 +1911,8 @@ from typing_extensions import ParamSpec
 P = ParamSpec("P")
 class C(Generic[P]): ...
 c: C[int, [int, str], str]  # E: Nested parameter specifications are not allowed
-reveal_type(c)  # N: Revealed type is "__main__.C[Any]"
+--zuban-diff reveal_type(c)  # N: Revealed type is "__main__.C[Any]"
+reveal_type(c)  # N: Revealed type is "__main__.C[[*Any, **Any]]"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecInheritNoCrashOnNested]
@@ -2079,7 +2081,7 @@ class C(Generic[P, R]):
 
 bad = C[int, str]()  # E: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
 --zuban-diff reveal_type(bad)  # N: Revealed type is "__main__.C[Any, Any]"
-reveal_type(bad)  # N: Revealed type is "__main__.C[Any, str]"
+reveal_type(bad)  # N: Revealed type is "__main__.C[[*Any, **Any], str]"
 --zuban-diff reveal_type(bad.x)  # N: Revealed type is "def (*Any, **Any) -> Any"
 reveal_type(bad.x)  # N: Revealed type is "def (*Any, **Any) -> str"
 [builtins fixtures/paramspec.pyi]

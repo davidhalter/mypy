@@ -312,19 +312,17 @@ def func_b1(
                                             # N: Did you mean "List[...]"?
 ) -> None:
 --zuban-diff     reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], ...]"
-    reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], Any]"
+    reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
 --zuban-diff     reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], ...]"
-    reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], Any]"
+    reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [*Any, **Any]]"
     reveal_type(c)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [builtins.float]]"
 --zuban-diff     reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], ...]"
-    reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], Any]"
+    reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
 
     k = ClassB1()
---zuban-diff     reveal_type(k)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
-    reveal_type(k)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], Any]"
+    reveal_type(k)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
     l = ClassB1[[float]]()
---zuban-diff     reveal_type(l)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [*Any, **Any]]"
-    reveal_type(l)  # N: Revealed type is "__main__.ClassB1[[builtins.float], Any]"
+    reveal_type(l)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [*Any, **Any]]"
     m = ClassB1[[float], [float]]()
     reveal_type(m)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [builtins.float]]"
 --zuban-diff     n = ClassB1[[float], [float], [float]]()  # E: Type application has too many types (expected between 0 and 2)
@@ -334,7 +332,8 @@ def func_b1(
     n = ClassB1[[float], [float], [float]]()  # E: "ClassB1" expects between 0 and 2 type arguments, but 3 given \
                                             # E: Bracketed expression "[...]" is not valid as a type \
                                             # N: Did you mean "List[...]"?
-    reveal_type(n)  # N: Revealed type is "__main__.ClassB1[[int, str], Any]"
+--zuban-diff     reveal_type(n)  # N: Revealed type is "__main__.ClassB1[[int, str], Any]"
+    reveal_type(n)  # N: Revealed type is "__main__.ClassB1[[int, str], [*Any, **Any]]"
 
 class ClassB2(Generic[P1, P2]): ...
 
@@ -348,13 +347,16 @@ def func_b2(
                                             # E: Bracketed expression "[...]" is not valid as a type \
                                             # N: Did you mean "List[...]"?
 ) -> None:
-    reveal_type(a)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+--zuban-diff     reveal_type(a)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+    reveal_type(a)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [builtins.int, builtins.str]]"
     reveal_type(b)  # N: Revealed type is "__main__.ClassB2[[builtins.float], [builtins.int, builtins.str]]"
     reveal_type(c)  # N: Revealed type is "__main__.ClassB2[[builtins.float], [builtins.float]]"
-    reveal_type(d)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+--zuban-diff     reveal_type(d)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+    reveal_type(d)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [builtins.int, builtins.str]]"
 
     k = ClassB2()  # E: Need type annotation for "k"
-    reveal_type(k)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+--zuban-diff     reveal_type(k)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+    reveal_type(k)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [builtins.int, builtins.str]]"
     l = ClassB2[[float]]()
     reveal_type(l)  # N: Revealed type is "__main__.ClassB2[[builtins.float], [builtins.int, builtins.str]]"
     m = ClassB2[[float], [float]]()
@@ -366,7 +368,8 @@ def func_b2(
     n = ClassB2[[float], [float], [float]]()  # E: "ClassB2" expects between 1 and 2 type arguments, but 3 given \
                                             # E: Bracketed expression "[...]" is not valid as a type \
                                             # N: Did you mean "List[...]"?
-    reveal_type(n)  # N: Revealed type is "__main__.ClassB2[Any, [int, str]]"
+--zuban-diff     reveal_type(n)  # N: Revealed type is "__main__.ClassB2[Any, [int, str]]"
+    reveal_type(n)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [int, str]]"
 
 [case testTypeVarDefaultsClass3]
 # flags: --disallow-any-generics
@@ -636,13 +639,10 @@ def func_b1(
                                         # E: Bracketed expression "[...]" is not valid as a type \
                                         # N: Did you mean "List[...]"?
 ) -> None:
---zuban-diff     reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
-    reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], Any]"
---zuban-diff     reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [*Any, **Any]]"
-    reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], Any]"
+    reveal_type(a)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
+    reveal_type(b)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [*Any, **Any]]"
     reveal_type(c)  # N: Revealed type is "__main__.ClassB1[[builtins.float], [builtins.float]]"
---zuban-diff     reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
-    reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], Any]"
+    reveal_type(d)  # N: Revealed type is "__main__.ClassB1[[builtins.int, builtins.str], [*Any, **Any]]"
 
 class ClassB2(Generic[P1, P2]): ...
 TB2 = ClassB2[P1, P2]
@@ -657,10 +657,12 @@ def func_b2(
                                         # E: Bracketed expression "[...]" is not valid as a type \
                                         # N: Did you mean "List[...]"?
 ) -> None:
-    reveal_type(a)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+--zuban-diff     reveal_type(a)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+    reveal_type(a)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [builtins.int, builtins.str]]"
     reveal_type(b)  # N: Revealed type is "__main__.ClassB2[[builtins.float], [builtins.int, builtins.str]]"
     reveal_type(c)  # N: Revealed type is "__main__.ClassB2[[builtins.float], [builtins.float]]"
-    reveal_type(d)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+--zuban-diff     reveal_type(d)  # N: Revealed type is "__main__.ClassB2[Any, [builtins.int, builtins.str]]"
+    reveal_type(d)  # N: Revealed type is "__main__.ClassB2[[*Any, **Any], [builtins.int, builtins.str]]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarDefaultsTypeAlias3]
