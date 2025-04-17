@@ -809,9 +809,11 @@ def f[T: int, S: int | str](x: T, y: S) -> T | S:
     return x
 
 C[str, int]()
-C[str, str]()  # E: Value of type variable "S" of "C" cannot be "str"
+--zuban-diff C[str, str]()  # E: Value of type variable "S" of "C" cannot be "str"
+C[str, str]()  # E: Type argument "str" of "C" must be a subtype of "int"
 D[int, str]()
-D[str, str]()  # E: Value of type variable "A" of "D" cannot be "str"
+--zuban-diff D[str, str]()  # E: Value of type variable "A" of "D" cannot be "str"
+D[str, str]()  # E: Type argument "str" of "D" must be a subtype of "int"
 f(1, 1)
 u: int | str
 f(1, u)
@@ -887,8 +889,9 @@ def g[**P](f: Callable[P, None], *args: P.args, **kwargs: P.kwargs) -> None:
 def h(x: int, y: str) -> None: pass
 
 g(h, 1, y='x')
-g(h, 1, x=1)  # E: "g" gets multiple values for keyword argument "x" \
-              # E: Missing positional argument "y" in call to "g"
+--zuban-diff g(h, 1, x=1)  # E: "g" gets multiple values for keyword argument "x" \
+--zuban-diff               # E: Missing positional argument "y" in call to "g"
+g(h, 1, x=1) # E: Unexpected keyword argument "x" for "g"
 
 class C[**P, T]:
     def m(self, *args: P.args, **kwargs: P.kwargs) -> T: ...
@@ -1143,7 +1146,8 @@ from typing import cast
 def f[T](
     x: T =
         T  # E: Name "T" is not defined \
-           # E: Incompatible default for argument "x" (default has type "TypeVar", argument has type "T")
+--zuban-diff            # E: Incompatible default for argument "x" (default has type "TypeVar", argument has type "T")
+--zuban-diff 
 ) -> T:
     return x
 
@@ -1300,7 +1304,8 @@ class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class
 [case testPEP695CannotUseTypeVarFromOuterClass]
 class ClassG[V]:
     # This used to crash
-    class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
+--zuban-diff     class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
+    class ClassD[T: dict[str, V]]:  # E: Type variable "V" is bound by an outer class
         ...
 [builtins fixtures/dict.pyi]
 
@@ -1462,7 +1467,8 @@ b5: A2[D]  # E: Value of type variable "T" of "A2" cannot be "D"
 b6: A2[object]  # E: Value of type variable "T" of "A2" cannot be "object"
 
 list[A2[int]]()
-list[A2[None]]()  # E: Invalid type argument value for "A2"
+--zuban-diff list[A2[None]]()  # E: Invalid type argument value for "A2"
+list[A2[None]]()  # E: Value of type variable "T" of "A2" cannot be "None"
 
 class N(int): pass
 
@@ -1735,6 +1741,8 @@ type Y[T] = {"item": T, **Y[T]}  # E: Overwriting TypedDict field "item" while m
 [typing fixtures/typing-full.pyi]
 
 [case testPEP695UsingIncorrectExpressionsInTypeVariableBound]
+--zuban-diff 
+from typing import Any
 type X[T: (yield 1)] = Any  # E: Yield expression cannot be used as a type variable bound
 type Y[T: (yield from [])] = Any # E: Yield expression cannot be used as a type variable bound
 type Z[T: (a := 1)] = Any  # E: Named expression cannot be used as a type variable bound
