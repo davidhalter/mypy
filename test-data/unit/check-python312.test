@@ -1066,15 +1066,19 @@ reveal_type(C().m(1))  # N: Revealed type is "builtins.int"
 T = 1
 
 def f[T](x: T) -> T:
-    T = 'a'
-    reveal_type(T)  # N: Revealed type is "builtins.str"
+--zuban-diff     T = 'a'
+--zuban-diff     reveal_type(T)  # N: Revealed type is "builtins.str"
+    T = 'a'  # E: Name "T" already defined on line 3
+    reveal_type(T)  # N: Revealed type is "typing.TypeVar"
     return x
 
 reveal_type(T)  # N: Revealed type is "builtins.int"
 
 class C[T]:
-    T = 1.2
-    reveal_type(T)  # N: Revealed type is "builtins.float"
+--zuban-diff     T = 1.2
+--zuban-diff     reveal_type(T)  # N: Revealed type is "builtins.float"
+    T = 1.2  # E: Name "T" already defined on line 10
+    reveal_type(T)  # N: Revealed type is "typing.TypeVar"
 
 reveal_type(T)  # N: Revealed type is "builtins.int"
 
@@ -1116,7 +1120,8 @@ def f() -> None:
     T = 1
     def g[T](x: T) -> T:
         nonlocal T  # E: nonlocal binding not allowed for type parameter "T"
-        T = 'x'  # E: "T" is a type variable and only valid in type context
+--zuban-diff         T = 'x'  # E: "T" is a type variable and only valid in type context
+        T = 'x'  # E: Name "T" already defined on line 3
         return x
     reveal_type(T)  # N: Revealed type is "builtins.int"
 
@@ -1194,7 +1199,8 @@ def g[T](x: T) -> T:
 S = 0
 
 def outer1[S]() -> None:
-    S = 1
+--zuban-diff     S = 1
+    S = 1  # E: Name "S" already defined on line 4
     T = 1
 
     def outer2[T]() -> None:
