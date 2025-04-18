@@ -1528,10 +1528,12 @@ reveal_type(D().a)  # N: Revealed type is "builtins.int"
 reveal_type(D().b)  # N: Revealed type is "builtins.list[builtins.int]"
 
 class E[T]:
-    type X = list[T]  # E: All type parameters should be declared ("T" not declared)
+--zuban-diff     type X = list[T]  # E: All type parameters should be declared ("T" not declared)
+    type X = list[T]  # E: Can't use bound type variable "T" to define generic alias
 
     def __init__(self) -> None:
-        type A = list[T]  # E: All type parameters should be declared ("T" not declared)
+--zuban-diff         type A = list[T]  # E: All type parameters should be declared ("T" not declared)
+        type A = list[T]  # E: Can't use bound type variable "T" to define generic alias
         self.a: A
 
 reveal_type(E[str]().a)  # N: Revealed type is "builtins.list[Any]"
