@@ -1304,8 +1304,7 @@ class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class
 [case testPEP695CannotUseTypeVarFromOuterClass]
 class ClassG[V]:
     # This used to crash
---zuban-diff     class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
-    class ClassD[T: dict[str, V]]:  # E: Type variable "V" is bound by an outer class
+    class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
         ...
 [builtins fixtures/dict.pyi]
 
