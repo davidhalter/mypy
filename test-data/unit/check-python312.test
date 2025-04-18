@@ -1310,7 +1310,8 @@ class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class
 [case testPEP695CannotUseTypeVarFromOuterClass]
 class ClassG[V]:
     # This used to crash
-    class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
+--zuban-diff     class ClassD[T: dict[str, V]]:  # E: Name "V" is not defined
+    class ClassD[T: dict[str, V]]:  # E: Type variable "V" is bound by an outer class
         ...
 [builtins fixtures/dict.pyi]
 
@@ -1539,7 +1540,8 @@ reveal_type(E[str]().a)  # N: Revealed type is "builtins.list[Any]"
 
 [case testPEP695TypeAliasInvalidGenericConstraint]
 class A[T]:
-    class a[S: (int, list[T])]: pass                # E: Name "T" is not defined
+--zuban-diff     class a[S: (int, list[T])]: pass                # E: Name "T" is not defined
+    class a[S: (int, list[T])]: pass                # E: TypeVar constraint type cannot be parametrized by type variables
     type b[S: (int, list[T])] = S                   # E: TypeVar constraint type cannot be parametrized by type variables
     def c[S: (int, list[T])](self) -> None: ...     # E: TypeVar constraint type cannot be parametrized by type variables
 [builtins fixtures/tuple.pyi]
@@ -1788,8 +1790,8 @@ class FooKNested[T: (1 + (await 1))]: pass  # E: Invalid type comment or annotat
 --zuban-diff def fooy[T: (yield from [])](): pass  # E: Yield expression cannot be used as a type variable bound
 --zuban-diff def fooz[T: (a := 1)](): pass  # E: Named expression cannot be used as a type variable bound
 --zuban-diff def fook[T: (await 1)](): pass  # E: Await expression cannot be used as a type variable bound
-def foox[T: (yield 1)](): pass  # E: Invalid type comment or annotation
-def fooy[T: (yield from [])](): pass  # E: Invalid type comment or annotation
+def foox[T: (yield 1)](): pass  # E: Invalid type comment or annotation  # E: "yield" outside function
+def fooy[T: (yield from [])](): pass  # E: Invalid type comment or annotation  # E: "yield from" outside function
 def fooz[T: (a := 1)](): pass  # E: Invalid type comment or annotation
 def fook[T: (await 1)](): pass  # E: Invalid type comment or annotation
 
@@ -1797,8 +1799,8 @@ def fook[T: (await 1)](): pass  # E: Invalid type comment or annotation
 --zuban-diff def fooy_nested[T: (1 + (yield from []))](): pass  # E: Yield expression cannot be used as a type variable bound
 --zuban-diff def fooz_nested[T: (1 + (a := 1))](): pass  # E: Named expression cannot be used as a type variable bound
 --zuban-diff def fook_nested[T: (1 +(await 1))](): pass  # E: Await expression cannot be used as a type variable bound
-def foox_nested[T: (1 + (yield 1))](): pass  # E: Invalid type comment or annotation
-def fooy_nested[T: (1 + (yield from []))](): pass  # E: Invalid type comment or annotation
+def foox_nested[T: (1 + (yield 1))](): pass  # E: Invalid type comment or annotation  # E: "yield" outside function
+def fooy_nested[T: (1 + (yield from []))](): pass  # E: Invalid type comment or annotation  # E: "yield from" outside function
 def fooz_nested[T: (1 + (a := 1))](): pass  # E: Invalid type comment or annotation
 def fook_nested[T: (1 +(await 1))](): pass  # E: Invalid type comment or annotation
 
