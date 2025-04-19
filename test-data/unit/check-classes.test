@@ -3194,7 +3194,8 @@ class Test:
                                     # N:      Subclass: \
                                     # N:          def __setattr__() -> None
 t = Test()
-t.crash = 'test'  # E: Attribute function "__setattr__" with type "Callable[[], None]" does not accept self argument \
+--zuban-diff t.crash = 'test'  # E: Attribute function "__setattr__" with type "Callable[[], None]" does not accept self argument \
+t.crash = 'test'  \
                   # E: "Test" has no attribute "crash"
 
 class A:
