@@ -3336,7 +3336,8 @@ y = 1[y]  # E: Name "y" is used before definition \
 [case testForwardBaseDeferAttr]
 from typing import Optional, Callable, TypeVar
 
-class C(B):
+--zuban-diff class C(B):
+class C(B):  # E: Name "B" is used before definition
     def a(self) -> None:
         reveal_type(self._foo)  # N: Revealed type is "Union[builtins.int, None]"
         self._foo = defer()
