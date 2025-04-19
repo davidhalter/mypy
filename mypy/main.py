@@ -42,6 +42,7 @@ if TYPE_CHECKING:
 
 orig_stat: Final = os.stat
 MEM_PROFILE: Final = False  # If True, dump memory profile
+RECURSION_LIMIT: Final = 2**14
 
 
 def stat_proxy(path: str) -> os.stat_result:
@@ -76,7 +77,7 @@ def main(
     util.check_python_version("mypy")
     t0 = time.time()
     # To log stat() calls: os.stat = stat_proxy
-    sys.setrecursionlimit(2**14)
+    sys.setrecursionlimit(RECURSION_LIMIT)
     if args is None:
         args = sys.argv[1:]
 
@@ -92,6 +93,13 @@ def main(
     formatter = util.FancyFormatter(
         stdout, stderr, options.hide_error_codes, hide_success=bool(options.output)
     )
+
+    if options.allow_redefinition_new and not options.local_partial_types:
+        fail(
+            "error: --local-partial-types must be enabled if using --allow-redefinition-new",
+            stderr,
+            options,
+        )
 
     if options.install_types and (stdout is not sys.stdout or stderr is not sys.stderr):
         # Since --install-types performs user input, we want regular stdout and stderr.
@@ -826,6 +834,14 @@ def process_options(
         help="Report importing or using deprecated features as notes instead of errors",
         group=lint_group,
     )
+    lint_group.add_argument(
+        "--deprecated-calls-exclude",
+        metavar="MODULE",
+        action="append",
+        default=[],
+        help="Disable deprecated warnings for functions/methods coming"
+        " from specific package, module, or class",
+    )
 
     # Note: this group is intentionally added here even though we don't add
     # --strict to this group near the end.
@@ -848,7 +864,15 @@ def process_options(
         "--allow-redefinition",
         default=False,
         strict_flag=False,
-        help="Allow unconditional variable redefinition with a new type",
+        help="Allow restricted, unconditional variable redefinition with a new type",
+        group=strictness_group,
+    )
+
+    add_invertible_flag(
+        "--allow-redefinition-new",
+        default=False,
+        strict_flag=False,
+        help=argparse.SUPPRESS,  # This is still very experimental
         group=strictness_group,
     )
 
@@ -1100,6 +1124,11 @@ def process_options(
                 dest=f"special-opts:{report_type}_report",
             )
 
+    # Undocumented mypyc feature: generate annotated HTML source file
+    report_group.add_argument(
+        "-a", dest="mypyc_annotation_file", type=str, default=None, help=argparse.SUPPRESS
+    )
+
     other_group = parser.add_argument_group(title="Miscellaneous")
     other_group.add_argument("--quickstart-file", help=argparse.SUPPRESS)
     other_group.add_argument("--junit-xml", help="Write junit.xml to the given file")
@@ -1244,6 +1273,15 @@ def process_options(
             "May be specified more than once, eg. --exclude a --exclude b"
         ),
     )
+    add_invertible_flag(
+        "--exclude-gitignore",
+        default=False,
+        help=(
+            "Use .gitignore file(s) to exclude files from checking "
+            "(in addition to any explicit --exclude if present)"
+        ),
+        group=code_group,
+    )
     code_group.add_argument(
         "-m",
         "--module",
@@ -1369,6 +1407,7 @@ def process_options(
         )
 
     validate_package_allow_list(options.untyped_calls_exclude)
+    validate_package_allow_list(options.deprecated_calls_exclude)
 
     options.process_error_codes(error_callback=parser.error)
     options.process_incomplete_features(error_callback=parser.error, warning_callback=print)

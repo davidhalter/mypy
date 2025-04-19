@@ -359,12 +359,12 @@ class DataclassTransformer:
 
         if decorator_arguments["frozen"]:
             if any(not parent["frozen"] for parent in parent_decorator_arguments):
-                self._api.fail("Cannot inherit frozen dataclass from a non-frozen one", info)
+                self._api.fail("Frozen dataclass cannot inherit from a non-frozen dataclass", info)
             self._propertize_callables(attributes, settable=False)
             self._freeze(attributes)
         else:
             if any(parent["frozen"] for parent in parent_decorator_arguments):
-                self._api.fail("Cannot inherit non-frozen dataclass from a frozen one", info)
+                self._api.fail("Non-frozen dataclass cannot inherit from a frozen dataclass", info)
             self._propertize_callables(attributes)
 
         if decorator_arguments["slots"]:
@@ -381,7 +381,9 @@ class DataclassTransformer:
         ):
             str_type = self._api.named_type("builtins.str")
             literals: list[Type] = [
-                LiteralType(attr.name, str_type) for attr in attributes if attr.is_in_init
+                LiteralType(attr.name, str_type)
+                for attr in attributes
+                if attr.is_in_init and not attr.kw_only
             ]
             match_args_type = TupleType(literals, self._api.named_type("builtins.tuple"))
             add_attribute_to_class(self._api, self._cls, "__match_args__", match_args_type)
@@ -768,6 +770,8 @@ class DataclassTransformer:
             if sym_node is not None:
                 var = sym_node.node
                 if isinstance(var, Var):
+                    if var.is_final:
+                        continue  # do not turn `Final` attrs to `@property`
                     var.is_property = True
             else:
                 var = attr.to_var(info)
@@ -963,6 +967,9 @@ def dataclass_tag_callback(ctx: ClassDefContext) -> None:
 
 def dataclass_class_maker_callback(ctx: ClassDefContext) -> bool:
     """Hooks into the class typechecking process to add support for dataclasses."""
+    if any(i.is_named_tuple for i in ctx.cls.info.mro):
+        ctx.api.fail("A NamedTuple cannot be a dataclass", ctx=ctx.cls.info)
+        return True
     transformer = DataclassTransformer(
         ctx.cls, ctx.reason, _get_transform_spec(ctx.reason), ctx.api
     )

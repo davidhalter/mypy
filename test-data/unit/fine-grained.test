@@ -3728,17 +3728,20 @@ b.py:4: error: Incompatible types in assignment (expression has type "str", vari
 [case testTypedDictUpdateReadOnly]
 import b
 [file a.py]
-from typing_extensions import TypedDict, ReadOnly
+from typing import TypedDict
+from typing_extensions import ReadOnly
 Point = TypedDict('Point', {'x': int, 'y': int})
 p = Point(x=1, y=2)
 [file a.py.2]
-from typing_extensions import TypedDict, ReadOnly
+from typing import TypedDict
+from typing_extensions import ReadOnly
 class Point(TypedDict):
     x: int
     y: ReadOnly[int]
 p = Point(x=1, y=2)
 [file a.py.3]
-from typing_extensions import TypedDict, ReadOnly
+from typing import TypedDict
+from typing_extensions import ReadOnly
 Point = TypedDict('Point', {'x': ReadOnly[int], 'y': int})
 p = Point(x=1, y=2)
 [file b.py]
@@ -3747,6 +3750,7 @@ def foo(x: Point) -> None:
     x['x'] = 1
     x['y'] = 2
 [builtins fixtures/dict.pyi]
+[typing fixtures/typing-typeddict.pyi]
 [out]
 ==
 b.py:4: error: ReadOnly TypedDict key "y" TypedDict is mutated
@@ -4534,14 +4538,14 @@ x = 0
 x = ''
 [builtins fixtures/tuple.pyi]
 [out]
---zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+--zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[object], int]")
 b.py:5: error: Signature of "count" incompatible with supertype "tuple"
 b.py:5: note:      Superclass:
 b.py:5: note:          def count(self, Any, /) -> int
 b.py:5: note:      Subclass:
 b.py:5: note:          int
 ==
---zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Tuple[int, ...], object], int]")
+--zuban-diff b.py:5: error: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[object], int]")
 b.py:5: error: Signature of "count" incompatible with supertype "tuple"
 b.py:5: note:      Superclass:
 b.py:5: note:          def count(self, Any, /) -> int
@@ -8808,10 +8812,10 @@ reveal_type(mod.x)
 [file mod.py]
 x = 1
 [file mod.py.2]
-from typing_extensions import Literal
+from typing import Literal
 x: Literal[1] = 1
 [file mod.py.3]
-from typing_extensions import Literal
+from typing import Literal
 x: Literal[1] = 2
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8828,10 +8832,10 @@ foo(3)
 [file mod.py]
 def foo(x: int) -> None: pass
 [file mod.py.2]
-from typing_extensions import Literal
+from typing import Literal
 def foo(x: Literal[3]) -> None: pass
 [file mod.py.3]
-from typing_extensions import Literal
+from typing import Literal
 def foo(x: Literal[4]) -> None: pass
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8845,10 +8849,10 @@ a: Alias = 1
 [file mod.py]
 Alias = int
 [file mod.py.2]
-from typing_extensions import Literal
+from typing import Literal
 Alias = Literal[1]
 [file mod.py.3]
-from typing_extensions import Literal
+from typing import Literal
 Alias = Literal[2]
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8860,16 +8864,14 @@ main:2: error: Incompatible types in assignment (expression has type "Literal[1]
 from mod import foo
 reveal_type(foo(4))
 [file mod.py]
-from typing import overload
-from typing_extensions import Literal
+from typing import Literal, overload
 @overload
 def foo(x: int) -> str: ...
 @overload
 def foo(x: Literal['bar']) -> int: ...
 def foo(x): pass
 [file mod.py.2]
-from typing import overload
-from typing_extensions import Literal
+from typing import Literal, overload
 @overload
 def foo(x: Literal[4]) -> Literal['foo']: ...
 @overload
@@ -8885,7 +8887,7 @@ main:2: note: Revealed type is "Literal['foo']"
 
 [case testLiteralFineGrainedChainedDefinitions]
 from mod1 import foo
-from typing_extensions import Literal
+from typing import Literal
 def expect_3(x: Literal[3]) -> None: pass
 expect_3(foo)
 [file mod1.py]
@@ -8894,10 +8896,10 @@ foo = bar
 [file mod2.py]
 from mod3 import qux as bar
 [file mod3.py]
-from typing_extensions import Literal
+from typing import Literal
 qux: Literal[3]
 [file mod3.py.2]
-from typing_extensions import Literal
+from typing import Literal
 qux: Literal[4]
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8906,7 +8908,7 @@ main:4: error: Argument 1 to "expect_3" has incompatible type "Literal[4]"; expe
 
 [case testLiteralFineGrainedChainedAliases]
 from mod1 import Alias1
-from typing_extensions import Literal
+from typing import Literal
 x: Alias1
 def expect_3(x: Literal[3]) -> None: pass
 expect_3(x)
@@ -8917,10 +8919,10 @@ Alias1 = Alias2
 from mod3 import Alias3
 Alias2 = Alias3
 [file mod3.py]
-from typing_extensions import Literal
+from typing import Literal
 Alias3 = Literal[3]
 [file mod3.py.2]
-from typing_extensions import Literal
+from typing import Literal
 Alias3 = Literal[4]
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8929,7 +8931,7 @@ main:5: error: Argument 1 to "expect_3" has incompatible type "Literal[4]"; expe
 
 [case testLiteralFineGrainedChainedFunctionDefinitions]
 from mod1 import func1
-from typing_extensions import Literal
+from typing import Literal
 def expect_3(x: Literal[3]) -> None: pass
 expect_3(func1())
 [file mod1.py]
@@ -8938,10 +8940,10 @@ from mod2 import func2 as func1
 from mod3 import func3
 func2 = func3
 [file mod3.py]
-from typing_extensions import Literal
+from typing import Literal
 def func3() -> Literal[3]: pass
 [file mod3.py.2]
-from typing_extensions import Literal
+from typing import Literal
 def func3() -> Literal[4]: pass
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8960,7 +8962,7 @@ foo = func(bar)
 [file mod2.py]
 bar = 3
 [file mod2.py.2]
-from typing_extensions import Literal
+from typing import Literal
 bar: Literal[3] = 3
 [builtins fixtures/tuple.pyi]
 [out]
@@ -8970,23 +8972,23 @@ main:2: note: Revealed type is "Literal[3]"
 
 [case testLiteralFineGrainedChainedViaFinal]
 from mod1 import foo
-from typing_extensions import Literal
+from typing import Literal
 def expect_3(x: Literal[3]) -> None: pass
 expect_3(foo)
 [file mod1.py]
-from typing_extensions import Final
+from typing import Final
 from mod2 import bar
 foo: Final = bar
 [file mod2.py]
 from mod3 import qux as bar
 [file mod3.py]
-from typing_extensions import Final
+from typing import Final
 qux: Final = 3
 [file mod3.py.2]
-from typing_extensions import Final
+from typing import Final
 qux: Final = 4
 [file mod3.py.3]
-from typing_extensions import Final
+from typing import Final
 qux: Final[int] = 4
 [builtins fixtures/tuple.pyi]
 [out]
@@ -9002,13 +9004,13 @@ reveal_type(foo)
 from mod2 import bar
 foo = bar()
 [file mod2.py]
-from typing_extensions import Literal
+from typing import Literal
 def bar() -> Literal["foo"]: pass
 [file mod2.py.2]
-from typing_extensions import Literal
+from typing import Literal
 def bar() -> Literal[u"foo"]: pass
 [file mod2.py.3]
-from typing_extensions import Literal
+from typing import Literal
 def bar() -> Literal[b"foo"]: pass
 [builtins fixtures/tuple.pyi]
 [out]
@@ -10159,14 +10161,14 @@ lib.py:5: error: Free type variable expected in Generic[...]
 [case testUnpackKwargsUpdateFine]
 import m
 [file shared.py]
-from typing_extensions import TypedDict
+from typing import TypedDict
 
 class Person(TypedDict):
     name: str
     age: int
 
 [file shared.py.2]
-from typing_extensions import TypedDict
+from typing import TypedDict
 
 class Person(TypedDict):
     name: str
@@ -10183,6 +10185,7 @@ from lib import foo
 foo(name='Jennifer', age=38)
 
 [builtins fixtures/dict.pyi]
+[typing fixtures/typing-typeddict.pyi]
 [out]
 ==
 m.py:2: error: Argument "age" to "foo" has incompatible type "int"; expected "str"
@@ -10489,7 +10492,7 @@ import n
 import m
 x: m.TD
 [file m.py]
-from typing_extensions import TypedDict
+from typing import TypedDict
 from f import A
 
 class TD(TypedDict):
@@ -10502,6 +10505,7 @@ A = int
 [file f.py.2]
 A = str
 [builtins fixtures/dict.pyi]
+[typing fixtures/typing-typeddict.pyi]
 [out]
 m.py:5: error: Invalid statement in TypedDict definition; expected "field_name: field_type"
 ==

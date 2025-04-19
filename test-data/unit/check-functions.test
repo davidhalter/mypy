@@ -2539,14 +2539,14 @@ from typing import Union, Dict, List
 def f() -> List[Union[str, int]]:
     x = ['a']
     return x # E: Incompatible return value type (got "List[str]", expected "List[Union[str, int]]") \
-      # N: "List" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+      # N: "list" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
       # N: Consider using "Sequence" instead, which is covariant \
       # N: Perhaps you need a type annotation for "x"? Suggestion: "List[Union[str, int]]"
 
 def g() -> Dict[str, Union[str, int]]:
     x = {'a': 'a'}
     return x # E: Incompatible return value type (got "Dict[str, str]", expected "Dict[str, Union[str, int]]") \
-      # N: "Dict" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+      # N: "dict" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
       # N: Consider using "Mapping" instead, which is covariant in the value type \
       # N: Perhaps you need a type annotation for "x"? Suggestion: "Dict[str, Union[str, int]]"
 
@@ -2558,7 +2558,7 @@ def h() -> Dict[Union[str, int], str]:
 def i() -> List[Union[int, float]]:
     x: List[int] = [1]
     return x # E: Incompatible return value type (got "List[int]", expected "List[Union[int, float]]") \
-      # N: "List" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+      # N: "list" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
       # N: Consider using "Sequence" instead, which is covariant
 
 [builtins fixtures/dict.pyi]
@@ -2856,6 +2856,8 @@ class Child(Base):
     @decorator
     def foo(self) -> int:
         return 42
+reveal_type(Child().foo)  # N: Revealed type is "builtins.int"
+Child().foo = 1  # E: Property "foo" defined in "Child" is read-only
 
 reveal_type(Child().foo)  # N: Revealed type is "builtins.int"
 
@@ -2873,16 +2875,15 @@ class not_a_decorator:
     def __init__(self, fn): ...
 
 class BadChild2(Base):
+    # Override error not shown as accessing 'foo' on BadChild2 returns Any.
     @property
     @not_a_decorator
---zuban-diff     def foo(self) -> int:  # E: "not_a_decorator" not callable \
---zuban-diff                            # E: Signature of "foo" incompatible with supertype "Base" \
---zuban-diff                            # N:      Superclass: \
---zuban-diff                            # N:          int \
---zuban-diff                            # N:      Subclass: \
---zuban-diff                            # N:          not_a_decorator
+--zuban-diff     def foo(self) -> int:
     def foo(self) -> int:  # E: "not_a_decorator" not callable
         return 42
+--zuban-diff reveal_type(BadChild2().foo)  # E: "not_a_decorator" not callable \
+--zuban-diff                               # N: Revealed type is "Any"
+reveal_type(BadChild2().foo)  # N: Revealed type is "Any"
 [builtins fixtures/property.pyi]
 
 [case explicitOverride]
@@ -3439,8 +3440,7 @@ class Bar(Foo):
 [builtins fixtures/property.pyi]
 
 [case testNoCrashOnUnpackOverride]
-from typing import Unpack
-from typing_extensions import TypedDict
+from typing import TypedDict, Unpack
 
 class Params(TypedDict):
     x: int
@@ -3461,9 +3461,9 @@ class C(B):
                                                       # N:      Subclass: \
 --zuban-diff                                                       # N:          def meth(*, x: int, y: int) -> None
                                                       # N:          def meth(self, **kwargs: Unpack[Other]) -> None
-
         ...
-[builtins fixtures/tuple.pyi]
+[builtins fixtures/dict.pyi]
+[typing fixtures/typing-full.pyi]
 
 [case testOverrideErrorLocationNamed]
 class B:
@@ -3571,8 +3571,8 @@ class Parent:
     def method_with(self, param: str) -> "Parent": ...
 
 class Child(Parent):
-    method_without: Callable[["Child"], "Child"]
-    method_with: Callable[["Child", str], "Child"]  # E: Incompatible types in assignment (expression has type "Callable[[str], Child]", base class "Parent" defined the type as "Callable[[Arg(str, 'param')], Parent]")
+    method_without: Callable[[], "Child"]
+    method_with: Callable[[str], "Child"]  # E: Incompatible types in assignment (expression has type "Callable[[str], Child]", base class "Parent" defined the type as "Callable[[Arg(str, 'param')], Parent]")
 [builtins fixtures/tuple.pyi]
 
 [case testDistinctFormattingUnion]
@@ -3584,3 +3584,28 @@ def f(x: Callable[[Arg(int, 'x')], None]) -> None: pass
 y: Callable[[Union[int, str]], None]
 f(y)  # E: Argument 1 to "f" has incompatible type "Callable[[Union[int, str]], None]"; expected "Callable[[Arg(int, 'x')], None]"
 [builtins fixtures/tuple.pyi]
+
+[case testAbstractOverloadsWithoutImplementationAllowed]
+from abc import abstractmethod
+from typing import overload, Union
+
+class Foo:
+    @overload
+    @abstractmethod
+    def foo(self, value: int) -> int:
+        ...
+    @overload
+    @abstractmethod
+    def foo(self, value: str) -> str:
+        ...
+
+class Bar(Foo):
+    @overload
+    def foo(self, value: int) -> int:
+        ...
+    @overload
+    def foo(self, value: str) -> str:
+        ...
+
+    def foo(self, value: Union[int, str]) -> Union[int, str]:
+        return super().foo(value)  # E: Call to abstract method "foo" of "Foo" with trivial body via super() is unsafe

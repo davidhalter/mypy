@@ -53,6 +53,7 @@ from mypy.types import (
     UnionType,
     UnpackType,
     find_unpack_in_list,
+    flatten_nested_tuples,
     get_proper_type,
     has_recursive_types,
     has_type_vars,
@@ -127,12 +128,12 @@ def infer_constraints_for_callable(
     param_spec_arg_kinds = []
 
     incomplete_star_mapping = False
-    for i, actuals in enumerate(formal_to_actual):
+    for i, actuals in enumerate(formal_to_actual):  # TODO: isn't this `enumerate(arg_types)`?
         for actual in actuals:
-            if actual is None and callee.arg_kinds[i] in (ARG_STAR, ARG_STAR2):
+            if actual is None and callee.arg_kinds[i] in (ARG_STAR, ARG_STAR2):  # type: ignore[unreachable]
                 # We can't use arguments to infer ParamSpec constraint, if only some
                 # are present in the current inference pass.
-                incomplete_star_mapping = True
+                incomplete_star_mapping = True  # type: ignore[unreachable]
                 break
 
     for i, actuals in enumerate(formal_to_actual):
@@ -385,7 +386,7 @@ def _infer_constraints(
         res = []
         for a_item in actual.items:
             # `orig_template` has to be preserved intact in case it's recursive.
-            # If we unwraped ``type[...]`` previously, wrap the item back again,
+            # If we unwrapped ``type[...]`` previously, wrap the item back again,
             # as ``type[...]`` can't be removed from `orig_template`.
             if type_type_unwrapped:
                 a_item = TypeType.make_normalized(a_item)
@@ -545,11 +546,7 @@ def any_constraints(options: list[list[Constraint] | None], eager: bool) -> list
             for option in valid_options:
                 if option in trivial_options:
                     continue
-                if option is not None:
-                    merged_option: list[Constraint] | None = [merge_with_any(c) for c in option]
-                else:
-                    merged_option = None
-                merged_options.append(merged_option)
+                merged_options.append([merge_with_any(c) for c in option])
             return any_constraints(list(merged_options), eager)
 
     # If normal logic didn't work, try excluding trivially unsatisfiable constraint (due to
@@ -1066,11 +1063,11 @@ class ConstraintBuilderVisitor(TypeVisitor[list[Constraint]]):
         # using e.g. callback protocols.
         # TODO: check that callables match? Ideally we should not infer constraints
         # callables that can never be subtypes of one another in given direction.
-        template = template.with_unpacked_kwargs()
+        template = template.with_unpacked_kwargs().with_normalized_var_args()
         extra_tvars = False
         if isinstance(self.actual, CallableType):
             res: list[Constraint] = []
-            cactual = self.actual.with_unpacked_kwargs()
+            cactual = self.actual.with_unpacked_kwargs().with_normalized_var_args()
             param_spec = template.param_spec()
 
             template_ret_type, cactual_ret_type = template.ret_type, cactual.ret_type
@@ -1351,7 +1348,9 @@ class ConstraintBuilderVisitor(TypeVisitor[list[Constraint]]):
 
     def infer_against_any(self, types: Iterable[Type], any_type: AnyType) -> list[Constraint]:
         res: list[Constraint] = []
-        for t in types:
+        # Some items may be things like `*Tuple[*Ts, T]` for example from callable types with
+        # suffix after *arg, so flatten them.
+        for t in flatten_nested_tuples(types):
             if isinstance(t, UnpackType):
                 if isinstance(t.type, TypeVarTupleType):
                     res.append(Constraint(t.type, self.direction, any_type))
