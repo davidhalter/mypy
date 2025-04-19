@@ -437,7 +437,7 @@ if weird_mixture["key"] is Key.B:       # E: No overload variant of "__getitem__
 --zuban-diff                                         # N:     def __getitem__(self, int, /) -> Literal[Key.C] \
                                         # N:     def __getitem__(self, SupportsIndex, /) -> Literal[Key.C] \
 --zuban-diff                                         # N:     def __getitem__(self, slice, /) -> Tuple[Literal[Key.C], ...]
-                                        # N:     def __getitem__(self, slice[Any, Any, Any], /) -> Tuple[Literal[Key.C], ...]
+                                        # N:     def __getitem__(self, slice[Any, _StartT_co = Any, _StartT_co = Any | _StopT_co = _StartT_co = Any], /) -> tuple[Literal[Key.C], ...]
     reveal_type(weird_mixture)          # N: Revealed type is "Union[TypedDict('__main__.KeyedTypedDict', {'key': Literal[__main__.Key.B]}), Tuple[Literal[__main__.Key.C], fallback=__main__.KeyedNamedTuple]]"
 else:
     reveal_type(weird_mixture)          # N: Revealed type is "Union[TypedDict('__main__.KeyedTypedDict', {'key': Literal[__main__.Key.B]}), Tuple[Literal[__main__.Key.C], fallback=__main__.KeyedNamedTuple]]"

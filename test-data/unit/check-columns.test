@@ -235,7 +235,7 @@ from typing import List
 --zuban-diff           # N:6:     def __getitem__(self, int, /) -> int \
           # N:6:     def __getitem__(self, SupportsIndex, /) -> int \
 --zuban-diff           # N:6:     def __getitem__(self, slice, /) -> list[int]
-          # N:6:     def __getitem__(self, slice[Any, Any, Any], /) -> list[int]
+          # N:6:     def __getitem__(self, slice[Any, _StartT_co = Any, _StartT_co = Any | _StopT_co = _StartT_co = Any], /) -> list[int]
 (1[1]) # E:2: Value of type "int" is not indexable
 def f() -> None:
     1[1] = 1 # E:5: Unsupported target for indexed assignment ("int")

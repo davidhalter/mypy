@@ -1362,7 +1362,7 @@ a[1], b[1] = a # E: No overload variant of "__setitem__" of "list" matches argum
 --zuban-diff                # N:     def __setitem__(self, int, int, /) -> None \
                # N:     def __setitem__(self, SupportsIndex, int, /) -> None \
 --zuban-diff                # N:     def __setitem__(self, slice, Iterable[int], /) -> None
-               # N:     def __setitem__(self, slice[Any, Any, Any], Iterable[int], /) -> None
+               # N:     def __setitem__(self, slice[Any, _StartT_co = Any, _StartT_co = Any | _StopT_co = _StartT_co = Any], Iterable[int], /) -> None
 a[1], a[2] = a
 
 class A: pass
