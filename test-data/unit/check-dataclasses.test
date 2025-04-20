@@ -2657,8 +2657,10 @@ m = My()
 reveal_type(m.a)  # N: Revealed type is "Literal[1]?"
 reveal_type(m.b)  # N: Revealed type is "builtins.int"
 
-m.a = 1  # E: Cannot assign to final attribute "a"
-m.b = 2  # E: Cannot assign to final attribute "b"
+--zuban-diff m.a = 1  # E: Cannot assign to final attribute "a"
+--zuban-diff m.b = 2  # E: Cannot assign to final attribute "b"
+m.a = 1  # E: Cannot assign to final attribute "a"  # E: Property "a" defined in "My" is read-only
+m.b = 2  # E: Cannot assign to final attribute "b"  # E: Property "b" defined in "My" is read-only
 [builtins fixtures/tuple.pyi]
 
 [case testNoCrashForDataclassNamedTupleCombination]
