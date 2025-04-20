@@ -2514,7 +2514,8 @@ from dataclasses import dataclass, field
 DEFAULT = 0
 
 @dataclass
-class Test(Protocol):
+--zuban-diff class Test(Protocol):
+class Test(Protocol):  # E: A Protocol cannot be a dataclass
     x: int
     def reset(self) -> None:
         self.x = DEFAULT
@@ -2525,7 +2526,8 @@ from dataclasses import dataclass
 from typing import Protocol
 
 @dataclass
-class MyDataclass(Protocol): ...
+--zuban-diff class MyDataclass(Protocol): ...
+class MyDataclass(Protocol): ...  # E: A Protocol cannot be a dataclass
 
 a: MyDataclass
 b = [a, a]  # trigger joining the types
