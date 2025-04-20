@@ -4762,10 +4762,12 @@ class A:
     x = 1
 class B(A):
     x: str = ""  # E: Incompatible types in assignment (expression has type "str", base class "A" defined the type as "int")
-    x = 1.0  # E: Incompatible types in assignment (expression has type "float", variable has type "str")
+--zuban-diff     x = 1.0  # E: Incompatible types in assignment (expression has type "float", variable has type "str")
+    x = 1.0  # E: Incompatible types in assignment (expression has type "float", base class "A" defined the type as "int")
 class BInfer(A):
     x = ""  # E: Incompatible types in assignment (expression has type "str", base class "A" defined the type as "int")
-    x = 1.0  # E: Incompatible types in assignment (expression has type "float", variable has type "str") \
+--zuban-diff     x = 1.0  # E: Incompatible types in assignment (expression has type "float", variable has type "str") \
+    x = 1.0  \
              # E: Incompatible types in assignment (expression has type "float", base class "A" defined the type as "int")
 
 [case testClassIgnoreType_RedefinedAttributeAndGrandparentAttributeTypesNotIgnored]
