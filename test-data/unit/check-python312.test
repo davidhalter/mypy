@@ -1322,7 +1322,8 @@ S = TypeVar("S")
 U = TypeVar("U")
 
 def f[T](x: T, y: S) -> T | S: ...  # E: All type parameters should be declared ("S" not declared)
-def g[T](x: S, y: U) -> T | S | U: ...  # E: All type parameters should be declared ("S", "U" not declared)
+--zuban-diff def g[T](x: S, y: U) -> T | S | U: ...  # E: All type parameters should be declared ("S", "U" not declared)
+def g[T](x: S, y: U) -> T | S | U: ...  # E: All type parameters should be declared ("S" not declared)    # E: All type parameters should be declared ("U" not declared)
 
 def h[S: int](x: S) -> S:
    a: int = x
