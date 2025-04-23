@@ -1084,7 +1084,8 @@ x: TestType = 42
 y: TestType = 'a'
 z: TestType = object()  # E: Incompatible types in assignment (expression has type "object", variable has type "Union[int, str]")
 
-reveal_type(TestType)  # N: Revealed type is "typing_extensions.TypeAliasType"
+--zuban-diff reveal_type(TestType)  # N: Revealed type is "typing_extensions.TypeAliasType"
+reveal_type(TestType)  # N: Revealed type is "typing.TypeAliasType"
 TestType()  # E: "TypeAliasType" not callable
 
 class A:
