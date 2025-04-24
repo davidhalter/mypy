@@ -1186,11 +1186,13 @@ P = ParamSpec("P")
 
 Ta0 = TypeAliasType("Ta0", int, type_params=(T, T))  # E: Duplicate type variable "T" in type_params argument to TypeAliasType
 
-Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Tuple literal expected as the type_params argument to TypeAliasType
+--zuban-diff Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Tuple literal expected as the type_params argument to TypeAliasType
+Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Argument "type_params" to "TypeAliasType" has incompatible type "TypeVar"; expected "tuple[Any, ...]"
 
 Ta2 = TypeAliasType("Ta2", int, type_params=(None,))  # E: Free type variable expected in type_params argument to TypeAliasType
 
-Ta3 = TypeAliasType("Ta3", Dict[K, V], type_params=(V,))  # E: Type variable "K" is not included in type_params
+--zuban-diff Ta3 = TypeAliasType("Ta3", Dict[K, V], type_params=(V,))  # E: Type variable "K" is not included in type_params
+Ta3 = TypeAliasType("Ta3", Dict[K, V], type_params=(V,))  # E: All type parameters should be declared ("K" not declared)
 partially_generic1: Ta3[int] = {"a": 1}
 reveal_type(partially_generic1)  # N: Revealed type is "builtins.dict[Any, builtins.int]"
 partially_generic2: Ta3[int] = {1: "a"}  # E: Dict entry 0 has incompatible type "int": "str"; expected "Any": "int"
@@ -1201,30 +1203,42 @@ Ta5 = TypeAliasType("Ta5", Dict)  # Unlike old style aliases, this is not generi
 non_generic_dict: Ta5[int, str]  # E: Bad number of arguments for type alias, expected 0, given 2
 reveal_type(non_generic_dict)  # N: Revealed type is "builtins.dict[Any, Any]"
 
-Ta6 = TypeAliasType("Ta6", Tuple[Unpack[Ts]])  # E: TypeVarTuple "Ts" is not included in type_params
+--zuban-diff Ta6 = TypeAliasType("Ta6", Tuple[Unpack[Ts]])  # E: TypeVarTuple "Ts" is not included in type_params
+Ta6 = TypeAliasType("Ta6", Tuple[Unpack[Ts]])  # E: All type parameters should be declared ("Ts" not declared)
 unbound_tvt_alias: Ta6[int]  # E: Bad number of arguments for type alias, expected 0, given 1
 reveal_type(unbound_tvt_alias)  # N: Revealed type is "builtins.tuple[Any, ...]"
 
 class G(Generic[P, T]): ...
-Ta7 = TypeAliasType("Ta7", G[P, T])  # E: ParamSpec "P" is not included in type_params \
-                                     # E: Type variable "T" is not included in type_params
+--zuban-diff Ta7 = TypeAliasType("Ta7", G[P, T])  # E: ParamSpec "P" is not included in type_params \
+--zuban-diff                                      # E: Type variable "T" is not included in type_params
+Ta7 = TypeAliasType("Ta7", G[P, T])  # E: All type parameters should be declared ("P" not declared) \
+                                     # E: All type parameters should be declared ("T" not declared)
 unbound_ps_alias: Ta7[[int], str]  # E: Bracketed expression "[...]" is not valid as a type \
                                    # N: Did you mean "List[...]"? \
                                    # E: Bad number of arguments for type alias, expected 0, given 2
-reveal_type(unbound_ps_alias)  # N: Revealed type is "__main__.G[Any, Any]"
+--zuban-diff reveal_type(unbound_ps_alias)  # N: Revealed type is "__main__.G[Any, Any]"
+reveal_type(unbound_ps_alias)  # N: Revealed type is "__main__.G[[*Any, **Any], Any]"
 
-Ta8 = TypeAliasType("Ta8", Callable[P, int])  # E: ParamSpec "P" is not included in type_params
+--zuban-diff Ta8 = TypeAliasType("Ta8", Callable[P, int])  # E: ParamSpec "P" is not included in type_params
+Ta8 = TypeAliasType("Ta8", Callable[P, int])  # E: All type parameters should be declared ("P" not declared)
 unbound_ps_alias2: Ta8[int]  # E: Bad number of arguments for type alias, expected 0, given 1
-reveal_type(unbound_ps_alias2)  # N: Revealed type is "def [P] (*Any, **Any) -> builtins.int"
+--zuban-diff reveal_type(unbound_ps_alias2)  # N: Revealed type is "def [P] (*Any, **Any) -> builtins.int"
+reveal_type(unbound_ps_alias2)  # N: Revealed type is "def (*Any, **Any) -> builtins.int"
 
-Ta9 = TypeAliasType("Ta9", Callable[P, T])  # E: ParamSpec "P" is not included in type_params \
-                                            # E: Type variable "T" is not included in type_params
+--zuban-diff Ta9 = TypeAliasType("Ta9", Callable[P, T])  # E: ParamSpec "P" is not included in type_params \
+--zuban-diff                                             # E: Type variable "T" is not included in type_params
+Ta9 = TypeAliasType("Ta9", Callable[P, T])  # E: All type parameters should be declared ("P" not declared) \
+                                            # E: All type parameters should be declared ("T" not declared)
 unbound_ps_alias3: Ta9[int, str]  # E: Bad number of arguments for type alias, expected 0, given 2
-reveal_type(unbound_ps_alias3)  # N: Revealed type is "def [P] (*Any, **Any) -> Any"
+--zuban-diff reveal_type(unbound_ps_alias3)  # N: Revealed type is "def [P] (*Any, **Any) -> Any"
+reveal_type(unbound_ps_alias3)  # N: Revealed type is "def (*Any, **Any) -> Any"
+reveal_type(unbound_ps_alias3)  # N: Revealed type is "def (*Any, **Any) -> Any"
 
-Ta10 = TypeAliasType("Ta10", Callable[[Unpack[Ts]], str])  # E: TypeVarTuple "Ts" is not included in type_params
+--zuban-diff Ta10 = TypeAliasType("Ta10", Callable[[Unpack[Ts]], str])  # E: TypeVarTuple "Ts" is not included in type_params
+Ta10 = TypeAliasType("Ta10", Callable[[Unpack[Ts]], str])  # E: All type parameters should be declared ("Ts" not declared)
 unbound_tvt_alias2: Ta10[int]  # E: Bad number of arguments for type alias, expected 0, given 1
-reveal_type(unbound_tvt_alias2)  # N: Revealed type is "def (*Any) -> builtins.str"
+--zuban-diff reveal_type(unbound_tvt_alias2)  # N: Revealed type is "def (*Any) -> builtins.str"
+reveal_type(unbound_tvt_alias2)  # N: Revealed type is "def (Any) -> builtins.str"
 
 class A(Generic[T]):
     Ta11 = TypeAliasType("Ta11", Dict[str, T], type_params=(T,))  # E: Can't use bound type variable "T" to define generic alias
