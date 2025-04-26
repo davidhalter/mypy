@@ -1646,7 +1646,8 @@ reveal_type(a.x)  # N: Revealed type is "builtins.object"
 b: N[int]
 reveal_type(b.x)  # N: Revealed type is "builtins.int"
 if int():
-    a = b  # E: Incompatible types in assignment (expression has type "N[int]", variable has type "N[object]")
+--zuban-diff     a = b  # E: Incompatible types in assignment (expression has type "N[int]", variable has type "N[object]")
+    a = b
 if int():
     b = a  # E: Incompatible types in assignment (expression has type "N[object]", variable has type "N[int]")
 
