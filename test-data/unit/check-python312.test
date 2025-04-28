@@ -315,7 +315,8 @@ class Invariant[T]:
     def __init__(self, x: T) -> None:
         self.x = x
 
-reveal_type([Invariant(1), Invariant(object())])   # N: Revealed type is "builtins.list[builtins.object]"
+--zuban-diff reveal_type([Invariant(1), Invariant(object())])   # N: Revealed type is "builtins.list[builtins.object]"
+reveal_type([Invariant(1), Invariant(object())])   # N: Revealed type is "builtins.list[__main__.Invariant[builtins.object]]"
 
 [case testPEP695InferVarianceNotReadyForMeet]
 from typing import TypeVar, Callable
@@ -328,7 +329,8 @@ def a2(x: Invariant[object]) -> None: pass
 
 class Invariant[T]:
     def f(self) -> None:
-        reveal_type(c(a1, a2))  # N: Revealed type is "__main__.Invariant[builtins.int]"
+--zuban-diff         reveal_type(c(a1, a2))  # N: Revealed type is "__main__.Invariant[builtins.int]"
+        reveal_type(c(a1, a2))  # N: Revealed type is "Never"
 
     def __init__(self, x: T) -> None:
         self.x = x
