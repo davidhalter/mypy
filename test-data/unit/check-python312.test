@@ -286,7 +286,8 @@ class Invariant[T]:
         # of self.x, which won't be available on the first type checking pass,
         # since __init__ is defined later in the file. In this case we fall back
         # covariance.
-        self.g(c)
+--zuban-diff         self.g(c)
+        self.g(c)  # E: Argument 1 to "g" of "Invariant" has incompatible type "Invariant[int]"; expected "Invariant[object]"
         c2 = Invariant(object())
         self.h(c2)  # E: Argument 1 to "h" of "Invariant" has incompatible type "Invariant[object]"; expected "Invariant[int]"
 
@@ -391,7 +392,8 @@ class Invariant3[T]:
     def x(self) -> T:
         return self._x._x
 
-inv3_1: Invariant3[float] = Invariant3[int](1)  # E: Incompatible types in assignment (expression has type "Invariant3[int]", variable has type "Invariant3[float]")
+--zuban-diff inv3_1: Invariant3[float] = Invariant3[int](1)  # E: Incompatible types in assignment (expression has type "Invariant3[int]", variable has type "Invariant3[float]")
+inv3_1: Invariant3[float] = Invariant3[int](1)
 inv3_2: Invariant3[int] = Invariant3[float](1)  # E: Incompatible types in assignment (expression has type "Invariant3[float]", variable has type "Invariant3[int]")
 [builtins fixtures/property.pyi]
 
@@ -1287,8 +1289,10 @@ class C[T]: pass
 f('x')
 f(C[str]())
 f(C[C[str]]())
-f(1)  # E: Argument 1 to "f" has incompatible type "int"; expected "A"
-f(C[int]())  # E: Argument 1 to "f" has incompatible type "C[int]"; expected "A"
+--zuban-diff f(1)  # E: Argument 1 to "f" has incompatible type "int"; expected "A"
+--zuban-diff f(C[int]())  # E: Argument 1 to "f" has incompatible type "C[int]"; expected "A"
+f(1)  # E: Argument 1 to "f" has incompatible type "int"; expected "str | C[A]"
+f(C[int]())  # E: Argument 1 to "f" has incompatible type "C[int]"; expected "str | C[A]"
 [builtins fixtures/isinstance.pyi]
 
 [case testPEP695InvalidGenericOrProtocolBaseClass]
@@ -1298,15 +1302,18 @@ S = TypeVar("S")
 
 class C[T](Generic[T]):  # E: Generic[...] base class is redundant
     pass
-class C2[T](Generic[S]): # E: Generic[...] base class is redundant
+--zuban-diff class C2[T](Generic[S]): # E: Generic[...] base class is redundant
+class C2[T](Generic[S]): # E: Generic[...] base class is redundant  # E: All type parameters should be declared ("S" not declared)
     pass
 
 a: C[int]
-b: C2[int, str]
+--zuban-diff b: C2[int, str]
+b: C2[int, str]  # E: "C2" expects 1 type argument, but 2 given
 
 class P[T](Protocol[T]):  # E: No arguments expected for "Protocol" base class
     pass
-class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class
+--zuban-diff class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class
+class P2[T](Protocol[S]):  # E: No arguments expected for "Protocol" base class  # E: All type parameters should be declared ("S" not declared)
     pass
 
 [case testPEP695CannotUseTypeVarFromOuterClass]
