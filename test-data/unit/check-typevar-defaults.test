@@ -140,7 +140,8 @@ def func_error_alias1(
     reveal_type(c)  # N: Revealed type is "builtins.dict[builtins.int, builtins.float]"
 
 TERR2 = Dict[T4, T3]  # TODO should be an error  \
-                      # Type parameter "T4" has a default type that refers to one or more type variables that are out of scope
+--zuban-idff                       # Type parameter "T4" has a default type that refers to one or more type variables that are out of scope
+                      # E: Type parameter "T4" has a default type that refers to one or more type variables that are out of scope
 
 def func_error_alias2(
     a: TERR2,
