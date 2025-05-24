@@ -163,7 +163,8 @@ def f2(*args: str, **kwargs: int) -> None:
 
 class C:
     def m(self) -> None:
-        reveal_type(self) # N: Revealed type is "__main__.C"
+--zuban-diff         reveal_type(self) # N: Revealed type is "__main__.C"
+        reveal_type(self) # N: Revealed type is "Self"
 [builtins fixtures/dict.pyi]
 
 
@@ -294,7 +295,8 @@ def f1() -> None:
     x = None
     if int():
         x = ""
-    reveal_type(x) # N: Revealed type is "Union[None, builtins.str]"
+--zuban-diff     reveal_type(x) # N: Revealed type is "Union[None, builtins.str]"
+    reveal_type(x) # N: Revealed type is "Union[builtins.str, None]"
 
 def f2() -> None:
     if int():
@@ -303,14 +305,16 @@ def f2() -> None:
         x = ""
     else:
         x = 1
-    reveal_type(x) # N: Revealed type is "Union[None, builtins.str, builtins.int]"
+--zuban-diff     reveal_type(x) # N: Revealed type is "Union[None, builtins.str, builtins.int]"
+    reveal_type(x) # N: Revealed type is "Union[builtins.str, None, builtins.int]"
 
 def f3() -> None:
     if int():
         x = None
     else:
         x = ""
-    reveal_type(x) # N: Revealed type is "Union[None, builtins.str]"
+--zuban-diff     reveal_type(x) # N: Revealed type is "Union[None, builtins.str]"
+    reveal_type(x) # N: Revealed type is "Union[builtins.str, None]"
 
 def f4() -> None:
     x = None
@@ -319,7 +323,8 @@ def f4() -> None:
 y = None
 if int():
     y = 1
-reveal_type(y) # N: Revealed type is "Union[None, builtins.int]"
+--zuban-diff reveal_type(y) # N: Revealed type is "Union[None, builtins.int]"
+reveal_type(y) # N: Revealed type is "Union[builtins.int, None]"
 
 if int():
     z = None
@@ -327,7 +332,8 @@ elif int():
     z = 1
 else:
     z = ""
-reveal_type(z) # N: Revealed type is "Union[None, builtins.int, builtins.str]"
+--zuban-diff reveal_type(z) # N: Revealed type is "Union[None, builtins.int, builtins.str]"
+reveal_type(z) # N: Revealed type is "Union[builtins.int, None, builtins.str]"
 
 [case testNewRedefinePartialTypeForInstanceVariable]
 # flags: --allow-redefinition-new --local-partial-types
@@ -564,7 +570,8 @@ def f1() -> None:
     x = ""
     reveal_type(x) # N: Revealed type is "builtins.str"
     del x
-    reveal_type(x) # N: Revealed type is "<Deleted 'x'>"
+--zuban-diff     reveal_type(x) # N: Revealed type is "<Deleted 'x'>"
+    reveal_type(x) # E: Trying to read deleted variable "x"  # N: Revealed type is "Any"
     x = 0
     reveal_type(x) # N: Revealed type is "builtins.int"
 
@@ -1023,12 +1030,14 @@ from typing import Final
 
 x: Final = "foo"
 x = 1 # E: Cannot assign to final name "x" \
-      # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+--zuban-diff       # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+      # E: Incompatible types in assignment (expression has type "Literal[1]", variable has type "str")
 
 class C:
     y: Final = "foo"
     y = 1 # E: Cannot assign to final name "y" \
-          # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+--zuban-diff           # E: Incompatible types in assignment (expression has type "int", variable has type "str")
+          # E: Incompatible types in assignment (expression has type "Literal[1]", variable has type "str")
 
 [case testNewRedefineEnableUsingComment]
 # flags: --local-partial-types
