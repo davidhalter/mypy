@@ -407,7 +407,8 @@ x
 x = 2  # E: Cannot assign to final name "x"
 def f() -> int:
     global x
-    x = 3  # No error here is okay since we reported an error above
+--zuban-diff     x = 3  # No error here is okay since we reported an error above
+    x = 3  # E: Cannot assign to final name "x"
     return x
 
 x2: Final = 1
@@ -419,7 +420,8 @@ def f2() -> None:
 y = 1
 y
 y: Final = 2  # E: Cannot redefine an existing name as final
-y = 3  # E: Cannot assign to final name "y"
+--zuban-diff y = 3  # E: Cannot assign to final name "y"
+y = 3
 
 z: Final = 1
 z: Final = 2  # E: Cannot redefine an existing name as final
