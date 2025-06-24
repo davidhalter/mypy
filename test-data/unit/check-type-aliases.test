@@ -1187,7 +1187,7 @@ P = ParamSpec("P")
 Ta0 = TypeAliasType("Ta0", int, type_params=(T, T))  # E: Duplicate type variable "T" in type_params argument to TypeAliasType
 
 --zuban-diff Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Tuple literal expected as the type_params argument to TypeAliasType
-Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Argument "type_params" to "TypeAliasType" has incompatible type "TypeVar"; expected "tuple[Any, ...]"
+Ta1 = TypeAliasType("Ta1", int, type_params=K)  # E: Argument "type_params" to "TypeAliasType" has incompatible type "TypeVar"; expected "tuple[TypeVar | Any, ...]"
 
 Ta2 = TypeAliasType("Ta2", int, type_params=(None,))  # E: Free type variable expected in type_params argument to TypeAliasType
 
