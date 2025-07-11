@@ -350,8 +350,7 @@ return
 return 1
 [out]
 main:2: error: "return" outside function
---zuban-diff main:3: error: "return" outside function
---zuban-diff 
+main:3: error: "return" outside function
 
 [case testYieldOutsideFunction]
 yield 1
