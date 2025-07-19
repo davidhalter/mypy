@@ -500,8 +500,7 @@ X: Final[int]
 tmp/lib/const.pyi:3: error: Type in Final[...] can only be omitted if there is an initializer
 main:8: error: Cannot assign to final name "X"
 main:9: error: Cannot redefine an existing name as final
---zuban-diff main:10: error: Cannot assign to final name "ID"
---zuban-diff 
+main:10: error: Cannot assign to final name "ID"
 
 [case testFinalReassignFuncScope]
 from typing import Final
