@@ -2030,7 +2030,7 @@ reveal_type(t.__iter__) # N: Revealed type is "def () -> typing.Iterator[__main_
 
 [case testNewAnalyzerClassKeywordsForward]
 --zuban-diff class C(B, other=A): ...
-class C(B, other=A): ...  # E: Name "B" is used before definition  # E: Name "A" is used before definition
+class C(B, other=A): ...  # E: Name "B" is used before definition  # E: Name "A" is used before definition # E: Unexpected keyword argument "other" for "__init_subclass__" of "object"
 class B: ...
 class A: ...
 
@@ -2038,11 +2038,12 @@ class A: ...
 from typing import List
 
 --zuban-diff class C(List[C], other=C): ...
-class C(List[C], other=C): ...  # E: Name "C" is used before definition  # E: Name "C" is used before definition
+class C(List[C], other=C): ...  # E: Name "C" is used before definition  # E: Name "C" is used before definition # E: Unexpected keyword argument "other" for "__init_subclass__" of "object"
 [builtins fixtures/list.pyi]
 
 [case testNewAnalyzerClassKeywordsError]
-class C(other=asdf): ...  # E: Name "asdf" is not defined
+--zuban-diff class C(other=asdf): ...  # E: Name "asdf" is not defined
+class C(other=asdf): ...  # E: Unexpected keyword argument "other" for "__init_subclass__" of "object"
 
 [case testNewAnalyzerMissingImport]
 # flags: --ignore-missing-imports

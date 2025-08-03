@@ -7472,7 +7472,8 @@ class Base:
         return
 # TODO implement this, so that no error is raised?
 d = {"default_name": "abc", "thing": 0}
-class Child(Base, **d):  # E: Missing positional arguments "default_name", "thing" in call to "__init_subclass__" of "Base"
+--zuban-diff class Child(Base, **d):  # E: Missing positional arguments "default_name", "thing" in call to "__init_subclass__" of "Base"
+class Child(Base, **d):  # E: Argument 2 to "__init_subclass__" of "Base" has incompatible type "**dict[str, object]"; expected "str"    # E: Argument 2 to "__init_subclass__" of "Base" has incompatible type "**dict[str, object]"; expected "int" 
     pass
 [builtins fixtures/object_with_init_subclass.pyi]
 
