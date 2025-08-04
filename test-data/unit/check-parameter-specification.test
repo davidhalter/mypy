@@ -1184,8 +1184,7 @@ P = ParamSpec("P")
 def callback(func: Callable[[Any], Any]) -> None: ...
 class Job(Generic[P]): ...
 
---zuban-diff @callback
-@callback  # E: "callback" does not return a value (it only ever returns None)
+@callback
 def run_job(job: Job[...]) -> T: ... # E: A function returning TypeVar should receive at least one argument containing the same TypeVar
 [builtins fixtures/tuple.pyi]
 
