@@ -1707,7 +1707,8 @@ CU3 = int | Callable[[str | bool], str]
 CU4: TypeAlias = int | Callable[[str | bool], str]
 [out]
 m.pyi:5: note: Revealed type is "typing._SpecialForm"
-m.pyi:22: note: Revealed type is "typing._SpecialForm"
+--zuban-diff m.pyi:22: note: Revealed type is "typing._SpecialForm"
+m.pyi:22: note: Revealed type is "types.UnionType"
 _testTypeAliasWithNewStyleUnionInStub.py:3: note: Revealed type is "Union[Type[builtins.int], builtins.str]"
 _testTypeAliasWithNewStyleUnionInStub.py:5: note: Revealed type is "Union[Type[builtins.int], builtins.str]"
 _testTypeAliasWithNewStyleUnionInStub.py:7: note: Revealed type is "Union[Type[builtins.int], builtins.str]"
