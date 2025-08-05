@@ -620,7 +620,7 @@ def foo(x: Bogus[int]) -> None:
 
 [case testOverrideByIdemAliasCorrectType]
 --zuban-diff C = C
-C = C  # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)
+C = C  # E: Name "C" is used before definition  # E: Cannot resolve name "C" (possible cyclic definition)  # E: Invalid recursive alias: a union item of itself
 class C:  # type: ignore
     pass
 x: C
