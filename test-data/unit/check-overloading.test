@@ -4346,8 +4346,7 @@ class Wrapper2:
     @staticmethod
     def foo(x: int) -> int: ...
     @overload
---zuban-diff     def foo(x: str) -> str: ...  # E: Self argument missing for a non-static method (or an invalid type for self)
-    def foo(x: str) -> str: ...
+    def foo(x: str) -> str: ...  # E: Self argument missing for a non-static method (or an invalid type for self)
     @staticmethod
     def foo(x): pass
 
@@ -4358,8 +4357,7 @@ class Wrapper3:
     @overload
     @staticmethod
     def foo(x: str) -> str: ...
---zuban-diff     def foo(x: Union[int, str]): pass  # E: Self argument missing for a non-static method (or an invalid type for self)
-    def foo(x: Union[int, str]): pass
+    def foo(x: Union[int, str]): pass  # E: Self argument missing for a non-static method (or an invalid type for self)
 [builtins fixtures/staticmethod.pyi]
 
 [case testOverloadWithSwappedDecorators2]
@@ -4395,8 +4393,9 @@ class Wrapper3:
     def foo(x: int) -> int: ...
 
     @overload
---zuban-diff     def foo(x: str) -> str: ...  # E: Self argument missing for a non-static method (or an invalid type for self)
-    def foo(x: str) -> str: ...
+    def foo(x: str) -> str: ...  # E: Self argument missing for a non-static method (or an invalid type for self)
+--zuban-diff     def foo(x: str) -> str: ...
+    def foo(x: str) -> str: ... # E: Overloaded function implementation does not accept all possible arguments of signature 1 # E: Overloaded function implementation cannot produce return type of signature 1 # E: Self argument missing for a non-static method (or an invalid type for self)
 
     @staticmethod
     def foo(x): pass
