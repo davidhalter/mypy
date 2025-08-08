@@ -2138,14 +2138,11 @@ def f(x: int) -> None: ...
 def f(x: object) -> None:
 	pass
 [out]
---zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
-a.py:5: error: An overloaded function outside a stub file must have an implementation
+a.py:2: error: An overloaded function outside a stub file must have an implementation
 ==
---zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
-a.py:5: error: An overloaded function outside a stub file must have an implementation
+a.py:2: error: An overloaded function outside a stub file must have an implementation
 ==
---zuban-diff a.py:2: error: An overloaded function outside a stub file must have an implementation
-a.py:5: error: An overloaded function outside a stub file must have an implementation
+a.py:2: error: An overloaded function outside a stub file must have an implementation
 ==
 
 [case testPreviousErrorInDecoratedMethodSemanalPass3]

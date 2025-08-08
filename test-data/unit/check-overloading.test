@@ -70,12 +70,10 @@ from typing import overload, Any
 class A: pass
 class B: pass
 
---zuban-diff @overload  # E: An overloaded function outside a stub file must have an implementation
-@overload
+@overload  # E: An overloaded function outside a stub file must have an implementation
 def f(x: 'A') -> 'B': ...
 @overload
---zuban-diff def f(x: 'B') -> 'A': ...
-def f(x: 'B') -> 'A': ...  # E: An overloaded function outside a stub file must have an implementation
+def f(x: 'B') -> 'A': ...
 
 reveal_type(f(A())) # N: Revealed type is "__main__.B"
 reveal_type(f(B())) # N: Revealed type is "__main__.A"

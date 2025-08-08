@@ -391,11 +391,10 @@ class B(A):
 from typing import overload, Any
 class A:
 --zuban-diff     @overload # E:6: An overloaded function outside a stub file must have an implementation
-    @overload
+    @overload # E:5: An overloaded function outside a stub file must have an implementation
     def f(self, x: int) -> int: pass
     @overload
---zuban-diff     def f(self, x: str) -> str: pass
-    def f(self, x: str) -> str: pass # E:9: An overloaded function outside a stub file must have an implementation
+    def f(self, x: str) -> str: pass
 
 [case testColumnFunctionWithTypeVarValues]
 from typing import TypeVar, List

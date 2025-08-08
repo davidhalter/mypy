@@ -968,14 +968,12 @@ def func(var: Iterable[str]) -> None:
 [case testNoOverloadImplementation]
 from typing import overload
 
---zuban-diff @overload  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
-@overload
+@overload  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
 def f(arg: int) -> int:
     ...
 
 @overload
---zuban-diff def f(arg: str) -> str:
-def f(arg: str) -> str:  # E: An overloaded function outside a stub file must have an implementation  [no-overload-impl]
+def f(arg: str) -> str:
     ...
 
 [case testSliceInDict39]
