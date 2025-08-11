@@ -1373,24 +1373,40 @@ P2 = ParamSpec('P2')
 def f0(f: Callable[P1, int], *args: P1.args, **kwargs: P2.kwargs): ...  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs" \
                                                                         # E: ParamSpec "P2" is unbound
 
-def f1(*args: P1.args): ...  # E: ParamSpec "P1" is unbound
-def f2(**kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound
-def f3(*args: P1.args, **kwargs: int): ...  # E: ParamSpec "P1" is unbound
-def f4(*args: int, **kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound
+--zuban-diff def f1(*args: P1.args): ...  # E: ParamSpec "P1" is unbound
+--zuban-diff def def f2(**kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound
+--zuban-diff def def f3(*args: P1.args, **kwargs: int): ...  # E: ParamSpec "P1" is unbound
+--zuban-diff def def f4(*args: int, **kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound
+def f1(*args: P1.args): ...  # E: ParamSpec "P1" is unbound  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
+def f2(**kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
+def f3(*args: P1.args, **kwargs: int): ...  # E: ParamSpec "P1" is unbound  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
+def f4(*args: int, **kwargs: P1.kwargs): ...  # E: ParamSpec "P1" is unbound  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
 
 # Error message is based on the `args` definition:
+--zuband-diff def f5(*args: P2.args, **kwargs: P1.kwargs): ...  # E: ParamSpec "P2" is unbound \
+--zuband-diff                                                   # E: ParamSpec "P1" is unbound
+--zuband-diff def f6(*args: P1.args, **kwargs: P2.kwargs): ...  # E: ParamSpec "P1" is unbound \
+--zuband-diff                                                   # E: ParamSpec "P2" is unbound
 def f5(*args: P2.args, **kwargs: P1.kwargs): ...  # E: ParamSpec "P2" is unbound \
-                                                  # E: ParamSpec "P1" is unbound
+                                                  # E: ParamSpec "P1" is unbound \
+                                                  # E: ParamSpec must have "*args" typed as "P2.args" and "**kwargs" typed as "P2.kwargs"
 def f6(*args: P1.args, **kwargs: P2.kwargs): ...  # E: ParamSpec "P1" is unbound \
-                                                  # E: ParamSpec "P2" is unbound
+                                                  # E: ParamSpec "P2" is unbound \
+                                                  # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
 
 # Multiple `ParamSpec` variables can be found, they should not affect error message:
 P3 = ParamSpec('P3')
 
+--zuband-diff def f7(first: Callable[P3, int], *args: P1.args, **kwargs: P2.kwargs): ...  # E: ParamSpec "P1" is unbound \
+--zuband-diff                                                                             # E: ParamSpec "P2" is unbound
+--zuband-diff def f8(first: Callable[P3, int], *args: P2.args, **kwargs: P1.kwargs): ...  # E: ParamSpec "P2" is unbound \
+--zuband-diff                                                                             # E: ParamSpec "P1" is unbound
 def f7(first: Callable[P3, int], *args: P1.args, **kwargs: P2.kwargs): ...  # E: ParamSpec "P1" is unbound \
-                                                                            # E: ParamSpec "P2" is unbound
+                                                                            # E: ParamSpec "P2" is unbound \
+                                                                            # E: ParamSpec must have "*args" typed as "P1.args" and "**kwargs" typed as "P1.kwargs"
 def f8(first: Callable[P3, int], *args: P2.args, **kwargs: P1.kwargs): ...  # E: ParamSpec "P2" is unbound \
-                                                                            # E: ParamSpec "P1" is unbound
+                                                                            # E: ParamSpec "P1" is unbound \
+                                                                            # E: ParamSpec must have "*args" typed as "P2.args" and "**kwargs" typed as "P2.kwargs"
 
 [builtins fixtures/paramspec.pyi]
 
