@@ -1429,13 +1429,18 @@ c: Literal[4]
 d: Literal['foo']
 e: str
 
-reveal_type(a + a)      # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(a + a)      # N: Revealed type is "builtins.int"
+reveal_type(a + a)      # N: Revealed type is "Literal[6]?"
 reveal_type(a + b)      # N: Revealed type is "builtins.int"
 reveal_type(b + a)      # N: Revealed type is "builtins.int"
-reveal_type(a + 1)      # N: Revealed type is "builtins.int"
-reveal_type(1 + a)      # N: Revealed type is "builtins.int"
-reveal_type(a + c)      # N: Revealed type is "builtins.int"
-reveal_type(c + a)      # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(a + 1)      # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(1 + a)      # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(a + c)      # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(c + a)      # N: Revealed type is "builtins.int"
+reveal_type(a + 1)      # N: Revealed type is "Literal[4]?"
+reveal_type(1 + a)      # N: Revealed type is "Literal[4]?"
+reveal_type(a + c)      # N: Revealed type is "Literal[7]?"
+reveal_type(c + a)      # N: Revealed type is "Literal[7]?"
 
 reveal_type(d + d)      # N: Revealed type is "builtins.str"
 reveal_type(d + e)      # N: Revealed type is "builtins.str"
