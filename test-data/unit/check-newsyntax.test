@@ -121,7 +121,8 @@ f'result: {value:{width}.{precision}}'
 [case testNewSyntaxFStringSingleField]
 v = 1
 reveal_type(f'{v}') # N: Revealed type is "builtins.str"
-reveal_type(f'{1}') # N: Revealed type is "builtins.str"
+--zuban-diff reveal_type(f'{1}') # N: Revealed type is "builtins.str"
+reveal_type(f'{1}') # N: Revealed type is "LiteralString"
 [builtins fixtures/f_string.pyi]
 
 [case testFeatureVersionSuggestion]
