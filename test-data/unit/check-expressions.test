@@ -1652,7 +1652,8 @@ from typing import Generator
 def g() -> Generator[int, None, None]:
     x = yield from ()  # E: Function does not return a value (it only ever returns None)
     x = yield from (0, 1, 2)  # E: Function does not return a value (it only ever returns None)
-    x = yield from (0, "ERROR")  # E: Incompatible types in "yield from" (actual type "Union[int, str]", expected type "int") \
+--zuban-diff     x = yield from (0, "ERROR")  # E: Incompatible types in "yield from" (actual type "Union[int, str]", expected type "int") \
+    x = yield from (0, "ERROR")  # E: Incompatible types in "yield from" (actual type "Literal[0, 'ERROR']", expected type "int") \
                                  # E: Function does not return a value (it only ever returns None)
     x = yield from ("ERROR",)  # E: Incompatible types in "yield from" (actual type "str", expected type "int") \
                                # E: Function does not return a value (it only ever returns None)
@@ -2324,7 +2325,8 @@ if f == 0:  # E: Non-overlapping equality check (left operand type: "FileId", ri
 
 [case testStrictEqualityWithFixedLengthTupleInCheck]
 # flags: --strict-equality
-if 1 in ('x', 'y'):  # E: Non-overlapping container check (element type: "int", container item type: "str")
+--zuban-diff if 1 in ('x', 'y'):  # E: Non-overlapping container check (element type: "int", container item type: "str")
+if 1 in ('x', 'y'):  # E: Non-overlapping container check (element type: "Literal[1]", container item type: "Literal['x', 'y']")
     pass
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-full.pyi]

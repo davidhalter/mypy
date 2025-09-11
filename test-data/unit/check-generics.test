@@ -1871,7 +1871,8 @@ g = f3
 from typing import TypeVar, Container
 T = TypeVar('T')
 def f(x: Container[T]) -> T: ...
-reveal_type(f((1, 2))) # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(f((1, 2))) # N: Revealed type is "builtins.int"
+reveal_type(f((1, 2))) # N: Revealed type is "Literal[1]? | Literal[2]?"
 [typing fixtures/typing-full.pyi]
 [builtins fixtures/tuple.pyi]
 
