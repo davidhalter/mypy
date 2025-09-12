@@ -1088,10 +1088,12 @@ T = TypeVar('T')
 def join(x: T, y: T) -> T: pass
 
 f1 = join(func, WithMetaclass)
-reveal_type(f1())  # N: Revealed type is "Union[__main__.WithMetaclass, None]"
+--zuban-diff reveal_type(f1())  # N: Revealed type is "Union[__main__.WithMetaclass, None]"
+reveal_type(f1())  # N: Revealed type is "Union[None, __main__.WithMetaclass]"
 
 f2 = join(WithMetaclass, func)
-reveal_type(f2())  # N: Revealed type is "Union[__main__.WithMetaclass, None]"
+--zuban-diff reveal_type(f2())  # N: Revealed type is "Union[__main__.WithMetaclass, None]"
+reveal_type(f2())  # N: Revealed type is "Union[None, __main__.WithMetaclass]"
 
 -- Attribute access in class body
 -- ------------------------------
