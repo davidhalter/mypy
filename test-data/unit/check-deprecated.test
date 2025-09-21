@@ -607,7 +607,8 @@ C().f(1)  # E: function __main__.C.f is deprecated: use g instead \
           # E: Too many arguments for "f" of "C"
 f = C().f  # E: function __main__.C.f is deprecated: use g instead
 f()
-t = (C.f, C.f, C.g)  # E: function __main__.C.f is deprecated: use g instead
+--zuban-diff t = (C.f, C.f, C.g)  # E: function __main__.C.f is deprecated: use g instead
+t = (C.f, C.f, C.g)  # E: function __main__.C.f is deprecated: use g instead    # E: function __main__.C.f is deprecated: use g instead
 
 C().g()
 C().h()  # E: function __main__.C.h is deprecated: use g instead
