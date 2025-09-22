@@ -49,14 +49,17 @@ from typing_extensions import deprecated
 @deprecated("use f2 instead")
 def f() -> None: ...
 
-f  # E: function __main__.f is deprecated: use f2 instead  # type: ignore[deprecated]
+--zuban-diff f  # E: function __main__.f is deprecated: use f2 instead  # type: ignore[deprecated]
+f  # E: function __main__.f is deprecated: use f2 instead
 f(1)  # E: function __main__.f is deprecated: use f2 instead \
       # E: Too many arguments for "f"
 f[1]  # E: function __main__.f is deprecated: use f2 instead \
-      # E: Value of type "Callable[[], None]" is not indexable
+--zuban-diff       # E: Value of type "Callable[[], None]" is not indexable
+      # E: Type application is only supported for generic classes
 g = f  # E: function __main__.f is deprecated: use f2 instead
 g()
-t = (f, f, g)  # E: function __main__.f is deprecated: use f2 instead
+--zuban-diff t = (f, f, g)  # E: function __main__.f is deprecated: use f2 instead
+t = (f, f, g)  # E: function __main__.f is deprecated: use f2 instead  # E: function __main__.f is deprecated: use f2 instead
 
 [builtins fixtures/tuple.pyi]
 
@@ -284,7 +287,8 @@ D()
 E()  # E: class k.E is deprecated: use E2 instead
 
 x1: m.A  # E: class m.A is deprecated: use A2 instead
-x2: m.A = m.A()  # E: class m.A is deprecated: use A2 instead
+--zuban-diff x2: m.A = m.A()  # E: class m.A is deprecated: use A2 instead
+x2: m.A = m.A()  # E: class m.A is deprecated: use A2 instead  # E: class m.A is deprecated: use A2 instead
 y1: B
 y2: B = B()
 
