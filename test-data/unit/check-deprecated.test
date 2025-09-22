@@ -123,7 +123,8 @@ C(1)  # E: class __main__.C is deprecated: use C2 instead \
 
 D = C  # E: class __main__.C is deprecated: use C2 instead
 D()
-t = (C, C, D)  # E: class __main__.C is deprecated: use C2 instead
+--zuban-diff t = (C, C, D)  # E: class __main__.C is deprecated: use C2 instead
+t = (C, C, D)  # E: class __main__.C is deprecated: use C2 instead  # E: class __main__.C is deprecated: use C2 instead
 
 u1: Union[C, int] = 1  # E: class __main__.C is deprecated: use C2 instead
 u1 = 1
@@ -149,7 +150,8 @@ x10: Callable[[int, C, int], int]  # E: class __main__.C is deprecated: use C2 i
 T = TypeVar("T")
 A1: TypeAlias = Optional[C]  # E: class __main__.C is deprecated: use C2 instead
 x11: A1
-A2: TypeAlias = List[Union[A2, C]]  # E: class __main__.C is deprecated: use C2 instead
+--zuban-diff A2: TypeAlias = List[Union[A2, C]]  # E: class __main__.C is deprecated: use C2 instead
+A2: TypeAlias = List[Union[A2, C]]  # E: class __main__.C is deprecated: use C2 instead  # E: Name "A2" is used before definition
 x12: A2
 A3: TypeAlias = List[Optional[T]]
 x13: A3[C]  # E: class __main__.C is deprecated: use C2 instead
