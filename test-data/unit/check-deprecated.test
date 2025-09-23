@@ -581,10 +581,12 @@ class A:
     def __iadd__(self, v: Union[int, str]) -> A: ...
 
 a = A()
-a + 1  # E: overload def (__main__.A, builtins.int) of function __main__.A.__add__ is deprecated: no A + int
+--zuban-diff a + 1  # E: overload def (__main__.A, builtins.int) of function __main__.A.__add__ is deprecated: no A + int
+a + 1  # E: overload def (self: __main__.A, v: builtins.int) of function __main__.A.__add__ is deprecated: no A + int
 a + "x"
 1 + a
-"x" + a  # E: overload def (__main__.A, builtins.str) of function __main__.A.__radd__ is deprecated: no str + A
+--zuban-diff "x" + a  # E: overload def (__main__.A, builtins.str) of function __main__.A.__radd__ is deprecated: no str + A
+"x" + a  # E: overload def (self: __main__.A, v: builtins.str) of function __main__.A.__radd__ is deprecated: no str + A
 a += 1  # E: function __main__.A.__iadd__ is deprecated: no A += Any
 a += "x"  # E: function __main__.A.__iadd__ is deprecated: no A += Any
 
