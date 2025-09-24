@@ -473,22 +473,18 @@ class A:
 class B(A): ...
 
 a = A()
---zuban-diff a.f(1)  # E: overload def (cls: type[__main__.A], v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
-a.f(1)  # E: overload def (cls: Any, v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
+a.f(1)  # E: overload def (cls: type[__main__.A], v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
 a.f("x")
 a.g(1)
---zuban-diff a.g("x")  # E: overload def (cls: type[__main__.A], v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
-a.g("x")  # E: overload def (cls: Any, v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
+a.g("x")  # E: overload def (cls: type[__main__.A], v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
 a.h(1)  # E: function __main__.A.h is deprecated: use `h2`  instead
 a.h("x")  # E: function __main__.A.h is deprecated: use `h2`  instead
 
 b = B()
---zuban-diff b.f(1)  # E: overload def (cls: type[__main__.A], v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
-b.f(1)  # E: overload def (cls: Any, v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
+b.f(1)  # E: overload def (cls: type[__main__.A], v: builtins.int) of function __main__.A.f is deprecated: pass `str` instead
 b.f("x")
 b.g(1)
---zuban-diff b.g("x")  # E: overload def (cls: type[__main__.A], v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
-b.g("x")  # E: overload def (cls: Any, v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
+b.g("x")  # E: overload def (cls: type[__main__.A], v: builtins.str) of function __main__.A.g is deprecated: pass `int` instead
 b.h(1)  # E: function __main__.A.h is deprecated: use `h2`  instead
 b.h("x")  # E: function __main__.A.h is deprecated: use `h2`  instead
 
