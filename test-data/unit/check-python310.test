@@ -651,17 +651,21 @@ match m:
     case bytes(c):
         reveal_type(c)  # N: Revealed type is "builtins.bytes"
     case dict(d):
-        reveal_type(d)  # N: Revealed type is "builtins.dict[Any, Any]"
+--zuban-diff         reveal_type(d)  # N: Revealed type is "builtins.dict[Any, Any]"
+        reveal_type(d)  # N: Revealed type is "builtins.dict"
     case float(e):
         reveal_type(e)  # N: Revealed type is "builtins.float"
     case frozenset(f):
-        reveal_type(f)  # N: Revealed type is "builtins.frozenset[Any]"
+--zuban-diff         reveal_type(f)  # N: Revealed type is "builtins.frozenset[Any]"
+        reveal_type(f)  # N: Revealed type is "builtins.frozenset"
     case int(g):
         reveal_type(g)  # N: Revealed type is "builtins.int"
     case list(h):
-        reveal_type(h)  # N: Revealed type is "builtins.list[Any]"
+--zuban-diff         reveal_type(h)  # N: Revealed type is "builtins.list[Any]"
+        reveal_type(h)  # N: Revealed type is "builtins.list"
     case set(i):
-        reveal_type(i)  # N: Revealed type is "builtins.set[Any]"
+--zuban-diff         reveal_type(i)  # N: Revealed type is "builtins.set[Any]"
+        reveal_type(i)  # N: Revealed type is "builtins.set"
     case str(j):
         reveal_type(j)  # N: Revealed type is "builtins.str"
     case tuple(k):
@@ -679,17 +683,21 @@ match m:
     case bytes():
         reveal_type(m)  # N: Revealed type is "builtins.bytes"
     case dict():
-        reveal_type(m)  # N: Revealed type is "builtins.dict[Any, Any]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.dict[Any, Any]"
+        reveal_type(m)  # N: Revealed type is "builtins.dict"
     case float():
         reveal_type(m)  # N: Revealed type is "builtins.float"
     case frozenset():
-        reveal_type(m)  # N: Revealed type is "builtins.frozenset[Any]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.frozenset[Any]"
+        reveal_type(m)  # N: Revealed type is "builtins.frozenset"
     case int():
         reveal_type(m)  # N: Revealed type is "builtins.int"
     case list():
-        reveal_type(m)  # N: Revealed type is "builtins.list[Any]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.list[Any]"
+        reveal_type(m)  # N: Revealed type is "builtins.list"
     case set():
-        reveal_type(m)  # N: Revealed type is "builtins.set[Any]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.set[Any]"
+        reveal_type(m)  # N: Revealed type is "builtins.set"
     case str():
         reveal_type(m)  # N: Revealed type is "builtins.str"
     case tuple():
