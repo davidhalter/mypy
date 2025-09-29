@@ -854,7 +854,8 @@ m: object
 
 match m:
     case A(a=i):
-        reveal_type(m)  # N: Revealed type is "__main__.A[Any]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "__main__.A[Any]"
+        reveal_type(m)  # N: Revealed type is "__main__.A"
         reveal_type(i)  # N: Revealed type is "Any"
 
 [case testMatchClassPatternCaptureVariadicGeneric]
@@ -868,7 +869,8 @@ class A(Generic[Unpack[Ts]]):
 m: object
 match m:
     case A(a=i):
-        reveal_type(m)  # N: Revealed type is "__main__.A[Unpack[builtins.tuple[Any, ...]]]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "__main__.A[Unpack[builtins.tuple[Any, ...]]]"
+        reveal_type(m)  # N: Revealed type is "__main__.A"
         reveal_type(i)  # N: Revealed type is "builtins.tuple[Any, ...]"
 [builtins fixtures/tuple.pyi]
 
