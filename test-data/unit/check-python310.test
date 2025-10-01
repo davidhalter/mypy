@@ -1239,7 +1239,8 @@ m: object
 
 match m:
     case list(x) | dict(x):
-        reveal_type(x)  # N: Revealed type is "Union[builtins.list[Any], builtins.dict[Any, Any]]"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Union[builtins.list[Any], builtins.dict[Any, Any]]"
+        reveal_type(x)  # N: Revealed type is "Union[builtins.list, builtins.dict]"
 [builtins fixtures/dict.pyi]
 
 -- Interactions --
@@ -1367,8 +1368,7 @@ m: str
 
 match m:
     case a if a := 1:  # E: Incompatible types in assignment (expression has type "int", variable has type "str")
---zuban-diff         reveal_type(a)  # N: Revealed type is "Literal[1]?"
-        reveal_type(a)  # N: Revealed type is "str"
+        reveal_type(a)  # N: Revealed type is "Literal[1]?"
 
 [case testMatchAssigningPatternGuard]
 m: str
@@ -2172,7 +2172,8 @@ def f1(x: int) -> int:
 import typing
 
 def f0(x: int) -> None:
-    a = y  # E: Cannot determine type of "y"  # E: Name "y" is used before definition
+--zuban-diff     a = y  # E: Cannot determine type of "y"  # E: Name "y" is used before definition
+    a = y  # E: Name "y" is used before definition
     match y := x:
         case 1:
             b = y
@@ -2717,7 +2718,8 @@ match m[k]:
 
 match 0:
     case 0 as i:
-        reveal_type(i)  # N: Revealed type is "Literal[0]?"
+--zuban-diff         reveal_type(i)  # N: Revealed type is "Literal[0]?"
+        reveal_type(i)  # N: Revealed type is "Literal[0]"
     case int(i):
         i  # E: Statement is unreachable
     case other:
