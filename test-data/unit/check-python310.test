@@ -728,7 +728,8 @@ m: object
 
 match m:
     case xyz(y):  # E: Name "xyz" is not defined
-        reveal_type(m)  # N: Revealed type is "Any"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "Any"
+        reveal_type(m)  # N: Revealed type is "object"
         reveal_type(y)  # N: Revealed type is "Any"
 
 match m:
@@ -736,7 +737,8 @@ match m:
         reveal_type(x)  # N: Revealed type is "Any"
     case (xyz1() as n) | (xyz2(attr=n)):  # E: Name "xyz1" is not defined \
                                           # E: Name "xyz2" is not defined
-        reveal_type(n)  # N: Revealed type is "Any"
+--zuban-diff         reveal_type(n)  # N: Revealed type is "Any"
+        reveal_type(n)  # N: Revealed type is "object"
 
 [case testMatchClassPatternCaptureDataclass]
 from dataclasses import dataclass
@@ -2653,7 +2655,8 @@ match A().foo:
 def int_literal() -> None:
     match 12:
         case 1 as s:
-            reveal_type(s)  # N: Revealed type is "Literal[1]"
+--zuban-diff             reveal_type(s)  # N: Revealed type is "Literal[1]"
+            reveal_type(s)  # E: Statement is unreachable
         case int(i):
             reveal_type(i)  # N: Revealed type is "Literal[12]?"
         case other:
@@ -2662,7 +2665,8 @@ def int_literal() -> None:
 def str_literal() -> None:
     match 'foo':
         case 'a' as s:
-            reveal_type(s)  # N: Revealed type is "Literal['a']"
+--zuban-diff             reveal_type(s)  # N: Revealed type is "Literal['a']"
+            reveal_type(s)  # E: Statement is unreachable
         case str(i):
             reveal_type(i)  # N: Revealed type is "Literal['foo']?"
         case other:
@@ -2684,7 +2688,8 @@ match 1 + 2:
     case 3 as s:
         reveal_type(s)  # N: Revealed type is "Literal[3]"
     case int(s):
-        reveal_type(s)  # N: Revealed type is "builtins.int"
+--zuban-diff         reveal_type(s)  # N: Revealed type is "builtins.int"
+        reveal_type(s)  # E: Statement is unreachable
     case other:
         other  # E: Statement is unreachable
 
