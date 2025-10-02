@@ -1100,7 +1100,8 @@ match x:
 
 reveal_type(x)  # N: Revealed type is "builtins.list[builtins.list[builtins.dict[builtins.int, builtins.int]]]"
 reveal_type(y)  # N: Revealed type is "builtins.int"
-reveal_type(z)  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(z)  # N: Revealed type is "builtins.int"
+reveal_type(z)  # N: Revealed type is "Literal[1]"
 [builtins fixtures/dict-full.pyi]
 
 [case testMatchNonFinalMatchArgs]
