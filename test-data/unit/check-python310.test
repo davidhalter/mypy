@@ -109,7 +109,8 @@ m: Sequence[object]
 
 match m:
     case [1, True]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[Literal[1] | Literal[True]]"
 
 [case testMatchSequencePatternNarrowsOuter]
 from typing import Sequence
@@ -117,7 +118,8 @@ m: object
 
 match m:
     case [1, True]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[Literal[1] | Literal[True]]"
 
 [case testMatchSequencePatternAlreadyNarrowerInner]
 from typing import Sequence
@@ -125,7 +127,8 @@ m: Sequence[bool]
 
 match m:
     case [1, True]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.bool]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.bool]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[Literal[True]]"
 
 [case testMatchSequencePatternAlreadyNarrowerOuter]
 from typing import Sequence
@@ -133,7 +136,8 @@ m: Sequence[object]
 
 match m:
     case [1, True]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.int]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[Literal[1] | Literal[True]]"
 
 [case testMatchSequencePatternAlreadyNarrowerBoth]
 from typing import Sequence
@@ -141,7 +145,8 @@ m: Sequence[bool]
 
 match m:
     case [1, True]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.bool]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[builtins.bool]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[Literal[True]]"
 
 [case testMatchNestedSequencePatternNarrowsInner]
 from typing import Sequence
@@ -149,7 +154,8 @@ m: Sequence[Sequence[object]]
 
 match m:
     case [[1], [True]]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[builtins.int]]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[builtins.int]]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[Literal[1]] | typing.Sequence[Literal[True]]]"
 
 [case testMatchNestedSequencePatternNarrowsOuter]
 from typing import Sequence
@@ -157,7 +163,8 @@ m: object
 
 match m:
     case [[1], [True]]:
-        reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[builtins.int]]"
+--zuban-diff         reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[builtins.int]]"
+        reveal_type(m)  # N: Revealed type is "typing.Sequence[typing.Sequence[Literal[1]] | typing.Sequence[Literal[True]]]"
 
 [case testMatchSequencePatternDoesntNarrowInvariant]
 from typing import List
