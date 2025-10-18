@@ -1480,7 +1480,8 @@ b: int
 c: Literal["foo"]
 
 if int():
-    a = a * a  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[3]")
+--zuban-diff     a = a * a  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[3]")
+    a = a * a  # E: Incompatible types in assignment (expression has type "Literal[9]", variable has type "Literal[3]")
     a = a * b  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[3]")
     a = b * a  # E: Incompatible types in assignment (expression has type "int", variable has type "Literal[3]")
 
