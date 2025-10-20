@@ -262,9 +262,11 @@ B = Mapping[int, Union[int, B]]
 x: int
 y: Union[A, B]
 if isinstance(y, Sequence):
-    x = y  # E: Incompatible types in assignment (expression has type "Sequence[Union[int, A]]", variable has type "int")
+--zuban-diff     x = y  # E: Incompatible types in assignment (expression has type "Sequence[Union[int, A]]", variable has type "int")
+    x = y  # E: Incompatible types in assignment (expression has type "Sequence[int | Sequence[int | A]]", variable has type "int")
 else:
-    x = y  # E: Incompatible types in assignment (expression has type "Mapping[int, Union[int, B]]", variable has type "int")
+--zuban-diff     x = y  # E: Incompatible types in assignment (expression has type "Mapping[int, Union[int, B]]", variable has type "int")
+    x = y  # E: Incompatible types in assignment (expression has type "Mapping[int, int | Mapping[int, int | B]]", variable has type "int")
 [builtins fixtures/isinstancelist.pyi]
 
 [case testRecursiveAliasesRestrictions2]
@@ -289,7 +291,8 @@ x = a  # E: Incompatible types in assignment (expression has type "Sequence[Unio
 b = aa  # E: Incompatible types in assignment (expression has type "Sequence[A | NestedA]", variable has type "Sequence[B | NestedB]")
 if isinstance(b[0], Sequence):
     a = b[0]
-    x = a  # E: Incompatible types in assignment (expression has type "Sequence[Union[B, NestedB]]", variable has type "int")
+--zuban-diff     x = a  # E: Incompatible types in assignment (expression has type "Sequence[Union[B, NestedB]]", variable has type "int")
+    x = a  # E: Incompatible types in assignment (expression has type "Sequence[B | Sequence[B | NestedB]]", variable has type "int")
 [builtins fixtures/isinstancelist.pyi]
 
 [case testRecursiveAliasWithRecursiveInstance]
@@ -958,7 +961,7 @@ x: A[int, str]
 *_, last = x
 if last is not None:
 --zuban-diff     reveal_type(last)  # N: Revealed type is "tuple[builtins.int, builtins.str, Union[tuple[builtins.int, builtins.str, Union[..., None]], None]]"
-    reveal_type(last)  # N: Revealed type is "tuple[builtins.int, builtins.str, Union[..., None]]"
+    reveal_type(last)  # N: Revealed type is "tuple[int, str, tuple[int, str, ... | None] | None]"
 [builtins fixtures/tuple.pyi]
 
 [case testRecursiveAliasLiteral]

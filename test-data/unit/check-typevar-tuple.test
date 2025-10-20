@@ -817,7 +817,7 @@ reveal_type(x)  # N: Revealed type is "tuple[builtins.int, builtins.str, Union[.
 *_, last = x
 if last is not None:
 --zuban-diff     reveal_type(last)  # N: Revealed type is "tuple[builtins.int, builtins.str, Union[tuple[builtins.int, builtins.str, Union[..., None]], None]]"
-    reveal_type(last)  # N: Revealed type is "tuple[builtins.int, builtins.str, Union[..., None]]"
+    reveal_type(last)  # N: Revealed type is "tuple[int, str, tuple[int, str, ... | None] | None]"
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicAliasUpperBoundCheck]
