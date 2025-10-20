@@ -1005,7 +1005,8 @@ gb: bool
 if gb:
     Z = 10
 else:
-    Z = None  # E: Incompatible types in assignment (expression has type "None", variable has type "int")
+--zuban-diff     Z = None  # E: Incompatible types in assignment (expression has type "None", variable has type "int")
+    Z = None
 
 class Foo:
     def __init__(self, b: bool) -> None:
