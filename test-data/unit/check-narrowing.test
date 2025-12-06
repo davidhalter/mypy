@@ -2179,7 +2179,8 @@ def f6(x: IE) -> None:
      if x == IE.X:
          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
      else:
-         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.Y]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.Y]"
+         reveal_type(x)  # N: Revealed type is "__main__.IE"
 [builtins fixtures/primitives.pyi]
 
 [case testNarrowingWithIntEnum2]
@@ -2224,9 +2225,11 @@ def f4(x: IE | E) -> None:
      if x == IE.X:
          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
      elif x == E.X:
-         reveal_type(x)  # N: Revealed type is "Literal[__main__.E.X]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Literal[__main__.E.X]"
+         reveal_type(x)  # N: Revealed type is "__main__.IE | __main__.E"
      else:
-         reveal_type(x)  # N: Revealed type is "Union[Literal[__main__.IE.Y], Literal[__main__.E.Y]]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Union[Literal[__main__.IE.Y], Literal[__main__.E.Y]]"
+         reveal_type(x)  # N: Revealed type is "__main__.IE | __main__.E"
 
 def f5(x: E | str | int) -> None:
      if x == E.X:
@@ -2244,7 +2247,8 @@ def f7(x: IE | None) -> None:
      if x == IE.X:
          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
      else:
-         reveal_type(x)  # N: Revealed type is "Union[Literal[__main__.IE.Y], None]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Union[Literal[__main__.IE.Y], None]"
+         reveal_type(x)  # N: Revealed type is "Union[__main__.IE, None]"
 
 def f8(x: IE | None) -> None:
      if x is None:
@@ -2252,7 +2256,8 @@ def f8(x: IE | None) -> None:
      elif x == IE.X:
          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
      else:
-         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.Y]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.Y]"
+         reveal_type(x)  # N: Revealed type is "__main__.IE"
 [builtins fixtures/primitives.pyi]
 
 [case testNarrowingWithStrEnum]
