@@ -1955,7 +1955,8 @@ class E(BaseWithSpecials, Enum):
     __dict__ = {'a': 1}
 
 class EI(IntEnum):
-    name = 'a'
+--zuban-diff     name = 'a'
+    name = 'a'  # E: Enum value type "str" does not match the type "int" of "_value_"
     value = 1
     _name_ = 'a1'
     _value_ = 2
