@@ -1310,7 +1310,8 @@ class Sub(Base):
     def __init__(self, item=None):
         ...
 
-reveal_type(Sub)  # N: Revealed type is "Overload(def (item: builtins.int) -> __main__.Sub, def () -> __main__.Sub)"
+--zuban-diff reveal_type(Sub)  # N: Revealed type is "Overload(def (item: builtins.int) -> __main__.Sub, def () -> __main__.Sub)"
+reveal_type(Sub)  # N: Revealed type is "Overload(def (item: builtins.int) -> __main__.Sub, def () -> __main__.Base)"
 
 [case testSelfTypeBadTypeIgnoredInConstructorAbstract]
 from abc import abstractmethod
