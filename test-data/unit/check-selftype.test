@@ -1555,12 +1555,14 @@ class C:
     def meth(cls) -> Self: ...
     @staticmethod
     def bad() -> Self: ...  # E: Static methods cannot use Self type \
-        # E: A function returning TypeVar should receive at least one argument containing the same TypeVar \
-        # N: Consider using the upper bound "C" instead
+--zuban-diff         # E: A function returning TypeVar should receive at least one argument containing the same TypeVar \
+--zuban-diff         # N: Consider using the upper bound "C" instead
+--zuban-diff
 
 class D(C): ...
 reveal_type(D.meth())  # N: Revealed type is "__main__.D"
-reveal_type(D.bad())  # N: Revealed type is "Never"
+--zuban-diff reveal_type(D.bad())  # N: Revealed type is "Never"
+reveal_type(D.bad())  # N: Revealed type is "Any"
 [builtins fixtures/classmethod.pyi]
 
 [case testTypingSelfOverload]
