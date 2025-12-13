@@ -1039,7 +1039,8 @@ reveal_type({**x1})  # N: Revealed type is "builtins.dict[builtins.int, builtins
 # Some people would expect this to raise an error, but this currently does not:
 # `Mapping` has `Iterable[U]` base class, `X2` has direct `Iterable[T]` base class.
 # It would be impossible to define correct `__iter__` method for incompatible `T` and `U`.
-class X2(Generic[T, U],  Mapping[U, T], Iterable[T]):
+--zuban-diff class X2(Generic[T, U],  Mapping[U, T], Iterable[T]):
+class X2(Generic[T, U],  Mapping[U, T], Iterable[T]):  # E: Cannot determine consistent method resolution order (MRO) for "X2"
     pass
 
 x2: X2[str, int]
