@@ -1164,7 +1164,7 @@ def f(x: 'A B'): pass # E: invalid syntax
 
 [case testInvalidMultilineLiteralType]
 --zuban-diff def f() -> "A\nB": pass  # E: Invalid type comment or annotation
-def f() -> "A\nB": pass  # E: Syntax error in type annotation
+def f() -> "A\nB": pass  # E: Invalid Syntax
 [out]
 
 [case testInconsistentOverload]
