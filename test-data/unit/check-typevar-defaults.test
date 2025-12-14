@@ -435,7 +435,8 @@ def func_c3(
     m = ClassC3[int, Unpack[Tuple[float]]]()
     reveal_type(m)  # N: Revealed type is "__main__.ClassC3[builtins.int, builtins.float]"
 
-class ClassC4(Generic[T1, Unpack[Ts1], T3]): ...
+--zuban-diff class ClassC4(Generic[T1, Unpack[Ts1], T3]): ...
+class ClassC4(Generic[T1, Unpack[Ts1], T3]): ...  # E: TypeVar defaults are ambiguous after a TypeVarTuple
 
 def func_c4(
     a: ClassC4,  # E: Missing type parameters for generic type "ClassC4"
