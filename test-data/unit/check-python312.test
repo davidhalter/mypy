@@ -1074,19 +1074,15 @@ reveal_type(C().m(1))  # N: Revealed type is "builtins.int"
 T = 1
 
 def f[T](x: T) -> T:
---zuban-diff     T = 'a'
---zuban-diff     reveal_type(T)  # N: Revealed type is "builtins.str"
-    T = 'a'  # E: Name "T" already defined on line 3
-    reveal_type(T)  # N: Revealed type is "typing.TypeVar"
+    T = 'a'
+    reveal_type(T)  # N: Revealed type is "builtins.str"
     return x
 
 reveal_type(T)  # N: Revealed type is "builtins.int"
 
 class C[T]:
---zuban-diff     T = 1.2
---zuban-diff     reveal_type(T)  # N: Revealed type is "builtins.float"
-    T = 1.2  # E: Name "T" already defined on line 10
-    reveal_type(T)  # N: Revealed type is "typing.TypeVar"
+    T = 1.2
+    reveal_type(T)  # N: Revealed type is "builtins.float"
 
 reveal_type(T)  # N: Revealed type is "builtins.int"
 
@@ -1207,8 +1203,7 @@ def g[T](x: T) -> T:
 S = 0
 
 def outer1[S]() -> None:
---zuban-diff     S = 1
-    S = 1  # E: Name "S" already defined on line 4
+    S = 1
     T = 1
 
     def outer2[T]() -> None:
@@ -1901,7 +1896,8 @@ reveal_type(A().a.f())  # N: Revealed type is "builtins.str"
 class C[T]:
     def f(self) -> T: ...
     class D[S]:
-        x: T  # E: Name "T" is not defined
+--zuban-diff         x: T  # E: Name "T" is not defined
+        x: T  # E: Type variable "T" is bound by an outer class
         def g(self) -> S: ...
 
 a: C[int]
@@ -1997,7 +1993,8 @@ class A:
     class C[T]:
         def f(self) -> T: ...
         class D[S]:
-            x: T  # E: Name "T" is not defined
+--zuban-diff             x: T  # E: Name "T" is not defined
+            x: T  # E: Type variable "T" is bound by an outer class
             def g(self) -> S: ...
 
 a: A.C[int]
