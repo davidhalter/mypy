@@ -1125,7 +1125,7 @@ def f() -> None:
     def g[T](x: T) -> T:
         nonlocal T  # E: nonlocal binding not allowed for type parameter "T"
 --zuban-diff         T = 'x'  # E: "T" is a type variable and only valid in type context
-        T = 'x'  # E: Name "T" already defined on line 3
+        T = 'x'
         return x
     reveal_type(T)  # N: Revealed type is "builtins.int"
 
