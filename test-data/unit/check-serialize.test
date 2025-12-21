@@ -318,8 +318,10 @@ tmp/a.py:2: note:     def __init__(self, x: int) -> A
 tmp/a.py:2: note:     def __init__(self, x: str) -> A
 tmp/a.py:7: error: No overload variant of "__init__" of "A" matches argument type "object"
 tmp/a.py:7: note: Possible overload variants:
-tmp/a.py:7: note:     def __init__(self, x: int) -> None
-tmp/a.py:7: note:     def __init__(self, x: str) -> None
+--zuban-diff tmp/a.py:7: note:     def __init__(self, x: int) -> None
+--zuban-diff tmp/a.py:7: note:     def __init__(self, x: str) -> None
+tmp/a.py:7: note:     def __init__(x: int) -> None
+tmp/a.py:7: note:     def __init__(x: str) -> None
 
 [case testSerialize__new__]
 import a
