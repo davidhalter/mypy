@@ -2075,7 +2075,8 @@ class Partial2:
     def __call__(self: Callable[..., T], x: T) -> T: ...
 
 p: Partial
-reveal_type(p())  # N: Revealed type is "Never"
+--zuban-diff reveal_type(p())  # N: Revealed type is "Never"
+reveal_type(p())  # N: Revealed type is "Any"
 p2: Partial2
 reveal_type(p2(42))  # N: Revealed type is "builtins.int"
 

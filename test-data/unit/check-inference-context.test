@@ -22,7 +22,8 @@ if int():
 if int():
     ab = f()
 if int():
-    b = f() # E: Incompatible types in assignment (expression has type "A[Never]", variable has type "B")
+--zuban-diff     b = f() # E: Incompatible types in assignment (expression has type "A[Never]", variable has type "B")
+    b = f() # E: Incompatible types in assignment (expression has type "A[Any]", variable has type "B")
 [case testBasicContextInferenceForConstructor]
 from typing import TypeVar, Generic
 T = TypeVar('T')
@@ -37,7 +38,8 @@ if int():
 if int():
     ab = A()
 if int():
-    b = A() # E: Incompatible types in assignment (expression has type "A[Never]", variable has type "B")
+--zuban-diff     b = A() # E: Incompatible types in assignment (expression has type "A[Never]", variable has type "B")
+    b = A() # E: Incompatible types in assignment (expression has type "A[Any]", variable has type "B")
 [case testIncompatibleContextInference]
 from typing import TypeVar, Generic
 T = TypeVar('T')
@@ -372,7 +374,8 @@ ao: List[object]
 a: A
 def f(): a, aa, ao # Prevent redefinition
 
-a = [] # E: Incompatible types in assignment (expression has type "list[Never]", variable has type "A")
+--zuban-diff a = [] # E: Incompatible types in assignment (expression has type "list[Never]", variable has type "A")
+a = [] # E: Incompatible types in assignment (expression has type "list[Any]", variable has type "A")
 
 aa = []
 ao = []
@@ -918,7 +921,8 @@ from typing import TypeVar, Callable, Generic
 T = TypeVar('T')
 class A(Generic[T]):
     pass
-reveal_type(A()) # N: Revealed type is "__main__.A[Never]"
+--zuban-diff reveal_type(A()) # N: Revealed type is "__main__.A[Never]"
+reveal_type(A()) # N: Revealed type is "__main__.A[Any]"
 b = reveal_type(A())  # type: A[int] # N: Revealed type is "__main__.A[builtins.int]"
 
 [case testUnionWithGenericTypeItemContext]

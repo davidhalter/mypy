@@ -657,7 +657,8 @@ M = Mapping[str, int]
 T = TypeVar('T')
 def f(x: Callable[[T, T], None]) -> T: pass
 def g(x: X, y: M) -> None: pass
-reveal_type(f(g))  # N: Revealed type is "Never"
+--zuban-diff reveal_type(f(g))  # N: Revealed type is "Never"
+reveal_type(f(g))  # E: Argument 1 to "f" has incompatible type "Callable[[X, Mapping[str, int]], None]"; expected "Callable[[X, X], None]"  # N: Revealed type is "Any"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
@@ -668,7 +669,8 @@ M = Mapping[str, str]
 T = TypeVar('T')
 def f(x: Callable[[T, T], None]) -> T: pass
 def g(x: X, y: M) -> None: pass
-reveal_type(f(g))  # N: Revealed type is "Never"
+--zuban-diff reveal_type(f(g))  # N: Revealed type is "Never"
+reveal_type(f(g))  # E: Argument 1 to "f" has incompatible type "Callable[[X, Mapping[str, str]], None]"; expected "Callable[[X, X], None]"  # N: Revealed type is "Any"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 

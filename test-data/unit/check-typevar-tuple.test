@@ -65,7 +65,7 @@ f(bad_args)  # E: Argument 1 to "f" has incompatible type "tuple[str, str]"; exp
 # The reason for error in subtle: actual can be empty, formal cannot.
 --zuban-diff reveal_type(f(var_len_tuple))  # N: Revealed type is "tuple[builtins.str, Unpack[builtins.tuple[builtins.int, ...]]]" \
 --zuban-diff                                # E: Argument 1 to "f" has incompatible type "tuple[int, ...]"; expected "tuple[int, Unpack[tuple[int, ...]]]"
-reveal_type(f(var_len_tuple))  # N: Revealed type is "tuple[str, Unpack[tuple[Never, ...]]]" \
+reveal_type(f(var_len_tuple))  # N: Revealed type is "tuple[str, Unpack[tuple[Any, ...]]]" \
                                # E: Argument 1 to "f" has incompatible type "tuple[int, ...]"; expected "tuple[int]"
 
 g_args: Tuple[str, int]
@@ -1940,7 +1940,7 @@ def foo3(func: Callable[[int, Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 
 def foo_bad(func: Callable[[Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 --zuban-diff    return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Args2])], T]"
-   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Tuple[Never, ...]])], T]"
+   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Tuple[Any, ...]])], T]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleParamSpecInteraction]
@@ -2073,12 +2073,14 @@ class B(Generic[Unpack[Ts]]):
 
 b1: B[int]
 reveal_type(b1.on_pair())  # E: Invalid self argument "B[int]" to attribute function "on_pair" with type "Callable[[B[T, S]], tuple[T, S]]" \
-                           # N: Revealed type is "tuple[Never, Never]"
+--zuban-diff                            # N: Revealed type is "tuple[Never, Never]"
+                           # N: Revealed type is "tuple[Any, Any]"
 b2: B[int, str]
 reveal_type(b2.on_pair())  # N: Revealed type is "tuple[builtins.int, builtins.str]"
 b3: B[int, str, int]
 reveal_type(b3.on_pair())  # E: Invalid self argument "B[int, str, int]" to attribute function "on_pair" with type "Callable[[B[T, S]], tuple[T, S]]" \
-                           # N: Revealed type is "tuple[Never, Never]"
+--zuban-diff                            # N: Revealed type is "tuple[Never, Never]"
+                           # N: Revealed type is "tuple[Any, Any]"
 
 class C(B[T, S]): ...
 c: C[int, str]
@@ -2501,7 +2503,7 @@ Ts = TypeVarTuple("Ts")
 def test(*args: Unpack[Ts]) -> Tuple[Unpack[Ts]]: ...
 
 --zuban-diff reveal_type(test)  # N: Revealed type is "def (*args: Never) -> __main__.CM[Never]"
-reveal_type(test)  # N: Revealed type is "def [Ts] (*args: Unpack[Ts]) -> __main__.CM[Never]"
+reveal_type(test)  # N: Revealed type is "def [Ts] (*args: Unpack[Ts]) -> __main__.CM[Any]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleAgainstParamSpecActualPrefix]
