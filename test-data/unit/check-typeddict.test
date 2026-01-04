@@ -1944,7 +1944,8 @@ class Config(TypedDict):
     b: str
 
 x: Config
-x == {}  # E: Non-overlapping equality check (left operand type: "Config", right operand type: "dict[Never, Never]")
+--zuban-diff x == {}  # E: Non-overlapping equality check (left operand type: "Config", right operand type: "dict[Never, Never]")
+x == {}  # E: Non-overlapping equality check (left operand type: "Config", right operand type: "dict[Any, Any]")
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
