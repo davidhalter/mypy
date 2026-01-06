@@ -64,7 +64,8 @@ reveal_type(x)  # N: Revealed type is "builtins.complex"
 if isinstance(x, int):
     reveal_type(x)  # N: Revealed type is "builtins.int"
 else:
-    reveal_type(x)  # N: Revealed type is "builtins.complex"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "builtins.complex"
+    reveal_type(x)  # N: Revealed type is "builtins.float | builtins.complex"
 reveal_type(x)  # N: Revealed type is "builtins.complex"
 
 y: Union[int, float]
@@ -115,7 +116,8 @@ if isinstance(x, complex):
     if isinstance(x, int):
         reveal_type(x)  # N: Revealed type is "builtins.int"
     else:
-        reveal_type(x)  # N: Revealed type is "builtins.complex"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "builtins.complex"
+        reveal_type(x)  # N: Revealed type is "builtins.float | builtins.complex"
 [builtins fixtures/primitives.pyi]
 
 [case testIntersectionUsingPromotion5]
