@@ -2972,7 +2972,8 @@ class D(TypedDict, total=False):
 def foo(data: Union[A, B]) -> None: ...
 foo({"foo": {"c": "foo"}})  # OK
 foo({"foo": {"e": "foo"}})  # E: Type of TypedDict is ambiguous, none of ("A", "B") matches cleanly \
-                            # E: Argument 1 to "foo" has incompatible type "dict[str, dict[str, str]]"; expected "Union[A, B]"
+--zuban-diff                             # E: Argument 1 to "foo" has incompatible type "dict[str, dict[str, str]]"; expected "Union[A, B]"
+                            # E: Argument 1 to "foo" has incompatible type "dict[str, C]"; expected "Union[A, B]"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
