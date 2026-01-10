@@ -629,7 +629,8 @@ class B: pass
 if int():
     a, aa = G().f(*[a]) # E: Incompatible types in assignment (expression has type "list[A]", variable has type "A")
 if int():
-    aa, a = G().f(*[a]) # E: Incompatible types in assignment (expression has type "list[Never]", variable has type "A")
+--zuban-diff     aa, a = G().f(*[a]) # E: Incompatible types in assignment (expression has type "list[Never]", variable has type "A")
+    aa, a = G().f(*[a]) # E: Incompatible types in assignment (expression has type "list[Any]", variable has type "A")
 if int():
     ab, aa = G().f(*[a]) # E: Argument 1 to "f" of "G" has incompatible type "*list[A]"; expected "B"
 if int():

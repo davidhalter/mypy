@@ -3050,9 +3050,11 @@ def g(a: T, t: A[T]) -> T: ...
 
 def check(obj: A[Literal[1]]) -> None:
     reveal_type(f(obj, 1))  # N: Revealed type is "Literal[1]"
-    reveal_type(f(obj, ''))  # E: Cannot infer value of type parameter "T" of "f" \
+--zuban-diff     reveal_type(f(obj, ''))  # E: Cannot infer value of type parameter "T" of "f" \
+    reveal_type(f(obj, ''))  # E: Argument 2 to "f" has incompatible type "Literal['']"; expected "Literal[1]" \
                              # N: Revealed type is "Any"
     reveal_type(g(1, obj))  # N: Revealed type is "Literal[1]"
-    reveal_type(g('', obj))  # E: Cannot infer value of type parameter "T" of "g" \
+--zuban-diff     reveal_type(g('', obj))  # E: Cannot infer value of type parameter "T" of "g" \
+    reveal_type(g('', obj))  # E: Argument 2 to "g" has incompatible type "A[Literal[1]]"; expected "A[str]" \
                              # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]

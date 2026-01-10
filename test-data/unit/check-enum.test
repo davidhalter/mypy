@@ -1983,7 +1983,8 @@ class A(Enum):
     def method(self) -> int: pass
 class B(A):
     x = 1  # E: Cannot override writable attribute "x" with a final one \
-           # E: Incompatible types in assignment (expression has type "B", base class "A" defined the type as "int")
+--zuban-diff            # E: Incompatible types in assignment (expression has type "B", base class "A" defined the type as "int")
+
 
 class A1(Enum):
     x: int = 1  # E: Enum members must be left unannotated \

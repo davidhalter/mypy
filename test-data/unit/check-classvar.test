@@ -352,21 +352,24 @@ from typing import ClassVar, Generic, TypeVar
 T = TypeVar("T")
 class B(Generic[T]):
     x: T
-    y: ClassVar[T]
+--zuban-diff     y: ClassVar[T]
+    y: ClassVar[T]  # E: ClassVar cannot contain type variables
 
 class C(B[T]): ...
 
 reveal_type(C.x)  # E: Access to generic instance variables via class is ambiguous \
                   # N: Revealed type is "Any"
-reveal_type(C.y)  # E: Access to generic class variables is ambiguous \
-                  # N: Revealed type is "Any"
+--zuban-diff reveal_type(C.y)  # E: Access to generic class variables is ambiguous \
+--zuban-diff                   # N: Revealed type is "Any"
+reveal_type(C.y)  # N: Revealed type is "Any"
 
 [case testClassVarBareAnnotation]
 from typing import ClassVar
 
 class C:
     x: ClassVar = 1
-    y: ClassVar
+--zuban-diff     y: ClassVar
+    y: ClassVar  # E: Type in ClassVar[...] can only be omitted if there is an initializer
 
 reveal_type(C.x)  # N: Revealed type is "builtins.int"
 reveal_type(C().x)  # N: Revealed type is "builtins.int"
@@ -379,4 +382,5 @@ from typing import ClassVar
 
 class C:
     x: ClassVar = 1
-    y: ClassVar  # E: ClassVar without type argument becomes Any
+--zuban-diff     y: ClassVar  # E: ClassVar without type argument becomes Any
+    y: ClassVar  # E: Type in ClassVar[...] can only be omitted if there is an initializer

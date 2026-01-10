@@ -2055,8 +2055,12 @@ class A:
     x: ClassVar
 A().x = 0
 [out1]
+--zuban-diff 
+__main__:3: error: Type in ClassVar[...] can only be omitted if there is an initializer
 main:4: error: Cannot assign to class variable "x" via instance
 [out2]
+--zuban-diff 
+__main__:3: error: Type in ClassVar[...] can only be omitted if there is an initializer
 main:4: error: Cannot assign to class variable "x" via instance
 
 [case testIncrementalClassVarGone]
@@ -5696,13 +5700,13 @@ class FinalEnum(Enum):
 [builtins fixtures/isinstance.pyi]
 [out]
 main:3: error: Cannot override writable attribute "x" with a final one
-main:3: error: Incompatible types in assignment (expression has type "Ok", base class "RegularEnum" defined the type as "int")
+--zuban-diff Removed: main:3: error: Incompatible types in assignment (expression has type "Ok", base class "RegularEnum" defined the type as "int")
 main:4: error: Cannot extend enum with existing members: "FinalEnum"
 --zuban-diff main:5: error: Cannot override final attribute "x" (previously declared in base class "FinalEnum")
 --zuban-diff 
 [out2]
 main:3: error: Cannot override writable attribute "x" with a final one
-main:3: error: Incompatible types in assignment (expression has type "Ok", base class "RegularEnum" defined the type as "int")
+--zuban-diff Removed: main:3: error: Incompatible types in assignment (expression has type "Ok", base class "RegularEnum" defined the type as "int")
 main:4: error: Cannot extend enum with existing members: "FinalEnum"
 --zuban-diff main:5: error: Cannot override final attribute "x" (previously declared in base class "FinalEnum")
 --zuban-diff 

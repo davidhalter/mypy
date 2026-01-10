@@ -854,7 +854,8 @@ from typing_extensions import TypeIs, Never, overload
 
 class X: ...
 
-@overload  # E: An overloaded function outside a stub file must have an implementation
+--zuban-diff @overload  # E: An overloaded function outside a stub file must have an implementation
+@overload
 def is_xlike(obj: Never) -> TypeIs[X | type[X]]: ...  # type: ignore
 @overload
 def is_xlike(obj: type) -> TypeIs[type[X]]: ...

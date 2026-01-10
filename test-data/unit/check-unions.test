@@ -1384,7 +1384,8 @@ SimpleAlias = Union[int, str]
 
 def foo(x: Union[int, str, tuple]):
     # TODO: fix the typeshed stub for isinstance
-    if isinstance(x, SimpleAlias):  # E: Argument 2 to "isinstance" has incompatible type "<typing special form>"; expected "type"
+--zuban-diff     if isinstance(x, SimpleAlias):  # E: Argument 2 to "isinstance" has incompatible type "<typing special form>"; expected "type"
+    if isinstance(x, SimpleAlias):  # E: Argument 2 to "isinstance" has incompatible type "_SpecialForm"; expected "type[Any] | UnionType | tuple[_ClassInfo, ...]"
         reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.tuple[Any, ...]]"
     else:
         reveal_type(x)  # N: Revealed type is "Union[builtins.int, builtins.str, builtins.tuple[Any, ...]]"

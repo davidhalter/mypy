@@ -1348,5 +1348,6 @@ reveal_type(x.var.bar)  # N: Revealed type is "__main__.Bar[builtins.int]"
 from typing import ClassVar
 from typing_extensions import TypeAlias
 
-Foo: TypeAlias = ClassVar[int]  # E: ClassVar[...] can't be used inside a type alias
+--zuban-diff Foo: TypeAlias = ClassVar[int]  # E: ClassVar[...] can't be used inside a type alias
+Foo: TypeAlias = ClassVar[int]  # E: ClassVar can only be used for assignments in class body
 [builtins fixtures/tuple.pyi]

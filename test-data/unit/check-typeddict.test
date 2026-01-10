@@ -825,7 +825,8 @@ from typing import TypedDict
 D = TypedDict('D', {'x': int})
 d: object
 if isinstance(d, D):   # E: Cannot use isinstance() with TypedDict type
-    reveal_type(d)     # N: Revealed type is "__main__.D"
+--zuban-diff     reveal_type(d)     # N: Revealed type is "__main__.D"
+    reveal_type(d)     # N: Revealed type is "TypedDict('__main__.D', {'x': int})"
 issubclass(object, D)  # E: Cannot use issubclass() with TypedDict type
 [builtins fixtures/isinstancelist.pyi]
 [typing fixtures/typing-typeddict.pyi]
@@ -4334,8 +4335,10 @@ class Dicts:
     TotalFalse = TF
 
 dicts = Dicts()
-reveal_type(dicts.TF)  # N: Revealed type is "def (*, user_id: builtins.int =) -> TypedDict('__main__.Dicts.TF', {'user_id'?: builtins.int})"
-reveal_type(dicts.TotalFalse)  # N: Revealed type is "def (*, user_id: builtins.int =) -> TypedDict('__main__.Dicts.TF', {'user_id'?: builtins.int})"
+--zuban-diff reveal_type(dicts.TF)  # N: Revealed type is "def (*, user_id: builtins.int =) -> TypedDict('__main__.Dicts.TF', {'user_id'?: builtins.int})"
+reveal_type(dicts.TF)  # N: Revealed type is "def (*, user_id: builtins.int = ...) -> TypedDict('__main__.TF', {'user_id'?: builtins.int})"
+--zuban-diff reveal_type(dicts.TotalFalse)  # N: Revealed type is "def (*, user_id: builtins.int =) -> TypedDict('__main__.Dicts.TF', {'user_id'?: builtins.int})"
+reveal_type(dicts.TotalFalse)  # N: Revealed type is "def (*, user_id: builtins.int = ...) -> TypedDict('__main__.TF', {'user_id'?: builtins.int})"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 

@@ -3816,8 +3816,14 @@ reveal_type(f(x, []))  # N: Revealed type is "builtins.str"
 reveal_type(f(["yes"], []))  # N: Revealed type is "builtins.str"
 
 empty: List[NoReturn]
-f(x, empty)  # E: Cannot infer value of type parameter "T" of "f"
-f(["no"], empty)  # E: Cannot infer value of type parameter "T" of "f"
+--zuban-diff f(x, empty)  # E: Cannot infer value of type parameter "T" of "f"
+--zuban-diff f(["no"], empty)  # E: Cannot infer value of type parameter "T" of "f"
+f(x, empty)  # E: Argument 2 to "f" has incompatible type "list[Never]"; expected "list[str]" \
+             # N: "List" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+             # N: Consider using "Sequence" instead, which is covariant
+f(["no"], empty)  # E: Argument 2 to "f" has incompatible type "list[Never]"; expected "list[str]" \
+             # N: "List" is invariant -- see https://mypy.readthedocs.io/en/stable/common_issues.html#variance \
+             # N: Consider using "Sequence" instead, which is covariant
 [builtins fixtures/list.pyi]
 
 [case testInferenceWorksWithEmptyCollectionsUnion]
@@ -4198,9 +4204,11 @@ class DbManager(Protocol):
 class Foo:
     def __init__(self, db: DbManager, bar: bool) -> None:
         if bar:
-            self.qux = db.get("qux")
+--zuban-diff             self.qux = db.get("qux")
+            self.qux = db.get("qux")  # E: Need type annotation for "qux" (hint: "qux: dict[<type>, <type>] = ...")
         else:
-            self.qux = {}  # E: Need type annotation for "qux" (hint: "qux: dict[<type>, <type>] = ...")
+--zuban-diff             self.qux = {}  # E: Need type annotation for "qux" (hint: "qux: dict[<type>, <type>] = ...")
+            self.qux = {}
 [builtins fixtures/dict.pyi]
 
 [case testConstraintSolvingFailureShowsCorrectArgument]
@@ -4216,5 +4224,6 @@ def foo(
 
 def bar(y: float) -> float: ...
 
-foo(1, None, bar)  # E: Cannot infer value of type parameter "T2" of "foo"
+--zuban-diff foo(1, None, bar)  # E: Cannot infer value of type parameter "T2" of "foo"
+foo(1, None, bar)  # E: Argument 3 to "foo" has incompatible type "Callable[[float], float]"; expected "Callable[[None | float], None | float]"
 [builtins fixtures/tuple.pyi]

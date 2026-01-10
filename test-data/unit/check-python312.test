@@ -2166,7 +2166,8 @@ class Test[*Ts, R]:
 from typing import TypeAliasType
 type D = dict
 type T = type
-type TA = TypeAliasType
+--zuban-diff type TA = TypeAliasType
+type TA = TypeAliasType  # E: Invalid type
 
 D()          # E: "TypeAliasType" not callable
 X = TA("Y")  # E: "TypeAliasType" not callable

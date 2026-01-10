@@ -2684,7 +2684,8 @@ import dataclasses
 raw_target: object
 
 if isinstance(raw_target, type) and dataclasses.is_dataclass(raw_target):
-    reveal_type(raw_target)  # N: Revealed type is "type[dataclasses.DataclassInstance]"
+--zuban-diff     reveal_type(raw_target)  # N: Revealed type is "type[dataclasses.DataclassInstance]"
+    reveal_type(raw_target)  # N: Revealed type is "type[_typeshed.DataclassInstance]"
 [builtins fixtures/tuple.pyi]
 
 [case testDataclassKwOnlyArgsLast]
@@ -2730,7 +2731,15 @@ class PersonBad(TypedDict):
 
 @dataclass
 class JobBad:
-    person: PersonBad = field(default_factory=PersonBad)  # E: Argument "default_factory" to "field" has incompatible type "type[PersonBad]"; expected "Callable[[], PersonBad]"
+--zuban-diff     person: PersonBad = field(default_factory=PersonBad)  # E: Argument "default_factory" to "field" has incompatible type "type[PersonBad]"; expected "Callable[[], PersonBad]"
+    person: PersonBad = field(default_factory=PersonBad)
+[out]
+__main__:16: error: No overload variant of "field" matches argument type "default_factory=type[PersonBad]"
+__main__:16: note: Possible overload variants:
+__main__:16: note:     def [_T] field(*, default: _T, default_factory: Literal[_MISSING_TYPE.MISSING] = ..., init: bool = ..., repr: bool = ..., hash: bool | None = ..., compare: bool = ..., metadata: Mapping[Any, Any] | None = ..., kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ..., doc: str | None = ...) -> _T
+__main__:16: note:     def [_T] field(*, default: Literal[_MISSING_TYPE.MISSING] = ..., default_factory: Callable[[], _T], init: bool = ..., repr: bool = ..., hash: bool | None = ..., compare: bool = ..., metadata: Mapping[Any, Any] | None = ..., kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ..., doc: str | None = ...) -> _T
+__main__:16: note:     def field(*, default: Literal[_MISSING_TYPE.MISSING] = ..., default_factory: Literal[_MISSING_TYPE.MISSING] = ..., init: bool = ..., repr: bool = ..., hash: bool | None = ..., compare: bool = ..., metadata: Mapping[Any, Any] | None = ..., kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ..., doc: str | None = ...) -> Any
+
 [builtins fixtures/dict.pyi]
 
 [case testDataclassInitVarRedefinitionNoCrash]
@@ -2748,3 +2757,10 @@ class ClassB(ClassA):
     def value(self) -> int:  # E: Name "value" already defined on line 10
         return 0
 [builtins fixtures/dict.pyi]
+--zuban-diff 
+[out]
+__main__:10: error: Signature of "value" incompatible with supertype "ClassA"
+__main__:10: note:      Superclass:
+__main__:10: note:          def value(self) -> int
+__main__:10: note:      Subclass:
+__main__:10: note:          InitVar[int]

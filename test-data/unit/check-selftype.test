@@ -2302,7 +2302,8 @@ class Check:
     def foo(self) -> Self:
         ...
 
-reveal_type(Check.foo())  # N: Revealed type is "def () -> __main__.Check"
+--zuban-diff reveal_type(Check.foo())  # N: Revealed type is "def () -> __main__.Check"
+reveal_type(Check.foo())  # N: Revealed type is "__main__.Check"
 reveal_type(Check().foo())  # N: Revealed type is "__main__.Check"
 [builtins fixtures/tuple.pyi]
 
@@ -2319,7 +2320,8 @@ class A:
 
     @classmethod
     def other_meth(cls) -> Self:
-        reveal_type(cls.meth)  # N: Revealed type is "def [Self <: __main__.A] (self: Self`1) -> Self`1"
+--zuban-diff jlk        reveal_type(cls.meth)  # N: Revealed type is "def [Self <: __main__.A] (self: Self`1) -> Self`1"
+        reveal_type(cls.meth)  # N: Revealed type is "def [Self <: Self] (self: Self`1) -> Self`1"
         reveal_type(A.meth)  # N: Revealed type is "def [Self <: __main__.A] (self: Self`2) -> Self`2"
         return cls().meth()
 
@@ -2329,7 +2331,8 @@ class B:
 
     @classmethod
     def other_meth(cls) -> Self:
-        reveal_type(cls.meth)  # N: Revealed type is "def [Self <: __main__.B] (self: Self`5) -> Self`5"
+--zuban-diff         reveal_type(cls.meth)  # N: Revealed type is "def [Self <: __main__.B] (self: Self`5) -> Self`5"
+        reveal_type(cls.meth)  # N: Revealed type is "def [Self <: Self] (self: Self`5) -> Self`5"
         reveal_type(B.meth)  # N: Revealed type is "def [Self <: __main__.B] (self: Self`6) -> Self`6"
         return cls().meth()
 
