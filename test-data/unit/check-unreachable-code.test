@@ -1633,7 +1633,8 @@ T = TypeVar("T")
 def bar(x: Optional[list[T]] = None) -> T:
     ...
 
-reveal_type(bar().attr)  # N: Revealed type is "Never"
+--zuban-diff reveal_type(bar().attr)  # N: Revealed type is "Never"
+reveal_type(bar().attr)  # N: Revealed type is "Any"
 1  # not unreachable
 reveal_type(foo().attr)  # N: Revealed type is "Never"
 1  # E: Statement is unreachable
