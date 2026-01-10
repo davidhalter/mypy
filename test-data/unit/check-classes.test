@@ -6713,7 +6713,8 @@ import a
 [file b.py]
 import a
 class Sub(a.Base):
-    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+--zuban-diff     def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "a.Base" \
                               # N:      Superclass: \
                               # N:          int \
                               # N:      Subclass: \
@@ -6733,7 +6734,8 @@ import a
 import c
 class Sub(a.Base):
     @c.deco
-    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+--zuban-diff     def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "a.Base" \
                               # N:      Superclass: \
                               # N:          int \
                               # N:      Subclass: \
@@ -6759,7 +6761,8 @@ import a
 import c
 class Sub(a.Base):
     @c.deco
-    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+--zuban-diff     def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "Base" \
+    def x(self) -> int: pass  # E: Signature of "x" incompatible with supertype "a.Base" \
                               # N:      Superclass: \
                               # N:          int \
                               # N:      Subclass: \
