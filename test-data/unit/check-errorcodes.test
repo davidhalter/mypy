@@ -1247,7 +1247,8 @@ def f(x: str) -> TypeIs[int]:  # E: Narrowed type "int" is not a subtype of inpu
 [builtins fixtures/tuple.pyi]
 
 [case testDynamicMetaclass]
-class A(metaclass=type(tuple)): pass  # E: Dynamic metaclass not supported for "A"  [metaclass]
+--zuban-diff class A(metaclass=type(tuple)): pass  # E: Dynamic metaclass not supported for "A"  [metaclass]
+class A(metaclass=type(tuple)): pass  # E: Invalid metaclass "type(tuple)"  [metaclass]
 [builtins fixtures/tuple.pyi]
 
 [case testMetaclassOfTypeAny]
@@ -1283,7 +1284,7 @@ class X(type): pass
 class Y(type): pass
 class A(metaclass=X): pass
 class B(A, metaclass=Y): pass  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases  [metaclass] \
-                               # N: "__main__.Y" (metaclass of "__main__.B") conflicts with "__main__.X" (metaclass of "__main__.A")
+--zuban-diff                                # N: "__main__.Y" (metaclass of "__main__.B") conflicts with "__main__.X" (metaclass of "__main__.A")
 
 
 

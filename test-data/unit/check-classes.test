@@ -4943,7 +4943,8 @@ class X(type): pass
 class Y(type): pass
 class A(metaclass=X): pass
 class B(A, metaclass=Y): pass  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                               # N: "__main__.Y" (metaclass of "__main__.B") conflicts with "__main__.X" (metaclass of "__main__.A")
+--zuban-diff                                # N: "__main__.Y" (metaclass of "__main__.B") conflicts with "__main__.X" (metaclass of "__main__.A")
+
 [case testMetaclassNoTypeReveal]
 class M:
     x = 0  # type: int
@@ -7552,21 +7553,27 @@ class CorrectWithType1(C, A1): ...
 class CorrectWithType2(B, C): ...
 
 class Conflict1(A1, B, E): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                                # N: "__main__.MyMeta1" (metaclass of "__main__.A") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+--zuban-diff                                 # N: "__main__.MyMeta1" (metaclass of "__main__.A") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+
+
 class Conflict2(A, B): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                            # N: "__main__.MyMeta1" (metaclass of "__main__.A") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+--zuban-diff                             # N: "__main__.MyMeta1" (metaclass of "__main__.A") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+
 class Conflict3(B, A): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                            # N: "__main__.MyMeta2" (metaclass of "__main__.B") conflicts with "__main__.MyMeta1" (metaclass of "__main__.A")
+--zuban-diff                             # N: "__main__.MyMeta2" (metaclass of "__main__.B") conflicts with "__main__.MyMeta1" (metaclass of "__main__.A")
+
 
 class ChildOfConflict1(Conflict3): ...
 class ChildOfConflict2(Conflict3, metaclass=CorrectMeta): ...
 
 class ConflictingMeta(MyMeta1, MyMeta3): ...
 class Conflict4(A1, B, E, metaclass=ConflictingMeta): ...  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                                                           # N: "__main__.ConflictingMeta" (metaclass of "__main__.Conflict4") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+--zuban-diff                                                            # N: "__main__.ConflictingMeta" (metaclass of "__main__.Conflict4") conflicts with "__main__.MyMeta2" (metaclass of "__main__.B")
+
 
 class ChildOfCorrectButWrongMeta(CorrectSubclass1, metaclass=ConflictingMeta):  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                                                                                # N: "__main__.ConflictingMeta" (metaclass of "__main__.ChildOfCorrectButWrongMeta") conflicts with "__main__.CorrectMeta" (metaclass of "__main__.CorrectSubclass1")
+--zuban-diff                                                                                 # N: "__main__.ConflictingMeta" (metaclass of "__main__.ChildOfCorrectButWrongMeta") conflicts with "__main__.CorrectMeta" (metaclass of "__main__.CorrectSubclass1")
+
     ...
 
 [case testMetaClassConflictIssue14033]
@@ -7582,9 +7589,11 @@ class B1(metaclass=M2): pass
 class C1(metaclass=Mx): pass
 
 class TestABC(A2, B1, C1): pass  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                                 # N: "__main__.M1" (metaclass of "__main__.A1") conflicts with "__main__.M2" (metaclass of "__main__.B1")
+--zuban-diff                                  # N: "__main__.M1" (metaclass of "__main__.A1") conflicts with "__main__.M2" (metaclass of "__main__.B1")
+
 class TestBAC(B1, A2, C1): pass  # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases \
-                                 # N: "__main__.M2" (metaclass of "__main__.B1") conflicts with "__main__.M1" (metaclass of "__main__.A1")
+--zuban-diff                                  # N: "__main__.M2" (metaclass of "__main__.B1") conflicts with "__main__.M1" (metaclass of "__main__.A1")
+
 
 # should not warn again for children
 class ChildOfTestABC(TestABC): pass

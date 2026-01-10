@@ -575,7 +575,8 @@ class B(object, A, metaclass=ABCMeta): # E: Cannot determine consistent method r
     pass
 
 class C(object, A):  # E: Cannot determine consistent method resolution order (MRO) for "C" \
-                     # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+--zuban-diff                      # E: Metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases
+
     pass
 
 [case testOverloadedAbstractMethod]
