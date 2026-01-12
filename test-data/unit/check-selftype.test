@@ -1116,7 +1116,8 @@ S = TypeVar('S')
 class C(Generic[T]):
     def limited(self: C[str], arg: S) -> S: ...
 
-reveal_type(C[str]().limited(0))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(C[str]().limited(0))  # N: Revealed type is "builtins.int"
+reveal_type(C[str]().limited(0))  # N: Revealed type is "Literal[0]?"
 
 [case testSelfTypeMultipleTypeVars]
 from typing import Generic, TypeVar, Tuple
@@ -2078,7 +2079,8 @@ p: Partial
 --zuban-diff reveal_type(p())  # N: Revealed type is "Never"
 reveal_type(p())  # N: Revealed type is "Any"
 p2: Partial2
-reveal_type(p2(42))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(p2(42))  # N: Revealed type is "builtins.int"
+reveal_type(p2(42))  # N: Revealed type is "Literal[42]?"
 
 [case testAccessingSelfClassVarInClassMethod]
 from typing import Self, ClassVar, Type, TypeVar

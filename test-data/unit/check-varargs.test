@@ -1007,7 +1007,8 @@ class Person(TypedDict, Generic[T]):
     value: T
 
 def foo(**kwargs: Unpack[Person[T]]) -> T: ...
-reveal_type(foo(name="test", value=42))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(foo(name="test", value=42))  # N: Revealed type is "builtins.int"
+reveal_type(foo(name="test", value=42))  # N: Revealed type is "Literal[42]?"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 

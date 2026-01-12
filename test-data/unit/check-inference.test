@@ -3391,7 +3391,8 @@ def f(x: Callable[[], T]) -> T:
     return x()
 
 reveal_type(f(lambda: None))  # N: Revealed type is "None"
-reveal_type(f(lambda: 1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(f(lambda: 1))  # N: Revealed type is "builtins.int"
+reveal_type(f(lambda: 1))  # N: Revealed type is "Literal[1]?"
 
 def g() -> None: pass
 
@@ -3406,7 +3407,8 @@ def f(x: Callable[[], T]) -> T:
     return x()
 
 reveal_type(f(lambda: None))  # N: Revealed type is "None"
-reveal_type(f(lambda: 1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(f(lambda: 1))  # N: Revealed type is "builtins.int"
+reveal_type(f(lambda: 1))  # N: Revealed type is "Literal[1]?"
 
 def g() -> None: pass
 

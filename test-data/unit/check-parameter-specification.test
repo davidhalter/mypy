@@ -953,7 +953,8 @@ def f(x: int) -> int:
 
 reveal_type(A().func(f, 42))  # N: Revealed type is "builtins.int"
 
-reveal_type(A().func(lambda x: x + x, 42))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(A().func(lambda x: x + x, 42))  # N: Revealed type is "builtins.int"
+reveal_type(A().func(lambda x: x + x, 42))  # N: Revealed type is "Literal[84]?"
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecConstraintOnOtherParamSpec]
@@ -1162,7 +1163,8 @@ reveal_type(j)  # N: Revealed type is "__main__.Job[[x: _T`3], _T`3]"
 
 jf = j.into_callable()
 reveal_type(jf)  # N: Revealed type is "def [_T] (x: _T`4) -> _T`4"
-reveal_type(jf(1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(jf(1))  # N: Revealed type is "builtins.int"
+reveal_type(jf(1))  # N: Revealed type is "Literal[1]?"
 [builtins fixtures/paramspec.pyi]
 
 [case testStackedConcatenateIsIllegal]
@@ -1751,7 +1753,8 @@ T = TypeVar("T")
 def identity(x: T) -> T:
     return x
 
-reveal_type(call(identity, 2))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(call(identity, 2))  # N: Revealed type is "builtins.int"
+reveal_type(call(identity, 2))  # N: Revealed type is "Literal[2]?"
 y: int = call(identity, 2)
 [builtins fixtures/paramspec.pyi]
 

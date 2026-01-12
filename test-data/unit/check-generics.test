@@ -2807,7 +2807,8 @@ T= TypeVar("T")
 def func(var: T) -> T:
     return var
 
-reveal_type(func(1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(func(1))  # N: Revealed type is "builtins.int"
+reveal_type(func(1))  # N: Revealed type is "Literal[1]?"
 
 [builtins fixtures/tuple.pyi]
 
@@ -3523,7 +3524,8 @@ def fake_partial(fun: Callable[[A1, A2], R], arg: A1) -> Callable[[A2], R]: ...
 
 f_pid = fake_partial(apply, id)
 reveal_type(f_pid)  # N: Revealed type is "def [A2] (A2`2) -> A2`2"
-reveal_type(f_pid(1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(f_pid(1))  # N: Revealed type is "builtins.int"
+reveal_type(f_pid(1))  # N: Revealed type is "Literal[1]?"
 
 [case testInvalidTypeVarParametersConcrete]
 from typing import Callable, Generic, ParamSpec, Protocol, TypeVar, overload

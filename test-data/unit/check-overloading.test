@@ -5044,7 +5044,8 @@ def attr(default: Any = ...) -> int: ...
 from lib import attr
 from typing import Any
 
-reveal_type(attr(1))  # N: Revealed type is "builtins.int"
+--zuban-diff reveal_type(attr(1))  # N: Revealed type is "builtins.int"
+reveal_type(attr(1))  # N: Revealed type is "Literal[1]?"
 reveal_type(attr("hi"))  # N: Revealed type is "builtins.int"
 x: Any
 reveal_type(attr(x)) # N: Revealed type is "Any"

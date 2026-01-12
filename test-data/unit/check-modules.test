@@ -2030,7 +2030,8 @@ x = 42
 [case testModuleAliasToQualifiedImport]
 import package.module
 alias = package.module
-reveal_type(alias.whatever('/'))  # N: Revealed type is "builtins.str"
+--zuban-diff reveal_type(alias.whatever('/'))  # N: Revealed type is "builtins.str"
+reveal_type(alias.whatever('/'))  # N: Revealed type is "Literal['/']?"
 [file package/__init__.py]
 
 [file package/module.py]
