@@ -1252,7 +1252,8 @@ class A:
 [case testOverloadedProperty2]
 from typing import overload
 class A:
-    @overload  # E: An overloaded function outside a stub file must have an implementation
+--zuban-diff     @overload  # E: An overloaded function outside a stub file must have an implementation
+    @overload
     def f(self) -> int: pass
     @property  # E: An overload can not be a property
     @overload
