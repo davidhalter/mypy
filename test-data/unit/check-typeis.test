@@ -540,8 +540,7 @@ def g(x: object) -> None: ...
 def test(x: List[Any]) -> None:
     if not(f(x) or isinstance(x, A)):
         return
---zuban-diff     g(reveal_type(x))  # N: Revealed type is "Union[builtins.list[builtins.str], __main__.<subclass of "builtins.list[Any]" and "__main__.A">]"
-    g(reveal_type(x))  # N: Revealed type is "List[Any]"
+    g(reveal_type(x))  # N: Revealed type is "Union[builtins.list[builtins.str], __main__.<subclass of "builtins.list[Any]" and "__main__.A">]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeIsMultipleCondition]
