@@ -74,7 +74,7 @@ U = Union[int, str]
 A = float
 if int():
 --zuban-diff     A = int  # E: Cannot assign multiple types to name "A" without an explicit "type[...]" annotation
-    A = int  # E: Name "A" already defined on line 1
+    A = int
 [out]
 
 [case testProhibitReassigningSubscriptedAliases]
