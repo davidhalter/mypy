@@ -220,8 +220,10 @@ def foo(x: int | str | tuple):
 ParameterizedAlias = str | list[str]
 
 # these are false negatives:
-isinstance(5, str | list[str])
-isinstance(5, ParameterizedAlias)
+--zuban-diff isinstance(5, str | list[str])
+--zuban-diff isinstance(5, ParameterizedAlias)
+isinstance(5, str | list[str])  # E: Parameterized generics cannot be used with class or instance checks
+isinstance(5, ParameterizedAlias)  # E: Parameterized generics cannot be used with class or instance checks
 [builtins fixtures/type.pyi]
 
 [case testIsInstanceUnionNone]
