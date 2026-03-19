@@ -3695,8 +3695,7 @@ class C:
 
 # TODO: it is an old question whether we should allow this, for now simply don't crash.
 class D(C):
---zuban-diff     d = f
-    d = f  # E: Attribute function "f" with type "Callable[[**Unpack[Kwargs]], None]" does not accept self argument
+    d = f
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
