@@ -2759,8 +2759,4 @@ class ClassB(ClassA):
 [builtins fixtures/dict.pyi]
 --zuban-diff 
 [out]
-__main__:10: error: Signature of "value" incompatible with supertype "ClassA"
-__main__:10: note:      Superclass:
-__main__:10: note:          def value(self) -> int
-__main__:10: note:      Subclass:
-__main__:10: note:          InitVar[int]
+__main__:10: error: Incompatible types in assignment (expression has type "InitVar[int]", base class "ClassA" defined the type as "Callable[[], int]")

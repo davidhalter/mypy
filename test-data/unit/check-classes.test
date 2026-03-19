@@ -147,15 +147,7 @@ class Base:
         pass
 
 class Derived(Base):
---zuban-diff     __hash__ = 1  # E: Incompatible types in assignment (expression has type "int", base class "Base" defined the type as "Callable[[], int]")
-    __hash__ = 1
---zuban-diff 
-[out]
-main:9: error: Signature of "__hash__" incompatible with supertype "Base"
-main:9: note:      Superclass:
-main:9: note:          def __hash__(self) -> int
-main:9: note:      Subclass:
-main:9: note:          int
+    __hash__ = 1  # E: Incompatible types in assignment (expression has type "int", base class "Base" defined the type as "Callable[[], int]")
 
 [case testOverridePartialAttributeWithMethod]
 # This was crashing: https://github.com/python/mypy/issues/11686.
@@ -586,11 +578,12 @@ class A:
 
 class B(A):
     @dec
-    def f(self) -> int: pass # E: Signature of "f" incompatible with supertype "A" \
-                             # N:      Superclass: \
-                             # N:          def f(self) -> str \
-                             # N:      Subclass: \
-                             # N:          str
+--zuban-diff     def f(self) -> int: pass # E: Signature of "f" incompatible with supertype "A" \
+--zuban-diff                              # N:      Superclass: \
+--zuban-diff                              # N:          def f(self) -> str \
+--zuban-diff                              # N:      Subclass: \
+--zuban-diff                              # N:          str
+    def f(self) -> int: pass # E: Incompatible types in assignment (expression has type "str", base class "A" defined the type as "Callable[[], str]")
     def g(self) -> int: pass # E: Signature of "g" incompatible with supertype "A" \
                              # N:      Superclass: \
                              # N:          str \
@@ -3260,11 +3253,7 @@ c.fail = 4  # E: Incompatible types in assignment (expression has type "int", va
 
 class D:
 --zuban-diff     __setattr__ = 'hello'  # E: Invalid signature "str" for "__setattr__"
-    __setattr__ = 'hello'  # E: Signature of "__setattr__" incompatible with supertype "object" \
-                           # N:      Superclass: \
-                           # N:          def __setattr__(self, str, Any, /) -> None \
-                           # N:      Subclass: \
-                           # N:          str
+    __setattr__ = 'hello'  # E: Incompatible types in assignment (expression has type "str", base class "object" defined the type as "Callable[[str, Any], None]")
 
 d = D()
 d.crash = 4  # E: "D" has no attribute "crash"
@@ -4673,12 +4662,7 @@ class A:
     def a(self) -> None: pass
     b = 1
 class B(A):
---zuban-diff     a = 1  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "Callable[[], None]")
-    a = 1  # E: Signature of "a" incompatible with supertype "A" \
-           # N:      Superclass: \
-           # N:          def a(self) -> None \
-           # N:      Subclass: \
-           # N:          int
+    a = 1  # E: Incompatible types in assignment (expression has type "int", base class "A" defined the type as "Callable[[], None]")
     def b(self) -> None: pass  # E: Signature of "b" incompatible with supertype "A" \
                                # N:      Superclass: \
                                # N:          int \

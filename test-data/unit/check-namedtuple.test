@@ -556,11 +556,7 @@ b = B._make([''])  # type: B
 from typing import NamedTuple
 class Crash(NamedTuple):
 --zuban-diff     count: int  # E: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[object], int]")
-    count: int  # E: Signature of "count" incompatible with supertype "tuple" \
-                # N:      Superclass: \
-                # N:          def count(self, Any, /) -> int \
-                # N:      Subclass: \
-                # N:          int
+    count: int  # E: Incompatible types in assignment (expression has type "int", base class "tuple" defined the type as "Callable[[Any], int]")
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleInClassNamespace]
