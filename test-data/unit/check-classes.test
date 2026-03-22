@@ -5525,7 +5525,17 @@ def frob(foos: Dict[Any, Foos]) -> None:
     foo = foos.get(1)
     assert foo
 --zuban-diff     dict(foo)
-    dict(foo) # E: Argument 1 to "dict" has incompatible type "Foos"; expected "Iterable[tuple[Never, Never]]"
+    dict(foo) # E: No overload variant of "dict" matches argument type "Foos" \
+              # N: Possible overload variants: \
+              # N:     def [_KT, _VT] __init__(self) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(self: dict[str, _VT], **kwargs: _VT) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(self, SupportsKeysAndGetItem[_KT, _VT], /) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(dict[str, _VT], SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(self, Iterable[tuple[_KT, _VT]], /) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(dict[str, _VT], Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(dict[str, str], Iterable[list[str]], /) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(dict[bytes, bytes], Iterable[list[bytes]], /) -> dict[_KT, _VT]
+
 [builtins fixtures/dict.pyi]
 [out]
 
@@ -5541,7 +5551,16 @@ class C:
         foo = foos.get(1)
         assert foo
 --zuban-diff         dict(foo)
-        dict(foo) # E: Argument 1 to "dict" has incompatible type "Foos"; expected "Iterable[tuple[Never, Never]]"
+        dict(foo) # E: No overload variant of "dict" matches argument type "Foos" \
+                  # N: Possible overload variants: \
+                  # N:     def [_KT, _VT] __init__(self) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(self: dict[str, _VT], **kwargs: _VT) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(self, SupportsKeysAndGetItem[_KT, _VT], /) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(dict[str, _VT], SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(self, Iterable[tuple[_KT, _VT]], /) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(dict[str, _VT], Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(dict[str, str], Iterable[list[str]], /) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(dict[bytes, bytes], Iterable[list[bytes]], /) -> dict[_KT, _VT]
 
 reveal_type(x.frob) # N: Revealed type is "def (foos: builtins.dict[Any, __main__.Foos])"
 [builtins fixtures/dict.pyi]
