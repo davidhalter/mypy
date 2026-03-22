@@ -5403,7 +5403,8 @@ class ExampleDict(Generic[K, V]): ...
 
 D = TypeVar('D')
 def mkdict(dict_type: Type[D]) -> D: ...
-reveal_type(mkdict(ExampleDict))  # N: Revealed type is "__main__.ExampleDict[Any, Any]"
+--zuban-diff reveal_type(mkdict(ExampleDict))  # N: Revealed type is "__main__.ExampleDict[Any, Any]"
+reveal_type(mkdict(ExampleDict))  # N: Revealed type is "__main__.ExampleDict"
 
 [case testTupleForwardBase]
 from m import a

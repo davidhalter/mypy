@@ -2751,7 +2751,7 @@ class P(Protocol): ...
 class C(P): ...
 
 --zuban-diff reveal_type(C.register(int))  # N: Revealed type is "def () -> builtins.int"
-reveal_type(C.register(int))  # N: Revealed type is "type[builtins.int]"
+reveal_type(C.register(int))  # N: Revealed type is "Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int)"
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-full.pyi]
 [out]
