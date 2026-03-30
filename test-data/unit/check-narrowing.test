@@ -2206,9 +2206,11 @@ class E(Enum):
 
 def f1(x: IE | MyDecimal) -> None:
      if x == IE.X:
-         reveal_type(x)  # N: Revealed type is "Union[__main__.IE, __main__.MyDecimal]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Union[__main__.IE, __main__.MyDecimal]"
+         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.X]"
      else:
-         reveal_type(x)  # N: Revealed type is "Union[__main__.IE, __main__.MyDecimal]"
+--zuban-diff          reveal_type(x)  # N: Revealed type is "Union[__main__.IE, __main__.MyDecimal]"
+         reveal_type(x)  # N: Revealed type is "Literal[__main__.IE.Y] | __main__.MyDecimal"
 
 def f2(x: E | bytes) -> None:
      if x == E.X:
