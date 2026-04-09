@@ -1434,7 +1434,7 @@ t[y]  # E: No overload variant of "__getitem__" of "tuple" matches argument type
 --zuban-diff       # N:     def __getitem__(self, int, /) -> Union[int, str] \
       # N:     def __getitem__(self, SupportsIndex, /) -> Union[int, str] \
 --zuban-diff       # N:     def __getitem__(self, slice, /) -> tuple[Union[int, str], ...]
-      # N:     def __getitem__(self, slice[Any, Any, Any], /) -> tuple[int | str, ...]
+      # N:     def __getitem__(self, slice[SupportsIndex | None, SupportsIndex | None, SupportsIndex | None], /) -> tuple[int | str, ...]
 
 [builtins fixtures/tuple.pyi]
 

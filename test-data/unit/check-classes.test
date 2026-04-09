@@ -5528,8 +5528,8 @@ def frob(foos: Dict[Any, Foos]) -> None:
 --zuban-diff     dict(foo)
     dict(foo) # E: No overload variant of "dict" matches argument type "Foos" \
               # N: Possible overload variants: \
-              # N:     def [_KT, _VT] __init__(self) -> dict[_KT, _VT] \
-              # N:     def [_KT, _VT] __init__(self: dict[str, _VT], **kwargs: _VT) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(self, /) -> dict[_KT, _VT] \
+              # N:     def [_KT, _VT] __init__(dict[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
               # N:     def [_KT, _VT] __init__(self, SupportsKeysAndGetItem[_KT, _VT], /) -> dict[_KT, _VT] \
               # N:     def [_KT, _VT] __init__(dict[str, _VT], SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
               # N:     def [_KT, _VT] __init__(self, Iterable[tuple[_KT, _VT]], /) -> dict[_KT, _VT] \
@@ -5554,8 +5554,8 @@ class C:
 --zuban-diff         dict(foo)
         dict(foo) # E: No overload variant of "dict" matches argument type "Foos" \
                   # N: Possible overload variants: \
-                  # N:     def [_KT, _VT] __init__(self) -> dict[_KT, _VT] \
-                  # N:     def [_KT, _VT] __init__(self: dict[str, _VT], **kwargs: _VT) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(self, /) -> dict[_KT, _VT] \
+                  # N:     def [_KT, _VT] __init__(dict[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
                   # N:     def [_KT, _VT] __init__(self, SupportsKeysAndGetItem[_KT, _VT], /) -> dict[_KT, _VT] \
                   # N:     def [_KT, _VT] __init__(dict[str, _VT], SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> dict[_KT, _VT] \
                   # N:     def [_KT, _VT] __init__(self, Iterable[tuple[_KT, _VT]], /) -> dict[_KT, _VT] \

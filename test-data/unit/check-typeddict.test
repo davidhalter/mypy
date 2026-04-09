@@ -1054,16 +1054,18 @@ d.get() # E: All overload variants of "get" of "Mapping" require at least one ar
         # N: Possible overload variants: \
 --zuban-diff         # N:     def get(self, k: str) -> object \
 --zuban-diff         # N:     def [V] get(self, k: str, default: object) -> object
+--zuban-diff         # N:     def [_T] get(self, str, /, default: _T) -> object
         # N:     def get(self, str, /) -> object \
-        # N:     def get(self, str, /, default: object) -> object \
-        # N:     def [_T] get(self, str, /, default: _T) -> object
+        # N:     def get(self, str, object, /) -> object \
+        # N:     def [_T] get(self, str, _T, /) -> object
 d.get('x', 1, 2) # E: No overload variant of "get" of "Mapping" matches argument types "str", "int", "int" \
                  # N: Possible overload variants: \
 --zuban-diff                  # N:     def get(self, k: str) -> object \
 --zuban-diff                  # N:     def [V] get(self, k: str, default: Union[int, V]) -> object
+--zuban-diff                  # N:     def [_T] get(self, str, /, default: _T) -> object
                  # N:     def get(self, str, /) -> object \
-                 # N:     def get(self, str, /, default: object) -> object \
-                 # N:     def [_T] get(self, str, /, default: _T) -> object
+                 # N:     def get(self, str, object, /) -> object \
+                 # N:     def [_T] get(self, str, _T, /) -> object
 x = d.get('z')
 reveal_type(x) # N: Revealed type is "builtins.object"
 s = ''
