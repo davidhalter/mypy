@@ -7250,7 +7250,8 @@ class Sub(Base[Concatenate[int, P]]): ...
 [builtins fixtures/paramspec.pyi]
 [out]
 [out2]
-tmp/impl.py:7: error: Argument 1 has incompatible type "str"; expected "int"
+--zuban-diff tmp/impl.py:7: error: Argument 1 has incompatible type "str"; expected "int"
+tmp/impl.py:7: error: Argument 1 to "meth" of "Base" has incompatible type "str"; expected "int"
 
 [case testIncrementalDifferentSourcesFreshnessCorrect]
 # cmd: mypy -m foo bar
@@ -7287,8 +7288,16 @@ x = 1
 tmp/m.py:2: note: Revealed type is "builtins.int"
 [out2]
 tmp/f.py:1: error: Invalid syntax
+--zuban-diff 
+f.py:1: error: Name "way" is not defined
+m.py:2: error: Module has no attribute "x"
+m.py:2: note: Revealed type is "Any"
 [out3]
 tmp/f.py:1: error: Invalid syntax
+--zuban-diff 
+f.py:1: error: Name "way" is not defined
+m.py:2: error: Module has no attribute "x"
+m.py:2: note: Revealed type is "Any"
 [out4]
 tmp/m.py:2: note: Revealed type is "builtins.int"
 

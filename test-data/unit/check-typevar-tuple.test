@@ -1940,7 +1940,7 @@ def foo3(func: Callable[[int, Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 
 def foo_bad(func: Callable[[Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 --zuban-diff    return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "def (*Unpack[Args2]) -> T"; expected "def (int, /, *Unpack[Args2]) -> T"
-   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "Callable[[VarArg(Unpack[Args2])], T]"; expected "Callable[[int, VarArg(Unpack[Tuple[Any, ...]])], T]"
+   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "def (*Unpack[Args2]) -> T"; expected "def (int, /, *Unpack[Never]) -> T"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleParamSpecInteraction]
@@ -2499,7 +2499,7 @@ def cm(fn: Callable[P, List[R]]) -> Callable[P, CM[R]]: ...
 
 Ts = TypeVarTuple("Ts")
 --zuban-diff @cm  # E: Argument 1 to "cm" has incompatible type "def [Ts`-1] test(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]"; expected "def (*args: Never) -> list[Never]"
-@cm  # E: Argument 1 to "cm" has incompatible type "Callable[[VarArg(Unpack[Ts])], tuple[Unpack[Ts]]]"; expected "Callable[Never, List[Never]]"
+@cm  # E: Argument 1 to "cm" has incompatible type "def [Ts`-1] test(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]"; expected "Callable[Never, list[Never]]"
 def test(*args: Unpack[Ts]) -> Tuple[Unpack[Ts]]: ...
 
 --zuban-diff reveal_type(test)  # N: Revealed type is "def (*args: Never) -> __main__.CM[Never]"

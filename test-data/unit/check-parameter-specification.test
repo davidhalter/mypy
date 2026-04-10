@@ -646,11 +646,11 @@ def expects_int_first(x: Callable[Concatenate[int, P], int]) -> int: ...
 def one(x: str) -> int: ...
 
 --zuban-diff @expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "def two(*, x: int) -> int"; expected "def (int, /, *, x: int) -> int"
-@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[NamedArg(int, 'x')], int]"; expected "Callable[[int, Never], int]"
+@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "def two(*, x: int) -> int"; expected "Callable[[int, Never], int]"
 def two(*, x: int) -> int: ...
 
 --zuban-diff @expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "def three(**kwargs: int) -> int"; expected "def (int, /, **kwargs: int) -> int"
-@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "Callable[[KwArg(int)], int]"; expected "Callable[[int, Never], int]"
+@expects_int_first  # E: Argument 1 to "expects_int_first" has incompatible type "def three(**kwargs: int) -> int"; expected "Callable[[int, Never], int]"
 def three(**kwargs: int) -> int: ...
 
 @expects_int_first # Accepted
