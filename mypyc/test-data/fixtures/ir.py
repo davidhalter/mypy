@@ -45,6 +45,8 @@ class object:
     def __eq__(self, x: object) -> bool: pass
     def __ne__(self, x: object) -> bool: pass
     def __str__(self) -> str: pass
+    def __setattr__(self, k: str, v: object) -> None: pass
+    def __delattr__(self, k: str) -> None: pass
 
 class type:
     def __init__(self, o: object) -> None: ...
@@ -84,6 +86,7 @@ class int:
     def __gt__(self, n: int) -> bool: pass
     def __le__(self, n: int) -> bool: pass
     def __ge__(self, n: int) -> bool: pass
+    def bit_length(self) -> int: pass
 
 class str:
     @overload
@@ -243,7 +246,7 @@ class list(Generic[_T], Sequence[_T], Iterable[_T]):
     def __iadd__(self, value: Iterable[_T], /) -> List[_T]: ...  # type: ignore[misc]
     def append(self, x: _T) -> None: pass
     def pop(self, i: int = -1) -> _T: pass
-    def count(self, _T) -> int: pass
+    def count(self, x: _T) -> int: pass
     def extend(self, l: Iterable[_T]) -> None: pass
     def insert(self, i: int, x: _T) -> None: pass
     def sort(self) -> None: pass
@@ -366,7 +369,7 @@ def reversed(object: Sequence[_T]) -> Iterator[_T]: ...
 def id(o: object) -> int: pass
 # This type is obviously wrong but the test stubs don't have Sized anymore
 def len(o: object) -> int: pass
-def print(*object) -> None: pass
+def print(*args: object) -> None: pass
 def isinstance(x: object, t: object) -> bool: pass
 def iter(i: Iterable[_T]) -> Iterator[_T]: pass
 @overload

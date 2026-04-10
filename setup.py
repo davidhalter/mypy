@@ -81,6 +81,7 @@ if USE_MYPYC:
             "__main__.py",
             "pyinfo.py",
             os.path.join("dmypy", "__main__.py"),
+            "exportjson.py",
             # Uses __getattr__/__setattr__
             "split_namespace.py",
             # Lies to mypy about code reachability
@@ -98,6 +99,7 @@ if USE_MYPYC:
         os.path.join("mypyc", "lib-rt", "setup.py"),
         # Uses __file__ at top level https://github.com/mypyc/mypyc/issues/700
         os.path.join("mypyc", "__main__.py"),
+        os.path.join("mypyc", "build_setup.py"),  # for monkeypatching
     )
 
     everything = [os.path.join("mypy", x) for x in find_package_data("mypy", ["*.py"])] + [
@@ -155,9 +157,7 @@ if USE_MYPYC:
         multi_file=sys.platform == "win32" or force_multifile,
         log_trace=log_trace,
         # Mypy itself is allowed to use native_internal extension.
-        depends_on_native_internal=True,
-        # TODO: temporary, remove this after we publish mypy-native on PyPI.
-        install_native_libs=True,
+        depends_on_librt_internal=True,
     )
 
 else:

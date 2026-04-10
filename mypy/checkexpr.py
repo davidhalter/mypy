@@ -18,6 +18,7 @@ from mypy.argmap import ArgTypeExpander, map_actuals_to_formals, map_formals_to_
 from mypy.checker_shared import ExpressionCheckerSharedApi
 from mypy.checkmember import analyze_member_access, has_operator
 from mypy.checkstrformat import StringFormatterChecker
+from mypy.constant_fold import constant_fold_expr
 from mypy.erasetype import erase_type, remove_instance_last_known_values, replace_meta_vars
 from mypy.errors import ErrorInfo, ErrorWatcher, report_internal_error
 from mypy.expandtype import (
@@ -26,6 +27,7 @@ from mypy.expandtype import (
     freshen_all_functions_type_vars,
     freshen_function_type_vars,
 )
+from mypy.exprtotype import TypeTranslationError, expr_to_unanalyzed_type
 from mypy.infer import ArgumentInferContext, infer_function_type_arguments, infer_type_arguments
 from mypy.literals import literal
 from mypy.maptype import map_instance_to_supertype
@@ -42,6 +44,7 @@ from mypy.nodes import (
     LITERAL_TYPE,
     REVEAL_LOCALS,
     REVEAL_TYPE,
+    UNBOUND_IMPORTED,
     ArgKind,
     AssertTypeExpr,
     AssignmentExpr,
@@ -67,11 +70,13 @@ from mypy.nodes import (
     LambdaExpr,
     ListComprehension,
     ListExpr,
+    MaybeTypeExpression,
     MemberExpr,
     MypyFile,
     NamedTupleExpr,
     NameExpr,
     NewTypeExpr,
+    NotParsed,
     OpExpr,
     OverloadedFuncDef,
     ParamSpecExpr,
@@ -86,12 +91,14 @@ from mypy.nodes import (
     StrExpr,
     SuperExpr,
     SymbolNode,
+    SymbolTableNode,
     TempNode,
     TupleExpr,
     TypeAlias,
     TypeAliasExpr,
     TypeApplication,
     TypedDictExpr,
+    TypeFormExpr,
     TypeInfo,
     TypeVarExpr,
     TypeVarLikeExpr,
@@ -100,6 +107,7 @@ from mypy.nodes import (
     Var,
     YieldExpr,
     YieldFromExpr,
+    get_member_expr_fullname,
 )
 from mypy.options import PRECISE_TUPLE_TYPES
 from mypy.plugin import (
@@ -118,8 +126,14 @@ from mypy.subtypes import (
     is_subtype,
     non_method_protocol_members,
 )
-from mypy.traverser import has_await_expression
+from mypy.traverser import (
+    all_name_and_member_expressions,
+    has_await_expression,
+    has_str_expression,
+)
+from mypy.tvar_scope import TypeVarLikeScope
 from mypy.typeanal import (
+    TypeAnalyser,
     check_for_explicit_any,
     fix_instance,
     has_any_from_unimported_type,
@@ -198,7 +212,6 @@ from mypy.types_utils import (
 )
 from mypy.typestate import type_state
 from mypy.typevars import fill_typevars
-from mypy.util import split_module_names
 from mypy.visitor import ExpressionVisitor
 
 # Type of callback user for checking individual function arguments. See
@@ -246,36 +259,6 @@ def allow_fast_container_literal(t: Type) -> bool:
     return isinstance(t, Instance) or (
         isinstance(t, TupleType) and all(allow_fast_container_literal(it) for it in t.items)
     )
-
-
-def extract_refexpr_names(expr: RefExpr, output: set[str]) -> None:
-    """Recursively extracts all module references from a reference expression.
-
-    Note that currently, the only two subclasses of RefExpr are NameExpr and
-    MemberExpr."""
-    while isinstance(expr.node, MypyFile) or expr.fullname:
-        if isinstance(expr.node, MypyFile) and expr.fullname:
-            # If it's None, something's wrong (perhaps due to an
-            # import cycle or a suppressed error).  For now we just
-            # skip it.
-            output.add(expr.fullname)
-
-        if isinstance(expr, NameExpr):
-            is_suppressed_import = isinstance(expr.node, Var) and expr.node.is_suppressed_import
-            if isinstance(expr.node, TypeInfo):
-                # Reference to a class or a nested class
-                output.update(split_module_names(expr.node.module_name))
-            elif "." in expr.fullname and not is_suppressed_import:
-                # Everything else (that is not a silenced import within a class)
-                output.add(expr.fullname.rsplit(".", 1)[0])
-            break
-        elif isinstance(expr, MemberExpr):
-            if isinstance(expr.expr, RefExpr):
-                expr = expr.expr
-            else:
-                break
-        else:
-            raise AssertionError(f"Unknown RefExpr subclass: {type(expr)}")
 
 
 class Finished(Exception):
@@ -370,7 +353,6 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
 
         It can be of any kind: local, member or global.
         """
-        extract_refexpr_names(e, self.chk.module_refs)
         result = self.analyze_ref_expr(e)
         narrowed = self.narrow_type_from_binder(e, result)
         self.chk.check_deprecated(e.node, e)
@@ -494,7 +476,8 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
             # In test cases might 'types' may not be available.
             # Fall back to a dummy 'object' type instead to
             # avoid a crash.
-            result = self.named_type("builtins.object")
+            # Make a copy so that we don't set extra_attrs (below) on a shared instance.
+            result = self.named_type("builtins.object").copy_modified()
         module_attrs: dict[str, Type] = {}
         immutable = set()
         for name, n in node.names.items():
@@ -687,11 +670,12 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
         return ret_type
 
     def check_str_format_call(self, e: CallExpr) -> None:
-        """More precise type checking for str.format() calls on literals."""
+        """More precise type checking for str.format() calls on literals and folded constants."""
         assert isinstance(e.callee, MemberExpr)
         format_value = None
-        if isinstance(e.callee.expr, StrExpr):
-            format_value = e.callee.expr.value
+        folded_callee_expr = constant_fold_expr(e.callee.expr, "<unused>")
+        if isinstance(folded_callee_expr, str):
+            format_value = folded_callee_expr
         elif self.chk.has_type(e.callee.expr):
             typ = get_proper_type(self.chk.lookup_type(e.callee.expr))
             if (
@@ -1531,7 +1515,7 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
     def check_union_call_expr(self, e: CallExpr, object_type: UnionType, member: str) -> Type:
         """Type check calling a member expression where the base type is a union."""
         res: list[Type] = []
-        for typ in object_type.relevant_items():
+        for typ in flatten_nested_unions(object_type.relevant_items()):
             # Member access errors are already reported when visiting the member expression.
             with self.msg.filter_errors():
                 item = analyze_member_access(
@@ -3343,7 +3327,6 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
 
     def visit_member_expr(self, e: MemberExpr, is_lvalue: bool = False) -> Type:
         """Visit member expression (of form e.id)."""
-        extract_refexpr_names(e, self.chk.module_refs)
         result = self.analyze_ordinary_member_access(e, is_lvalue)
         narrowed = self.narrow_type_from_binder(e, result)
         self.chk.warn_deprecated(e.node, e)
@@ -4722,6 +4705,10 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
         )
         return target_type
 
+    def visit_type_form_expr(self, expr: TypeFormExpr) -> Type:
+        typ = expr.type
+        return TypeType.make_normalized(typ, line=typ.line, column=typ.column, is_type_form=True)
+
     def visit_assert_type_expr(self, expr: AssertTypeExpr) -> Type:
         source_type = self.accept(
             expr.expr,
@@ -5112,7 +5099,10 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
             self.resolved_type[e] = NoneType()
             return None
         ct = self.chk.named_generic_type(container_fullname, [vt])
-        self.resolved_type[e] = ct
+        if not self.in_lambda_expr:
+            # We cannot cache results in lambdas - their bodies can be accepted in
+            # error-suppressing watchers too early
+            self.resolved_type[e] = ct
         return ct
 
     def _first_or_join_fast_item(self, items: list[Type]) -> Type | None:
@@ -5347,7 +5337,10 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
             self.resolved_type[e] = NoneType()
             return None
         dt = self.chk.named_generic_type("builtins.dict", [kt, vt])
-        self.resolved_type[e] = dt
+        if not self.in_lambda_expr:
+            # We cannot cache results in lambdas - their bodies can be accepted in
+            # error-suppressing watchers too early
+            self.resolved_type[e] = dt
         return dt
 
     def check_typeddict_literal_in_context(
@@ -6048,6 +6041,7 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
         old_is_callee = self.is_callee
         self.is_callee = is_callee
         try:
+            p_type_context = get_proper_type(type_context)
             if allow_none_return and isinstance(node, CallExpr):
                 typ = self.visit_call_expr(node, allow_none_return=True)
             elif allow_none_return and isinstance(node, YieldFromExpr):
@@ -6056,6 +6050,37 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
                 typ = self.visit_conditional_expr(node, allow_none_return=True)
             elif allow_none_return and isinstance(node, AwaitExpr):
                 typ = self.visit_await_expr(node, allow_none_return=True)
+
+            elif (
+                isinstance(p_type_context, TypeType)
+                and p_type_context.is_type_form
+                and (node_as_type := self.try_parse_as_type_expression(node)) is not None
+            ):
+                typ = TypeType.make_normalized(
+                    node_as_type,
+                    line=node_as_type.line,
+                    column=node_as_type.column,
+                    is_type_form=True,
+                )  # r-value type, when interpreted as a type expression
+            elif (
+                isinstance(p_type_context, UnionType)
+                and any(
+                    isinstance(p_item := get_proper_type(item), TypeType) and p_item.is_type_form
+                    for item in p_type_context.items
+                )
+                and (node_as_type := self.try_parse_as_type_expression(node)) is not None
+            ):
+                typ1 = TypeType.make_normalized(
+                    node_as_type,
+                    line=node_as_type.line,
+                    column=node_as_type.column,
+                    is_type_form=True,
+                )
+                if is_subtype(typ1, p_type_context):
+                    typ = typ1  # r-value type, when interpreted as a type expression
+                else:
+                    typ2 = node.accept(self)
+                    typ = typ2  # r-value type, when interpreted as a value expression
             # Deeply nested generic calls can deteriorate performance dramatically.
             # Although in most cases caching makes little difference, in worst case
             # it avoids exponential complexity.
@@ -6077,7 +6102,7 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
                 else:
                     typ = self.accept_maybe_cache(node, type_context=type_context)
             else:
-                typ = node.accept(self)
+                typ = node.accept(self)  # r-value type, when interpreted as a value expression
         except Exception as err:
             report_internal_error(
                 err, self.chk.errors.file, node.line, self.chk.errors, self.chk.options
@@ -6409,6 +6434,77 @@ class ExpressionChecker(ExpressionVisitor[Type], ExpressionCheckerSharedApi):
             and not self.chk.allow_abstract_call
         )
 
+    def try_parse_as_type_expression(self, maybe_type_expr: Expression) -> Type | None:
+        """Try to parse a value Expression as a type expression.
+        If success then return the type that it spells.
+        If fails then return None.
+
+        A value expression that is parsable as a type expression may be used
+        where a TypeForm is expected to represent the spelled type.
+
+        Unlike SemanticAnalyzer.try_parse_as_type_expression()
+        (used in the earlier SemanticAnalyzer pass), this function can only
+        recognize type expressions which contain no string annotations."""
+        if not isinstance(maybe_type_expr, MaybeTypeExpression):
+            return None
+
+        # Check whether has already been parsed as a type expression
+        # by SemanticAnalyzer.try_parse_as_type_expression(),
+        # perhaps containing a string annotation
+        if (
+            isinstance(maybe_type_expr, (StrExpr, IndexExpr, OpExpr))
+            and maybe_type_expr.as_type != NotParsed.VALUE
+        ):
+            return maybe_type_expr.as_type
+
+        # If is potentially a type expression containing a string annotation,
+        # don't try to parse it because there isn't enough information
+        # available to the TypeChecker pass to resolve string annotations
+        if has_str_expression(maybe_type_expr):
+            self.chk.fail(
+                "TypeForm containing a string annotation cannot be recognized here. "
+                "Surround with TypeForm(...) to recognize.",
+                maybe_type_expr,
+                code=codes.MAYBE_UNRECOGNIZED_STR_TYPEFORM,
+            )
+            return None
+
+        # Collect symbols targeted by NameExprs and MemberExprs,
+        # to be looked up by TypeAnalyser when binding the
+        # UnboundTypes corresponding to those expressions.
+        (name_exprs, member_exprs) = all_name_and_member_expressions(maybe_type_expr)
+        sym_for_name = {e.name: SymbolTableNode(UNBOUND_IMPORTED, e.node) for e in name_exprs} | {
+            e_name: SymbolTableNode(UNBOUND_IMPORTED, e.node)
+            for e in member_exprs
+            if (e_name := get_member_expr_fullname(e)) is not None
+        }
+
+        chk_sem = mypy.checker.TypeCheckerAsSemanticAnalyzer(self.chk, sym_for_name)
+        tpan = TypeAnalyser(
+            chk_sem,
+            # NOTE: Will never need to lookup type vars in this scope because
+            #       SemanticAnalyzer.try_parse_as_type_expression() will have
+            #       already recognized any type var referenced in a NameExpr.
+            #       String annotations (which may also reference type vars)
+            #       can't be resolved in the TypeChecker pass anyway.
+            TypeVarLikeScope(),  # empty scope
+            self.plugin,
+            self.chk.options,
+            self.chk.tree,
+            self.chk.is_typeshed_stub,
+        )
+
+        try:
+            typ1 = expr_to_unanalyzed_type(
+                maybe_type_expr, self.chk.options, self.chk.is_typeshed_stub
+            )
+            typ2 = typ1.accept(tpan)
+            if chk_sem.did_fail:
+                return None
+            return typ2
+        except TypeTranslationError:
+            return None
+
 
 def has_any_type(t: Type, ignore_in_type_obj: bool = False) -> bool:
     """Whether t contains an Any type"""
@@ -6434,7 +6530,7 @@ class HasAnyType(types.BoolTypeQuery):
 
     def visit_param_spec(self, t: ParamSpecType) -> bool:
         default = [t.default] if t.has_default() else []
-        return self.query_types([t.upper_bound, *default])
+        return self.query_types([t.upper_bound, *default, t.prefix])
 
     def visit_type_var_tuple(self, t: TypeVarTupleType) -> bool:
         default = [t.default] if t.has_default() else []

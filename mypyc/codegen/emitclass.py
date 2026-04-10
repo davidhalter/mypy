@@ -39,6 +39,12 @@ def native_slot(cl: ClassIR, fn: FuncIR, emitter: Emitter) -> str:
     return f"{NATIVE_PREFIX}{fn.cname(emitter.names)}"
 
 
+def dunder_attr_slot(cl: ClassIR, fn: FuncIR, emitter: Emitter) -> str:
+    wrapper_fn = cl.get_method(fn.name + "__wrapper")
+    assert wrapper_fn
+    return f"{NATIVE_PREFIX}{wrapper_fn.cname(emitter.names)}"
+
+
 # We maintain a table from dunder function names to struct slots they
 # correspond to and functions that generate a wrapper (if necessary)
 # and return the function name to stick in the slot.
@@ -55,6 +61,8 @@ SLOT_DEFS: SlotTable = {
     "__iter__": ("tp_iter", native_slot),
     "__hash__": ("tp_hash", generate_hash_wrapper),
     "__get__": ("tp_descr_get", generate_get_wrapper),
+    "__getattr__": ("tp_getattro", dunder_attr_slot),
+    "__setattr__": ("tp_setattro", dunder_attr_slot),
 }
 
 AS_MAPPING_SLOT_DEFS: SlotTable = {
@@ -205,10 +213,6 @@ def generate_class_reuse(
     TODO: Generalize to support a free list with up to N objects.
     """
     assert cl.reuse_freed_instance
-
-    # The free list implementation doesn't support class hierarchies
-    assert cl.is_final_class or cl.children == []
-
     context = c_emitter.context
     name = cl.name_prefix(c_emitter.names) + "_free_instance"
     struct_name = cl.struct_name(c_emitter.names)
@@ -355,7 +359,7 @@ def generate_class(cl: ClassIR, module: str, emitter: Emitter) -> None:
     if cl.is_trait:
         generate_new_for_trait(cl, new_name, emitter)
 
-    generate_methods_table(cl, methods_name, emitter)
+    generate_methods_table(cl, methods_name, setup_name if generate_full else None, emitter)
     emit_line()
 
     flags = ["Py_TPFLAGS_DEFAULT", "Py_TPFLAGS_HEAPTYPE", "Py_TPFLAGS_BASETYPE"]
@@ -406,7 +410,7 @@ def setter_name(cl: ClassIR, attribute: str, names: NameGenerator) -> str:
 
 
 def generate_object_struct(cl: ClassIR, emitter: Emitter) -> None:
-    seen_attrs: set[tuple[str, RType]] = set()
+    seen_attrs: set[str] = set()
     lines: list[str] = []
     lines += ["typedef struct {", "PyObject_HEAD", "CPyVTableItem *vtable;"]
     if cl.has_method("__call__"):
@@ -423,9 +427,11 @@ def generate_object_struct(cl: ClassIR, emitter: Emitter) -> None:
                             lines.append(f"{BITMAP_TYPE} {attr};")
                             bitmap_attrs.append(attr)
             for attr, rtype in base.attributes.items():
-                if (attr, rtype) not in seen_attrs:
+                # Generated class may redefine certain attributes with different
+                # types in subclasses (this would be unsafe for user-defined classes).
+                if attr not in seen_attrs:
                     lines.append(f"{emitter.ctype_spaced(rtype)}{emitter.attr(attr)};")
-                    seen_attrs.add((attr, rtype))
+                    seen_attrs.add(attr)
 
                     if isinstance(rtype, RTuple):
                         emitter.declare_tuple_struct(rtype)
@@ -889,8 +895,21 @@ def generate_dealloc_for_class(
     emitter.emit_line(f"{dealloc_func_name}({cl.struct_name(emitter.names)} *self)")
     emitter.emit_line("{")
     if has_tp_finalize:
-        emitter.emit_line("if (!PyObject_GC_IsFinalized((PyObject *)self)) {")
-        emitter.emit_line("Py_TYPE(self)->tp_finalize((PyObject *)self);")
+        emitter.emit_line("PyObject *type, *value, *traceback;")
+        emitter.emit_line("PyErr_Fetch(&type, &value, &traceback);")
+        emitter.emit_line("int res = PyObject_CallFinalizerFromDealloc((PyObject *)self);")
+        # CPython interpreter uses PyErr_WriteUnraisable: https://docs.python.org/3/c-api/exceptions.html#c.PyErr_WriteUnraisable
+        # However, the message is slightly different due to the way mypyc compiles classes.
+        # CPython interpreter prints: Exception ignored in: <function F.__del__ at 0x100aed940>
+        # mypyc prints: Exception ignored in: <slot wrapper '__del__' of 'F' objects>
+        emitter.emit_line("if (PyErr_Occurred() != NULL) {")
+        # Don't untrack instance if error occurred
+        emitter.emit_line("PyErr_WriteUnraisable((PyObject *)self);")
+        emitter.emit_line("res = -1;")
+        emitter.emit_line("}")
+        emitter.emit_line("PyErr_Restore(type, value, traceback);")
+        emitter.emit_line("if (res < 0) {")
+        emitter.emit_line("goto done;")
         emitter.emit_line("}")
     emitter.emit_line("PyObject_GC_UnTrack(self);")
     if cl.reuse_freed_instance:
@@ -900,6 +919,7 @@ def generate_dealloc_for_class(
     emitter.emit_line(f"{clear_func_name}(self);")
     emitter.emit_line("Py_TYPE(self)->tp_free((PyObject *)self);")
     emitter.emit_line("CPy_TRASHCAN_END(self)")
+    emitter.emit_line("done: ;")
     emitter.emit_line("}")
 
 
@@ -930,8 +950,6 @@ def generate_finalize_for_class(
     emitter.emit_line("static void")
     emitter.emit_line(f"{finalize_func_name}(PyObject *self)")
     emitter.emit_line("{")
-    emitter.emit_line("PyObject *type, *value, *traceback;")
-    emitter.emit_line("PyErr_Fetch(&type, &value, &traceback);")
     emitter.emit_line(
         "{}{}{}(self);".format(
             emitter.get_group_prefix(del_method.decl),
@@ -939,26 +957,20 @@ def generate_finalize_for_class(
             del_method.cname(emitter.names),
         )
     )
-    emitter.emit_line("if (PyErr_Occurred() != NULL) {")
-    emitter.emit_line('PyObject *del_str = PyUnicode_FromString("__del__");')
-    emitter.emit_line(
-        "PyObject *del_method = (del_str == NULL) ? NULL : _PyType_Lookup(Py_TYPE(self), del_str);"
-    )
-    # CPython interpreter uses PyErr_WriteUnraisable: https://docs.python.org/3/c-api/exceptions.html#c.PyErr_WriteUnraisable
-    # However, the message is slightly different due to the way mypyc compiles classes.
-    # CPython interpreter prints: Exception ignored in: <function F.__del__ at 0x100aed940>
-    # mypyc prints: Exception ignored in: <slot wrapper '__del__' of 'F' objects>
-    emitter.emit_line("PyErr_WriteUnraisable(del_method);")
-    emitter.emit_line("Py_XDECREF(del_method);")
-    emitter.emit_line("Py_XDECREF(del_str);")
-    emitter.emit_line("}")
-    # PyErr_Restore also clears exception raised in __del__.
-    emitter.emit_line("PyErr_Restore(type, value, traceback);")
     emitter.emit_line("}")
 
 
-def generate_methods_table(cl: ClassIR, name: str, emitter: Emitter) -> None:
+def generate_methods_table(
+    cl: ClassIR, name: str, setup_name: str | None, emitter: Emitter
+) -> None:
     emitter.emit_line(f"static PyMethodDef {name}[] = {{")
+    if setup_name:
+        # Store pointer to the setup function so it can be resolved dynamically
+        # in case of instance creation in __new__.
+        # CPy_SetupObject expects this method to be the first one in tp_methods.
+        emitter.emit_line(
+            f'{{"__internal_mypyc_setup", (PyCFunction){setup_name}, METH_O, NULL}},'
+        )
     for fn in cl.methods.values():
         if fn.decl.is_prop_setter or fn.decl.is_prop_getter or fn.internal:
             continue

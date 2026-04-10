@@ -26,8 +26,9 @@ import re
 import sys
 import time
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, NoReturn, Union, cast
+from typing import TYPE_CHECKING, Any, NamedTuple, NoReturn, Union, cast
 
+import mypyc.build_setup  # noqa: F401
 from mypy.build import BuildSource
 from mypy.errors import CompileError
 from mypy.fscache import FileSystemCache
@@ -41,6 +42,66 @@ from mypyc.errors import Errors
 from mypyc.ir.pprint import format_modules
 from mypyc.namegen import exported_name
 from mypyc.options import CompilerOptions
+
+
+class ModDesc(NamedTuple):
+    module: str
+    c_files: list[str]
+    other_files: list[str]
+    include_dirs: list[str]
+
+
+LIBRT_MODULES = [
+    ModDesc("librt.internal", ["librt_internal.c"], [], []),
+    ModDesc(
+        "librt.base64",
+        [
+            "librt_base64.c",
+            "base64/lib.c",
+            "base64/codec_choose.c",
+            "base64/tables/tables.c",
+            "base64/arch/generic/codec.c",
+            "base64/arch/ssse3/codec.c",
+            "base64/arch/sse41/codec.c",
+            "base64/arch/sse42/codec.c",
+            "base64/arch/avx/codec.c",
+            "base64/arch/avx2/codec.c",
+            "base64/arch/avx512/codec.c",
+            "base64/arch/neon32/codec.c",
+            "base64/arch/neon64/codec.c",
+        ],
+        [
+            "base64/arch/avx/enc_loop_asm.c",
+            "base64/arch/avx2/enc_loop.c",
+            "base64/arch/avx2/enc_loop_asm.c",
+            "base64/arch/avx2/enc_reshuffle.c",
+            "base64/arch/avx2/enc_translate.c",
+            "base64/arch/avx2/dec_loop.c",
+            "base64/arch/avx2/dec_reshuffle.c",
+            "base64/arch/generic/32/enc_loop.c",
+            "base64/arch/generic/64/enc_loop.c",
+            "base64/arch/generic/32/dec_loop.c",
+            "base64/arch/generic/enc_head.c",
+            "base64/arch/generic/enc_tail.c",
+            "base64/arch/generic/dec_head.c",
+            "base64/arch/generic/dec_tail.c",
+            "base64/arch/ssse3/dec_reshuffle.c",
+            "base64/arch/ssse3/dec_loop.c",
+            "base64/arch/ssse3/enc_loop_asm.c",
+            "base64/arch/ssse3/enc_translate.c",
+            "base64/arch/ssse3/enc_reshuffle.c",
+            "base64/arch/ssse3/enc_loop.c",
+            "base64/arch/neon64/dec_loop.c",
+            "base64/arch/neon64/enc_loop_asm.c",
+            "base64/codecs.h",
+            "base64/env.h",
+            "base64/tables/tables.h",
+            "base64/tables/table_dec_32bit.h",
+            "base64/tables/table_enc_12bit.h",
+        ],
+        ["base64"],
+    ),
+]
 
 try:
     # Import setuptools so that it monkey-patch overrides distutils
@@ -492,8 +553,9 @@ def mypycify(
     strict_dunder_typing: bool = False,
     group_name: str | None = None,
     log_trace: bool = False,
-    depends_on_native_internal: bool = False,
-    install_native_libs: bool = False,
+    depends_on_librt_internal: bool = False,
+    install_librt: bool = False,
+    experimental_features: bool = False,
 ) -> list[Extension]:
     """Main entry point to building using mypyc.
 
@@ -544,11 +606,14 @@ def mypycify(
                    mypyc_trace.txt (derived from executed operations). This is
                    useful for performance analysis, such as analyzing which
                    primitive ops are used the most and on which lines.
-        depends_on_native_internal: This is True only for mypy itself.
-        install_native_libs: If True, also build the native extension modules. Normally,
-                             those are build and published on PyPI separately, but during
-                             tests, we want to use their development versions (i.e. from
-                             current commit).
+        depends_on_librt_internal: This is True only for mypy itself.
+        install_librt: If True, also build the librt extension modules. Normally,
+                       those are build and published on PyPI separately, but during
+                       tests, we want to use their development versions (i.e. from
+                       current commit).
+        experimental_features: Enable experimental features (install_librt=True is
+                               also needed if using experimental librt features). These
+                               have no backward compatibility guarantees!
     """
 
     # Figure out our configuration
@@ -562,7 +627,8 @@ def mypycify(
         strict_dunder_typing=strict_dunder_typing,
         group_name=group_name,
         log_trace=log_trace,
-        depends_on_native_internal=depends_on_native_internal,
+        depends_on_librt_internal=depends_on_librt_internal,
+        experimental_features=experimental_features,
     )
 
     # Generate all the actual important C code
@@ -605,6 +671,8 @@ def mypycify(
         ]
         if log_trace:
             cflags.append("-DMYPYC_LOG_TRACE")
+        if experimental_features:
+            cflags.append("-DMYPYC_EXPERIMENTAL")
     elif compiler.compiler_type == "msvc":
         # msvc doesn't have levels, '/O2' is full and '/Od' is disable
         if opt_level == "0":
@@ -631,6 +699,8 @@ def mypycify(
             cflags += ["/GL-", "/wd9025"]  # warning about overriding /GL
         if log_trace:
             cflags.append("/DMYPYC_LOG_TRACE")
+        if experimental_features:
+            cflags.append("/DMYPYC_EXPERIMENTAL")
 
     # If configured to (defaults to yes in multi-file mode), copy the
     # runtime library in. Otherwise it just gets #included to save on
@@ -661,21 +731,26 @@ def mypycify(
                 build_single_module(group_sources, cfilenames + shared_cfilenames, cflags)
             )
 
-    if install_native_libs:
-        for name in ["native_internal.c"] + RUNTIME_C_FILES:
+    if install_librt:
+        for name in RUNTIME_C_FILES:
             rt_file = os.path.join(build_dir, name)
             with open(os.path.join(include_dir(), name), encoding="utf-8") as f:
                 write_file(rt_file, f.read())
-        extensions.append(
-            get_extension()(
-                "native_internal",
-                sources=[
-                    os.path.join(build_dir, file)
-                    for file in ["native_internal.c"] + RUNTIME_C_FILES
-                ],
-                include_dirs=[include_dir()],
-                extra_compile_args=cflags,
+        for mod, file_names, addit_files, includes in LIBRT_MODULES:
+            for file_name in file_names + addit_files:
+                rt_file = os.path.join(build_dir, file_name)
+                with open(os.path.join(include_dir(), file_name), encoding="utf-8") as f:
+                    write_file(rt_file, f.read())
+            extensions.append(
+                get_extension()(
+                    mod,
+                    sources=[
+                        os.path.join(build_dir, file) for file in file_names + RUNTIME_C_FILES
+                    ],
+                    include_dirs=[include_dir()]
+                    + [os.path.join(include_dir(), d) for d in includes],
+                    extra_compile_args=cflags,
+                )
             )
-        )
 
     return extensions
