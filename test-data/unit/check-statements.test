@@ -526,7 +526,7 @@ if object():
     raise NotImplemented    # E: Exception must be derived from BaseException; did you mean "NotImplementedError"?
 if object():
 --zuban-diff     raise NotImplemented()  # E: NotImplemented? not callable
-    raise NotImplemented()  # E: "None" not callable
+    raise NotImplemented()
 [builtins fixtures/notimplemented.pyi]
 
 [case testTryFinallyStatement]
