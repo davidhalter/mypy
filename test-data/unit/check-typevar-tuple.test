@@ -560,7 +560,8 @@ def func_prefix(arg0: bytes, arg1: int, arg2: str) -> None: ...
 def func2_prefix(arg0: str, arg1: int, arg2: str) -> None: ...
 
 call_prefix(target=func_prefix, args=(0, 'foo'))
-call_prefix(target=func2_prefix, args=(0, 'foo'))  # E: Argument "target" to "call_prefix" has incompatible type "Callable[[str, int, str], None]"; expected "Callable[[bytes, int, str], None]"
+--zuban-diff call_prefix(target=func2_prefix, args=(0, 'foo'))  # E: Argument "target" to "call_prefix" has incompatible type "Callable[[str, int, str], None]"; expected "Callable[[bytes, int, str], None]"
+call_prefix(target=func2_prefix, args=(0, 'foo'))  # E: Argument "target" to "call_prefix" has incompatible type "Callable[[str, int, str], None]"; expected "def (bytes, /, int, str) -> None"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTuplePep646CallableSuffixSyntax]
@@ -1150,7 +1151,8 @@ nt = A(fn=test, val=42)
 reveal_type(nt)  # N: Revealed type is "tuple[def (builtins.int, builtins.str), builtins.int, fallback=__main__.A[builtins.int, builtins.str, builtins.int]]"
 
 def bad() -> int: ...
-nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callable[[], int]"; expected "Callable[[], None]"
+--zuban-diff nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callable[[], int]"; expected "Callable[[], None]"
+nt2 = A(fn=bad, val=42)  # E: Argument "fn" to "A" has incompatible type "Callable[[], int]"; expected "def () -> None"
 [builtins fixtures/tuple.pyi]
 
 [case testVariadicTypedDict]
@@ -1179,7 +1181,8 @@ td = A({"fn": test, "val": 42})
 reveal_type(td)  # N: Revealed type is "TypedDict('__main__.A', {'fn': def (builtins.int, builtins.str), 'val': builtins.int})"
 
 def bad() -> int: ...
-td2 = A({"fn": bad, "val": 42})  # E: Incompatible types (expression has type "Callable[[], int]", TypedDict item "fn" has type "Callable[[], None]")
+--zuban-diff td2 = A({"fn": bad, "val": 42})  # E: Incompatible types (expression has type "Callable[[], int]", TypedDict item "fn" has type "Callable[[], None]")
+td2 = A({"fn": bad, "val": 42})  # E: Incompatible types (expression has type "Callable[[], int]", TypedDict item "fn" has type "def () -> None")
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
@@ -1940,7 +1943,7 @@ def foo3(func: Callable[[int, Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 
 def foo_bad(func: Callable[[Unpack[Args2]], T], *args: Unpack[Args2]) -> T:
 --zuban-diff    return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "def (*Unpack[Args2]) -> T"; expected "def (int, /, *Unpack[Args2]) -> T"
-   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "def (*Unpack[Args2]) -> T"; expected "def (int, /, *Unpack[Never]) -> T"
+   return submit2(func, 1, *args)  # E: Argument 1 to "submit2" has incompatible type "def (*Unpack[Args2]) -> T"; expected "def (int, /, *Any) -> T"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleParamSpecInteraction]
