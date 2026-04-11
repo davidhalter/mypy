@@ -36,7 +36,8 @@ typx: TypeForm[str | None] = str | None
 [case testCannotAssignTypeExpressionToTypeFormVariableWithIncompatibleItemType]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 from typing_extensions import TypeForm
-typx: TypeForm[str] = int  # E: Incompatible types in assignment (expression has type "TypeForm[int]", variable has type "TypeForm[str]")
+--zuban-diff typx: TypeForm[str] = int  # E: Incompatible types in assignment (expression has type "TypeForm[int]", variable has type "TypeForm[str]")
+typx: TypeForm[str] = int  # E: Incompatible types in assignment (expression has type "type[int]", variable has type "TypeForm[str]")
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]
 
@@ -76,9 +77,11 @@ reveal_type(typx)  # N: Revealed type is "TypeForm[Any]"
 
 [case testCanAssignTypeExpressionToTypeFormVariableDeclaredEarlier]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 typ: Type
-typ = int | None  # E: Incompatible types in assignment (expression has type "object", variable has type "type[Any]")
+--zuban-diff typ = int | None  # E: Incompatible types in assignment (expression has type "object", variable has type "type[Any]")
+typ = int | None  # E: Incompatible types in assignment (expression has type "UnionType | type[int]", variable has type "type[Any]")
 typx: TypeForm
 typx = int | None
 [builtins fixtures/primitives.pyi]
@@ -107,7 +110,8 @@ is_type(int | None)
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 def is_type(typ: type) -> bool:
     return isinstance(typ, type)
-is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "object"; expected "type"
+--zuban-diff is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "object"; expected "type"
+is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "UnionType | type[int]"; expected "type[Any]"
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]
 
@@ -123,11 +127,13 @@ C().is_type(int | None)
 
 [case testCanPassTypeExpressionToTypeFormParameterInOverload]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import overload, TypeForm
+--zuban-diff from typing import overload, TypeForm
+from typing_extensions import overload, TypeForm
 @overload
 def is_type(typx: TypeForm) -> bool: ...
 @overload
-def is_type(typx: type) -> bool: ...
+--zuban-diff def is_type(typx: type) -> bool: ...
+def is_type(typx: type) -> bool: ...  # E: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
 def is_type(typx):
     return isinstance(typx, type)
 is_type(int | None)
@@ -136,7 +142,8 @@ is_type(int | None)
 
 [case testCanPassTypeExpressionToTypeFormParameterInDecorator]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Callable, TypeForm, TypeVar
+--zuban-diff from typing import Callable, TypeForm, TypeVar
+from typing_extensions import Callable, TypeForm, TypeVar
 P = TypeVar('P')
 R = TypeVar('R')
 def expects_type(typx: TypeForm) -> Callable[[Callable[[P], R]], Callable[[P], R]]:
@@ -152,7 +159,8 @@ def sum_ints(x: int | None) -> int:
 
 [case testCanPassTypeExpressionToTypeFormVarargsParameter]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Callable, ParamSpec, TypeForm, TypeVar
+--zuban-diff from typing import Callable, ParamSpec, TypeForm, TypeVar
+from typing_extensions import Callable, ParamSpec, TypeForm, TypeVar
 P = ParamSpec('P')
 R = TypeVar('R')
 def expects_types(*typxs: TypeForm) -> Callable[[Callable[P, R]], Callable[P, R]]:
@@ -205,7 +213,8 @@ reveal_type(maybe_int_type())  # N: Revealed type is "TypeForm[Any]"
 
 [case testTypeExpressionWithoutStringAnnotationRecognizedInOtherSyntacticLocations]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Dict, List, TypeForm
+--zuban-diff from typing import Dict, List, TypeForm
+from typing_extensions import Dict, List, TypeForm
 list_of_typx: List[TypeForm] = [int | str]
 dict_with_typx_keys: Dict[TypeForm, int] = {
     int | str: 1,
@@ -217,7 +226,8 @@ dict_with_typx_keys[int | str] + 1
 
 [case testTypeExpressionWithStringAnnotationNotRecognizedInOtherSyntacticLocations]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Dict, List, TypeForm
+--zuban-diff from typing import Dict, List, TypeForm
+from typing_extensions import Dict, List, TypeForm
 list_of_typx: List[TypeForm] = ['int | str']  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize. \
                                               # E: List item 0 has incompatible type "str"; expected "TypeForm[Any]"
 dict_with_typx_keys: Dict[TypeForm, int] = {
@@ -233,7 +243,8 @@ dict_with_typx_keys['int | str'] += 1  # E: TypeForm containing a string annotat
 
 [case testValueExpressionWithStringInTypeFormContextEmitsConservativeWarning]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Any, Dict, List, TypeForm
+--zuban-diff from typing import Any, Dict, List, TypeForm
+from typing_extensions import Any, Dict, List, TypeForm
 types: Dict[str, TypeForm] = {'any': Any}
 # Ensure warning can be ignored if does not apply.
 list_of_typx1: List[TypeForm] = [types['any']]  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize.
@@ -247,7 +258,8 @@ list_of_typx4: List[TypeForm] = [TypeForm('Any')]
 
 [case testSelfRecognizedInOtherSyntacticLocations]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import List, Self, TypeForm
+--zuban-diff from typing import List, Self, TypeForm
+from typing_extensions import List, Self, TypeForm
 class C:
     def foo(self) -> None:
         list_of_typx1: List[TypeForm] = [Self]
@@ -262,7 +274,8 @@ typx4: TypeForm = 'Self'  # E: Incompatible types in assignment (expression has 
 [case testNameOrDottedNameRecognizedInOtherSyntacticLocations]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 import typing
-from typing import List, TypeForm
+--zuban-diff from typing import List, TypeForm
+from typing_extensions import List, TypeForm
 list_of_typx: List[TypeForm] = [List | typing.Optional[str]]
 typx: TypeForm = List | typing.Optional[str]
 [builtins fixtures/primitives.pyi]
@@ -270,7 +283,8 @@ typx: TypeForm = List | typing.Optional[str]
 
 [case testInvalidNameOrDottedNameRecognizedInOtherSyntacticLocations]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import List, TypeForm
+--zuban-diff from typing import List, TypeForm
+from typing_extensions import List, TypeForm
 list_of_typx1: List[TypeForm] = [NoSuchType]  # E: Name "NoSuchType" is not defined
 list_of_typx2: List[TypeForm] = [no_such_module.NoSuchType]  # E: Name "no_such_module" is not defined
 typx1: TypeForm = NoSuchType  # E: Name "NoSuchType" is not defined
@@ -303,7 +317,8 @@ typx_or_str4: TypeForm[int | None] | str = object()  # E: Incompatible types in 
 
 [case testValueExpressionWithStringInTypeFormUnionContextEmitsConservativeWarning1]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import List, TypeForm
+--zuban-diff from typing import List, TypeForm
+from typing_extensions import List, TypeForm
 list_of_typx1: List[TypeForm[int | None] | str] = ['int | None']  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize.
 list_of_typx2: List[TypeForm[int | None] | str] = ['str | None']  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize.
 [builtins fixtures/primitives.pyi]
@@ -311,7 +326,8 @@ list_of_typx2: List[TypeForm[int | None] | str] = ['str | None']  # E: TypeForm 
 
 [case testValueExpressionWithStringInTypeFormUnionContextEmitsConservativeWarning2]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import List, TypeForm
+--zuban-diff from typing import List, TypeForm
+from typing_extensions import List, TypeForm
 list_of_typx3: List[TypeForm[int | None] | int] = ['int | None']  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize. \
                                                                   # E: List item 0 has incompatible type "str"; expected "Union[TypeForm[Optional[int]], int]"
 list_of_typx4: List[TypeForm[str | None] | int] = ['str | None']  # E: TypeForm containing a string annotation cannot be recognized here. Surround with TypeForm(...) to recognize. \
@@ -350,7 +366,8 @@ typx10: TypeForm[int] = ANY_TF  # no error
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - Type[C] is assignable to TypeForm[T] iff C is assignable to T.
 # - In particular Type[Any] is assignable to TypeForm[Any].
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 INT_T: Type[int] = int
 STR_T: Type[str] = str
 OBJECT_T: Type[object] = object
@@ -371,7 +388,8 @@ typx8: TypeForm[int] = ANY_T  # no error
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T] is NOT assignable to Type[C].
 # - In particular TypeForm[Any] is NOT assignable to Type[Any].
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 INT_OR_STR_TF: TypeForm[int | str] = int | str
 INT_TF: TypeForm[int] = int
 STR_TF: TypeForm[str] = str
@@ -417,7 +435,8 @@ typ8: Type[object] = ANY_T  # no error
 [case testTypeFormToObjectAssignability]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T] is assignable to object and Any.
-from typing import Any, TypeForm
+--zuban-diff from typing import Any, TypeForm
+from typing_extensions import Any, TypeForm
 INT_TF: TypeForm[int] = int
 OBJECT_TF: TypeForm[object] = object
 ANY_TF: TypeForm = object
@@ -453,7 +472,8 @@ reveal_type([A_TF, B_TF][0])  # N: Revealed type is "TypeForm[__main__.AB]"
 [case testTypeToTypeFormJoin]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T1] join Type[T2] == TypeForm[T1 join T2]
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 class AB:
     pass
 class A(AB):
@@ -469,7 +489,8 @@ reveal_type([A_T, B_TF][0])  # N: Revealed type is "TypeForm[__main__.AB]"
 [case testTypeFormToTypeJoin]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T1] join Type[T2] == TypeForm[T1 join T2]
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 class AB:
     pass
 class A(AB):
@@ -487,7 +508,8 @@ reveal_type([A_TF, B_T][0])  # N: Revealed type is "TypeForm[__main__.AB]"
 [case testTypeToTypeJoin]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - Type[T1] join Type[T2] == Type[T1 join T2]
-from typing import Type, TypeForm
+--zuban-diff from typing import Type, TypeForm
+from typing_extensions import Type, TypeForm
 class AB:
     pass
 class A(AB):
@@ -506,7 +528,8 @@ reveal_type([A_T, B_T][0])  # N: Revealed type is "type[__main__.AB]"
 [case testTypeFormToTypeFormMeet]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T1] meet TypeForm[T2] == TypeForm[T1 meet T2]
-from typing import Callable, TypeForm, TypeVar
+--zuban-diff from typing import Callable, TypeForm, TypeVar
+from typing_extensions import Callable, TypeForm, TypeVar
 class AB:
     pass
 class A(AB):
@@ -525,7 +548,8 @@ reveal_type(f(g))  # N: Revealed type is "TypeForm[__main__.B]"
 [case testTypeToTypeFormMeet]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T1] meet Type[T2] == Type[T1 meet T2]
-from typing import Callable, Type, TypeForm, TypeVar
+--zuban-diff from typing import Callable, Type, TypeForm, TypeVar
+from typing_extensions import Callable, Type, TypeForm, TypeVar
 class AB:
     pass
 class A(AB):
@@ -544,7 +568,8 @@ reveal_type(f(g))  # N: Revealed type is "type[__main__.B]"
 [case testTypeFormToTypeMeet]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - TypeForm[T1] meet Type[T2] == Type[T1 meet T2]
-from typing import Callable, Type, TypeForm, TypeVar
+--zuban-diff from typing import Callable, Type, TypeForm, TypeVar
+from typing_extensions import Callable, Type, TypeForm, TypeVar
 class AB:
     pass
 class A(AB):
@@ -565,7 +590,8 @@ reveal_type(f(g))  # N: Revealed type is "type[__main__.B]"
 [case testTypeToTypeMeet]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
 # - Type[T1] meet Type[T2] == Type[T1 meet T2]
-from typing import Callable, Type, TypedDict, TypeForm, TypeVar
+--zuban-diff from typing import Callable, Type, TypedDict, TypeForm, TypeVar
+from typing_extensions import Callable, Type, TypedDict, TypeForm, TypeVar
 class AB(TypedDict):
     a: str
     b: str
@@ -626,14 +652,16 @@ reveal_type(as_typeform(int | str))  # N: Revealed type is "TypeForm[Union[built
 
 [case testLinkTypeFormToTypeWithTypeVariable]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Type, TypeForm, TypeVar
+--zuban-diff from typing import Type, TypeForm, TypeVar
+from typing_extensions import Type, TypeForm, TypeVar
 T = TypeVar('T')
 def as_type(typx: TypeForm[T]) -> Type[T] | None:
     if isinstance(typx, type):
         return typx
     else:
         return None
-reveal_type(as_type(int | str))  # N: Revealed type is "Union[type[builtins.int], type[builtins.str], None]"
+--zuban-diff reveal_type(as_type(int | str))  # N: Revealed type is "Union[type[builtins.int], type[builtins.str], None]"
+reveal_type(as_type(int | str))  # N: Revealed type is "type[int | str] | None"
 reveal_type(as_type(int))  # N: Revealed type is "Union[type[builtins.int], None]"
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]
@@ -824,7 +852,8 @@ typx2: TypeForm[typing.Any] = typing.Any  # OK
 -- the TypeForm feature was introduced.
 [case testTypeVarTypeFormsAreOnlyRecognizedInStringAnnotation]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Generic, List, TypeForm, TypeVar
+--zuban-diff from typing import Generic, List, TypeForm, TypeVar
+from typing_extensions import Generic, List, TypeForm, TypeVar
 E = TypeVar('E')
 class Box(Generic[E]):
     def foo(self, e: E) -> None:
@@ -836,7 +865,9 @@ class Box(Generic[E]):
 
 [case testIncompleteTypeFormsAreNotRecognized]
 # flags: --python-version 3.14 --enable-incomplete-feature=TypeForm
-from typing import Optional, TypeForm
-typx: TypeForm = Optional  # E: Incompatible types in assignment (expression has type "int", variable has type "TypeForm[Any]")
+--zuban-diff from typing import Optional, TypeForm
+from typing_extensions import Optional, TypeForm
+--zuban-diff typx: TypeForm = Optional  # E: Incompatible types in assignment (expression has type "int", variable has type "TypeForm[Any]")
+typx: TypeForm = Optional  # E: Optional[...] must have exactly one type argument
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]
