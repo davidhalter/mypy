@@ -4150,7 +4150,7 @@ class Wrapper2:
     @overload
     def foo(cls, x: str) -> str: ...
 --zuban-diff     @classmethod
-    @classmethod  # E: Overloaded function implementation does not accept all possible arguments of signature 2
+    @classmethod  # E: Overloaded function implementation does not accept all possible parameters of signature 2
     def foo(cls, x): pass
 
 class Wrapper3:
@@ -4159,7 +4159,7 @@ class Wrapper3:
     @overload
     def foo(cls, x: str) -> str: ...
 --zuban-diff     @classmethod
-    @classmethod  # E: Overloaded function implementation does not accept all possible arguments of signature 1  # E: Overloaded function implementation does not accept all possible arguments of signature 2
+    @classmethod  # E: Overloaded function implementation does not accept all possible parameters of signature 1  # E: Overloaded function implementation does not accept all possible parameters of signature 2
     def foo(cls, x): pass
 
 [builtins fixtures/classmethod.pyi]
