@@ -1562,8 +1562,6 @@ x = []
 y = ""
 x.append(y) if bool() else x.append(y)
 z = x.append(y) if bool() else x.append(y) # E: "append" of "list" does not return a value (it only ever returns None) \
---zuban-diff 
-                                           # E: "append" of "list" does not return a value (it only ever returns None)
 [builtins fixtures/list.pyi]
 
 [case testConditionalExpressionWithUnreachableBranches]
@@ -1707,11 +1705,14 @@ def g() -> Iterator[int]:
 from typing import Generator
 def g() -> Generator[int, None, None]:
     x = yield from ()  # E: Function does not return a value (it only ever returns None)
-    x = yield from (0, 1, 2)  # E: Function does not return a value (it only ever returns None)
+--zuban-diff     x = yield from (0, 1, 2)  # E: Function does not return a value (it only ever returns None)
+    x = yield from (0, 1, 2)
     x = yield from (0, "ERROR")  # E: Incompatible types in "yield from" (actual type "int | str", expected type "int") \
-                                 # E: Function does not return a value (it only ever returns None)
+--zuban-diff                                  # E: Function does not return a value (it only ever returns None)
+--zuban-diff 
     x = yield from ("ERROR",)  # E: Incompatible types in "yield from" (actual type "str", expected type "int") \
-                               # E: Function does not return a value (it only ever returns None)
+--zuban-diff                                # E: Function does not return a value (it only ever returns None)
+--zuban-diff 
 [builtins fixtures/tuple.pyi]
 
 -- dict(...)

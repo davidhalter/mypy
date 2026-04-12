@@ -1360,9 +1360,8 @@ def g(x: U, y: V) -> None:
          # N:     def [T: str] f(x: T) -> T \
          # N:     def [T: str] f(x: list[T]) -> None
 --zuban-diff     a = f([x])
---zuban-diff     reveal_type(a)  # N: Revealed type is "None"
     a = f([x])  # E: "f" does not return a value (it only ever returns None)
-    reveal_type(a)  # N: Revealed type is "Any"
+    reveal_type(a)  # N: Revealed type is "None"
 --zuban-diff     f([y]) # E: Value of type variable "T" of "f" cannot be "V"
 --zuban-diff     f([x, y]) # E: Value of type variable "T" of "f" cannot be "object"
     f([y]) # E: List item 0 has incompatible type "V"; expected "str"

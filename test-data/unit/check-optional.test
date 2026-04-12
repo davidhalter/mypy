@@ -120,9 +120,8 @@ reveal_type(z2)  # N: Revealed type is "Literal[0] | builtins.str | None"
 [case testLambdaReturningNone]
 f = lambda: None
 --zuban-diff x = f()
---zuban-diff reveal_type(x)  # N: Revealed type is "None"
 x = f()  # E: Function does not return a value (it only ever returns None)
-reveal_type(x)  # N: Revealed type is "Any"
+reveal_type(x)  # N: Revealed type is "None"
 
 [case testNoneArgumentType]
 def f(x: None) -> None: pass
@@ -369,7 +368,8 @@ def g(x: Optional[int]) -> int:
 
 x = f()  # E: "f" does not return a value (it only ever returns None)
 f() + 1  # E: "f" does not return a value (it only ever returns None) \
-         # E: Unsupported left operand type for + ("None")
+--zuban-diff          # E: Unsupported left operand type for + ("None")
+         # E: Unsupported operand types for + ("None" and "int")
 g(f())  # E: "f" does not return a value (it only ever returns None)
 
 [case testEmptyReturn]
