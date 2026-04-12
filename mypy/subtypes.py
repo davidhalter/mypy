@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from contextlib import contextmanager
-from typing import Any, Callable, Final, TypeVar, cast
-from typing_extensions import TypeAlias as _TypeAlias
+from typing import Any, Final, TypeAlias as _TypeAlias, TypeVar, cast
 
 import mypy.applytype
 import mypy.constraints
@@ -272,7 +271,12 @@ def is_same_type(
         and a.last_known_value is b.last_known_value
     ):
         return all(is_same_type(x, y) for x, y in zip(a.args, b.args))
-    elif isinstance(a, TypeVarType) and isinstance(b, TypeVarType) and a.id == b.id:
+    elif (
+        isinstance(a, TypeVarType)
+        and isinstance(b, TypeVarType)
+        and a.id == b.id
+        and a.upper_bound == b.upper_bound
+    ):
         return True
 
     # Note that using ignore_promotions=True (default) makes types like int and int64

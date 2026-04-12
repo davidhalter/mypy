@@ -6,7 +6,7 @@ Subclass TransformVisitor to perform non-trivial transformations.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Optional, cast
+from typing import cast
 
 from mypy.nodes import (
     GDEF,
@@ -77,6 +77,7 @@ from mypy.nodes import (
     StrExpr,
     SuperExpr,
     SymbolTable,
+    TemplateStrExpr,
     TempNode,
     TryStmt,
     TupleExpr,
@@ -194,7 +195,7 @@ class TransformVisitor(NodeVisitor[Node]):
             node.name,
             [self.copy_argument(arg) for arg in node.arguments],
             self.block(node.body),
-            cast(Optional[FunctionLike], self.optional_type(node.type)),
+            cast(FunctionLike | None, self.optional_type(node.type)),
         )
 
         self.copy_function_attributes(new, node)
@@ -224,7 +225,7 @@ class TransformVisitor(NodeVisitor[Node]):
         new = LambdaExpr(
             [self.copy_argument(arg) for arg in node.arguments],
             self.block(node.body),
-            cast(Optional[FunctionLike], self.optional_type(node.type)),
+            cast(FunctionLike | None, self.optional_type(node.type)),
         )
         self.copy_function_attributes(new, node)
         return new
@@ -259,12 +260,14 @@ class TransformVisitor(NodeVisitor[Node]):
         return new
 
     def visit_class_def(self, node: ClassDef) -> ClassDef:
+        keywords = [(key, self.expr(value)) for key, value in node.keywords.items()]
         new = ClassDef(
             node.name,
             self.block(node.defs),
             node.type_vars,
             self.expressions(node.base_type_exprs),
             self.optional_expr(node.metaclass),
+            keywords,
         )
         new.fullname = node.fullname
         new.info = node.info
@@ -528,7 +531,7 @@ class TransformVisitor(NodeVisitor[Node]):
             node.op,
             self.expr(node.left),
             self.expr(node.right),
-            cast(Optional[TypeAliasExpr], self.optional_expr(node.analyzed)),
+            cast(TypeAliasExpr | None, self.optional_expr(node.analyzed)),
         )
         new.method_type = self.optional_type(node.method_type)
         return new
@@ -577,6 +580,18 @@ class TransformVisitor(NodeVisitor[Node]):
         return DictExpr(
             [(self.expr(key) if key else None, self.expr(value)) for key, value in node.items]
         )
+
+    def visit_template_str_expr(self, node: TemplateStrExpr) -> TemplateStrExpr:
+        items: list[Expression | tuple[Expression, str, str | None, Expression | None]] = []
+        for item in node.items:
+            if isinstance(item, tuple):
+                value, source, conversion, format_spec = item
+                items.append(
+                    (self.expr(value), source, conversion, self.optional_expr(format_spec))
+                )
+            else:
+                items.append(self.expr(item))
+        return TemplateStrExpr(items)
 
     def visit_tuple_expr(self, node: TupleExpr) -> TupleExpr:
         return TupleExpr(self.expressions(node.items))

@@ -1,17 +1,20 @@
-[case testAllBase64Features_librt_experimental]
-from typing import Any
+[case testAllBase64Features_librt]
+from typing import Any, cast
 import base64
 import binascii
+import random
 
-from librt.base64 import b64encode, b64decode
+from librt.base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
 
 from testutil import assertRaises
+
+rand_values = [random.randbytes(random.randint(1, 2000)) for _ in range(2000)]
 
 def test_encode_basic() -> None:
     assert b64encode(b"x") == b"eA=="
 
     with assertRaises(TypeError):
-        b64encode(bytearray(b"x"))
+        b64encode(cast(Any, bytearray(b"x")))
 
 def check_encode(b: bytes) -> None:
      assert b64encode(b) == getattr(base64, "b64encode")(b)
@@ -35,21 +38,25 @@ def test_encode_different_strings() -> None:
     for b in b"", b"ab", b"bac", b"1234", b"xyz88", b"abc" * 200:
         check_encode(b)
 
-def test_encode_wrapper() -> None:
-    enc: Any = b64encode
-    assert enc(b"x") == b"eA=="
+    for b in rand_values:
+        check_encode(b)
 
-    with assertRaises(TypeError):
-        enc()
+def test_encode_wrappers() -> None:
+    funcs: list[Any] = [b64encode, urlsafe_b64encode]
+    for enc in funcs:
+        assert enc(b"x") == b"eA=="
 
-    with assertRaises(TypeError):
-        enc(b"x", b"y")
+        with assertRaises(TypeError):
+            enc()
+
+        with assertRaises(TypeError):
+            enc(b"x", b"y")
 
 def test_decode_basic() -> None:
     assert b64decode(b"eA==") == b"x"
 
     with assertRaises(TypeError):
-        b64decode(bytearray(b"eA=="))
+        b64decode(cast(Any, bytearray(b"eA==")))
 
     for non_ascii in "\x80", "foo\u100bar", "foo\ua1234bar":
         with assertRaises(ValueError):
@@ -82,6 +89,9 @@ def test_decode_different_strings() -> None:
         check_decode(b[:i])
 
     for b in b"", b"ab", b"bac", b"1234", b"xyz88", b"abc" * 200:
+        check_decode(b)
+
+    for b in rand_values:
         check_decode(b)
 
 def is_base64_char(x: int) -> bool:
@@ -140,24 +150,61 @@ def test_decode_with_extra_data_after_padding() -> None:
     check_decode(b"eHk=x", encoded=True)
     check_decode(b"eA==abc=======efg", encoded=True)
 
-def test_decode_wrapper() -> None:
-    dec: Any = b64decode
-    assert dec(b"eA==") == b"x"
+def test_decode_wrappers() -> None:
+    funcs: list[Any] = [b64decode, urlsafe_b64decode]
+    for dec in funcs:
+        assert dec(b"eA==") == b"x"
 
-    with assertRaises(TypeError):
-        dec()
+        with assertRaises(TypeError):
+            dec()
 
-    with assertRaises(TypeError):
-        dec(b"x", b"y")
+        with assertRaises(TypeError):
+            dec(b"x", b"y")
 
-[case testBase64FeaturesNotAvailableInNonExperimentalBuild_librt_base64]
-# This also ensures librt.base64 can be built without experimental features
-import librt.base64
+def check_urlsafe_encode(b: bytes) -> None:
+    assert urlsafe_b64encode(b) == getattr(base64, "urlsafe_b64encode")(b)
 
-def test_b64encode_not_available() -> None:
-    assert not hasattr(librt.base64, "b64encode")
+def test_urlsafe_b64encode() -> None:
+    check_urlsafe_encode(b"")
+    check_urlsafe_encode(b"a")
+    check_urlsafe_encode(b"\xf8")
+    check_urlsafe_encode(b"\xfc")
+    check_urlsafe_encode(b"\xfcx")
+    check_urlsafe_encode(b"\xfcxy")
+    check_urlsafe_encode(b"\xfcxyz")
+    check_urlsafe_encode(bytes([x for x in range(256)]))
 
-[case testBase64UsedAtTopLevelOnly_librt_experimental]
+    for b in rand_values:
+        check_urlsafe_encode(b)
+
+def check_urlsafe_decode(b: bytes) -> None:
+    enc = urlsafe_b64encode(b)
+    assert urlsafe_b64decode(enc) == getattr(base64, "urlsafe_b64decode")(enc)
+    enc2 = b64encode(b)
+    assert urlsafe_b64decode(enc2) == getattr(base64, "urlsafe_b64decode")(enc2)
+
+def test_urlsafe_b64decode() -> None:
+    # Don't test everything, since the implementation is mostly shared with b64decode.
+    check_urlsafe_decode(b"")
+    check_urlsafe_decode(b"a")
+    check_urlsafe_decode(b"\xf8")
+    check_urlsafe_decode(b"\xfc")
+    check_urlsafe_decode(b"\xfcx")
+    check_urlsafe_decode(b"\xfcxy")
+    check_urlsafe_decode(b"\xfcxyz")
+    check_urlsafe_decode(bytes([x for x in range(256)]))
+
+    for b in rand_values:
+        check_urlsafe_decode(b)
+
+    assert urlsafe_b64decode(b" e A = == !") == b"x"
+
+def test_urlsafe_b64decode_errors() -> None:
+    for b in b"eA", b"eA=", b"eHk":
+        with assertRaises(ValueError):
+            b64decode(b)
+
+[case testBase64UsedAtTopLevelOnly_librt]
 from librt.base64 import b64encode
 
 # The only reference to b64encode is at module top level

@@ -60,6 +60,9 @@ CALL_OVERLOAD: Final = ErrorCode(
     "call-overload", "Check that an overload variant matches arguments", "General"
 )
 VALID_TYPE: Final = ErrorCode("valid-type", "Check that type (annotation) is valid", "General")
+NONETYPE_TYPE: Final = ErrorCode(
+    "nonetype-type", "Check that type (annotation) is not NoneType", "General"
+)
 VAR_ANNOTATED: Final = ErrorCode(
     "var-annotated", "Require variable annotation if type can't be inferred", "General"
 )
@@ -212,6 +215,9 @@ TRUTHY_ITERABLE: Final = ErrorCode(
     "General",
     default_enabled=False,
 )
+STR_UNPACK: Final[ErrorCode] = ErrorCode(
+    "str-unpack", "Warn about expressions that unpack str", "General"
+)
 NAME_MATCH: Final = ErrorCode(
     "name-match", "Check that type definition has consistent naming", "General"
 )
@@ -277,11 +283,6 @@ MAYBE_UNRECOGNIZED_STR_TYPEFORM: Final = ErrorCode(
 
 # Syntax errors are often blocking.
 SYNTAX: Final = ErrorCode("syntax", "Report syntax errors", "General")
-
-# This is an internal marker code for a whole-file ignore. It is not intended to
-# be user-visible.
-FILE: Final = ErrorCode("file", "Internal marker for a whole file being ignored", "General")
-del error_codes[FILE.code]
 
 # This is a catch-all for remaining uncategorized errors.
 MISC: Final = ErrorCode("misc", "Miscellaneous other checks", "General")
