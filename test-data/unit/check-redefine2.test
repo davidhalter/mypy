@@ -69,7 +69,8 @@ def f1() -> None:
         x: Union[int, str] = 0
         reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
         x = ""
-    reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
+--zuban-diff     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
+    reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineUninitializedCodePath3]
 # flags: --allow-redefinition-new --local-partial-types
@@ -1491,10 +1492,12 @@ Int = Union[int, None]
 
 def test(x: Union[str, Int]) -> None:
     x = a
-    reveal_type(x)  # N: Revealed type is "builtins.str | Any | builtins.int"
+--zuban-diff     reveal_type(x)  # N: Revealed type is "builtins.str | Any | builtins.int"
+    reveal_type(x)  # N: Revealed type is "builtins.str | builtins.int | Any"
     y: Union[str, Int]
     y = a
-    reveal_type(y)  # N: Revealed type is "builtins.str | Any | builtins.int"
+--zuban-diff     reveal_type(y)  # N: Revealed type is "builtins.str | Any | builtins.int"
+    reveal_type(y)  # N: Revealed type is "builtins.str | builtins.int | Any"
 
 [case testNewRedefineWidenedArgumentDeferral]
 # flags: --allow-redefinition-new --local-partial-types

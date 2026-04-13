@@ -1639,7 +1639,8 @@ class PublishedMessages:
 from dataclasses import dataclass
 
 @dataclass
-class A(B): ...
+--zuban-diff class A(B): ...
+class A(B): ...  # E: Name "B" is used before definition
 
 @dataclass
 class B: ...

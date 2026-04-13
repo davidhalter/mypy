@@ -149,7 +149,8 @@ a = 'x'.foobar(b)  # type: ignore[name-defined, xyz]  # E: "str" has no attribut
 a = 'x'.foobar(b)  # type: ignore[xyz, w, attr-defined]  # E: Name "b" is not defined  [name-defined] \
                                                          # N: Error code "name-defined" not covered by "type: ignore[xyz, w, attr-defined]" comment
 a = 'x'.foobar(b)  # type: ignore[ w,  xyz,    attr-defined]  # E: Name "b" is not defined  [name-defined] \
-                                                              # N: Error code "name-defined" not covered by "type: ignore[w, xyz, attr-defined]" comment
+--zuban-diff                                                               # N: Error code "name-defined" not covered by "type: ignore[w, xyz, attr-defined]" comment
+                                                              # N: Error code "name-defined" not covered by "type: ignore[w,  xyz,    attr-defined]" comment
 
 [case testErrorCodeIgnoreMultiple2]
 a = 'x'.foobar(c) # type: int # type: ignore[name-defined, attr-defined]
@@ -250,7 +251,8 @@ y  # type: ignore   [xyz]  # E: Name "y" is not defined  [name-defined] \
 y  # type: ignore[  xyz  ]  # E: Name "y" is not defined  [name-defined] \
                             # N: Error code "name-defined" not covered by "type: ignore[xyz]" comment
 y  # type: ignore[ xyz , foo  ]  # E: Name "y" is not defined  [name-defined] \
-                                 # N: Error code "name-defined" not covered by "type: ignore[xyz, foo]" comment
+--zuban-diff                                  # N: Error code "name-defined" not covered by "type: ignore[xyz, foo]" comment
+                                 # N: Error code "name-defined" not covered by "type: ignore[xyz , foo]" comment
 
 a = z  # type: int  # type: ignore  [name-defined]
 b = z2  # type: int  # type: ignore  [ name-defined ]
@@ -260,7 +262,8 @@ d = zz # type: int  # type: ignore  [xyz]  # E: Name "zz" is not defined  [name-
 e = zz # type: int  # type: ignore  [ xyz ]  # E: Name "zz" is not defined  [name-defined] \
                                              # N: Error code "name-defined" not covered by "type: ignore[xyz]" comment
 f = zz # type: int  # type: ignore  [ xyz,foo ]  # E: Name "zz" is not defined  [name-defined] \
-                                                 # N: Error code "name-defined" not covered by "type: ignore[xyz, foo]" comment
+--zuban-diff                                                  # N: Error code "name-defined" not covered by "type: ignore[xyz, foo]" comment
+                                                 # N: Error code "name-defined" not covered by "type: ignore[xyz,foo]" comment
 
 [case testErrorCodeIgnoreAfterArgComment]
 def f(x  # type: xyz  # type: ignore[name-defined]  # Comment
