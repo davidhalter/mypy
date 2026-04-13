@@ -1677,8 +1677,10 @@ class C:
 -- https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-warn-unreachable
 def foo() -> None:
     return None
-    return NotImplemented #no error
-    return None # E: Statement is unreachable
+--zuban-diff     return NotImplemented #no error
+--zuban-diff     return None # E: Statement is unreachable
+    return NotImplemented  # E: Statement is unreachable
+    return None
 [builtins fixtures/isinstance.pyi]
 
 [case testPassAndEllipsisUnreachable]

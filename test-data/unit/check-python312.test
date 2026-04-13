@@ -2303,10 +2303,12 @@ from typing_extensions import TypeVarTuple, Unpack
 
 Us = TypeVarTuple("Us")
 
-class C[*Ts, *Us]:  # E: Can only use one type var tuple in a class def
+--zuban-diff class C[*Ts, *Us]:  # E: Can only use one type var tuple in a class def
+class C[*Ts, *Us]:  # E: Can only use one TypeVarTuple in type params
    pass
 
 class D[*Ts](Generic[Unpack[Us]]):  # E: Generic[...] base class is redundant \
-                                    # E: Can only use one type var tuple in a class def
+--zuban-diff                                     # E: Can only use one type var tuple in a class def
+                                    # E: All type parameters should be declared ("Us" not declared)
     pass
 [builtins fixtures/tuple.pyi]

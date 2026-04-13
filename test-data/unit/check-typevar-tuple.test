@@ -2810,7 +2810,8 @@ def foo() -> str:
 
 
 # this is a false positive, but it no longer crashes
-call(run, foo, some_kwarg="a")  # E: Argument 1 to "call" has incompatible type "def [Ts, T] run(func: def (*args: *Ts) -> T, *args: *Ts, some_kwarg: str = ...) -> T"; expected "Callable[[Callable[[], str], str], str]"
+--zuban-diff call(run, foo, some_kwarg="a")  # E: Argument 1 to "call" has incompatible type "def [Ts, T] run(func: def (*args: *Ts) -> T, *args: *Ts, some_kwarg: str = ...) -> T"; expected "Callable[[Callable[[], str], str], str]"
+call(run, foo, some_kwarg="a")
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTuplePassedParameters]
@@ -2822,8 +2823,10 @@ Ts = TypeVarTuple("Ts")
 class X(Generic[Unpack[Ts]]):
     ...
 
-def c(t: X[Concatenate[int, ...]]) -> None:  # E: Cannot use "[int, VarArg(Any), KwArg(Any)]" for TypeVarTuple, only for ParamSpec
-    reveal_type(t)  # N: Revealed type is "__main__.X[Unpack[builtins.tuple[Any, ...]]]"
+--zuban-diff def c(t: X[Concatenate[int, ...]]) -> None:  # E: Cannot use "[int, VarArg(Any), KwArg(Any)]" for TypeVarTuple, only for ParamSpec
+def c(t: X[Concatenate[int, ...]]) -> None:  # E: Invalid location for Concatenate  # N: You can use Concatenate as the first argument to Callable
+--zuban-diff     reveal_type(t)  # N: Revealed type is "__main__.X[Unpack[builtins.tuple[Any, ...]]]"
+    reveal_type(t)  # N: Revealed type is "__main__.X[Any]"
 [builtins fixtures/tuple.pyi]
 
 [case testTypeVarTupleLiteralValueAsTypeArgument]
@@ -2835,5 +2838,6 @@ T = TypeVar('T')
 def func(d: Callable[[Unpack[Ts]], T]) -> T: ...
 
 y = func[1, int] # E: Type application is only supported for generic classes \
-                 # E: Invalid type: try using Literal[1] instead?
+--zuban-diff                  # E: Invalid type: try using Literal[1] instead?
+--zuban-diff 
 [builtins fixtures/tuple.pyi]

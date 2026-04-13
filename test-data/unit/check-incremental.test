@@ -7728,9 +7728,11 @@ from b import no_such_export
 [file b.py]
 from a import *
 [out]
-tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+tmp/a.py:1: error: Module "b" has no attribute "no_such_export"
 [out2]
-tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+--zuban-diff tmp/b.py:1: error: Cannot resolve name "no_such_export" (possible cyclic definition)
+tmp/a.py:1: error: Module "b" has no attribute "no_such_export"
 tmp/m.py:2: note: Revealed type is "Any"
 
 [case testCachedUnexpectedKeywordArgument]
@@ -7894,7 +7896,8 @@ import pkg.mod
 [file bar.py.2]
 [out]
 [out2]
-tmp/b.py:3: error: Name "pkg.mod.C" is not defined
+--zuban-diff tmp/b.py:3: error: Name "pkg.mod.C" is not defined
+--zuban-diff 
 
 [case testIndirectDependencyReorderModulesNoCrash2]
 import m
@@ -7927,7 +7930,8 @@ import n3  # touch
 [file n3.py]
 [out]
 [out2]
-tmp/a.py:2: error: Name "b.c.d.C" is not defined
+--zuban-diff tmp/a.py:2: error: Name "b.c.d.C" is not defined
+tmp/a.py:2: error: Name "b.c.d" is not defined
 
 [case testDeletedModuleFromImport]
 # flags: --ignore-missing-imports
@@ -7937,7 +7941,8 @@ from a import b
 [delete a/b.py.2]
 [out]
 [out2]
-main:2: error: Module "a" has no attribute "b"
+--zuban-diff main:2: error: Module "a" has no attribute "b"
+--zuban-diff 
 
 [case testDeletedModuleFromImport2]
 # flags: --ignore-missing-imports
