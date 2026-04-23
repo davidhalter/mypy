@@ -455,7 +455,8 @@ def main(x: Optional[str]):
     else:
         reveal_type(x)  # N: Revealed type is "builtins.str | None"
     if x is '<string>':
-        reveal_type(x)  # N: Revealed type is "Literal['<string>']"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Literal['<string>']"
+        reveal_type(x)  # N: Revealed type is "Literal['<string>']?"
     else:
         reveal_type(x)  # N: Revealed type is "builtins.str | None"
 [builtins fixtures/ops.pyi]
@@ -468,7 +469,8 @@ def main(x: Union[str, int, None]):
     else:
         reveal_type(x)  # N: Revealed type is "builtins.str | builtins.int | None"
     if x is '<string>':
-        reveal_type(x)  # N: Revealed type is "Literal['<string>']"
+--zuban-diff         reveal_type(x)  # N: Revealed type is "Literal['<string>']"
+        reveal_type(x)  # N: Revealed type is "Literal['<string>']?"
     else:
         reveal_type(x)  # N: Revealed type is "builtins.str | builtins.int | None"
 [builtins fixtures/ops.pyi]
