@@ -1788,7 +1788,8 @@ else:
 
 c1s: C1[str]
 if isinstance(c1s, P1):  # E: Subclass of "C1[str]" and "P1" cannot exist: would have incompatible method signatures
-    reveal_type(c1s)  # E: Statement is unreachable
+--zuban-diff     reveal_type(c1s)  # E: Statement is unreachable
+    reveal_type(c1s)  # N: Revealed type is "__main__.C1[str]"
 else:
     reveal_type(c1s) # N: Revealed type is "__main__.C1[builtins.str]"
 
