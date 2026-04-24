@@ -1614,7 +1614,8 @@ def f(x: Union[int, A], a: Type[A]) -> None:
 from typing import Type, Sequence, Union
 
 x: Type[str]
-if issubclass(x, int):  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+--zuban-diff if issubclass(x, int):  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+if issubclass(x, int):  # E: Subclass of "str" and "int" cannot exist: have distinct disjoint bases
     reveal_type(x)  # E: Statement is unreachable
 
 class X: pass

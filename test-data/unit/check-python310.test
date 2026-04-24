@@ -1853,7 +1853,8 @@ match m:
 m: str
 
 match m:
-    case a if isinstance(a, int):  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+--zuban-diff     case a if isinstance(a, int):  # E: Subclass of "str" and "int" cannot exist: would have incompatible method signatures
+    case a if isinstance(a, int):  # E: Subclass of "str" and "int" cannot exist: have distinct disjoint bases
         reveal_type(a)  # E: Statement is unreachable
 [builtins fixtures/isinstancelist.pyi]
 
