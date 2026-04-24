@@ -81,7 +81,7 @@ reveal_type(typx)  # N: Revealed type is "TypeForm[Any]"
 from typing_extensions import Type, TypeForm
 typ: Type
 --zuban-diff typ = int | None  # E: Incompatible types in assignment (expression has type "object", variable has type "type[Any]")
-typ = int | None  # E: Incompatible types in assignment (expression has type "UnionType | type[int]", variable has type "type[Any]")
+typ = int | None  # E: Incompatible types in assignment (expression has type "UnionType", variable has type "type[Any]")
 typx: TypeForm
 typx = int | None
 [builtins fixtures/primitives.pyi]
@@ -111,7 +111,7 @@ is_type(int | None)
 def is_type(typ: type) -> bool:
     return isinstance(typ, type)
 --zuban-diff is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "object"; expected "type"
-is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "UnionType | type[int]"; expected "type[Any]"
+is_type(int | None)  # E: Argument 1 to "is_type" has incompatible type "UnionType"; expected "type[Any]"
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]
 
