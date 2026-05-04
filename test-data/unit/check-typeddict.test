@@ -450,9 +450,13 @@ reveal_type(D(x=[]))  # N: Revealed type is "TypedDict('__main__.D', {'x': built
 from typing import Dict, MutableMapping, TypedDict
 Point = TypedDict('Point', {'x': int, 'y': int})
 def as_dict(p: Point) -> Dict[str, int]:
-    return p  # E: Incompatible return value type (got "Point", expected "dict[str, int]")
+    return p  # E: Incompatible return value type (got "Point", expected "dict[str, int]") \
+--zuban-diff 
+              # N: TypedDicts cannot be assigned to dict, callers could delete or change keys to violate their type contract. Use Mapping[...] for read-only access or make all TypedDict keys NotRequired, with identical types, combined with a compatible `extra_items` class parameter.
 def as_mutable_mapping(p: Point) -> MutableMapping[str, object]:
-    return p  # E: Incompatible return value type (got "Point", expected "MutableMapping[str, object]")
+    return p  # E: Incompatible return value type (got "Point", expected "MutableMapping[str, object]") \
+--zuban-diff 
+              # N: TypedDicts cannot be assigned to MutableMapping, callers could delete or change keys to violate their type contract. Use Mapping[...] for read-only access or make all TypedDict keys NotRequired, with identical types, combined with a compatible `extra_items` class parameter.
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-full.pyi]
 
@@ -4324,8 +4328,12 @@ def accepts_dict(d: Dict[str, object]): ...
 
 x: TP
 accepts_mapping(x)
-accepts_mutable_mapping(x)  # E: Argument 1 to "accepts_mutable_mapping" has incompatible type "TP"; expected "MutableMapping[str, object]"
-accepts_dict(x)  # E: Argument 1 to "accepts_dict" has incompatible type "TP"; expected "dict[str, object]"
+accepts_mutable_mapping(x)  # E: Argument 1 to "accepts_mutable_mapping" has incompatible type "TP"; expected "MutableMapping[str, object]" \
+--zuban-diff 
+                            # N: TypedDicts cannot be assigned to MutableMapping, callers could delete or change keys to violate their type contract. Use Mapping[...] for read-only access or make all TypedDict keys NotRequired, with identical types, combined with a compatible `extra_items` class parameter.
+accepts_dict(x)  # E: Argument 1 to "accepts_dict" has incompatible type "TP"; expected "dict[str, object]" \
+--zuban-diff 
+                            # N: TypedDicts cannot be assigned to dict, callers could delete or change keys to violate their type contract. Use Mapping[...] for read-only access or make all TypedDict keys NotRequired, with identical types, combined with a compatible `extra_items` class parameter.
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
