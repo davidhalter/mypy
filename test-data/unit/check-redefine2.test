@@ -1269,7 +1269,7 @@ def f() -> None:
 def f() -> None:
     gen = (_ for _ in ())
 --zuban-diff     reveal_type(gen) # N: Revealed type is "typing.Generator[Any, None, None]"
-    reveal_type(gen) # N: Revealed type is "typing.Generator[Never, None, None]"
+    reveal_type(gen) # N: Revealed type is "types.GeneratorType[Never, None, None]"
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefineCannotWidenImportedVariable]
