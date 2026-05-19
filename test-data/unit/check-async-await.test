@@ -12,7 +12,8 @@ async def f() -> int:
 
 async def f() -> int:
     return 0
-_ = reveal_type(f())  # N: Revealed type is "typing.Coroutine[Any, Any, builtins.int]"
+--zuban-diff _ = reveal_type(f())  # N: Revealed type is "typing.Coroutine[Any, Any, builtins.int]"
+_ = reveal_type(f())  # N: Revealed type is "types.CoroutineType[Any, Any, builtins.int]"
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
 
@@ -178,7 +179,8 @@ async def f() -> None:
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
 [out]
-main:7: error: "Coroutine[Any, Any, AsyncGenerator[str, None]]" has no attribute "__aiter__" (not async iterable)
+--zuban-diff main:7: error: "Coroutine[Any, Any, AsyncGenerator[str, None]]" has no attribute "__aiter__" (not async iterable)
+main:7: error: "CoroutineType[Any, Any, AsyncGenerator[str, None]]" has no attribute "__aiter__" (not async iterable)
 main:7: note: Maybe you forgot to use "await"?
 
 [case testAsyncForErrorCanBeIgnored]
@@ -388,7 +390,8 @@ def g() -> Generator[Any, None, str]:
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
 [out]
-main:6: error: "yield from" can't be applied to "Coroutine[Any, Any, str]"
+--zuban-diff main:6: error: "yield from" can't be applied to "Coroutine[Any, Any, str]"
+main:6: error: "yield from" can't be applied to "CoroutineType[Any, Any, str]"
 
 [case testAwaitableSubclass]
 
@@ -737,7 +740,8 @@ async def f(x: str) -> str: ...
 async def f(x):
     pass
 
-reveal_type(f) # N: Revealed type is "Overload(def (x: builtins.int) -> typing.Coroutine[Any, Any, builtins.int], def (x: builtins.str) -> typing.Coroutine[Any, Any, builtins.str])"
+--zuban-diff reveal_type(f) # N: Revealed type is "Overload(def (x: builtins.int) -> typing.Coroutine[Any, Any, builtins.int], def (x: builtins.str) -> typing.Coroutine[Any, Any, builtins.str])"
+reveal_type(f) # N: Revealed type is "Overload(def (x: builtins.int) -> types.CoroutineType[Any, Any, builtins.int], def (x: builtins.str) -> types.CoroutineType[Any, Any, builtins.str])"
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
 
@@ -754,7 +758,8 @@ async def g() -> None:
     forwardref: C
     class C: pass
 
-reveal_type(f) # N: Revealed type is "def () -> typing.Coroutine[Any, Any, None]"
+--zuban-diff reveal_type(f) # N: Revealed type is "def () -> typing.Coroutine[Any, Any, None]"
+reveal_type(f) # N: Revealed type is "def () -> types.CoroutineType[Any, Any, None]"
 reveal_type(g) # N: Revealed type is "Any"
 [builtins fixtures/async_await.pyi]
 [typing fixtures/typing-async.pyi]
@@ -907,12 +912,15 @@ class Custom(Generic[T]):
 class Sub(Custom[T]): ...
 
 async def test(x: Sub[D], tx: Type[Sub[D]]) -> None:
-    foo().x  # E: "Coroutine[Any, Any, D]" has no attribute "x" \
+--zuban-diff     foo().x  # E: "Coroutine[Any, Any, D]" has no attribute "x" \
+    foo().x  # E: "CoroutineType[Any, Any, D]" has no attribute "x" \
              # N: Maybe you forgot to use "await"?
     (await foo()).x
-    foo().bad  # E: "Coroutine[Any, Any, D]" has no attribute "bad"
+--zuban-diff     foo().bad  # E: "Coroutine[Any, Any, D]" has no attribute "bad"
+    foo().bad  # E: "CoroutineType[Any, Any, D]" has no attribute "bad"
 
-    g(foo())  # E: Argument 1 to "g" has incompatible type "Coroutine[Any, Any, D]"; expected "C" \
+--zuban-diff     g(foo())  # E: Argument 1 to "g" has incompatible type "Coroutine[Any, Any, D]"; expected "C" \
+    g(foo())  # E: Argument 1 to "g" has incompatible type "CoroutineType[Any, Any, D]"; expected "C" \
               # N: Maybe you forgot to use "await"?
     g(await foo())
     unknown: Awaitable[Any]
@@ -1090,7 +1098,8 @@ class P(Protocol):
         raise BaseException
 
 class Launcher(P):
-    def launch(self) -> AsyncIterator[int]:  # E: Return type "AsyncIterator[int]" of "launch" incompatible with return type "Coroutine[Any, Any, AsyncIterator[int]]" in supertype "P" \
+--zuban-diff     def launch(self) -> AsyncIterator[int]:  # E: Return type "AsyncIterator[int]" of "launch" incompatible with return type "Coroutine[Any, Any, AsyncIterator[int]]" in supertype "P" \
+    def launch(self) -> AsyncIterator[int]:  # E: Return type "AsyncIterator[int]" of "launch" incompatible with return type "CoroutineType[Any, Any, AsyncIterator[int]]" in supertype "P" \
                                              # N: Consider declaring "launch" in supertype "P" without "async" \
                                              # N: See https://mypy.readthedocs.io/en/stable/more_types.html#asynchronous-iterators
         raise BaseException
