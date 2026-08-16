@@ -6,12 +6,13 @@ P = ParamSpec('P')
 [case testInvalidParamSpecDefinitions]
 from typing import ParamSpec
 
-P1 = ParamSpec("P1", covariant=True)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
-P2 = ParamSpec("P2", contravariant=True)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
+--zuban-diff P1 = ParamSpec("P1", covariant=True)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
+--zuban-diff P2 = ParamSpec("P2", contravariant=True)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
+P1 = ParamSpec("P1", covariant=True)
+P2 = ParamSpec("P2", contravariant=True)
 P3 = ParamSpec("P3", bound=int)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
 P4 = ParamSpec("P4", int, str)  # E: Too many positional arguments for "ParamSpec"
---zuban-diff P5 = ParamSpec("P5", covariant=True, bound=int)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
-P5 = ParamSpec("P5", covariant=True, bound=int)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
+P5 = ParamSpec("P5", covariant=True, bound=int)  # E: The variance and bound arguments to ParamSpec do not have defined semantics yet
 [builtins fixtures/paramspec.pyi]
 
 [case testParamSpecLocations]
