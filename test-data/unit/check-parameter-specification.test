@@ -1048,7 +1048,8 @@ def adds_await() -> Callable[
 from typing import Callable, Generic
 from typing_extensions import ParamSpec
 
-_P = ParamSpec("_P")
+--zuban-diff _P = ParamSpec("_P")
+_P = ParamSpec("_P", covariant=True)
 
 class Job(Generic[_P]):
     def __init__(self, target: Callable[_P, None]) -> None: ...
