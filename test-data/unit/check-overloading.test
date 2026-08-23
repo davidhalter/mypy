@@ -2779,7 +2779,8 @@ def f(**args): pass
 
 A = TypedDict('A', {'x': int})
 B = TypedDict('B', {'x': int, 'y': int})
-C = TypedDict('C', {'x': int, 'y': int, 'z': int})
+--zuban-diff C = TypedDict('C', {'x': int, 'y': int, 'z': int})
+C = TypedDict('C', {'x': int, 'y': int, 'z': int}, closed=True)
 
 a: A
 b: B
