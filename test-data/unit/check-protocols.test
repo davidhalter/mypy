@@ -3132,7 +3132,9 @@ f(Lst3(c))  # E: Argument 1 to "f" has incompatible type "Lst3[Lst3[Str]]"; expe
 # N:         def __getitem__(self, k: slice) -> Lst3[Lst3[Str]] \
 # N:         @overload              \
 --zuban-diff # N:         def __getitem__(self, bool, /) -> Lst3[Str]
-# N:         def __getitem__(self, k: bool) -> Lst3[Str]
+# N:         def __getitem__(self, k: bool) -> Lst3[Str] \
+--zuban-diff 
+# E: The return type for function "__init__" of "Lst3" does not match the return context
 
 [builtins fixtures/list.pyi]
 [typing fixtures/typing-full.pyi]
