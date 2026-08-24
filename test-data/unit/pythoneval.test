@@ -831,12 +831,12 @@ MyDDict(dict)['0']
 MyDDict(dict)[0]
 [out]
 --zuban-diff _program.py:6: error: Argument 1 to "defaultdict" has incompatible type "type[list[_T]]"; expected "Callable[[], str] | None"
-_program.py:6: error: Incompatible types in assignment (expression has type "defaultdict[str, list[Any]]", variable has type "defaultdict[int, str]")
+_program.py:6: error: Incompatible callable argument with type vars
 _program.py:9: error: Invalid index type "str" for "defaultdict[int, str]"; expected type "int"
 _program.py:9: error: Incompatible types in assignment (expression has type "int", target has type "str")
 --zuban-diff _program.py:19: error: Argument 1 to "tst" has incompatible type "defaultdict[str, List[Never]]"; expected "defaultdict[int, List[Never]]"
 --zuban-diff _program.py:23: error: Invalid index type "str" for "MyDDict[Dict[Never, Never]]"; expected type "int"
-_program.py:19: error: Argument 1 to "tst" has incompatible type "defaultdict[str, List[Any]]"; expected "defaultdict[int, List[Any]]"
+_program.py:19: error: Dict entry 0 has incompatible type "str": "list[Any]"; expected "int": "list[Any]"
 _program.py:23: error: Invalid index type "str" for "MyDDict[Dict[Any, Any]]"; expected type "int"
 
 [case testCollectionsAliases]
