@@ -963,7 +963,12 @@ class Person(TypedDict):
 class Base:
     def foo(self, **kwargs: Unpack[Person]) -> None: ...
 class SubGood(Base):
-    def foo(self, *, name: str, age: int, extra: bool = False) -> None: ...
+--zuban-diff     def foo(self, *, name: str, age: int, extra: bool = False) -> None: ...
+    def foo(self, *, name: str, age: int, extra: bool = False) -> None: ...  # E: Signature of "foo" incompatible with supertype "Base" \
+                                                                             # N:      Superclass: \
+                                                                             # N:          def foo(self, **kwargs: Unpack[Person]) -> None \
+                                                                             # N:      Subclass: \
+                                                                             # N:          def foo(self, *, name: str, age: int, extra: bool = ...) -> None
 class SubBad(Base):
 --zuban-diff     def foo(self, *, name: str, age: str) -> None: ...  # E: Argument 2 of "foo" is incompatible with supertype "Base"; supertype defines the argument type as "int" \
 --zuban-diff     # N: This violates the Liskov substitution principle \
@@ -993,7 +998,12 @@ class Unrelated(TypedDict):
 class Base:
     def foo(self, **kwargs: Unpack[Person]) -> None: ...
 class SubGood(Base):
-    def foo(self, **kwargs: Unpack[PersonExtra]) -> None: ...
+--zuban-diff     def foo(self, **kwargs: Unpack[PersonExtra]) -> None: ...
+    def foo(self, **kwargs: Unpack[PersonExtra]) -> None: ...  # E: Signature of "foo" incompatible with supertype "Base" \
+                                                               # N:      Superclass: \
+                                                               # N:          def foo(self, **kwargs: Unpack[Person]) -> None \
+                                                               # N:      Subclass: \
+                                                               # N:          def foo(self, **kwargs: Unpack[PersonExtra]) -> None
 class SubBad(Base):
     def foo(self, **kwargs: Unpack[Unrelated]) -> None: ...  # E: Signature of "foo" incompatible with supertype "Base" \
     # N:      Superclass: \
