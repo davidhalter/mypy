@@ -638,7 +638,8 @@ YbZ = TypedDict('YbZ', {'y': object, 'z': int})
 T = TypeVar('T')
 def f(x: Callable[[T, T], None]) -> T: pass
 def g(x: XYa, y: YbZ) -> None: pass
-reveal_type(f(g))  # N: Revealed type is "Never"
+--zuban-diff reveal_type(f(g))  # N: Revealed type is "Never"
+reveal_type(f(g))  # E: Argument 1 to "f" has incompatible type "Callable[[XYa, YbZ], None]"; expected "Callable[[XYa, XYa], None]"  # N: Revealed type is "Any"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
@@ -718,7 +719,8 @@ YZ = TypedDict('YZ', {'y': int, 'z': int})
 T = TypeVar('T')
 def f(x: Callable[[T, T], None]) -> T: pass
 def g(x: XY, y: YZ) -> None: pass
-reveal_type(f(g)) # N: Revealed type is "Never"
+--zuban-diff reveal_type(f(g)) # N: Revealed type is "Never"
+reveal_type(f(g)) # E: Argument 1 to "f" has incompatible type "Callable[[XY, YZ], None]"; expected "Callable[[XY, XY], None]"  # N: Revealed type is "Any"
 [builtins fixtures/dict.pyi]
 [typing fixtures/typing-typeddict.pyi]
 
