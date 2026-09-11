@@ -3317,7 +3317,8 @@ class b:
 --zuban-diff           # E: Cannot determine type of "y"
 x = x[1]  # E: Name "x" is used before definition
 y = 1[y]  # E: Name "y" is used before definition \
-          # E: Value of type "int" is not indexable
+          # E: Value of type "int" is not indexable \
+          # E: Cannot resolve name "y" (possible cyclic definition)
 
 [case testForwardBaseDeferAttr]
 from typing import Optional, Callable, TypeVar
