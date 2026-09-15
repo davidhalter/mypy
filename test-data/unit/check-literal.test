@@ -2465,7 +2465,8 @@ d: Literal[3]
 a_wrap: Literal[4, a]  # E: Parameter 2 of Literal[...] is invalid
 b_wrap: Literal[4, b]  # E: Parameter 2 of Literal[...] is invalid
 c_wrap: Literal[4, c]  # E: Parameter 2 of Literal[...] is invalid
-d_wrap: Literal[4, d]  # E: Parameter 2 of Literal[...] is invalid
+--zuban-diff d_wrap: Literal[4, d]  # E: Parameter 2 of Literal[...] is invalid
+d_wrap: Literal[4, d]  # E: Name "d" is not defined
 [builtins fixtures/tuple.pyi]
 [out]
 

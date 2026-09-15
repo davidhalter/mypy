@@ -2327,7 +2327,8 @@ reveal_type(x)  # N: Revealed type is "Any"
 # flags: --warn-unreachable
 from typing import Any, Union
 class A: ...
-B: Any
+--zuban-diff B: Any
+B: Any = 1
 x: Union[A, B]
 reveal_type(x)  # N: Revealed type is "__main__.A | Any"
 assert isinstance(x, B)

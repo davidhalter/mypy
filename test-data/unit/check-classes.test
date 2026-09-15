@@ -9551,7 +9551,8 @@ def nop(fn: object) -> foo.Bar:
     return foo.Bar()
 
 class Bar:
-    foo: foo.Bar = nop(
+--zuban-diff     foo: foo.Bar = nop(
+    bar: foo.Bar = nop(
         lambda: 0
     )
 [file foo.py]

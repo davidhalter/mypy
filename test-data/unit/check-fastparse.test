@@ -34,7 +34,8 @@ def f(x):  # E: Invalid type comment or annotation
 # All of these should not crash
 from typing import Callable, Tuple, Iterable
 
-x: Tuple[int, str].x # E: Invalid type comment or annotation
+--zuban-diff x: Tuple[int, str].x # E: Invalid type comment or annotation
+x: Tuple[int, str].x = 1 # E: Invalid type comment or annotation
 a: Iterable[x].x # E: Invalid type comment or annotation
 b: Tuple[x][x] # E: Invalid type comment or annotation
 c: Iterable[x][x] # E: Invalid type comment or annotation
@@ -42,12 +43,9 @@ d: Callable[..., int][x] # E: Invalid type comment or annotation
 e: Callable[..., int].x # E: Invalid type comment or annotation
 
 f = None # type: Tuple[int, str].x # E: Invalid type comment or annotation
---zuban-diff g = None # type: Iterable[x].x # E: Invalid type comment or annotation
---zuban-diff h = None # type: Tuple[x][x] # E: Invalid type comment or annotation
---zuban-diff i = None # type: Iterable[x][x] # E: Invalid type comment or annotation
-g = None # type: Iterable[x].x # E: Invalid type comment or annotation  # E: Name "x" is not defined
-h = None # type: Tuple[x][x] # E: Invalid type comment or annotation  # E: Name "x" is not defined
-i = None # type: Iterable[x][x] # E: Invalid type comment or annotation  # E: Name "x" is not defined
+g = None # type: Iterable[x].x # E: Invalid type comment or annotation
+h = None # type: Tuple[x][x] # E: Invalid type comment or annotation
+i = None # type: Iterable[x][x] # E: Invalid type comment or annotation
 j = None # type: Callable[..., int][x] # E: Invalid type comment or annotation
 k = None # type: Callable[..., int].x # E: Invalid type comment or annotation
 
