@@ -42,9 +42,12 @@ d: Callable[..., int][x] # E: Invalid type comment or annotation
 e: Callable[..., int].x # E: Invalid type comment or annotation
 
 f = None # type: Tuple[int, str].x # E: Invalid type comment or annotation
-g = None # type: Iterable[x].x # E: Invalid type comment or annotation
-h = None # type: Tuple[x][x] # E: Invalid type comment or annotation
-i = None # type: Iterable[x][x] # E: Invalid type comment or annotation
+--zuban-diff g = None # type: Iterable[x].x # E: Invalid type comment or annotation
+--zuban-diff h = None # type: Tuple[x][x] # E: Invalid type comment or annotation
+--zuban-diff i = None # type: Iterable[x][x] # E: Invalid type comment or annotation
+g = None # type: Iterable[x].x # E: Invalid type comment or annotation  # E: Name "x" is not defined
+h = None # type: Tuple[x][x] # E: Invalid type comment or annotation  # E: Name "x" is not defined
+i = None # type: Iterable[x][x] # E: Invalid type comment or annotation  # E: Name "x" is not defined
 j = None # type: Callable[..., int][x] # E: Invalid type comment or annotation
 k = None # type: Callable[..., int].x # E: Invalid type comment or annotation
 
