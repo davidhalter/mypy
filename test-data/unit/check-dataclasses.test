@@ -2173,7 +2173,7 @@ TB = TypeVar('TB', bound=B)
 
 def f(b_or_t: Union[TA, TB, int]) -> None:
 --zuban-diff     a2 = replace(b_or_t)   # E: Value of type variable "_DataclassT" of "replace" cannot be "TA | TB | int"
-    a2 = replace(b_or_t)   # E: Argument 1 to "replace" has incompatible type "int"; expected a dataclass
+    a2 = replace(b_or_t)   # E: Argument 1 to "replace" has a variable type "TB" not bound to a dataclass
 
 [builtins fixtures/tuple.pyi]
 

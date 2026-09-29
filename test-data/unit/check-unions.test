@@ -595,10 +595,8 @@ from typing import Union, Tuple, Any
 
 d: Union[Any, Tuple[float, float]]
 (d1, d2) = d
---zuban-diff reveal_type(d1)  # N: Revealed type is "Any | builtins.float"
---zuban-diff reveal_type(d2)  # N: Revealed type is "Any | builtins.float"
-reveal_type(d1)  # N: Revealed type is "builtins.float | Any"
-reveal_type(d2)  # N: Revealed type is "builtins.float | Any"
+reveal_type(d1)  # N: Revealed type is "Any | builtins.float"
+reveal_type(d2)  # N: Revealed type is "Any | builtins.float"
 
 e: Union[Any, Tuple[float, float], int]
 (e1, e2) = e  # E: "int" object is not iterable
