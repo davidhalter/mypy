@@ -109,9 +109,11 @@ reveal_type(z2)  # N: Revealed type is "builtins.int | builtins.str | None"
 from typing import Optional
 x = None  # type: Optional[str]
 y1 = x and 'b'
-reveal_type(y1)  # N: Revealed type is "Literal[''] | None | builtins.str"
+--zuban-diff reveal_type(y1)  # N: Revealed type is "Literal[''] | None | builtins.str"
+reveal_type(y1)  # N: Revealed type is "Literal[''] | builtins.str | None"
 y2 = x and 1  # x could be '', so...
-reveal_type(y2)  # N: Revealed type is "Literal[''] | None | builtins.int"
+--zuban-diff reveal_type(y2)  # N: Revealed type is "Literal[''] | None | builtins.int"
+reveal_type(y2)  # N: Revealed type is "Literal[''] | builtins.int | None"
 z1 = 'b' and x
 reveal_type(z1)  # N: Revealed type is "builtins.str | None"
 z2 = int() and x
