@@ -1591,7 +1591,7 @@ if isinstance(obj, Awaitable):
 [out]
 _testSpecialTypingProtocols.py:6: note: Revealed type is "tuple[int]"
 --zuban-diff _testSpecialTypingProtocols.py:8: error: Statement is unreachable
-_testSpecialTypingProtocols.py:8: note: Revealed type is "<subclass of "tuple[int]" and "typing.Awaitable"> | <subclass of "list[int]" and "typing.Awaitable">"
+_testSpecialTypingProtocols.py:8: note: Revealed type is "<subclass of "tuple[int]" and "typing.Awaitable[Any]"> | <subclass of "list[int]" and "typing.Awaitable[Any]">"
 
 [case testTypeshedRecursiveTypesExample]
 from typing import List, Union

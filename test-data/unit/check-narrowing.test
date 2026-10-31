@@ -1759,7 +1759,7 @@ if isinstance(t, (list, tuple)) and isinstance(t, tuple):
     reveal_type(t)  # N: Revealed type is "builtins.tuple[Any, ...]"
 else:
 --zuban-diff     reveal_type(t)  # N: Revealed type is "Any"
-    reveal_type(t)  # N: Revealed type is "Any | list"
+    reveal_type(t)  # N: Revealed type is "Any | list[Any]"
 reveal_type(t)  # N: Revealed type is "Any"
 [builtins fixtures/isinstancelist.pyi]
 

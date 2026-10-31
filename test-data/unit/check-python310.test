@@ -780,21 +780,17 @@ match m:
     case bytes(c):
         reveal_type(c)  # N: Revealed type is "builtins.bytes"
     case dict(d):
---zuban-diff         reveal_type(d)  # N: Revealed type is "builtins.dict[Any, Any]"
-        reveal_type(d)  # N: Revealed type is "builtins.dict"
+        reveal_type(d)  # N: Revealed type is "builtins.dict[Any, Any]"
     case float(e):
         reveal_type(e)  # N: Revealed type is "builtins.float"
     case frozenset(f):
---zuban-diff         reveal_type(f)  # N: Revealed type is "builtins.frozenset[Any]"
-        reveal_type(f)  # N: Revealed type is "builtins.frozenset"
+        reveal_type(f)  # N: Revealed type is "builtins.frozenset[Any]"
     case int(g):
         reveal_type(g)  # N: Revealed type is "builtins.int"
     case list(h):
---zuban-diff         reveal_type(h)  # N: Revealed type is "builtins.list[Any]"
-        reveal_type(h)  # N: Revealed type is "builtins.list"
+        reveal_type(h)  # N: Revealed type is "builtins.list[Any]"
     case set(i):
---zuban-diff         reveal_type(i)  # N: Revealed type is "builtins.set[Any]"
-        reveal_type(i)  # N: Revealed type is "builtins.set"
+        reveal_type(i)  # N: Revealed type is "builtins.set[Any]"
     case str(j):
         reveal_type(j)  # N: Revealed type is "builtins.str"
     case tuple(k):
@@ -813,21 +809,17 @@ match m:
     case bytes():
         reveal_type(m)  # N: Revealed type is "builtins.bytes"
     case dict():
---zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.dict[Any, Any]"
-        reveal_type(m)  # N: Revealed type is "builtins.dict"
+        reveal_type(m)  # N: Revealed type is "builtins.dict[Any, Any]"
     case float():
         reveal_type(m)  # N: Revealed type is "builtins.float"
     case frozenset():
---zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.frozenset[Any]"
-        reveal_type(m)  # N: Revealed type is "builtins.frozenset"
+        reveal_type(m)  # N: Revealed type is "builtins.frozenset[Any]"
     case int():
         reveal_type(m)  # N: Revealed type is "builtins.int"
     case list():
---zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.list[Any]"
-        reveal_type(m)  # N: Revealed type is "builtins.list"
+        reveal_type(m)  # N: Revealed type is "builtins.list[Any]"
     case set():
---zuban-diff         reveal_type(m)  # N: Revealed type is "builtins.set[Any]"
-        reveal_type(m)  # N: Revealed type is "builtins.set"
+        reveal_type(m)  # N: Revealed type is "builtins.set[Any]"
     case str():
         reveal_type(m)  # N: Revealed type is "builtins.str"
     case tuple():
@@ -996,8 +988,7 @@ m: object
 
 match m:
     case A(a=i):
---zuban-diff         reveal_type(m)  # N: Revealed type is "__main__.A[Any]"
-        reveal_type(m)  # N: Revealed type is "__main__.A"
+        reveal_type(m)  # N: Revealed type is "__main__.A[Any]"
         reveal_type(i)  # N: Revealed type is "Any"
 
 [case testMatchClassPatternCaptureVariadicGeneric]
@@ -1012,8 +1003,7 @@ class A(Generic[Unpack[Ts]]):
 m: object
 match m:
     case A(a=i):
---zuban-diff         reveal_type(m)  # N: Revealed type is "__main__.A[Unpack[builtins.tuple[Any, ...]]]"
-        reveal_type(m)  # N: Revealed type is "__main__.A"
+        reveal_type(m)  # N: Revealed type is "__main__.A[Unpack[builtins.tuple[Any, ...]]]"
         reveal_type(i)  # N: Revealed type is "builtins.tuple[Any, ...]"
 [builtins fixtures/tuple.pyi]
 
@@ -1675,8 +1665,7 @@ m: object
 
 match m:
     case list(x) | dict(x):
---zuban-diff         reveal_type(x)  # N: Revealed type is "builtins.list[Any] | builtins.dict[Any, Any]"
-        reveal_type(x)  # N: Revealed type is "Union[builtins.list, builtins.dict]"
+        reveal_type(x)  # N: Revealed type is "builtins.list[Any] | builtins.dict[Any, Any]"
 [builtins fixtures/dict.pyi]
 
 -- Interactions --
