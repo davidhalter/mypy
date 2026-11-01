@@ -98,6 +98,8 @@ reveal_type(t5)  # N: Revealed type is "collections.ChainMap[builtins.int, built
 
 
 [case testGenericAliasCollectionsABCReveal]
+--zuban-diff
+# flags: --python-version 3.14
 import collections.abc
 
 t01: collections.abc.Awaitable[int]
