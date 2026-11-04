@@ -1782,8 +1782,7 @@ main:13: error: Only supported top decorators are "@f.setter" and "@f.deleter"
 class A:
     @property
     def f(self) -> str: ...
---zuban-diff     @f.getter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
-    @f.getter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: "Callable[[A], str]" has no attribute "getter"
+    @f.getter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
     def f(self, val: str) -> None: ...
 [builtins fixtures/property.pyi]
 
