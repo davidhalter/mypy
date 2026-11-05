@@ -1724,15 +1724,18 @@ a.f = ''  # E: Property "f" defined in "A" is read-only
 class B:
     @property
     def f(self) -> str: ...
-    @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+--zuban-diff     @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+    @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: Name "not_f" is not defined
     def f(self) -> None: ...
 
 class C:
     @property
     def f(self) -> str: ...
-    @not_f.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+--zuban-diff     @not_f.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+    @not_f.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: Name "not_f" is not defined
     def f(self, val: str) -> None: ...
-    @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+--zuban-diff     @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+    @not_f.deleter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: Name "not_f" is not defined
     def f(self) -> None: ...
 [builtins fixtures/property.pyi]
 
@@ -1743,7 +1746,8 @@ class A:
 --zuban-diff     @f.unknown  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
     @f.unknown  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: "Callable[[A], str]" has no attribute "unknown"
     def f(self, val: str) -> None: ...
-    @f.bad.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+--zuban-diff     @f.bad.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
+    @f.bad.setter  # E: Only supported top decorators are "@f.setter" and "@f.deleter"  # E: "Callable[[A], str]" has no attribute "bad"
     def f(self, val: str) -> None: ...
     @f  # E: Only supported top decorators are "@f.setter" and "@f.deleter"
     def f(self, val: str) -> None: ...
