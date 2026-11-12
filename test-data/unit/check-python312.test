@@ -1678,7 +1678,8 @@ reveal_type(f)  # N: Revealed type is "def [T] (x: Any, y: T`-1) -> T`-1"
 
 [case testPEP695WrongNumberOfConstrainedTypes]
 # TODO: we should probably error on this.
-type A[T: ()] = list[T]
+--zuban-diff type A[T: ()] = list[T]
+type A[T: ()] = list[T]  # E: Type variable must have at least two constrained types
 a: A[int]
 reveal_type(a)  # N: Revealed type is "builtins.list[builtins.int]"
 
@@ -2470,7 +2471,8 @@ reveal_type(baz(objs_a))  # N: Revealed type is "builtins.list[__main__.B | __ma
 type Inner = tuple[int, str]
 type Outer = tuple[bool, *Inner]
 
-class K(Base):
+--zuban-diff class K(Base):
+class K(Base):  # E: Name "Base" is used before definition
     q: list[Outer] = list()
 
 class Base: ...

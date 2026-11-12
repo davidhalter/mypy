@@ -2226,7 +2226,8 @@ from typing import Mapping, Sequence, Union
 d: dict[str, list[str]]
 m: Mapping[str, Sequence[str]] = d | d
 
-A = dict[str, Union[A, int]]
+--zuban-diff A = dict[str, Union[A, int]]
+A = dict[str, Union[A, int]]  # E: Name "A" is used before definition
 d1: A
 d2: A
 d3: A = d1 | d2

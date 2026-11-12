@@ -766,7 +766,8 @@ typx = 'Type'
 from typing import Any
 from typing_extensions import TypeForm
 foo: Any
-typx: TypeForm = 'foo'
+--zuban-diff typx: TypeForm = 'foo'
+typx: TypeForm = 'foo'  # E: Name "foo" is not defined
 reveal_type(typx)  # N: Revealed type is "TypeForm[Any]"
 [builtins fixtures/primitives.pyi]
 [typing fixtures/typing-full.pyi]

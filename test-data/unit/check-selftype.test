@@ -1580,7 +1580,8 @@ class C:
     def bar(cls: Annotated[type[Self], "some_metadata"], x: int) -> None:
         ...
 
-reveal_type(C.foo) # N: Revealed type is "def [Self <: __main__.C] (self: Self`2, x: builtins.int)"
+--zuban-diff reveal_type(C.foo) # N: Revealed type is "def [Self <: __main__.C] (self: Self`2, x: builtins.int)"
+reveal_type(C.foo) # N: Revealed type is "def (self: __main__.C, x: int)"
 reveal_type(C.bar) # N: Revealed type is "def (x: builtins.int)"
 [builtins fixtures/tuple.pyi]
 

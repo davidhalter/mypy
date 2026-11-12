@@ -4344,7 +4344,8 @@ def g() -> None:
     x = ""  # E: Incompatible types in assignment (expression has type "str", variable has type "int | None")
     reveal_type(x)  # N: Revealed type is "builtins.int | None"
 
-reveal_type(x)  # N: Revealed type is "builtins.int | None"
+--zuban-diff reveal_type(x)  # N: Revealed type is "builtins.int | None"
+reveal_type(x)  # N: Revealed type is "None"
 
 [case testGlobalVariableNoneInitMultipleFuncsRedefine]
 # flags: --allow-redefinition
