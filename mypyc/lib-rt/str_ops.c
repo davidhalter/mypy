@@ -130,8 +130,7 @@ PyObject *CPyStr_GetItem(PyObject *str, CPyTagged index) {
             return NULL;
         }
     } else {
-        PyObject *index_obj = CPyTagged_AsObject(index);
-        return PyObject_GetItem(str, index_obj);
+        return NULL;
     }
 }
 
@@ -216,7 +215,11 @@ PyObject *CPyStr_Build(Py_ssize_t len, ...) {
             Py_ssize_t itemlen = PyUnicode_GET_LENGTH(item);
             if (itemlen != 0) {
 #if CPY_3_13_FEATURES
-                PyUnicode_CopyCharacters(res, res_offset, item, 0, itemlen);
+                if (PyUnicode_CopyCharacters(res, res_offset, item, 0, itemlen) < 0) {
+                    va_end(args);
+                    Py_DECREF(res);
+                    return NULL;
+                }
 #else
                 _PyUnicode_FastCopyCharacters(res, res_offset, item, 0, itemlen);
 #endif
@@ -417,6 +420,9 @@ int CPyStr_Startswith(PyObject *self, PyObject *subobj) {
                 return 2;
             }
             int result = PyUnicode_Tailmatch(self, substring, start, end, -1);
+            if (result < 0) {
+                return 2;
+            }
             if (result) {
                 return 1;
             }
@@ -441,6 +447,9 @@ int CPyStr_Endswith(PyObject *self, PyObject *subobj) {
                 return 2;
             }
             int result = PyUnicode_Tailmatch(self, substring, start, end, 1);
+            if (result < 0) {
+                return 2;
+            }
             if (result) {
                 return 1;
             }
@@ -453,6 +462,9 @@ int CPyStr_Endswith(PyObject *self, PyObject *subobj) {
 PyObject *CPyStr_Removeprefix(PyObject *self, PyObject *prefix) {
     Py_ssize_t end = PyUnicode_GET_LENGTH(self);
     int match = PyUnicode_Tailmatch(self, prefix, 0, end, -1);
+    if (match < 0) {
+        return NULL;
+    }
     if (match) {
         Py_ssize_t prefix_end = PyUnicode_GET_LENGTH(prefix);
         return PyUnicode_Substring(self, prefix_end, end);
@@ -463,6 +475,9 @@ PyObject *CPyStr_Removeprefix(PyObject *self, PyObject *prefix) {
 PyObject *CPyStr_Removesuffix(PyObject *self, PyObject *suffix) {
     Py_ssize_t end = PyUnicode_GET_LENGTH(self);
     int match = PyUnicode_Tailmatch(self, suffix, 0, end, 1);
+    if (match < 0) {
+        return NULL;
+    }
     if (match) {
         Py_ssize_t suffix_end = PyUnicode_GET_LENGTH(suffix);
         return PyUnicode_Substring(self, 0, end - suffix_end);
@@ -631,7 +646,9 @@ PyObject *CPyStr_Multiply(PyObject *str, CPyTagged count) {
         PyErr_SetString(PyExc_OverflowError, CPYTHON_LARGE_INT_ERRMSG);
         return NULL;
     }
-    return PySequence_Repeat(str, temp_count);
+    // Use the str implementation directly (like PyUnicode_Concat does for str + str), so
+    // that the result is always an exact str even if a subclass overrides __mul__.
+    return PyUnicode_Type.tp_as_sequence->sq_repeat(str, temp_count);
 }
 
 
@@ -713,7 +730,9 @@ static inline PyObject *CPyStr_ChangeCase(PyObject *self,
 #if CPY_3_13_FEATURES
     // On 3.13+, _PyUnicode_ToLowerFull/ToUpperFull are no longer exported,
     // so fall back to CPython's method implementation for non-ASCII strings.
-    return PyObject_CallMethodNoArgs(self, method_name);
+    // The method is looked up on str (not on the type of self), so that the
+    // result is always an exact str even if a subclass overrides it.
+    return PyObject_CallMethodOneArg((PyObject *)&PyUnicode_Type, method_name, self);
 #else
     // General Unicode: unicode_func handles 1-to-N expansion.
     // Worst case: each codepoint expands to 3 (per Unicode standard).

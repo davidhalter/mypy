@@ -30,11 +30,14 @@ from mypyc.ir.rtypes import (
     int_rprimitive,
     object_rprimitive,
     str_rprimitive,
+    uint32_rprimitive,
+    uint64_rprimitive,
     void_rtype,
 )
 from mypyc.primitives.registry import (
     binary_op,
     custom_op,
+    custom_primitive_op,
     function_op,
     load_address_op,
     method_op,
@@ -48,6 +51,9 @@ for int_name in (
     "mypy_extensions.i64",
     "mypy_extensions.i32",
     "mypy_extensions.i16",
+    "mypy_extensions.u64",
+    "mypy_extensions.u32",
+    "mypy_extensions.u16",
     "mypy_extensions.u8",
 ):
     # These int constructors produce object_rprimitives that then need to be unboxed
@@ -197,6 +203,15 @@ def int_unary_op(name: str, c_function_name: str) -> PrimitiveDescription:
 int_neg_op = int_unary_op("-", "CPyTagged_Negate")
 int_invert_op = int_unary_op("~", "CPyTagged_Invert")
 
+# abs(int)
+function_op(
+    name="builtins.abs",
+    arg_types=[int_rprimitive],
+    return_type=int_rprimitive,
+    c_function_name="CPyTagged_Absolute",
+    error_kind=ERR_NEVER,
+)
+
 
 # Primitives related to integer comparison operations:
 
@@ -283,6 +298,36 @@ int64_to_int_op = custom_op(
     error_kind=ERR_MAGIC,
 )
 
+uint64_to_int_op = custom_op(
+    arg_types=[uint64_rprimitive],
+    return_type=int_rprimitive,
+    c_function_name="CPyTagged_FromUInt64",
+    error_kind=ERR_MAGIC,
+)
+
+uint32_to_int_op = custom_op(
+    arg_types=[uint32_rprimitive],
+    return_type=int_rprimitive,
+    c_function_name="CPyTagged_FromUInt32",
+    error_kind=ERR_MAGIC,
+)
+
+# Convert tagged int (as PyObject *) to u64
+int_to_uint64_op = custom_op(
+    arg_types=[object_rprimitive],
+    return_type=uint64_rprimitive,
+    c_function_name="CPyLong_AsUInt64",
+    error_kind=ERR_MAGIC_OVERLAPPING,
+)
+
+# Convert tagged int (as PyObject *) to u32
+int_to_uint32_op = custom_op(
+    arg_types=[object_rprimitive],
+    return_type=uint32_rprimitive,
+    c_function_name="CPyLong_AsUInt32",
+    error_kind=ERR_MAGIC_OVERLAPPING,
+)
+
 # Convert tagged int (as PyObject *) to i32
 int_to_int32_op = custom_op(
     arg_types=[object_rprimitive],
@@ -305,6 +350,27 @@ int16_overflow = custom_op(
     error_kind=ERR_ALWAYS,
 )
 
+uint32_overflow = custom_op(
+    arg_types=[],
+    return_type=void_rtype,
+    c_function_name="CPyUInt32_Overflow",
+    error_kind=ERR_ALWAYS,
+)
+
+uint64_overflow = custom_op(
+    arg_types=[],
+    return_type=void_rtype,
+    c_function_name="CPyUInt64_Overflow",
+    error_kind=ERR_ALWAYS,
+)
+
+uint16_overflow = custom_op(
+    arg_types=[],
+    return_type=void_rtype,
+    c_function_name="CPyUInt16_Overflow",
+    error_kind=ERR_ALWAYS,
+)
+
 uint8_overflow = custom_op(
     arg_types=[],
     return_type=void_rtype,
@@ -314,7 +380,7 @@ uint8_overflow = custom_op(
 
 # translate isinstance(obj, int)
 isinstance_int = function_op(
-    name="builtints.isinstance",
+    name="builtins.isinstance",
     arg_types=[object_rprimitive],
     return_type=bit_rprimitive,
     c_function_name="PyLong_Check",
@@ -355,5 +421,23 @@ method_op(
     arg_types=[int_rprimitive],
     return_type=int_rprimitive,
     c_function_name="CPyTagged_BitLength",
+    error_kind=ERR_MAGIC,
+)
+
+# x.real, where x is an int
+int_real_op = custom_primitive_op(
+    name="int.real",
+    arg_types=[int_rprimitive],
+    return_type=int_rprimitive,
+    c_function_name="CPyTagged_Real",
+    error_kind=ERR_MAGIC,
+)
+
+# x.imag, where x is an int
+int_imag_op = custom_primitive_op(
+    name="int.imag",
+    arg_types=[int_rprimitive],
+    return_type=int_rprimitive,
+    c_function_name="CPyTagged_Imag",
     error_kind=ERR_MAGIC,
 )

@@ -784,7 +784,8 @@ class A:
 main:6: error: Incompatible types in assignment (expression has type "int", variable has type "A")
 main:8: error: Argument 1 to "g" has incompatible type "A"; expected "int"
 
-[case testNestedFunctionInMethodWithTooFewArgumentsInTypeComment_no_native_parse]
+-- Rejecting this is somewhat tricky in the new parser
+[case testNestedFunctionInMethodWithTooFewArgumentsInTypeComment_old_parser]
 class A:
     def f(self):
         # type: () -> None
@@ -805,7 +806,8 @@ class A:
             arg.B  # E: "object" has no attribute "B"
 [file mod.py]
 
-[case testDeepNestedFunctionWithTooFewArgumentsInTypeComment_no_native_parse]
+-- Rejecting this is somewhat tricky in the new parser
+[case testDeepNestedFunctionWithTooFewArgumentsInTypeComment_old_parser]
 class A:
     def f(self):
         # type: () -> None
@@ -1032,6 +1034,14 @@ def foo(x: {1:2}) -> [1]:
     x = y
 [typing fixtures/typing-medium.pyi]
 
+[case testNoTypeCheckDecoratorNoUntypedDefs]
+# flags: --disallow-untyped-defs
+import typing
+
+@typing.no_type_check
+def foo(x: "foo") -> "bar":
+    x: "whatever"
+[typing fixtures/typing-medium.pyi]
 
 -- Forward references to decorated functions
 -- -----------------------------------------
@@ -1132,7 +1142,6 @@ class A:
 [case testForwardReferenceToDynamicallyTypedStaticMethod]
 def f(self) -> None:
     A.x(1).y
---zuban-diff     A.x() # E: Missing positional argument "x" in call to "x"
     A.x() # E: Missing positional argument "x" in call to "x" of "A"
 
 class A:
@@ -1155,7 +1164,6 @@ class A:
 [case testForwardReferenceToDynamicallyTypedClassMethod]
 def f(self) -> None:
     A.x(1).y
---zuban-diff     A.x() # E: Missing positional argument "a" in call to "x"
     A.x() # E: Missing positional argument "a" in call to "x" of "A"
 
 class A:
@@ -2176,17 +2184,29 @@ class A:
         pass
 [builtins fixtures/staticmethod.pyi]
 
-[case testEllipsisWithSomethingAfterItFails_no_native_parse]
+[case testEllipsisWithSomethingAfterItFails]
 def f(x, y, z): # type: (..., int) -> None
     pass
 [out]
-main:1: error: Ellipses cannot accompany other parameter types in function type signature
+main:1: error: Type signature has too few parameters
 
-[case testEllipsisWithSomethingBeforeItFails_no_native_parse]
+[case testEllipsisWithSomethingBeforeItFails]
 def f(x, y, z): # type: (int, ...) -> None
     pass
 [out]
-main:1: error: Ellipses cannot accompany other parameter types in function type signature
+main:1: error: Type signature has too few parameters
+
+[case testEllipsisWithSomethingAfterItFails2]
+def f(x, y): # type: (..., int) -> None
+    pass
+[out]
+main:1: error: Unexpected "..."
+
+[case testEllipsisWithSomethingBeforeItFails2]
+def f(x, y): # type: (int, ...) -> None
+    pass
+[out]
+main:1: error: Unexpected "..."
 
 [case testRejectCovariantArgument]
 from typing import TypeVar, Generic
@@ -2211,21 +2231,16 @@ class A(Generic[t]):
 [out]
 main:6: error: Cannot use a covariant type variable as a parameter
 
-[case testRejectCovariantArgumentInLambda]
+[case testAllowCovariantArgumentInLambda]
 from typing import TypeVar, Generic, Callable
 
 t = TypeVar('t', covariant=True)
 class Thing(Generic[t]):
     def chain(self, func: Callable[[t], None]) -> None: pass
     def end(self) -> None:
-        return self.chain(  # Note that lambda args have no line numbers
+        return self.chain(
             lambda _: None)
 [builtins fixtures/bool.pyi]
-[out]
-main:8: error: Cannot use a covariant type variable as a parameter
-
-[case testRejectCovariantArgumentInLambdaSplitLine]
-from typing import TypeVar, Generic, Callable
 
 [case testRejectContravariantReturnType]
 # flags: --no-strict-optional
@@ -2599,6 +2614,26 @@ reveal_type(f)
 --zuban-diff main:2: note: Revealed type is "def () -> builtins.int"
 main:2: note: Revealed type is "def () -> Literal[5]?"
 
+[case testDeferredLambdaInOverload]
+from typing import Any, Callable, overload
+
+@overload
+def option(*, callback: Callable[[str], object] = ...) -> Any: ...
+@overload
+def option(*, callback: Callable[[int], object] = ...) -> Any: ...
+def option(**kwargs: object) -> None: pass
+
+def test() -> None:
+    option(callback=lambda x: [y for y in x])  # OK
+    x = C().x
+
+class C:
+    def __init__(self) -> None:
+        self.x = defer()
+
+def defer() -> int: ...
+[builtins fixtures/primitives.pyi]
+
 [case testRevealLocalsFunction]
 a = 1.0
 
@@ -2672,7 +2707,7 @@ xx: Optional[int] = X(x_in)
 from typing import TypeVar, Optional
 T = TypeVar('T')
 def X(val: T) -> T: ...
-x_in = None
+x_in = X(None)
 def Y(x: Optional[str] = X(x_in)): ...
 
 xx: Optional[int] = X(x_in)
@@ -3814,6 +3849,14 @@ class C:
 def defer() -> int:
     return 1
 
+[case testNarrowingForDefaultInInnerFunction]
+from typing import Optional
+
+def outer(x: Optional[float]) -> None:
+    if x is not None:
+        def inner(y: float = x) -> None: ...  # OK
+    def bad(y: float = x) -> None: ...  # E: Incompatible default for parameter "y" (default has type "float | None", parameter has type "float")
+
 [case testMissingPositionalArgShiftDetectedMiddle]
 def f(x: int, y: str, z: bytes, aa: int) -> None: ...
 
@@ -3823,9 +3866,9 @@ f(1, b'x', 1)
 main:3: error: Missing positional argument "y" in call to "f"
 
 [case testMissingPositionalArgShiftDetectedFirst]
-def f(x: int, y: str, z: bytes) -> None: ...
+def f(x: int, y: str, z: bytes, last: float) -> None: ...
 
-f("hello", b'x')
+f("hello", b'x', 1.5)
 [builtins fixtures/primitives.pyi]
 [out]
 main:3: error: Missing positional argument "x" in call to "f"
@@ -3900,3 +3943,96 @@ f("hello", b'x')
 main:3: error: Missing positional argument "z" in call to "f"
 main:3: error: Argument 1 to "f" has incompatible type "str"; expected "int"
 main:3: error: Argument 2 to "f" has incompatible type "bytes"; expected "str"
+
+[case testMissingPositionalArgNamesHigherN]
+# See https://github.com/python/mypy/issues/21427
+def convert2(first: int, second: str) -> None: ...
+
+# Possibly omitted arg, but we still issue two errors because there is only one argument
+convert2("hello")  # E: Missing positional argument "second" in call to "convert2" \
+                   # E: Argument 1 to "convert2" has incompatible type "str"; expected "int"
+
+# Other cases
+convert2()  # E: Missing positional arguments "first", "second" in call to "convert2"
+
+convert2("hello", 1)  # E: Argument 1 to "convert2" has incompatible type "str"; expected "int" \
+                      # E: Argument 2 to "convert2" has incompatible type "int"; expected "str"
+
+def convert3(first: int, second: str, third: float) -> None: ...
+
+# Possibly omitted arg, but we now only issue one error
+convert3("hello", 3.15)  # E: Missing positional argument "first" in call to "convert3"
+
+# Other cases
+convert3("hello")  # E: Missing positional arguments "second", "third" in call to "convert3" \
+                   # E: Argument 1 to "convert3" has incompatible type "str"; expected "int"
+
+convert3(3.15, "hello")  # E: Missing positional argument "third" in call to "convert3" \
+                         # E: Argument 1 to "convert3" has incompatible type "float"; expected "int"
+
+def convert4(first: int, second: str, third: float, fourth: bytes) -> None: ...
+
+# Possibly omitted arg, but we now only issue one error
+convert4("hello", 3.15, b'')  # E: Missing positional argument "first" in call to "convert4"
+
+# Other cases
+convert4("hello")  # E: Missing positional arguments "second", "third", "fourth" in call to "convert4" \
+                   # E: Argument 1 to "convert4" has incompatible type "str"; expected "int"
+
+convert4("hello", 3.15)  # E: Missing positional arguments "third", "fourth" in call to "convert4" \
+                         # E: Argument 1 to "convert4" has incompatible type "str"; expected "int" \
+                         # E: Argument 2 to "convert4" has incompatible type "float"; expected "str"
+
+convert4(b'', "hello", 3.15)  # E: Missing positional argument "fourth" in call to "convert4" \
+                              # E: Argument 1 to "convert4" has incompatible type "bytes"; expected "int"
+[builtins fixtures/primitives.pyi]
+
+[case testGenericContextLambdaNoError]
+from lib import takes_lambda
+takes_lambda(lambda x: 1)
+
+[file lib.py]
+from typing import Any, Callable, TypeVar
+
+# extra spaces
+
+Ex = TypeVar("Ex", covariant=True)
+
+def takes_lambda(func: Callable[[Ex], Any]) -> None:
+    pass
+
+[case testDictWithUnionAnySpecialCaseInStar2]
+from typing import Any
+
+a: Any
+d = {"x": 1, "y": a}
+d2 = dict(x=1, y=a)
+ds = [{"x": 1, "y": a} for _ in [1, 2, 3]]
+
+def test(x: int, y: str) -> None: ...
+test(**d)
+test(**d2)
+test(**ds[0])
+[builtins fixtures/dict.pyi]
+
+[case testTypeObjectJoinWithOverloadsCorrectFallback]
+from typing import Iterable, overload
+
+class M(type): ...
+class A(metaclass=M): ...
+class B: ...
+class C(metaclass=M):
+    @overload
+    def __init__(self, x: int) -> None: ...
+    @overload
+    def __init__(self, x: str) -> None: ...
+    def __init__(self, x):
+        pass
+
+def f(x: Iterable[object]) -> None: ...
+f([A, B, C])
+f([B, A, C])
+f([B, C, A])
+f([A, C, B])
+f([C, A, B])
+f([C, B, A])

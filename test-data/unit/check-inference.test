@@ -1126,8 +1126,10 @@ def f(*, x: int) -> int: ...
 def g(*, y: int) -> int: ...
 def h(*, x: int) -> int: ...
 
-list_1 = [f, g]  # E: List item 0 has incompatible type "def f(*, x: int) -> int"; expected "def g(*, y: int) -> int"
+list_1 = [f, g]
+reveal_type(list_1)  # N: Revealed type is "builtins.list[builtins.function]"
 list_2 = [f, h]
+reveal_type(list_2)  # N: Revealed type is "builtins.list[def (*, x: builtins.int) -> builtins.int]"
 [builtins fixtures/list.pyi]
 
 
@@ -1218,7 +1220,7 @@ if int():
 [builtins fixtures/for.pyi]
 
 [case testReusingInferredForIndex2]
-# flags: --allow-redefinition
+# flags: --allow-redefinition-old
 
 def f() -> None:
     for a in [A()]: pass
@@ -1238,7 +1240,7 @@ class B: pass
 [out]
 
 [case testReusingInferredForIndex3]
-# flags: --disallow-redefinition
+# flags: --disallow-redefinition-old
 def f() -> None:
     for a in [A()]: pass
     a = A()
@@ -1747,14 +1749,16 @@ b = {} # E: Need type annotation for "b" (hint: "b: dict[<type>, <type>] = ...")
 b[{}] = 1
 [builtins fixtures/dict.pyi]
 
-[case testInferDictInitializedToEmptyAndUpdatedFromMethod]
+-- Parallel mode does not support --no-local-partial-types
+[case testInferDictInitializedToEmptyAndUpdatedFromMethod_no_parallel]
 # flags: --no-local-partial-types
 map = {}
 def add() -> None:
     map[1] = 2
 [builtins fixtures/dict.pyi]
 
-[case testInferDictInitializedToEmptyAndUpdatedFromMethodUnannotated]
+-- Parallel mode does not support --no-local-partial-types
+[case testInferDictInitializedToEmptyAndUpdatedFromMethodUnannotated_no_parallel]
 # flags: --no-local-partial-types
 map = {}
 def add():
@@ -1945,7 +1949,6 @@ reveal_type(C().a)  # N: Revealed type is "builtins.dict[Any, Any]"
 [builtins fixtures/dict.pyi]
 
 [case testInferAttributeInitializedToNoneAndAssignedClassBody]
-# flags: --no-local-partial-types
 class C:
     a = None
     def __init__(self) -> None:
@@ -2124,7 +2127,6 @@ x = 1
 [out]
 
 [case testPartiallyInitializedVariableDoesNotEscapeScope2]
-# flags: --no-local-partial-types
 x = None
 def f() -> None:
     x = None
@@ -2152,22 +2154,6 @@ main:6: error: Incompatible types in assignment (expression has type "int", vari
 main:7: error: "None" not callable
 
 [case testGlobalInitializedToNoneSetFromFunction]
-# flags: --no-local-partial-types
-a = None
-def f() -> None:
-    global a
-    a = 42
-    reveal_type(a)  # N: Revealed type is "builtins.int"
-reveal_type(a)  # N: Revealed type is "builtins.int | None"
-
-b = None
-def unchecked():
-    global b
-    b = 42
-reveal_type(b)  # N: Revealed type is "Any | None"
-
-[case testGlobalInitializedToNoneSetFromFunctionLocalPartialTypes]
-# flags: --local-partial-types
 a = None
 def f() -> None:
     global a
@@ -2182,23 +2168,6 @@ def unchecked():
 reveal_type(b)  # N: Revealed type is "Any | None"
 
 [case testGlobalInitializedToNoneSetFromMethod]
-# flags: --no-local-partial-types
-a = None
-class C:
-    def m(self) -> None:
-        global a
-        a = 42
-reveal_type(a)  # N: Revealed type is "builtins.int | None"
-
-b = None
-class CC:
-    def unchecked(self):
-        global b
-        b = 42
-reveal_type(b)  # N: Revealed type is "Any | None"
-
-[case testGlobalInitializedToNoneSetFromMethodLocalPartialTypes]
-# flags: --local-partial-types
 a = None
 class C:
     def m(self) -> None:
@@ -2214,7 +2183,6 @@ class CC:
 reveal_type(b)  # N: Revealed type is "Any | None"
 
 [case testPartialTypeErrorSpecialCase1]
-# flags: --no-local-partial-types
 # This used to crash.
 class A:
     x = None
@@ -2233,7 +2201,6 @@ class A:
 [builtins fixtures/for.pyi]
 
 [case testPartialTypeErrorSpecialCase3]
-# flags: --no-local-partial-types
 class A:
     x = None
     def f(self) -> None:
@@ -2442,15 +2409,12 @@ class R:
 [case testMultipassAndMultipleFiles]
 import m
 def f() -> None:
-    x()
+    x()  # E: "int" not callable
 x = 0
 [file m.py]
 def g() -> None:
-    y()
+    y()  # E: "int" not callable
 y = 0
-[out]
-tmp/m.py:2: error: "int" not callable
-main:3: error: "int" not callable
 
 [case testForwardReferenceToDecoratedClassMethod]
 from typing import TypeVar, Callable
@@ -2593,7 +2557,6 @@ main:4: error: Unsupported target for indexed assignment ("type[C]")
 main:4: error: Invalid type: try using Literal[0] instead?
 
 [case testNoCrashOnPartialMember]
-# flags: --no-local-partial-types
 class C:
 --zuban-diff     x = None
     x = None  # E: Need type annotation for "x" (hint: "x: List[<type>] = ...")
@@ -2614,7 +2577,6 @@ reveal_type(x) # N: Revealed type is "builtins.str"
 [builtins fixtures/tuple.pyi]
 
 [case testNoCrashOnPartialVariable2]
-# flags: --no-local-partial-types
 from typing import Tuple, TypeVar
 T = TypeVar('T', bound=str)
 
@@ -2821,7 +2783,7 @@ def g() -> None:
 a = None
 
 def f() -> None:
-    reveal_type(a)  # N: Revealed type is "None"
+    reveal_type(a)  # N: Revealed type is "builtins.str"
 
 reveal_type(a)  # N: Revealed type is "None"
 a = ''
@@ -2833,7 +2795,7 @@ reveal_type(a)  # N: Revealed type is "builtins.str"
 a = None
 
 def f() -> None:
-    reveal_type(a)  # N: Revealed type is "None"
+    reveal_type(a)  # N: Revealed type is "builtins.str | None"
 
 reveal_type(a)  # N: Revealed type is "None"
 a = ''
@@ -3059,14 +3021,14 @@ _ = 0
 _ = '' # E: Incompatible types in assignment (expression has type "str", variable has type "int")
 
 [case testUnusedTargetNotClass]
-# flags: --allow-redefinition
+# flags: --allow-redefinition-old
 class C:
     _, _ = 0, 0
     _ = ''
 reveal_type(C._) # N: Revealed type is "builtins.str"
 
 [case testUnusedTargetNotClass2]
-# flags: --disallow-redefinition
+# flags: --disallow-redefinition-old
 class C:
     _, _ = 0, 0
     _ = ''  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
@@ -3639,7 +3601,7 @@ if x:
 [builtins fixtures/dict.pyi]
 
 [case testAllowPlainNoneForPartialAtModuleScope]
-# flags: --local-partial-types --python-version 3.10
+# flags: --local-partial-types
 --zuban-diff x = None
 x = None # E: Need type annotation for "x" (hint: "x: Optional[<type>] = ...")
 
@@ -4382,20 +4344,123 @@ def g() -> None:
     x = ""  # E: Incompatible types in assignment (expression has type "str", variable has type "int | None")
     reveal_type(x)  # N: Revealed type is "builtins.int | None"
 
-[case testGlobalVariableNoneInitMultipleFuncsRedefine]
-# flags: --allow-redefinition-new --local-partial-types
+reveal_type(x)  # N: Revealed type is "builtins.int | None"
 
-# Widening this is intentionally prohibited (for now).
+[case testGlobalVariableNoneInitMultipleFuncsRedefine]
+# flags: --allow-redefinition
+
+# Widening None is supported, as a special case
 x = None
 
 def f() -> None:
     global x
     reveal_type(x)  # N: Revealed type is "None"
-    x = 1  # E: Incompatible types in assignment (expression has type "int", variable has type "None")
-    reveal_type(x)  # N: Revealed type is "None"
+    x = 1
+    reveal_type(x)  # N: Revealed type is "builtins.int"
 
 def g() -> None:
     global x
-    reveal_type(x)  # N: Revealed type is "None"
-    x = ""  # E: Incompatible types in assignment (expression has type "str", variable has type "None")
-    reveal_type(x)  # N: Revealed type is "None"
+    reveal_type(x)  # N: Revealed type is "None | builtins.int"
+    x = ""  # E: Incompatible types in assignment (expression has type "str", variable has type "int | None")
+    reveal_type(x)  # N: Revealed type is "None | builtins.int"
+
+[case testLocalPartialTypesWithGlobalInitializedToEmptyListAndRedefine1]
+# flags: --allow-redefinition
+a = [] # E: Need type annotation for "a" (hint: "a: list[<type>] = ...")
+
+def f() -> None:
+    a.append(1)
+
+reveal_type(a) # N: Revealed type is "builtins.list[Any]"
+[builtins fixtures/list.pyi]
+
+[case testLocalPartialTypesWithGlobalInitializedToEmptyListAndRedefine2]
+# flags: --allow-redefinition
+x = []  # E: Need type annotation for "x" (hint: "x: list[<type>] = ...")
+
+# This used to crash.
+def f() -> None:
+    global x
+    x
+
+[case testPerFileNoLocalPartialTypesForcesSinglePhase_no_parallel]
+# mypy: no-local-partial-types
+
+x = []
+
+def func() -> None:
+    x.append(1)
+
+reveal_type(x)  # N: Revealed type is "builtins.list[builtins.int]"
+[builtins fixtures/list.pyi]
+
+[case testPerFileNoLocalPartialTypesForcesSinglePhase_parallel_only]
+# mypy: no-local-partial-types
+
+x = []
+
+def func() -> None:
+    x.append(1)
+[builtins fixtures/list.pyi]
+[out]
+main:1: error: --local-partial-types must be enabled in parallel mode
+main:3: error: Need type annotation for "x" (hint: "x: list[<type>] = ...")
+
+[case testOptionalUnionInferencePrecise]
+from typing import Optional, TypeVar, Union
+
+T = TypeVar("T")
+
+def assert_not_none(x: Optional[T]) -> T: ...
+
+x: Union[int, str, None]
+reveal_type(assert_not_none(x))  # N: Revealed type is "builtins.int | builtins.str"
+y: Union[int, str]
+reveal_type(assert_not_none(y))  # N: Revealed type is "builtins.int | builtins.str"
+n: None
+reveal_type(assert_not_none(n))  # N: Revealed type is "Never"
+
+def filter_not_none(x: list[Optional[T]]) -> list[T]: ...
+
+lx: list[Union[int, str, None]]
+reveal_type(filter_not_none(lx))  # N: Revealed type is "builtins.list[builtins.int | builtins.str]"
+reveal_type(filter_not_none([1, "yes", None]))  # N: Revealed type is "builtins.list[builtins.str | builtins.int]"
+[builtins fixtures/list.pyi]
+
+[case testStrictlyWiderInvariantUnionContextNoBottom]
+from typing import TypeVar, Union
+
+T = TypeVar("T")
+def foo(x: list[T]) -> list[Union[int, str, T]]: ...
+
+y: list[Union[int, str]]
+y = foo(y)
+[builtins fixtures/list.pyi]
+
+[case testOptionalUnionInferencePreciseSubclass]
+from typing import Generic, Optional, TypeVar, Union
+
+T = TypeVar("T")
+T_co = TypeVar("T_co", covariant=True)
+
+class A(Generic[T_co]): ...
+class B(Generic[T_co]): ...
+class C(A[Union[int, str]], B[Union[int, str, None]]): ...
+
+def f(x: Union[A[T], B[Optional[T]]]) -> T: ...
+
+reveal_type(f(C()))  # N: Revealed type is "builtins.int | builtins.str"
+[builtins fixtures/list.pyi]
+
+[case testJoinWithAnyIsPrecise]
+from typing import Any
+
+a: Any
+y = [a, "no"]
+x: list[int] = y  # E: Incompatible types in assignment (expression has type "list[str | Any]", variable has type "list[int]")
+
+def test() -> list[int]:
+    return [a, "no"]  # E: List item 1 has incompatible type "str"; expected "int"
+
+d: dict[str, int] = {"hits": a, "misses": "42"}  # E: Dict entry 1 has incompatible type "str": "str"; expected "str": "int"
+[builtins fixtures/dict.pyi]

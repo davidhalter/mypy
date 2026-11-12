@@ -133,6 +133,7 @@ main:5: error: Boolean literal expected as the "rename" argument to namedtuple()
 main:6: error: Unexpected keyword argument "unrecognized_arg" for "namedtuple"
 --zuban-diff main:6: note: "namedtuple" defined in "collections"
 --zuban-diff main:7: error: Too many positional arguments for "namedtuple"
+--zuban-diff main:7: note: "namedtuple" defined in "collections"
 main:7: error: Too many arguments for "namedtuple"
 
 [case testNamedTupleDefaults]
@@ -882,7 +883,7 @@ def f(o: Base) -> None:
 [out]
 
 [case testNamedTupleNew]
-from typing import NamedTuple
+from typing import Generic, NamedTuple, TypeVar
 
 Base = NamedTuple('Base', [('param', int)])
 
@@ -892,6 +893,18 @@ class Child(Base):
 
 Base(param=10)
 Child(param=10)
+
+T = TypeVar("T")
+class GenericBase(NamedTuple, Generic[T]):
+    value: T
+
+class GenericChild(GenericBase[T]):
+    def __new__(cls, value: int) -> GenericChild[int]:
+        raise BaseException
+
+class BadChild(GenericBase[T]):
+    def __new__(cls, value: int) -> GenericBase[int]:  # E: Incompatible return type for "__new__" (returns "GenericBase[int]", but must return a subtype of "BadChild[Any]")
+        raise BaseException
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleClassMethodWithGenericReturnValue]
@@ -1163,25 +1176,12 @@ def f(fields) -> None:
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleHasMatchArgs]
-# flags: --python-version 3.10
 from typing import NamedTuple
 class One(NamedTuple):
     bar: int
     baz: str
 o: One
 reveal_type(o.__match_args__)  # N: Revealed type is "tuple[Literal['bar'], Literal['baz']]"
-[builtins fixtures/tuple.pyi]
-[typing fixtures/typing-namedtuple.pyi]
-
-[case testNamedTupleHasNoMatchArgsOldVersion]
-# flags: --python-version 3.9
-from typing import NamedTuple
-class One(NamedTuple):
-    bar: int
-    baz: str
-o: One
-reveal_type(o.__match_args__)  # E: "One" has no attribute "__match_args__" \
-                               # N: Revealed type is "Any"
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-namedtuple.pyi]
 
@@ -1389,7 +1389,7 @@ class Test:
 [builtins fixtures/tuple.pyi]
 [typing fixtures/typing-namedtuple.pyi]
 
-[case testNoClassKeywordsForNamedTuple_no_native_parse]
+[case testNoClassKeywordsForNamedTuple]
 from typing import NamedTuple
 class Test1(NamedTuple, x=1, y=2):  # E: Unexpected keyword argument "x" for "__init_subclass__" of "NamedTuple" \
                                     # E: Unexpected keyword argument "y" for "__init_subclass__" of "NamedTuple"

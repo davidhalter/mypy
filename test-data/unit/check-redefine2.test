@@ -1,15 +1,15 @@
 -- Test cases for the redefinition of variable with a different type (new version).
 
 [case testNewRedefineLocalWithDifferentType]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f() -> None:
     x = 0
     reveal_type(x) # N: Revealed type is "builtins.int"
     x = ''
     reveal_type(x) # N: Revealed type is "builtins.str"
 
-[case testNewRedefineConditionalLocalWithDifferentType]
-# flags: --allow-redefinition-new --local-partial-types
+[case testNewRedefineConditionalLocalWithDifferentTypeAndFlagAlias]
+# flags: --allow-redefinition-new
 def f() -> None:
     if int():
         x = 0
@@ -19,7 +19,7 @@ def f() -> None:
         reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineMergeConditionalLocal1]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if int():
         x = 0
@@ -35,7 +35,7 @@ def f2() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | None"
 
 [case testNewRedefineMergeConditionalLocal2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def nested_ifs() -> None:
     if int():
         if int():
@@ -52,7 +52,7 @@ def nested_ifs() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str | None | builtins.bytes"
 
 [case testNewRedefineUninitializedCodePath1]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if int():
         x = 0
@@ -61,7 +61,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineUninitializedCodePath2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 def f1() -> None:
@@ -73,7 +73,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineUninitializedCodePath3]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 def f1() -> None:
@@ -84,7 +84,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineUninitializedCodePath4]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 def f1() -> None:
@@ -93,7 +93,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineUninitializedCodePath5]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 def f1() -> None:
@@ -105,7 +105,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | None"
 
 [case testNewRedefineUninitializedCodePath6]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 x: Union[str, None]
@@ -116,7 +116,7 @@ def f1() -> None:
     reveal_type(x) # N: Revealed type is "builtins.str | None"
 
 [case testNewRedefineHasAttr]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union
 
 def test(lst: list[object]) -> None:
@@ -149,7 +149,7 @@ reveal_type(y)  # N: Revealed type is "Literal[False] | Any"
 [builtins fixtures/isinstancelist.pyi]
 
 [case testNewRedefineGlobalVariableSimple]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 if int():
     x = 0
     reveal_type(x) # N: Revealed type is "builtins.int"
@@ -169,20 +169,79 @@ def f2() -> None:
 
 reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
-[case testNewRedefineGlobalVariableNoneInit]
-# flags: --allow-redefinition-new --local-partial-types
+[case testNewRedefineGlobalVariableNoneInit1]
+# flags: --allow-redefinition
 x = None
 
 def f() -> None:
     global x
     reveal_type(x) # N: Revealed type is "None"
-    x = 1 # E: Incompatible types in assignment (expression has type "int", variable has type "None")
-    reveal_type(x) # N: Revealed type is "None"
+    x = 1
+    reveal_type(x) # N: Revealed type is "builtins.int"
 
-reveal_type(x) # N: Revealed type is "None"
+reveal_type(x) # N: Revealed type is "None | builtins.int"
+
+[case testNewRedefineGlobalVariableNoneInit2]
+# flags: --allow-redefinition
+x = None
+
+def deco(f): return f
+
+@deco
+def f() -> None:
+    global x
+    if int():
+        x = 1
+    reveal_type(x) # N: Revealed type is "None | builtins.int"
+
+reveal_type(x) # N: Revealed type is "None | builtins.int"
+
+[case testNewRedefineGlobalVariableNoneInit3]
+# flags: --allow-redefinition
+from typing import overload
+
+x = None
+
+class C:
+    @overload
+    def f(self) -> None: ...
+    @overload
+    def f(self, n: int) -> None: ...
+
+    def f(self, n: int = 0) -> None:
+        global x
+        x = n
+        a = [x]
+        x = None
+        reveal_type(x) # N: Revealed type is "None"
+
+reveal_type(x) # N: Revealed type is "None | builtins.int"
+
+[case testNewRedefineGlobalVariableNoneInit4]
+# flags: --allow-redefinition
+x = None
+
+def f() -> None:
+    def nested() -> None:
+        global x
+        x = 1
+
+    nested()
+
+reveal_type(x) # N: Revealed type is "None | builtins.int"
+
+[case testNewRedefineGlobalVariableWithUnsupportedType]
+# flags: --allow-redefinition
+x = 1
+
+def f() -> None:
+    global x
+    x = "a"  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
+
+reveal_type(x) # N: Revealed type is "builtins.int"
 
 [case testNewRedefineParameterTypes]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Optional
 
 def f1(x: Optional[str] = None) -> None:
@@ -203,7 +262,7 @@ class C:
 
 
 [case testNewRedefineClassBody]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class C:
     if int():
         x = 0
@@ -216,7 +275,7 @@ class C:
 reveal_type(C.x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineNestedFunctionBasics]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if int():
         x = 0
@@ -241,7 +300,7 @@ def f2() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineLambdaBasics]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     x = 0
     if int():
@@ -254,7 +313,7 @@ def f1() -> None:
     reveal_type(f) # N: Revealed type is "def () -> builtins.int | builtins.str"
 
 [case testNewRedefineAssignmentExpression]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if x := int():
         reveal_type(x) # N: Revealed type is "builtins.int"
@@ -277,7 +336,7 @@ def f3() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineOperatorAssignment]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class D: pass
 class C:
     def __add__(self, x: C) -> D: ...
@@ -289,7 +348,7 @@ if int():
 reveal_type(c) # N: Revealed type is "__main__.C | __main__.D"
 
 [case testNewRedefineImportFrom-xfail]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 if int():
     from m import x
 else:
@@ -308,7 +367,7 @@ x = 1
 y = ""
 
 [case testNewRedefineImport]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 if int():
     import m
 else:
@@ -324,7 +383,7 @@ y = ""
 [builtins fixtures/module.pyi]
 
 [case testNewRedefineOptionalTypesSimple]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     x = None
     if int():
@@ -370,7 +429,7 @@ else:
 reveal_type(z) # N: Revealed type is "builtins.int | None | builtins.str"
 
 [case testNewRedefinePartialTypeForInstanceVariable]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class C1:
     def __init__(self) -> None:
         self.x = None
@@ -422,7 +481,7 @@ reveal_type(C5().x) # N: Revealed type is "builtins.list[builtins.str] | None"
 [builtins fixtures/list.pyi]
 
 [case testNewRedefinePartialGenericTypes]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     a = []
     a.append(1)
@@ -472,7 +531,7 @@ def f6() -> None:
 [builtins fixtures/list.pyi]
 
 [case testNewRedefineFinalLiteral]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Final, Literal
 
 x: Final = "foo"
@@ -486,7 +545,7 @@ reveal_type(B.x) # N: Revealed type is "Literal['bar']?"
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefineAnnotatedVariable]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Optional
 
 def f1() -> None:
@@ -520,7 +579,7 @@ class C:
         reveal_type(self.x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineAnyType1]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def a(): pass
 
 def f1() -> None:
@@ -582,7 +641,7 @@ def f7() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int"
 
 [case testNewRedefineAnyType2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any
 
 def f1() -> None:
@@ -606,8 +665,8 @@ def f3(x) -> None:
         reveal_type(x) # N: Revealed type is "builtins.int"
     reveal_type(x) # N: Revealed type is "Any | builtins.int"
 
-[case tetNewRedefineDel]
-# flags: --allow-redefinition-new --local-partial-types
+[case testNewRedefineDel]
+# flags: --allow-redefinition
 def f1() -> None:
     x = ""
     reveal_type(x) # N: Revealed type is "builtins.str"
@@ -650,8 +709,9 @@ def f5() -> None:
             continue
         x = ""
     reveal_type(x) # N: Revealed type is "builtins.str"
+
 [case testNewRedefineWhileLoopSimple]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f() -> None:
     while int():
         x = ""
@@ -669,7 +729,7 @@ def f() -> None:
     reveal_type(x) # N: Revealed type is "builtins.list[builtins.int]"
 
 [case testNewRedefineWhileLoopOptional]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     x = None
     while int():
@@ -686,7 +746,7 @@ def f2() -> None:
     reveal_type(x) # N: Revealed type is "None | builtins.str"
 
 [case testNewRedefineWhileLoopPartialType]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     x = []
     while int():
@@ -695,7 +755,7 @@ def f1() -> None:
 [builtins fixtures/list.pyi]
 
 [case testNewRedefineWhileLoopComplex1]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 
 def f1() -> None:
     while True:
@@ -706,7 +766,7 @@ def f1() -> None:
 [builtins fixtures/exception.pyi]
 
 [case testNewRedefineWhileLoopComplex2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 
 class C:
     def __enter__(self) -> str: ...
@@ -728,7 +788,7 @@ y = ""
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefineReturn]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if int():
         x = 0
@@ -746,7 +806,7 @@ def f2() -> None:
     reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineBreakAndContinue]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def b() -> None:
     while int():
         x = ""
@@ -770,7 +830,7 @@ def c() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str | None"
 
 [case testNewRedefineUnderscore]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f() -> None:
     if int():
         _ = 0
@@ -781,7 +841,7 @@ def f() -> None:
     reveal_type(_) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineWithStatement]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class C:
     def __enter__(self) -> int: ...
     def __exit__(self, x, y, z): ...
@@ -805,7 +865,7 @@ def f2() -> None:
     reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineNoWideningDeferred]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def deferred() -> None:
     c: C
     x = 1
@@ -820,7 +880,7 @@ class C:
 def defer() -> int: ...
 
 [case testNewRedefineTryStatement]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class E(Exception): pass
 
 def g(): ...
@@ -879,7 +939,7 @@ def f4() -> None:
 [builtins fixtures/exception.pyi]
 
 [case testNewRedefineRaiseStatement]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     if int():
         x = ""
@@ -904,7 +964,7 @@ def f2() -> None:
 
 
 [case testNewRedefineMultipleAssignment]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     x, y = 1, ""
     reveal_type(x) # N: Revealed type is "builtins.int"
@@ -926,7 +986,7 @@ def f2() -> None:
     reveal_type(y) # N: Revealed type is "builtins.str | builtins.int"
 
 [case testNewRedefineForLoopBasics]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f1() -> None:
     for x in [1]:
         reveal_type(x) # N: Revealed type is "builtins.int"
@@ -948,7 +1008,7 @@ def f2() -> None:
 [builtins fixtures/for.pyi]
 
 [case testNewRedefineForLoop1]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def l() -> list[int]:
     return []
 
@@ -971,7 +1031,7 @@ def f3() -> None:
 [builtins fixtures/for.pyi]
 
 [case testNewRedefineForLoop2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any
 
 def f(a: Any) -> None:
@@ -981,7 +1041,7 @@ def f(a: Any) -> None:
 [builtins fixtures/isinstance.pyi]
 
 [case testNewRedefineForStatementIndexNarrowing]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import TypedDict
 
 class X(TypedDict):
@@ -1011,7 +1071,7 @@ for b in ("hourly", "daily"):
 [typing fixtures/typing-full.pyi]
 
 [case testNewRedefineForLoopIndexWidening]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 
 def f1() -> None:
     for x in [1]:
@@ -1036,7 +1096,7 @@ def f3() -> None:
     reveal_type(x) # N: Revealed type is "builtins.str"
 
 [case testNewRedefineVariableAnnotatedInLoop]
-# flags: --allow-redefinition-new --local-partial-types --enable-error-code=redundant-expr
+# flags: --allow-redefinition --enable-error-code=redundant-expr
 from typing import Optional
 
 def f1() -> None:
@@ -1061,7 +1121,7 @@ def f2(e: Optional[str]) -> None:
     reveal_type(e) # N: Revealed type is "builtins.str | None"
 
 [case testNewRedefineLoopAndPartialTypesSpecialCase]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f() -> list[str]:
     a = []  # type: ignore
     o = []
@@ -1078,7 +1138,7 @@ def f() -> list[str]:
 [builtins fixtures/list.pyi]
 
 [case testNewRedefineFinalVariable]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Final
 
 x: Final = "foo"
@@ -1093,12 +1153,11 @@ class C:
           # E: Incompatible types in assignment (expression has type "Literal[1]", variable has type "str")
 
 [case testNewRedefineEnableUsingComment]
-# flags: --local-partial-types
 import a
 import b
 
 [file a.py]
-# mypy: allow-redefinition-new
+# mypy: allow-redefinition
 if int():
     x = 0
 else:
@@ -1112,27 +1171,47 @@ else:
     x = "" # E: Incompatible types in assignment (expression has type "str", variable has type "int")
 reveal_type(x) # N: Revealed type is "builtins.int"
 
-[case testNewRedefineWithoutLocalPartialTypes]
+[case testNewRedefineWithoutLocalPartialTypes_no_parallel]
 import a
 import b
 
 [file a.py]
-# mypy: local-partial-types, allow-redefinition-new
+# mypy: local-partial-types, allow-redefinition
 x = 0
 if int():
     x = ""
 
 [file b.py]
-# mypy: allow-redefinition-new
+# mypy: local-partial-types=false, allow-redefinition
 x = 0
 if int():
     x = ""
 
 [out]
-tmp/b.py:1: error: --local-partial-types must be enabled if using --allow-redefinition-new
+tmp/b.py:1: error: --local-partial-types must be enabled if using --allow-redefinition
+
+[case testNewRedefineWithoutLocalPartialTypes_parallel_only]
+import a
+import b
+
+[file a.py]
+# mypy: local-partial-types, allow-redefinition
+x = 0
+if int():
+    x = ""
+
+[file b.py]
+# mypy: local-partial-types=false, allow-redefinition
+x = 0
+if int():
+    x = ""
+
+[out]
+tmp/b.py:1: error: --local-partial-types must be enabled if using --allow-redefinition
+tmp/b.py:1: error: --local-partial-types must be enabled in parallel mode
 
 [case testNewRedefineNestedLoopInfiniteExpansion]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def a(): ...
 
 def f() -> None:
@@ -1147,7 +1226,7 @@ def f() -> None:
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefinePartialNoneEmptyList]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def func() -> None:
     l = None # E: Need type annotation for "l"
 
@@ -1158,7 +1237,7 @@ def func() -> None:
 [builtins fixtures/list.pyi]
 
 [case testNewRedefineLoopProgressiveWidening]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def foo() -> None:
     while int():
         if int():
@@ -1173,7 +1252,7 @@ def foo() -> None:
 [builtins fixtures/isinstancelist.pyi]
 
 [case testNewRedefineAnyOrEmptyUnpackInLoop]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any
 
 def foo() -> None:
@@ -1185,7 +1264,7 @@ def foo() -> None:
 [builtins fixtures/isinstancelist.pyi]
 
 [case testNewRedefineNarrowingSpecialCase]
-# flags: --allow-redefinition-new --local-partial-types --warn-unreachable
+# flags: --allow-redefinition --warn-unreachable
 from typing import Any, Union
 
 def get() -> Union[tuple[Any, Any], tuple[None, None]]: ...
@@ -1201,7 +1280,7 @@ def f() -> None:
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefinitionPartialTypeInLoopDeferred]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 
 def f(self) -> None:
     x = []
@@ -1218,7 +1297,7 @@ def defer() -> int: ...
 [builtins fixtures/list.pyi]
 
 [case testNewRedefineCorrectChangedOnPop]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Optional
 
 def foo() -> None:
@@ -1230,7 +1309,7 @@ def foo() -> None:
             name = "a"
 
 [case testNewRedefinePartialTypeForUnderscore]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 
 def t() -> tuple[int]:
     return (42,)
@@ -1251,7 +1330,7 @@ def f4() -> None:
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefineUseInferredTypedDictTypeForContext]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import TypedDict
 
 class TD(TypedDict):
@@ -1265,7 +1344,7 @@ def f() -> None:
 [typing fixtures/typing-typeddict.pyi]
 
 [case testNewRedefineEmptyGeneratorUsingUnderscore]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def f() -> None:
     gen = (_ for _ in ())
 --zuban-diff     reveal_type(gen) # N: Revealed type is "typing.Generator[Any, None, None]"
@@ -1273,7 +1352,7 @@ def f() -> None:
 [builtins fixtures/tuple.pyi]
 
 [case testNewRedefineCannotWidenImportedVariable]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 import a
 import b
 reveal_type(a.x) # N: Revealed type is "builtins.str"
@@ -1287,7 +1366,7 @@ if int():
 x = "a"
 
 [case testNewRedefineCannotWidenGlobalOrClassVariableWithMemberRef]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import ClassVar
 import a
 
@@ -1307,7 +1386,7 @@ reveal_type(C.y) # N: Revealed type is "builtins.str"
 x = "a"
 
 [case testNewRedefineWidenGlobalInInitModule]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 import pkg
 
 [file pkg/__init__.py]
@@ -1317,7 +1396,7 @@ if int():
 reveal_type(x) # N: Revealed type is "builtins.int | builtins.str"
 
 [case testNewRedefineNarrowingOnFirstAssignment]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any
 
 li: list[int]
@@ -1334,7 +1413,7 @@ def test() -> None:
 [builtins fixtures/primitives.pyi]
 
 [case testNewRedefineAnyNoSpecialCasing]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any
 
 def test() -> None:
@@ -1351,7 +1430,7 @@ def test() -> None:
     reveal_type(y)  # N: Revealed type is "Any | builtins.int"
 
 [case testNewRedefineSequentialRedefinitionToEmpty]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 items = ["a",  "b", "c"]
 if bool():
     items = ["a",  "b", "c"]
@@ -1363,7 +1442,7 @@ reveal_type(items)  # N: Revealed type is "builtins.list[builtins.str] | builtin
 [builtins fixtures/primitives.pyi]
 
 [case testNewRedefineSequentialRedefinitionToEmpty2]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 items = ["a", "b", "c"]
 reveal_type(items)  # N: Revealed type is "builtins.list[builtins.str]"
 items = [item.split() for item in items]
@@ -1380,7 +1459,7 @@ x = []
 reveal_type(x)  # N: Revealed type is "builtins.list[Never]"
 
 [case testNewRedefineRedefineToSubtypeItem]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 class Super: ...
 class Sub(Super): ...
 
@@ -1391,7 +1470,7 @@ else:
     reveal_type(x[0])  # N: Revealed type is "__main__.Sub"
 
 [case testNewRedefineFunctionArgumentsFullContext]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Optional
 
 def process(items: list[Optional[str]]) -> None:
@@ -1401,7 +1480,7 @@ def process(items: list[Optional[str]]) -> None:
     process(items)  # OK
 
 [case testNewRedefineUnionArgumentFallbackUnion]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Union, Optional, TypeVar, Sequence
 
 T = TypeVar("T")
@@ -1413,7 +1492,7 @@ def test(x: Optional[str]) -> None:
     reveal_type(x)  # N: Revealed type is "builtins.str"
 
 [case testNewRedefineUnionArgumentFallbackAsync]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Optional, TypeVar
 
 T = TypeVar("T")
@@ -1425,7 +1504,7 @@ async def test(x: Optional[str]) -> None:
     reveal_type(x)  # N: Revealed type is "builtins.str"
 
 [case testNewRedefineFunctionArgumentsEmptyContext]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def process1(items: list[str]) -> None:
     items = [item.split() for item in items]
     reveal_type(items)  # N: Revealed type is "builtins.list[builtins.list[builtins.str]]"
@@ -1444,7 +1523,7 @@ def process3(items: list[str]) -> None:
 [builtins fixtures/primitives.pyi]
 
 [case testNewRedefineNarrowingForNestedUnionWithAny]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 from typing import Any, Union
 
 a: Any
@@ -1458,10 +1537,11 @@ def test(x: Union[str, Int]) -> None:
     reveal_type(y)  # N: Revealed type is "Any"
 
 [case testNewRedefineNarrowingForNestedUnionWithNone]
-# flags: --allow-redefinition-new --local-partial-types
-from typing import Any, Union
+# flags: --allow-redefinition --ignore-missing-imports
+from typing import Union
+from somewhere import Unknown
 
-a: Any
+a: Unknown
 Int = Union[int, None]
 
 def test(x: Union[str, Int]) -> None:
@@ -1485,9 +1565,11 @@ def test(x: Union[str, Int]) -> None:
     reveal_type(y)  # N: Revealed type is "Any"
 
 [case testRegularNarrowingForNestedUnionWithNone]
-from typing import Any, Union
+# flags: --ignore-missing-imports
+from typing import Union
+from somewhere import Unknown
 
-a: Any
+a: Unknown
 Int = Union[int, None]
 
 def test(x: Union[str, Int]) -> None:
@@ -1500,7 +1582,7 @@ def test(x: Union[str, Int]) -> None:
     reveal_type(y)  # N: Revealed type is "builtins.str | builtins.int | Any"
 
 [case testNewRedefineWidenedArgumentDeferral]
-# flags: --allow-redefinition-new --local-partial-types
+# flags: --allow-redefinition
 def foo(x: int) -> None:
     reveal_type(x)  # N: Revealed type is "builtins.int"
     if bool():

@@ -243,6 +243,16 @@ def test_endswith() -> None:
     assert not test2.endswith(b'other')
 
 [case testBytesSlicing]
+from typing import Any, cast
+
+def test_reversed_slice_bounds() -> None:
+    bounds = (-100, -3, -1, 0, 1, 2, 3, 100, 2**100)
+    for value in (b"", b"a", b"abc"):
+        interpreted = cast(Any, value)
+        for start in bounds:
+            for end in bounds:
+                assert value[start:end] == interpreted[start:end]
+
 def test_bytes_slicing() -> None:
     b = b'abcdefg'
     zero = int()
@@ -274,6 +284,182 @@ def test_bytes_slicing() -> None:
         assert type(b[-big_int:-1]) == bytes
     assert type(b[-ten:]) == bytes
     assert type(b[:]) == bytes
+
+[case testBytearrayFromBytesSlice]
+from typing import Any, Callable
+from mypy_extensions import i32, i64
+
+def from_slice(b: bytes, start: int, end: int) -> bytearray:
+    return bytearray(b[start:end])
+
+def from_slice_i64(b: bytes, start: i64, end: i64) -> bytearray:
+    return bytearray(b[start:end])
+
+def from_slice_i32(b: bytes, start: i32, end: i32) -> bytearray:
+    return bytearray(b[start:end])
+
+def from_slice_calls(
+    source: Callable[[], bytes], start: Callable[[], int], end: Callable[[], int]
+) -> bytearray:
+    return bytearray(source()[start():end()])
+
+def from_slice_step(b: bytes, start: int, end: int, step: int) -> bytearray:
+    return bytearray(b[start:end:step])
+
+def from_slice_any(b: bytes, start: Any, end: Any) -> bytearray:
+    return bytearray(b[start:end])
+
+def from_start(b: bytes, start: int) -> bytearray:
+    return bytearray(b[start:])
+
+def to_end(b: bytes, end: int) -> bytearray:
+    return bytearray(b[:end])
+
+def from_start_i64(b: bytes, start: i64) -> bytearray:
+    return bytearray(b[start:])
+
+def to_end_i32(b: bytes, end: i32) -> bytearray:
+    return bytearray(b[:end])
+
+def full(b: bytes) -> bytearray:
+    return bytearray(b[:])
+
+def from_start_calls(source: Callable[[], bytes], start: Callable[[], int]) -> bytearray:
+    return bytearray(source()[start():])
+
+def to_end_calls(source: Callable[[], bytes], end: Callable[[], int]) -> bytearray:
+    return bytearray(source()[:end()])
+
+[file driver.py]
+from native import (
+    from_slice, from_slice_i64, from_slice_i32, from_slice_calls,
+    from_slice_step, from_slice_any,
+    from_start, to_end, from_start_i64, to_end_i32, full,
+    from_start_calls, to_end_calls,
+)
+from testutil import assertRaises
+
+small_indices = [-100, -8, -7, -5, -3, -1, 0, 1, 3, 6, 7, 8, 100]
+for f, large_indices in [
+    (from_slice, [-2**100, -2**63, 2**63, 2**100]),
+    (from_slice_i64, [-2**63, 2**63 - 1]),
+    (from_slice_i32, [-2**31, 2**31 - 1]),
+]:
+    for b in [b'', b'abcdefg', b'\x00\xff\x80\x00abc']:
+        for start in small_indices + large_indices:
+            for end in small_indices + large_indices:
+                result = f(b, start, end)
+                assert type(result) is bytearray
+                assert result == bytearray(b[start:end]), (b, start, end, result)
+                assert result is not f(b, start, end)
+
+for f, is_start, large_indices in [
+    (from_start, True, [-2**100, -2**63, 2**63, 2**100]),
+    (to_end, False, [-2**100, -2**63, 2**63, 2**100]),
+    (from_start_i64, True, [-2**63, 2**63 - 1]),
+    (to_end_i32, False, [-2**31, 2**31 - 1]),
+]:
+    for b in [b'', b'abcdefg', b'\x00\xff\x80\x00abc']:
+        for n in small_indices + large_indices:
+            result = f(b, n)
+            expected = bytearray(b[n:] if is_start else b[:n])
+            assert type(result) is bytearray
+            assert result == expected, (b, n, result)
+            assert result is not f(b, n)
+
+for b in [b'', b'abcdefg', b'\x00\xff\x80']:
+    result = full(b)
+    assert type(result) is bytearray
+    assert result == b
+    assert result is not full(b)
+    if result:
+        result[0] = 1
+        assert full(b) == b
+
+b = b'abcdefg'
+result = from_slice(b, 1, 4)
+result[0] = 0
+assert b == b'abcdefg'
+assert from_slice(b, 1, 4) == b'bcd'
+
+# A bytes subclass can override slicing, including returning a different type.
+# Omitted bounds must remain None in a subclass's __getitem__.
+class SubBytes(bytes):
+    def __getitem__(self, key):
+        assert key == expected_slice
+        return [0, 255, 128]
+
+class BadSlice(bytes):
+    def __getitem__(self, key):
+        raise ValueError('slice failed')
+
+class BadResult(bytes):
+    def __getitem__(self, key):
+        return object()
+
+cases = [(from_slice, (start, end), slice(start, end))
+         for start, end in [(1, 4), (-5, -1), (0, 2**100)]]
+cases.append((full, (), slice(None)))
+for n in small_indices + [-2**100, 2**100]:
+    cases.extend([(from_start, (n,), slice(n, None)), (to_end, (n,), slice(None, n))])
+for f, args, expected_slice in cases:
+    assert f(SubBytes(b), *args) == bytearray([0, 255, 128])
+    with assertRaises(ValueError, 'slice failed'):
+        f(BadSlice(b), *args)
+    with assertRaises(TypeError):
+        f(BadResult(b), *args)
+
+# Evaluate the source and both bounds exactly once, in order, on either path.
+def argument(name, value, fail=False):
+    def call():
+        calls.append(name)
+        if fail:
+            raise ValueError(name)
+        return value
+    return call
+
+for start, end in [(1, 4), (1, -1), (-5, 4), (-5, -1), (-5, 2**100)]:
+    calls = []
+    assert from_slice_calls(
+        argument('source', b), argument('start', start), argument('end', end)
+    ) == bytearray(b[start:end])
+    assert calls == ['source', 'start', 'end']
+
+for fail_at in range(3):
+    calls = []
+    names = ['source', 'start', 'end']
+    args = [argument(name, value, i == fail_at)
+            for i, (name, value) in enumerate(zip(names, [b, 1, 4]))]
+    with assertRaises(ValueError, names[fail_at]):
+        from_slice_calls(*args)
+    assert calls == names[:fail_at + 1]
+
+for f, direct in [(from_start_calls, from_start), (to_end_calls, to_end)]:
+    for n in [2, -2, 2**100]:
+        for fail in [False, True]:
+            calls = []
+            args = [argument('source', b), argument('bound', n, fail)]
+            if fail:
+                with assertRaises(ValueError, 'bound'):
+                    f(*args)
+            else:
+                assert f(*args) == direct(b, n)
+            assert calls == ['source', 'bound']
+
+# Unsupported forms must retain the ordinary constructor and slicing behavior.
+for step in [-2, -1, 1, 2]:
+    assert from_slice_step(b, 1, 6, step) == bytearray(b[1:6:step])
+with assertRaises(ValueError):
+    from_slice_step(b, 1, 6, 0)
+
+class Index:
+    def __index__(self):
+        return 2
+
+assert from_slice_any(b, Index(), 5) == b'cde'
+assert from_slice_any(b, None, None) == b
+with assertRaises(TypeError):
+    from_slice_any(b, 'bad', 5)
 
 [case testBytearrayBasics]
 from typing import Any
@@ -381,6 +567,131 @@ def test_bytearray_indexing() -> None:
     with assertRaises(ValueError, "byte must be in range(0, 256)"):
         b2[0] = 256
 
+[case testBytesIteration]
+from typing import Iterator
+
+def loop(b: bytes) -> list[int]:
+    a = []
+    for c in b:
+        a.append(c)
+    return a
+
+def comprehension(b: bytes) -> list[int]:
+    return [c for c in b]
+
+def test_bytes() -> None:
+    for b in [b'', b'a', b'\x00\x80\xff', bytes(range(256))]:
+        assert loop(b) == list(b)
+        assert comprehension(b) == list(b)
+
+def test_bytes_subclass() -> None:
+    from bytessub import BytesSubclass
+    b = BytesSubclass(b'ab')
+    assert loop(b) == [97, 98]
+    assert comprehension(b) == [97, 98]
+
+[file bytessub.py]
+class BytesSubclass(bytes):
+    pass
+
+[case testBytearrayIteration]
+from typing import Iterator
+
+def loop(b: bytearray) -> list[int]:
+    a = []
+    for c in b:
+        a.append(c)
+    return a
+
+def comprehension(b: bytearray) -> list[int]:
+    return [c + 1 for c in b]
+
+def gen_expr(b: bytearray) -> tuple[int, ...]:
+    return tuple(c * 2 for c in b)
+
+def set_comprehension(b: bytearray) -> set[int]:
+    return {c for c in b}
+
+def enum(b: bytearray) -> list[tuple[int, int]]:
+    return [(i, c) for i, c in enumerate(b)]
+
+def zipped(b: bytearray, s: str) -> list[tuple[int, str]]:
+    return [(c, x) for c, x in zip(b, s)]
+
+def generator(b: bytearray) -> Iterator[int]:
+    for c in b:
+        yield c
+
+def test_basic() -> None:
+    for b in [bytearray(), bytearray(b'a'), bytearray(b'\x00\x80\xff'), bytearray(range(256))]:
+        assert loop(b) == list(b)
+        assert comprehension(b) == [c + 1 for c in list(b)]
+        assert gen_expr(b) == tuple(c * 2 for c in list(b))
+        assert set_comprehension(b) == set(list(b))
+        assert enum(b) == list(enumerate(list(b)))
+        assert zipped(b, 'xyz') == list(zip(list(b), 'xyz'))
+        assert list(generator(b)) == list(b)
+
+def grow(b: bytearray) -> list[int]:
+    a = []
+    for c in b:
+        if len(b) < 5:
+            b.append(c + 10)
+        a.append(c)
+    return a
+
+def grow_comprehension(b: bytearray) -> list[int]:
+    return [append_if_short(b, c) for c in b]
+
+def append_if_short(b: bytearray, c: int) -> int:
+    if len(b) < 5:
+        b.append(c + 10)
+    return c
+
+def shrink(b: bytearray) -> list[int]:
+    a = []
+    for c in b:
+        b.clear()
+        a.append(c)
+    return a
+
+def shrink_comprehension(b: bytearray) -> list[int]:
+    return [clear(b, c) for c in b]
+
+def clear(b: bytearray, c: int) -> int:
+    b.clear()
+    return c
+
+def test_modify_while_iterating() -> None:
+    assert grow(bytearray(b'\x01\x02')) == [1, 2, 11, 12, 21]
+    assert grow_comprehension(bytearray(b'\x01\x02')) == [1, 2, 11, 12, 21]
+    assert shrink(bytearray(b'\x01\x02')) == [1]
+    assert shrink_comprehension(bytearray(b'\x01\x02')) == [1]
+
+def test_subclass() -> None:
+    from bytearraysub import ByteArrayOverride, ByteArrayIterOverride
+    # Like CPython, ignore __len__ and __getitem__ overrides
+    b = ByteArrayOverride(b'ab')
+    assert loop(b) == [97, 98]
+    assert comprehension(b) == [98, 99]
+    b2 = ByteArrayIterOverride(b'ab')
+    assert loop(b2) == [42]
+    assert comprehension(b2) == [43]
+
+[file bytearraysub.py]
+from typing import Iterator
+
+class ByteArrayOverride(bytearray):
+    def __len__(self) -> int:
+        return 1
+
+    def __getitem__(self, i: object) -> int:  # type: ignore[override]
+        return 99
+
+class ByteArrayIterOverride(bytearray):
+    def __iter__(self) -> Iterator[int]:
+        yield 42
+
 [case testBytesJoin]
 from typing import Any
 from testutil import assertRaises
@@ -403,7 +714,29 @@ class bytes_subclass(bytes):
         return b'spook'
 
 [case testBytesFormatting]
+import sys
+from typing import Any
 from testutil import assertRaises
+
+def format_int(n: int) -> bytes:
+    return b"%d" % n
+
+def test_bytes_formatting_error_propagation() -> None:
+    sys_module: Any = sys
+    if hasattr(sys_module, "set_int_max_str_digits"):
+        old_limit = sys_module.get_int_max_str_digits()
+        try:
+            sys_module.set_int_max_str_digits(640)
+            n = 10 ** 1000
+            before = sys_module.getrefcount(n)
+            for _ in range(3):
+                with assertRaises(ValueError):
+                    format_int(n)
+            assert sys_module.getrefcount(n) == before
+            assert n == 10 ** 1000  # Keep n alive across both refcount checks.
+        finally:
+            sys_module.set_int_max_str_digits(old_limit)
+    assert format_int(123) == b"123"
 
 # https://www.python.org/dev/peps/pep-0461/
 def test_bytes_formatting() -> None:
@@ -536,3 +869,78 @@ def test_optional_ne() -> None:
     assert ne_b_b_opt(b'x', b'y')
     assert ne_b_b_opt(b'y', b'x')
     assert ne_b_b_opt(b'x', None)
+
+[case testBytesOpsOverridingSubclass]
+from testutil import assertRaises
+from bytessub import BadBytes, GoodBytes
+
+def mul(b: bytes, n: int) -> bytes:
+    return b * n
+
+def rmul(b: bytes, n: int) -> bytes:
+    return n * b
+
+def join(b: bytes) -> bytes:
+    return b.join([b'a', b'b'])
+
+def translate(b: bytes, table: bytes) -> bytes:
+    return b.translate(table)
+
+def get_slice(b: bytes, start: int, end: int) -> bytes:
+    return b[start:end]
+
+BIG = 1 << 70
+
+table = bytes(range(256))
+
+def test_bad_result_type() -> None:
+    b: bytes = BadBytes(b'x')
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        mul(b, 2)
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        rmul(b, 2)
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        join(b)
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        translate(b, table)
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        get_slice(b, 0, BIG)
+    with assertRaises(TypeError, "bytes object expected; got int"):
+        get_slice(b, -BIG, 1)
+
+def test_overrides_called() -> None:
+    b: bytes = GoodBytes(b'x')
+    assert mul(b, 2) == b'xx!'
+    assert rmul(b, 2) == b'xx?'
+    assert type(rmul(b, 2)) is GoodBytes
+    assert join(b) == b'axb.'
+    assert translate(b, table) == b'x#'
+    assert get_slice(b, 0, BIG) == b'x^'
+    assert rmul(b'x', 2) == b'xx'
+
+[file bytessub.py]
+from typing import Any
+
+class BadBytes(bytes):
+    def __mul__(self, n: Any) -> Any:
+        return 12345678901234567890
+    def __rmul__(self, n: Any) -> Any:
+        return 12345678901234567891
+    def join(self, it: Any) -> Any:
+        return 12345678901234567892
+    def translate(self, table: Any, delete: Any = b'') -> Any:
+        return 12345678901234567893
+    def __getitem__(self, i: Any) -> Any:
+        return 12345678901234567894
+
+class GoodBytes(bytes):
+    def __mul__(self, n: Any) -> Any:
+        return bytes(self) * n + b'!'
+    def __rmul__(self, n: Any) -> Any:
+        return GoodBytes(n * bytes(self) + b'?')
+    def join(self, it: Any) -> Any:
+        return bytes(self).join(it) + b'.'
+    def translate(self, table: Any, delete: Any = b'') -> Any:
+        return bytes(self).translate(table) + b'#'
+    def __getitem__(self, i: Any) -> Any:
+        return bytes(self)[i] + b'^'

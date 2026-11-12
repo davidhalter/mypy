@@ -6,6 +6,7 @@ from mypy.nodes import ARG_STAR, ARG_STAR2, GDEF, ArgKind, FuncDef, RefExpr, Sym
 from mypy.types import (
     AnyType,
     CallableType,
+    DeletedType,
     Instance,
     LiteralType,
     NoneTyp,
@@ -49,6 +50,9 @@ from mypyc.ir.rtypes import (
     str_rprimitive,
     tuple_rprimitive,
     uint8_rprimitive,
+    uint16_rprimitive,
+    uint32_rprimitive,
+    uint64_rprimitive,
 )
 
 
@@ -122,6 +126,12 @@ class Mapper:
                 return int32_rprimitive
             elif typ.type.fullname == "mypy_extensions.i16":
                 return int16_rprimitive
+            elif typ.type.fullname == "mypy_extensions.u64":
+                return uint64_rprimitive
+            elif typ.type.fullname == "mypy_extensions.u32":
+                return uint32_rprimitive
+            elif typ.type.fullname == "mypy_extensions.u16":
+                return uint16_rprimitive
             elif typ.type.fullname == "mypy_extensions.u8":
                 return uint8_rprimitive
             elif typ.type.fullname == "librt.vecs.vec":
@@ -165,6 +175,9 @@ class Mapper:
             return self.type_to_rtype(typ.fallback)
         elif isinstance(typ, (UninhabitedType, UnboundType)):
             # Sure, whatever!
+            return object_rprimitive
+        elif isinstance(typ, DeletedType):
+            # The type of an exception variable after the except block, for example
             return object_rprimitive
 
         # I think we've covered everything that is supposed to

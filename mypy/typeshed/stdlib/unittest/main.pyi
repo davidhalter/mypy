@@ -48,7 +48,7 @@ class TestProgram:
     else:
         def __init__(
             self,
-            module: None | str | ModuleType = "__main__",
+            module: str | ModuleType | None = "__main__",
             defaultTest: str | Iterable[str] | None = None,
             argv: list[str] | None = None,
             testRunner: type[_TestRunner] | _TestRunner | None = None,
@@ -64,11 +64,8 @@ class TestProgram:
         ) -> None: ...
 
     if sys.version_info < (3, 13):
-        if sys.version_info >= (3, 11):
-            @deprecated("Deprecated since Python 3.11; removed in Python 3.13.")
-            def usageExit(self, msg: Any = None) -> None: ...
-        else:
-            def usageExit(self, msg: Any = None) -> None: ...
+        @deprecated("Deprecated; removed in Python 3.13.")
+        def usageExit(self, msg: Any = None) -> None: ...
 
     def parseArgs(self, argv: list[str]) -> None: ...
     def createTests(self, from_discovery: bool = False, Loader: unittest.loader.TestLoader | None = None) -> None: ...

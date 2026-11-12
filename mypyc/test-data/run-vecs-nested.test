@@ -1,11 +1,11 @@
-[case testVecNestedBasicOps_librt_experimental]
+[case testVecNestedBasicOps_librt]
 from typing import Final, Any, Iterable, Optional, Tuple
 import sys
 
 from mypy_extensions import i64, i32
-from librt.vecs import vec, append, remove, pop
+from librt.vecs import vec, append, extend, remove, pop
 
-from testutil import assertRaises
+from testutil import assertRaises, is_64_bit_platform
 
 def test_construct_empty_nested() -> None:
     v = vec[vec[str]]()
@@ -100,6 +100,21 @@ def test_set_item_error_nested() -> None:
         v[-4] = vec[str]()
     assert repr(v[0]) == 'vec[str]([])'
 
+class ReadVecOnDel:
+    def __del__(self) -> None:
+        del_events.append(set_item_vec[0][0])
+
+del_events: list[Optional[ReadVecOnDel]] = []
+set_item_vec: vec[vec[Optional[ReadVecOnDel]]] = vec[vec[Optional[ReadVecOnDel]]]()
+
+def test_set_item_decref_after_store() -> None:
+    # The old item must be decref'd after the new item is stored, since
+    # __del__ can access the vec
+    global set_item_vec
+    set_item_vec = vec[vec[Optional[ReadVecOnDel]]]([vec[Optional[ReadVecOnDel]]([ReadVecOnDel()])])
+    set_item_vec[0] = vec[Optional[ReadVecOnDel]]([None])
+    assert del_events == [None]
+
 def test_equality() -> None:
     assert vec[vec[str]]() == vec[vec[str]]()
     assert vec[vec[str]]([vec[str](['x'])]) == vec[vec[str]]([vec[str](['x'])])
@@ -192,6 +207,33 @@ def test_remove() -> None:
     vb: Any = vec[bytes]([b'x'])
     with assertRaises(TypeError):
         remove(v, vb)
+
+class RemoveOnDel:
+    def __init__(self, removed: bool) -> None:
+        self.removed = removed
+
+    def __eq__(self, other: object) -> bool:
+        return True
+
+    def __del__(self) -> None:
+        if self.removed:
+            remove_events.append(remove_vec[0][0])
+
+remove_events: list[Optional[RemoveOnDel]] = []
+remove_vec: vec[vec[Optional[RemoveOnDel]]] = vec[vec[Optional[RemoveOnDel]]]()
+
+def test_remove_decref_after_shift() -> None:
+    # The removed item must be decref'd after the items have been shifted, since
+    # __del__ can access the vec through another reference
+    global remove_vec
+    remove_vec = vec[vec[Optional[RemoveOnDel]]]([
+        vec[Optional[RemoveOnDel]]([RemoveOnDel(True)]),
+        vec[Optional[RemoveOnDel]]([None]),
+    ])
+    v = remove(remove_vec, vec[Optional[RemoveOnDel]]([RemoveOnDel(False)]))
+    assert remove_events == [None]
+    assert len(v) == 1
+    assert v[0][0] is None
 
 def test_pop_last() -> None:
     v = vec[vec[str]]([vec[str](['4']), vec[str](['6']), vec[str](['9'])])
@@ -506,3 +548,148 @@ def test_union_of_nested_vecs() -> None:
     with assertRaises(TypeError):
         a5: Any = vec[vec[vec[i64]]]()
         len_union(a5)
+
+def test_append_with_alias() -> None:
+    v = vec[vec[i64]]()
+    v = append(v, vec[i64]([1, 2, 3]))
+    alias = v
+    v = append(v, vec[i64]([4, 5]))
+    v = append(v, vec[i64]([6]))
+    v = append(v, vec[i64]([7]))
+    assert alias[0] == vec[i64]([1, 2, 3])
+    assert len(alias) == 1
+    assert v[0] == vec[i64]([1, 2, 3])
+    assert len(v) == 4
+
+def test_cap_empty() -> None:
+    v = vec[vec[i64]](capacity=3)
+    assert len(v) == 0
+    assert v == vec[vec[i64]]()
+
+def test_cap_with_initializer() -> None:
+    v = vec[vec[i64]]([vec[i64]([1]), vec[i64]([2])], capacity=3)
+    assert len(v) == 2
+    assert v[0] == vec[i64]([1])
+    assert v[1] == vec[i64]([2])
+
+def test_cap_variable(n: i64 = 3) -> None:
+    v = vec[vec[str]](capacity=n)
+    assert len(v) == 0
+    v = append(v, vec[str](["x"]))
+    assert v[0] == vec[str](["x"])
+
+def test_cap_buffer_reuse() -> None:
+    v = vec[vec[i64]]([vec[i64]([1]), vec[i64]([2])], capacity=3)
+    old = v
+    v = append(v, vec[i64]([3]))
+    v[0] = vec[i64]([99])
+    assert old[0] == vec[i64]([99])  # shared buffer
+
+def test_cap_below_initializer_length() -> None:
+    v = vec[vec[i64]]([vec[i64]([10]), vec[i64]([20]), vec[i64]([30])], capacity=1)
+    assert len(v) == 3
+    assert v[0] == vec[i64]([10])
+    assert v[1] == vec[i64]([20])
+    assert v[2] == vec[i64]([30])
+
+def test_cap_negative() -> None:
+    with assertRaises(ValueError):
+        vec[vec[i64]](capacity=-1)
+    with assertRaises(ValueError):
+        vec[vec[i64]]([vec[i64]([1])], capacity=-1)
+
+def test_cap_too_large() -> None:
+    if not is_64_bit_platform():
+        return
+    for n in [i64(2**61), i64(2**63 - 1)]:
+        with assertRaises(MemoryError):
+            vec[vec[i64]](capacity=n)
+        with assertRaises(MemoryError):
+            vec[vec[i64]]([vec[i64]([1])], capacity=n)
+
+def extend_nested(v: vec[vec[str]], v2: vec[vec[str]]) -> vec[vec[str]]:
+    return extend(v, v2)
+
+def extend_nested_iterable(v: vec[vec[str]], it: Iterable[vec[str]]) -> vec[vec[str]]:
+    return extend(v, it)
+
+def test_extend_vec() -> None:
+    v1 = vec[str](['a'])
+    v2 = vec[str](['b'])
+    v = extend_nested(vec[vec[str]]([v1]), vec[vec[str]]([v2]))
+    assert v == vec[vec[str]]([v1, v2])
+
+def test_extend_vec_empty_src() -> None:
+    v = extend_nested(vec[vec[str]]([vec[str](['x'])]), vec[vec[str]]())
+    assert v == vec[vec[str]]([vec[str](['x'])])
+
+def test_extend_vec_empty_dst() -> None:
+    v = extend_nested(vec[vec[str]](), vec[vec[str]]([vec[str](['y'])]))
+    assert v == vec[vec[str]]([vec[str](['y'])])
+
+def test_extend_vec_fits_in_capacity() -> None:
+    v: vec[vec[str]] = vec[vec[str]]([vec[str](['a']), vec[str](['b'])], capacity=3)
+    v = extend_nested(v, vec[vec[str]]([vec[str](['c'])]))
+    assert len(v) == 3
+    assert v[0] == vec[str](['a'])
+    assert v[2] == vec[str](['c'])
+
+def test_extend_vec_exceeds_capacity() -> None:
+    v: vec[vec[str]] = vec[vec[str]]([vec[str](['a']), vec[str](['b'])], capacity=3)
+    src: vec[vec[str]] = vec[vec[str]]([vec[str](['c']), vec[str](['d']), vec[str](['e'])])
+    v = extend_nested(v, src)
+    assert len(v) == 5
+    assert v[0] == vec[str](['a'])
+    assert v[4] == vec[str](['e'])
+
+def test_extend_vec_multiple_doublings() -> None:
+    v: vec[vec[str]] = vec[vec[str]]([vec[str](['x'])], capacity=1)
+    src: vec[vec[str]] = vec[vec[str]]()
+    for i in range(10):
+        src = append(src, vec[str]([str(i)]))
+    v = extend_nested(v, src)
+    assert len(v) == 11
+    assert v[0] == vec[str](['x'])
+    assert v[10] == vec[str](['9'])
+
+def test_extend_vec_self() -> None:
+    v: vec[vec[str]] = vec[vec[str]]()
+    v = append(v, vec[str](['a']))
+    v = append(v, vec[str](['b']))
+    v = extend_nested(v, v)
+    assert len(v) == 4
+    assert v[0] == vec[str](['a'])
+    assert v[2] == vec[str](['a'])
+    assert v[3] == vec[str](['b'])
+
+def test_extend_vec_shared_buffer_after_pop() -> None:
+    v0: vec[vec[str]] = vec[vec[str]]()
+    v0 = append(v0, vec[str](['a']))
+    v0 = append(v0, vec[str](['b']))
+    v0 = append(v0, vec[str](['c']))
+    v1, _ = pop(v0)
+    # v1 and v0 share a buffer; v1.len=2, v0.len=3
+    v = extend_nested(v1, v0)
+    assert len(v) == 5
+    assert v[0] == vec[str](['a'])
+    assert v[1] == vec[str](['b'])
+    assert v[2] == vec[str](['a'])
+    assert v[4] == vec[str](['c'])
+    # src (v0) must not be corrupted
+    assert v0 == vec[vec[str]]([vec[str](['a']), vec[str](['b']), vec[str](['c'])])
+
+def test_extend_iterable_runtime_vec_shared_buffer_after_pop() -> None:
+    v0: vec[vec[str]] = vec[vec[str]]()
+    v0 = append(v0, vec[str](['a']))
+    v0 = append(v0, vec[str](['b']))
+    v0 = append(v0, vec[str](['c']))
+    v1, _ = pop(v0)
+    # Statically this uses VecNestedApi.extend, but at runtime the iterable is a vec.
+    it: Iterable[vec[str]] = v0
+    v = extend_nested_iterable(v1, it)
+    assert len(v) == 5
+    assert v[0] == vec[str](['a'])
+    assert v[1] == vec[str](['b'])
+    assert v[2] == vec[str](['a'])
+    assert v[4] == vec[str](['c'])
+    assert v0 == vec[vec[str]]([vec[str](['a']), vec[str](['b']), vec[str](['c'])])

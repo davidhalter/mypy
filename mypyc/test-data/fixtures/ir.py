@@ -2,6 +2,7 @@
 # test cases.
 
 import _typeshed
+import types
 from typing import (
     Self, TypeVar, Generic, List, Iterator, Iterable, Dict, Optional, Tuple, Any, Set,
     overload, Mapping, Union, Callable, Sequence, FrozenSet, Protocol
@@ -40,6 +41,7 @@ __SupportsSomeKindOfPow = Union[
 
 class object:
     __class__: type
+    __dict__: dict[str, Any]
     def __new__(cls) -> Self: pass
     def __init__(self) -> None: pass
     def __init_subclass__(cls, **kwargs: object) -> None: pass
@@ -55,8 +57,6 @@ class type:
     def __new__(cls, *args: object) -> Any: ...
     __name__ : str
     __annotations__: Dict[str, Any]
-
-class ellipsis: pass
 
 # Primitive types are special in generated code.
 
@@ -90,6 +90,10 @@ class int:
     def __ge__(self, n: int) -> bool: pass
     def to_bytes(self, length: int, order: str, *, signed: bool = False) -> bytes: pass
     def bit_length(self) -> int: pass
+    @property
+    def real(self) -> int: ...
+    @property
+    def imag(self) -> int: ...
 
 class str:
     @overload
@@ -158,6 +162,10 @@ class float:
     def __le__(self, x: float) -> bool: ...
     def __gt__(self, x: float) -> bool: ...
     def __ge__(self, x: float) -> bool: ...
+    @property
+    def real(self) -> float: ...
+    @property
+    def imag(self) -> float: ...
 
 class complex:
     def __init__(self, x: object, y: object = None) -> None: pass
@@ -168,6 +176,10 @@ class complex:
     def __mul__(self, n: complex) -> complex: pass
     def __truediv__(self, n: complex) -> complex: pass
     def __neg__(self) -> complex: pass
+    @property
+    def real(self) -> float: ...
+    @property
+    def imag(self) -> float: ...
 
 class bytes:
     @overload
@@ -204,8 +216,15 @@ class bytearray:
     @overload
     def __getitem__(self, i: slice) -> bytearray: ...
     def decode(self, x: str = ..., y: str = ...) -> str: ...
+    def join(self, x: Iterable[object]) -> bytes: ...
     def startswith(self, t: bytes) -> bool: ...
     def endswith(self, t: bytes) -> bool: ...
+    def append(self, x: int) -> None: ...
+    def clear(self) -> None: ...
+    def __iter__(self) -> Iterator[int]: ...
+
+class memoryview:
+    def __init__(self, x: object) -> None: pass
 
 class bool(int):
     def __init__(self, o: object = ...) -> None: ...
@@ -346,7 +365,10 @@ class property:
     def fset(self, value: Any) -> None: ...
     def fdel(self) -> None: ...
 
-class BaseException: pass
+class BaseException:
+    __cause__: Optional[BaseException]
+    __context__: Optional[BaseException]
+    __suppress_context__: bool
 
 class Exception(BaseException):
     def __init__(self, message: Optional[str] = None) -> None: pass
@@ -367,8 +389,12 @@ class UnicodeEncodeError(RuntimeError): pass
 class UnicodeDecodeError(RuntimeError): pass
 class NotImplementedError(RuntimeError): pass
 class ReferenceError(Exception): pass
+class MemoryError(Exception): pass
 
 class StopIteration(Exception):
+    value: Any
+
+class StopAsyncIteration(Exception):
     value: Any
 
 class ArithmeticError(Exception): pass
@@ -419,10 +445,22 @@ def pow(base: __SupportsPow2[T_contra, T_co], exp: T_contra, mod: None = None) -
 def pow(base: __SupportsPow3NoneOnly[T_contra, T_co], exp: T_contra, mod: None = None) -> T_co: ...
 @overload
 def pow(base: __SupportsPow3[T_contra, _M, T_co], exp: T_contra, mod: _M) -> T_co: ...
-def sorted(iterable: Iterable[_T]) -> list[_T]: ...
+def sorted(
+    iterable: Iterable[_T], *, key: Callable[[_T], Any] | None = None, reverse: bool = False
+) -> list[_T]: ...
 def exit() -> None: ...
+@overload
 def min(x: _T, y: _T) -> _T: ...
+@overload
+def min(
+    iterable: Iterable[_T], *, key: Callable[[_T], Any] | None = None, default: _T = ...
+) -> _T: ...
+@overload
 def max(x: _T, y: _T) -> _T: ...
+@overload
+def max(
+    iterable: Iterable[_T], *, key: Callable[[_T], Any] | None = None, default: _T = ...
+) -> _T: ...
 def repr(o: object) -> str: ...
 def ascii(o: object) -> str: ...
 def ord(o: object) -> int: ...
