@@ -1699,7 +1699,8 @@ T = TypeVar('T', bound=int)
 class C(Generic[T]): pass
 class C2(Generic[T]): pass
 
-A = C[str] # E: Value of type variable "T" of "C" cannot be "str" \
+--zuban-diff A = C[str] # E: Value of type variable "T" of "C" cannot be "str" \
+A = C[str] \
            # E: Type argument "str" of "C" must be a subtype of "int"
 B = Union[C[str], int] # E: Type argument "str" of "C" must be a subtype of "int"
 S = TypeVar('S', bound=C[str]) # E: Type argument "str" of "C" must be a subtype of "int"
@@ -1722,7 +1723,8 @@ TD3 = TypedDict('TD3', {'x': C[str]}) # E: Type argument "str" of "C" must be a 
 
 a: Any
 cast(C[str], a)  # E: Type argument "str" of "C" must be a subtype of "int"
-C[str]()  # E: Value of type variable "T" of "C" cannot be "str"
+--zuban-diff C[str]()  # E: Value of type variable "T" of "C" cannot be "str"
+C[str]()  # E: Type argument "str" of "C" must be a subtype of "int"
 
 def f(s: S, y: U) -> None: pass  # No error here
 
