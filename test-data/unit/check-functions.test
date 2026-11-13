@@ -1918,7 +1918,7 @@ import mypy_extensions as ext
 
 def WrongArg(x, y): return y
 --zuban-diff def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid argument constructor "__main__.WrongArg"
-def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid type comment or annotation
+def a(f: Callable[[WrongArg(int, 'x')], int]): pass # E: Invalid type comment or annotation  # N: Cannot use a function call in a type annotation
 def b(f: Callable[[BadArg(int, 'x')], int]): pass # E: Name "BadArg" is not defined
 def d(f: Callable[[ext.VarArg(int)], int]): pass # ok
 def e(f: Callable[[VARG(), ext.KwArg()], int]): pass # ok
