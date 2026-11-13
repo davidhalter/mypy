@@ -2386,7 +2386,8 @@ from typing import NewType
 
 T = NewType("T", tuple[*tuple[int], *tuple[int]])
 t = T((1, 2))
-reveal_type(t)  # N: Revealed type is "tuple[builtins.int, builtins.int, fallback=__main__.T]"
+--zuban-diff reveal_type(t)  # N: Revealed type is "tuple[builtins.int, builtins.int, fallback=__main__.T]"
+reveal_type(t)  # N: Revealed type is "__main__.T"
 [builtins fixtures/tuple.pyi]
 
 [case testNamedTupleTupleTypeUnpack]
