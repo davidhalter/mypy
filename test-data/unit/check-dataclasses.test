@@ -716,7 +716,8 @@ from dataclasses import dataclass
 from typing import Callable
 
 @dataclass
-class Defer(Parent):
+--zuban-diff class Defer(Parent):
+class Defer(Parent):  # E: Name "Parent" is used before definition
     b: int
 
 @dataclass
@@ -733,7 +734,8 @@ from dataclasses import dataclass
 from typing import Callable
 
 @dataclass
-class Defer(Parent):
+--zuban-diff class Defer(Parent):
+class Defer(Parent):  # E: Name "Parent" is used before definition
     b: int = 0
 
 @dataclass
@@ -751,7 +753,8 @@ from dataclasses import dataclass
 from typing import Callable
 
 @dataclass(frozen=True)
-class Defer(Parent):
+--zuban-diff class Defer(Parent):
+class Defer(Parent):  # E: Name "Parent" is used before definition
     b: int
 
 @dataclass(frozen=True)
@@ -1427,7 +1430,8 @@ class MyDataClass:
 [builtins fixtures/dataclasses.pyi]
 [out]
 [out2]
-tmp/m.py:3: note: Revealed type is "Literal[1.234]?"
+--zuban-diff tmp/m.py:3: note: Revealed type is "Literal[1.234]?"
+tmp/m.py:3: note: Revealed type is "float"
 
 [case testDataclassesDefaultsMroOtherFile]
 import a
